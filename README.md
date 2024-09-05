@@ -1,4 +1,5 @@
 # Kea
+![logo](kea/resources/kea_log.png)
 
 Kea is a general and practical testing tool based on the idea of property-based testing for finding functional bugs in Android apps.
 

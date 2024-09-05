@@ -1,0 +1,18 @@
+[
+    {
+        "ui_element": {
+            "content_description": "Navigate up"
+        },
+        "event_type": "click"
+    },
+    {
+        "event_type": "scroll",
+        "direction": "down"
+    },
+    {
+        "ui_element": {
+            "text": "FTP Server"
+        },
+        "event_type": "click"
+    }
+]

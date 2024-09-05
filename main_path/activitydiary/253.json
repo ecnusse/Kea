@@ -1,0 +1,8 @@
+[
+    {
+        "ui_element": {
+            "resource_id": "de.rampro.activitydiary:id/activity_name"
+        },
+        "event_type": "click"
+    }
+]

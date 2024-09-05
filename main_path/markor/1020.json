@@ -1,0 +1,8 @@
+[
+    {
+        "ui_element": {
+            "resource_id": "net.gsantner.markor:id/fab_add_new_item"
+        },
+        "event_type": "click"
+    }
+]

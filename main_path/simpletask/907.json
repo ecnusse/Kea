@@ -1,0 +1,14 @@
+[
+    {
+        "ui_element": {
+            "resource_id": "nl.mpcjanssen.simpletask:id/fab"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "nl.mpcjanssen.simpletask:id/btnProject"
+        },
+        "event_type": "click"
+    }
+]

@@ -1,0 +1,23 @@
+[
+    {
+        "event_type": "back"
+    },
+    {
+        "ui_element": {
+            "resource_id": "de.danoeh.antennapod:id/discovery_cover"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "SUBSCRIBE"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "de.danoeh.antennapod:id/txtvItemname"
+        },
+        "event_type": "click"
+    }
+]

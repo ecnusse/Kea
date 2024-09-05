@@ -1,0 +1,45 @@
+[
+    {
+        "ui_element": {
+            "content_description": "Open menu"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Add Podcast",
+            "resource_id": "de.danoeh.antennapod.debug:id/txtvTitle"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "de.danoeh.antennapod.debug:id/discovery_cover"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Subscribe"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "de.danoeh.antennapod.debug:id/status"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "de.danoeh.antennapod.debug:id/butAction1Text"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "de.danoeh.antennapod.debug:id/playerFragment"
+        },
+        "event_type": "click"
+    }
+]

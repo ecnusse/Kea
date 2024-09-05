@@ -1,0 +1,20 @@
+[
+    {
+        "ui_element": {
+            "content_description": "More options"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Manage note types"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Add note type"
+        },
+        "event_type": "click"
+    }
+]

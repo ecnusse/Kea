@@ -1,0 +1,80 @@
+[
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes:id/fab_expand_menu_button"
+        },
+        "event_type": "long_click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes:id/detail_title"
+        },
+        "event_type": "set_text"
+    },
+    {
+        "ui_element": {
+            "content_description": "More options"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Lock"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes:id/password"
+        },
+        "event_type": "set_text",
+        "text": "1"
+    },
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes:id/password_check"
+        },
+        "event_type": "set_text",
+        "text": "1"
+    },
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes:id/question"
+        },
+        "event_type": "set_text",
+        "text": "1"
+    },
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes:id/answer"
+        },
+        "event_type": "set_text",
+        "text": "1"
+    },
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes:id/answer_check"
+        },
+        "event_type": "set_text",
+        "text": "1"
+    },
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes:id/password_root"
+        },
+        "event_type": "scroll",
+        "direction": "down"
+    },
+    {
+        "ui_element": {
+            "text": "OK"
+        },
+        "event_type": "click"
+    },
+    {
+        "event_type": "back"
+    },
+    {
+        "event_type": "back"
+    }
+]

@@ -1,0 +1,22 @@
+[
+    {
+        "ui_element": {
+            "content_description": "Open navigation"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Settings"
+        },
+        "event_type": "click"
+    },
+    {
+        "event_type": "scroll",
+        "direction": "down"
+    },
+    {
+        "event_type": "scroll",
+        "direction": "down"
+    }
+]

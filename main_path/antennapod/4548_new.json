@@ -1,0 +1,14 @@
+[
+    {
+        "ui_element": {
+            "content_description": "Open menu"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Episodes"
+        },
+        "event_type": "click"
+    }
+]

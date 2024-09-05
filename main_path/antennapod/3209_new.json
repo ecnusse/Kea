@@ -1,0 +1,44 @@
+[
+    {
+        "ui_element": {
+            "content_description": "Open menu"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Add podcast"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Show suggestions"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "de.danoeh.antennapod:id/discovery_cover"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Subscribe"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "content_description": "Open menu"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Episodes"
+        },
+        "event_type": "click"
+    }
+]

@@ -1,0 +1,17 @@
+[
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes.alpha:id/menu_search"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes.alpha:id/search_src_text"
+        },
+        "event_type": "set_text"
+    },
+    {
+        "event_type": "enter"
+    }
+]

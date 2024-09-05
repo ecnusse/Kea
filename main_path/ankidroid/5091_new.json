@@ -1,0 +1,20 @@
+[
+    {
+        "ui_element": {
+            "resource_id": "com.ichi2.anki:id/fab_main"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Create filtered deck"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "OK"
+        },
+        "event_type": "click"
+    }
+]

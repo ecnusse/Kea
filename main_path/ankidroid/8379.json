@@ -1,0 +1,26 @@
+[
+    {
+        "ui_element": {
+            "content_description": "Navigate up"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Help"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Get Help"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Send troubleshooting report"
+        },
+        "event_type": "click"
+    }
+]

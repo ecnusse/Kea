@@ -1,0 +1,20 @@
+[
+    {
+        "ui_element": {
+            "content_description": "drawer open"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "SETTINGS"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Interface"
+        },
+        "event_type": "click"
+    }
+]

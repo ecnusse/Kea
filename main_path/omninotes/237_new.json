@@ -1,0 +1,8 @@
+[
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes:id/fab_expand_menu_button"
+        },
+        "event_type": "long_click"
+    }
+]

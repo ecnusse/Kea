@@ -1,0 +1,8 @@
+[
+    {
+        "ui_element": {
+            "resource_id": "org.y20k.transistor:id/card_add_new_station"
+        },
+        "event_type": "click"
+    }
+]

@@ -1,0 +1,50 @@
+[
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes:id/fab_expand_menu_button"
+        },
+        "event_type": "long_click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes:id/detail_title"
+        },
+        "event_type": "set_text"
+    },
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes:id/menu_category"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "ADD CATEGORY"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes:id/category_title"
+        },
+        "event_type": "set_text"
+    },
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes:id/save"
+        },
+        "event_type": "click"
+    },
+    {
+        "event_type": "back"
+    },
+    {
+        "event_type": "back"
+    },
+    {
+        "ui_element": {
+            "content_description": "drawer open"
+        },
+        "event_type": "click"
+    }
+]

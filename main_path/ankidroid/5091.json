@@ -1,0 +1,20 @@
+[
+    {
+        "ui_element": {
+            "content_description": "More options"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Create filtered deck"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "CREATE"
+        },
+        "event_type": "click"
+    }
+]

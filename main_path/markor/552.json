@@ -1,0 +1,32 @@
+[
+    {
+        "ui_element": {
+            "resource_id": "net.gsantner.markor:id/fab_add_new_item"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "net.gsantner.markor:id/new_file_dialog__name"
+        },
+        "event_type": "set_text"
+    },
+    {
+        "ui_element": {
+            "text": "OK"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "net.gsantner.markor:id/document__fragment__edit__highlighting_editor"
+        },
+        "event_type": "set_text"
+    },
+    {
+        "ui_element": {
+            "content_description": "Navigate up"
+        },
+        "event_type": "click"
+    }
+]

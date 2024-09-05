@@ -1,0 +1,68 @@
+[
+    {
+        "ui_element": {
+            "text": "Add Podcast"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "SEARCH ITUNES"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "de.danoeh.antennapod:id/txtvTitle"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "SUBSCRIBE"
+        },
+        "event_type": "click"
+    },
+    {
+        "event_type": "back"
+    },
+    {
+        "event_type": "back"
+    },
+    {
+        "ui_element": {
+            "content_description": "Open menu"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Episodes"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "ALL"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "de.danoeh.antennapod:id/txtvTitle"
+        },
+        "event_type": "long_click"
+    },
+    {
+        "ui_element": {
+            "text": "Add to Favorites"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "FAVORITES"
+        },
+        "event_type": "click"
+    }
+]

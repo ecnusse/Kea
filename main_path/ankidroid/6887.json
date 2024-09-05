@@ -1,0 +1,8 @@
+[
+    {
+        "ui_element": {
+            "resource_id": "com.ichi2.anki:id/deckpicker_name"
+        },
+        "event_type": "click"
+    }
+]

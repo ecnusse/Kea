@@ -1,0 +1,155 @@
+[
+    {
+        "ui_element": {
+            "content_description": "Open menu"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Add Podcast",
+            "resource_id": "de.danoeh.antennapod.debug:id/txtvTitle"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "de.danoeh.antennapod.debug:id/discover_more"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "de.danoeh.antennapod.debug:id/spinner_country"
+        },
+        "event_type": "click"
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "event_type": "scroll",
+        "direction": "up",
+        "ui_element": {
+            "class": "android.widget.ListView"
+        }
+    },
+    {
+        "ui_element": {
+            "text": "Hide"
+        },
+        "event_type": "click"
+    },
+    {
+        "event_type": "back"
+    }
+]

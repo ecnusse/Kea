@@ -1,0 +1,26 @@
+[
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes:id/fab_expand_menu_button"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "text": "Text note"
+        },
+        "event_type": "click"
+    },
+    {
+        "ui_element": {
+            "resource_id": "it.feio.android.omninotes:id/detail_content"
+        },
+        "event_type": "set_text"
+    },
+    {
+        "ui_element": {
+            "content_description": "drawer open"
+        },
+        "event_type": "click"
+    }
+]

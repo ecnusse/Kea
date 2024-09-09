@@ -113,7 +113,7 @@ This is an example property from OmniNotes. The property checks if the search ex
 
 Note that we use the `@precondition` decorator to specify the precondition of the property. The precondition is a lambda function that returns a boolean value. If the lambda function returns `True`, the property will be executed. Otherwise, the property will be skipped.
 
-To run this property, we need to define a test class that inherits from ``AndroidCheck``. Then put this property in the test class
+To run this property, we need to define a test class that inherits from ``Kea``. Then put this property in the test class
 
 Finally, we can run the property by executing the following command:
 
@@ -147,7 +147,7 @@ For example, to send the click event to the app, you can use the following code:
 d(resourceId="player_playback_button").click()
 ```
 
-``self.device`` is the object of the uiautomator2.
+``d`` is the object of the uiautomator2.
 ``resourceId`` sets the resource id of the element.
 ``click()`` sends the click event to the element.
 

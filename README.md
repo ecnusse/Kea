@@ -96,7 +96,7 @@ Kea provides the following options. please consult ``kea -h`` for a full list.
 
 ### Specify your properties
 
-A property in DroiodChecker consists of three parts: A function that looks like a normal test, a `@rule` decorator that specifies this function as a property, and a ``@precondition`` decorator that specifies the precondition of the property.
+A property in Kea consists of three parts: A function that looks like a normal test, a `@rule` decorator that specifies this function as a property, and a ``@precondition`` decorator that specifies the precondition of the property.
 
 Here is an example of a property:
 

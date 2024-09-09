@@ -16,7 +16,7 @@ Requirements:
 You can input following commands to grep and install the required packages.
 
 ```bash
-git clone https://github.com/Kea/home
+git clone https://github.com/ecnusse/Kea.git
 cd home
 pip install -e .
 ```
@@ -37,7 +37,7 @@ pip install -e .
 >> Using [WSL2](https://ubuntu.com/desktop/wsl) to run emulator need you to enable `Hyper-V`, but `Hyper-V` is only available in `Windows Professional\Enterprise\Education` editions.  
 
 
-You can create an emulator before running DroidSChecker. See [this link](https://stackoverflow.com/questions/43275238/how-to-set-system-images-path-when-creating-an-android-avd) for how to create avd using [avdmanager](https://developer.android.com/studio/command-line/avdmanager).
+You can create an emulator before running Kea. See [this link](https://stackoverflow.com/questions/43275238/how-to-set-system-images-path-when-creating-an-android-avd) for how to create avd using [avdmanager](https://developer.android.com/studio/command-line/avdmanager).
 The following sample command will help you create an emulator, which will help you start using Kea quickly：
 
 ```bash

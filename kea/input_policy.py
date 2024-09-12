@@ -5,8 +5,10 @@ import json
 import logging
 import random
 import copy
-from threading import Timer
+from threading import Timer, active_count
 import time
+from time import sleep
+
 from .utils import Time, safe_get_dict
 from abc import abstractmethod
 from .input_event import (
@@ -138,7 +140,12 @@ class InputPolicy(object):
                 else:
                     event = self.generate_event()
                 self.last_event = event
-                input_manager.add_event(event)
+                #启动应用延长等待
+                if self.action_count == 1:
+                    self.logger.info("Waiting for app start..................")
+                    input_manager.add_event(event, is_start_app = True)
+                else:
+                    input_manager.add_event(event)
             except KeyboardInterrupt:
                 break
             except InputInterruptedException as e:

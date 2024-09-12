@@ -131,7 +131,7 @@ class InputManager(object):
             input_policy.master = master
         return input_policy
 
-    def add_event(self, event):
+    def add_event(self, event, is_start_app = False):
         """
         add one event to the event list
         :param event: the event to be added, should be subclass of AppEvent
@@ -148,6 +148,9 @@ class InputManager(object):
             time.sleep(self.event_interval)
             if not self.device.pause_sending_event:
                 break
+        # 启动应用延长等待
+        if(is_start_app):
+            time.sleep(5)
         event_log.stop()
 
     def start(self):

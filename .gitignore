@@ -69,3 +69,4 @@ Gemfile.lock
 documents
 temp
 venv
+/apk/

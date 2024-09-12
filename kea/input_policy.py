@@ -131,6 +131,7 @@ class InputPolicy(object):
                 self.device.u2.set_fastinput_ime(True)
                 self.logger.info("action count: %d" % self.action_count)
                 if self.action_count == 0 and self.master is None:
+                    #若应用运行关闭应用
                     event = KillAppEvent(app=self.app)
                 elif self.action_count == 1 and self.master is None:
                     event = IntentEvent(self.app.get_start_intent())
@@ -275,7 +276,7 @@ class UtgBasedInputPolicy(InputPolicy):
         generate an event
         @return:
         """
-        # 
+        #
         if self.action_count == 2:
             self.run_initial_rules()
         # Get current device state
@@ -428,6 +429,7 @@ class MutatePolicy(UtgBasedInputPolicy):
         self.current_state = self.device.get_current_state(self.action_count)
 
         self.__update_utg()
+        #根据应用是否在前台返回相关事件
         event = self.check_the_app_on_foreground()
         if event is not None:
             self.last_state = self.current_state
@@ -916,6 +918,7 @@ class UtgRandomPolicy(UtgBasedInputPolicy):
         if current_state.state_str in self.__missed_states:
             self.__missed_states.remove(current_state.state_str)
 
+        #Get the depth of the app's activity in the activity stack
         if current_state.get_app_activity_depth(self.app) < 0:
             # If the app is not in the activity stack
             start_app_intent = self.app.get_start_intent()

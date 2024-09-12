@@ -97,13 +97,22 @@ class Device(object):
 
         # adapters
         self.adb = ADB(device=self)
+        #通过 telnet 启动模拟器控制台。
         self.telnet = TelnetConsole(device=self, auth_token=telnet_auth_token)
+
         # self.droidbot_app = DroidBotAppConn(device=self)
+
+        #Minicap 是 Android 上的一个开源屏幕捕捉工具，常用于获取屏幕内容并进行自动化测试或远程查看
         self.minicap = Minicap(device=self)
+        #Logcat 是 Android 系统中的一个日志记录工具，用于捕获设备上发生的各种日志消息
         self.logcat = Logcat(device=self)
+        #UserInputMonitor 类通常用于监视和处理用户输入事件（如触摸、点击、键盘输入等）在 Android 设备上的行为
         self.user_input_monitor = UserInputMonitor(device=self)
+        #ProcessMonitor 是一个类，用于监控和管理设备上的进程
         self.process_monitor = ProcessMonitor(device=self)
+        #Uiautomator2_Helper 是一个类，用于处理与 UIAutomator2 交互的逻辑
         self.uiautomator_helper = Uiautomator2_Helper(device=self)
+
         # self.droidbot_ime = DroidBotIme(device=self)
 
         self.adapters = {

@@ -46,7 +46,7 @@ def import_and_instantiate_classes(files):
         
         try:
             module = importlib.import_module(module_name)
-            
+
             # 寻找模块中的所有类，并尝试实例化它们
             for attr_name in dir(module):
                 attr = getattr(module, attr_name)
@@ -58,12 +58,11 @@ def import_and_instantiate_classes(files):
     return droidcheck_instance
 
 def main():
-
     options = parse_args()
     test_classes = []
     if options.files is not None:
         test_classes = import_and_instantiate_classes(options.files)
-    setting =  Setting(apk_path=options.apk_path, 
+    setting =  Setting(apk_path=options.apk_path,
                        device_serial=options.device_serial,
                        output_dir=options.output_dir,
                        timeout=options.timeout,

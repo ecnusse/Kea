@@ -87,10 +87,10 @@ def initialize():
 @dataclass
 class Setting:
     apk_path: str
-    device_serial: str ="emulator-5554"
+    device_serial: str ="emulator-5554"     #设备号
     output_dir:str ="output"
     main_path: str =None
-    is_emulator: bool =True
+    is_emulator: bool =True     #使用emulator则为true，使用真机则为false
     policy_name: str =input_manager.DEFAULT_POLICY
     random_input: bool =True
     script_path: str=None

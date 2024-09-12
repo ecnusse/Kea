@@ -105,7 +105,7 @@ def generate_report(img_path, html_path, bug_information=None):
     bug_set = set()
     if bug_information is not None:
         for bug in bug_information:
-            property_name = "<p><strong>" + bug[2] + "</strong></p>"
+            property_name = "<p><strong>Property_Name:</strong>" + bug[2] + "</p>"
             bug_link = ( property_name + "<li><a href=\"#"+str(bug[0])+"\">"+str(bug[0])+"</a></li>" + '\n')
             bug_link_list.append(bug_link)
             bug_set.add(bug[0])

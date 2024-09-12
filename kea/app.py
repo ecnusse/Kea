@@ -31,8 +31,11 @@ class App(object):
         from androguard.core.apk import APK
         self.apk = APK(self.app_path)
         self.package_name = self.apk.get_package()
+        #用于获取 APK 的主活动（即应用启动时的第一个活动）
         self.main_activity = self.apk.get_main_activity()
+        #从 self.apk 对象中获取应用程序的权限列表
         self.permissions = self.apk.get_permissions()
+        #从 self.apk 对象中获取应用程序的活动（activities）列表
         self.activities = self.apk.get_activities()
         self.possible_broadcasts = self.get_possible_broadcasts()
         self.dumpsys_main_activity = None

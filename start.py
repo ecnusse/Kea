@@ -69,7 +69,8 @@ def main():
                        policy_name=options.policy,
                        number_of_events_that_restart_app=options.number_of_events_that_restart_app,
                        debug_mode=options.debug_mode,
-                       keep_app=options.keep_app
+                       keep_app=options.keep_app,
+                       main_path=options.main_path
                        )
     print(Kea._rules_per_class)
     run_android_check_as_test(test_classes[0],setting)

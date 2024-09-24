@@ -17,7 +17,7 @@ You can input following commands to grep and install the required packages.
 
 ```bash
 git clone https://github.com/ecnusse/Kea.git
-cd home
+cd Kea
 pip install -e .
 ```
 

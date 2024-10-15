@@ -34,7 +34,7 @@ pip install -e .
 > 
 > If you are willing to use virtual machine to run our Kea, This still works. You just need to enable your vm can use hardware virtualization.  
 > Take `Windows` as an example, if you like to use Linux system for developing instead of using windows directly. we recommend you to use [WSL2](https://ubuntu.com/desktop/wsl) to run Kea. This may can help you run Kea more fluently than [Vmware](https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion) and [VirtualBox](https://www.virtualbox.org/).  
->> Using [WSL2](https://ubuntu.com/desktop/wsl) to run emulator need you to enable `Hyper-V`, but `Hyper-V` is only available in `Windows Professional\Enterprise\Education` editions.  
+>> Using [WSL2](https://ubuntu.com/desktop/wsl) to run emulator need you to enable `Hyper-V`, here we recommend you to use Windows 11.  
 
 
 You can create an emulator before running Kea. See [this link](https://stackoverflow.com/questions/43275238/how-to-set-system-images-path-when-creating-an-android-avd) for how to create avd using [avdmanager](https://developer.android.com/studio/command-line/avdmanager).

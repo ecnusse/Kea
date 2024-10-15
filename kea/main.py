@@ -10,6 +10,7 @@ import traceback
 import attr
 import uiautomator2 as u2
 from kea import env_manager, input_manager
+from kea.Bundle import Bundle
 from kea.droidbot import DroidBot
 import inspect
 from copy import copy
@@ -159,6 +160,7 @@ from hypothesis import strategies as st
 class Kea(object):
     _rules_per_class: Dict[type, List[classmethod]] = {}
     _initializers_per_class: Dict[type, List[classmethod]] = {}
+    _bundles_: Dict[str, List[Bundle]] = {}
 
     def __init__(
         self

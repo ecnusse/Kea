@@ -160,7 +160,7 @@ from hypothesis import strategies as st
 class Kea(object):
     _rules_per_class: Dict[type, List[classmethod]] = {}
     _initializers_per_class: Dict[type, List[classmethod]] = {}
-    _bundles_: Dict[str, List[Bundle]] = {}
+    _bundles_: Dict[str, Bundle] = {}
 
     def __init__(
         self
@@ -205,6 +205,12 @@ class Kea(object):
             if r is not None:
                 cls._rules_per_class[cls].append(r)
         return cls._rules_per_class[cls]
+
+    @classmethod
+    def set_bundle(cls, type_name):
+        bundle = Bundle(type_name)
+        cls._bundles_[type_name] = bundle
+        return bundle
 
     def execute_initializers(self):
         for initializer in self._initialize_rules_to_run:

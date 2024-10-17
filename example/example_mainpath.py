@@ -6,10 +6,8 @@ class Test(Kea):
     @initialize()
     def set_up(self):
         for _ in range(5):
-            d(resourceId="it.feio.android.omninotes:id/next").click()
-        d(resourceId="it.feio.android.omninotes:id/done").click()
-        if d(text="OK").exists():
-            d(text="OK").click()
+            d(resourceId="it.feio.android.omninotes.alpha:id/next").click()
+        d(resourceId="it.feio.android.omninotes.alpha:id/done").click()
 
     @precondition(lambda self: d(resourceId="it.feio.android.omninotes:id/menu_tag").exists() and
                                "#" in d(resourceId="it.feio.android.omninotes:id/detail_content").info["text"]

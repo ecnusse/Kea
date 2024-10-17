@@ -8,7 +8,10 @@ class Test2(Kea):
 
     @initialize()
     def set_up(self):
-
+        if d(text="Allow").exists():
+            d(text="Allow").click()
+        if d(text="GRANT").exists():
+            d(text="GRANT").click()
         if d(text="ALLOW").exists():
             d(text="ALLOW").click()
 

@@ -26,12 +26,17 @@ RULE_MARKER = "tool_rule"
 INITIALIZE_RULE_MARKER = "tool_initialize_rule"
 PRECONDITIONS_MARKER = "tool_preconditions"
 INVARIANT_MARKER = "tool_invariant"
+MAINPATH_MARKER = "tool_main_path"
 
 @attr.s()
 class Rule:
     function = attr.ib()
     preconditions = attr.ib()
 
+@attr.s()
+class MainPath:
+    function = attr.ib()
+    path = attr.ib()
 
 def rule() -> Callable:
     def accept(f):
@@ -82,6 +87,23 @@ def initialize():
         rule = Rule(function=f, preconditions=())
         setattr(initialize_wrapper, INITIALIZE_RULE_MARKER, rule)
         return initialize_wrapper
+
+    return accept
+
+def main_path():
+    def accept(f):
+        def mainpath_wrapper(*args, **kwargs):
+            # 获取函数的源代码
+            source_code = inspect.getsource(f)
+            # 将源代码分割成行，并去掉空行和缩进
+            code_lines = [line.strip() for line in source_code.splitlines() if line.strip()]
+            # 将代码行转换为字符串形式
+            code_lines = [line for line in code_lines if not line.startswith('def ') and not line.startswith('@') and not line.startswith('#')]
+            return code_lines
+
+        main_path = MainPath(function=f, path=mainpath_wrapper())
+        setattr(mainpath_wrapper, MAINPATH_MARKER, main_path)
+        return mainpath_wrapper
 
     return accept
 
@@ -160,6 +182,7 @@ from hypothesis import strategies as st
 class Kea(object):
     _rules_per_class: Dict[type, List[classmethod]] = {}
     _initializers_per_class: Dict[type, List[classmethod]] = {}
+    _main_path_per_class: Dict[type, List[classmethod]] = {}
     _bundles_: Dict[str, Bundle] = {}
 
     def __init__(
@@ -184,12 +207,11 @@ class Kea(object):
             return cls._initializers_per_class[cls]
         except KeyError:
             pass
-
         cls._initializers_per_class[cls] = []
         for _, v in inspect.getmembers(cls):
             r = getattr(v, INITIALIZE_RULE_MARKER, None)
             if r is not None:
-                cls._initializers_per_class[cls].append(r)       
+                cls._initializers_per_class[cls].append(r)
         return cls._initializers_per_class[cls]
 
     @classmethod
@@ -205,6 +227,20 @@ class Kea(object):
             if r is not None:
                 cls._rules_per_class[cls].append(r)
         return cls._rules_per_class[cls]
+
+    @classmethod
+    def mainpath_rules(cls):
+        try:
+            return cls._main_path_per_class[cls]
+        except KeyError:
+            pass
+
+        cls._main_path_per_class[cls] = []
+        for _, v in inspect.getmembers(cls):
+            r = getattr(v, MAINPATH_MARKER, None)
+            if r is not None:
+                cls._main_path_per_class[cls].append(r)
+        return cls._main_path_per_class[cls]
 
     @classmethod
     def set_bundle(cls, type_name):
@@ -265,6 +301,12 @@ class Kea(object):
             result = 1
 
         return result
+
+    def get_main_path(self, mainpath) :
+        return mainpath.function, mainpath.path
+
+    def exec_main_path(self, event_str):
+        exec(event_str)
 
     def get_rules_that_pass_the_preconditions(self) -> List:
         '''Check all rules and return the list of rules that meet the preconditions.'''

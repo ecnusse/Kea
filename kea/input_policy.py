@@ -1,15 +1,11 @@
 import os
-import string
-import sys
-import json
+
 import logging
 import random
 import copy
-from threading import Timer, active_count
 import time
-from time import sleep
 
-from .utils import Time, safe_get_dict
+from .utils import Time
 from abc import abstractmethod
 from .input_event import (
     InputEvent,
@@ -31,7 +27,6 @@ from .input_event import (
     KillAppEvent,
     UIEvent, KillAndRestartAppEvent,
 )
-from hypothesis import given, strategies as st
 from .utg import UTG
 from kea import utils
 from typing import TYPE_CHECKING
@@ -131,7 +126,6 @@ class InputPolicy(object):
             try:
 
                 self.device.u2.set_fastinput_ime(True)
-                self.logger.info("action count: %d" % self.action_count)
                 if self.action_count == 0 and self.master is None:
                     #若应用运行关闭应用
                     event = KillAppEvent(app=self.app)
@@ -139,8 +133,8 @@ class InputPolicy(object):
                     event = IntentEvent(self.app.get_start_intent())
                 else:
                     event = self.generate_event()
+                self.logger.info("action count: %d" % self.action_count)
                 self.last_event = event
-                #启动应用延长等待
                 input_manager.add_event(event)
             except KeyboardInterrupt:
                 break
@@ -367,7 +361,7 @@ class MutatePolicy(UtgBasedInputPolicy):
     
     """
 
-    def __init__(self, device, app, random_input, android_check=None, main_path=None,
+    def __init__(self, device, app, random_input, android_check=None,
                  run_initial_rules_after_every_mutation=True):
         super(MutatePolicy, self).__init__(
             device, app, random_input, android_check
@@ -422,28 +416,15 @@ class MutatePolicy(UtgBasedInputPolicy):
         self.max_number_of_events_that_try_to_find_event_on_main_path = min(10, len(self.main_path))
         self.mutate_node_index_on_main_path = len(self.main_path)
 
-    # def get_main_path(self):
-        # import json
-        # if self.main_path is None:
-        #     raise Exception("main path path is None")
-        # f = open(self.main_path, "r")
-        # event_list = json.load(f)
-        # mainpath, event_list = self.android_check.get_main_path(self.main_path)
-        # print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-        # print(event_list)
-        # print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-        # return event_list
 
     def generate_event(self):
         """
         
         """
-        if not self.execute_main_path or self.action_count == 2:
-            self.__update_utg()
-        self.current_state = self.device.get_current_state(self.action_count)
-        # self.__update_utg()
 
-        #根据应用是否在前台返回相关事件
+        self.current_state = self.device.get_current_state(self.action_count)
+
+        #Return relevant events based on whether the application is in the foreground.
         event = self.check_the_app_on_foreground()
         if event is not None:
             self.last_state = self.current_state
@@ -455,21 +436,20 @@ class MutatePolicy(UtgBasedInputPolicy):
                 isinstance(self.last_event, KillAndRestartAppEvent) and self.run_initial_rules_after_every_mutation):
             self.run_initial_rules()
             time.sleep(2)
-            return None
+            self.current_state = self.device.get_current_state(self.action_count)
+            self.__update_utg()
         if self.action_count == 3:
             self.utg.first_state_after_initialization = self.current_state
         if self.execute_main_path:
-            # event = self.get_main_path_event()
-            # if event:
-            #     self.last_state = self.current_state
-            #     self.last_event = event
-            #     return event
-
             event_str = self.get_main_path_event()
             if event_str:
                 self.android_check.exec_main_path(event_str)
+                if self.action_count > 2:
+                    self.action_count -= 1
+                    self.logger.info("*****main path running*****")
                 return None
-
+        else:
+            self.__update_utg()
         if event is None:
             event = self.mutate_the_main_path()
 
@@ -523,7 +503,6 @@ class MutatePolicy(UtgBasedInputPolicy):
                         self.check_rule_with_precondition()
                     return self.end_mutation()
 
-                # event = self.get_event_from_main_path()
 
                 event_str = self.get_event_from_main_path()
                 try:
@@ -533,14 +512,6 @@ class MutatePolicy(UtgBasedInputPolicy):
                 except Exception:
                     self.logger.info("can't find the event in the main path")
                     return self.end_mutation()
-
-
-                # if event is not None:
-                #     self.logger.info("find the event in the main path")
-                #     return event
-                # else:
-                #     self.logger.info("can't find the event in the main path")
-                #     return self.end_mutation()
 
             return self.end_mutation()
 
@@ -562,14 +533,8 @@ class MutatePolicy(UtgBasedInputPolicy):
             self.execute_main_path = False
             return None
         self.logger.info("execute node index on main path: %d" % self.current_index_on_main_path)
-        # event_dict = self.main_path_list[self.current_index_on_main_path]
-        # event = self.get_event_from_dict(event_dict)
 
         u2_event_str = self.main_path_list[self.current_index_on_main_path]
-        # if event is None:
-        #     self.logger.warning("event is None on main path node %d" % self.current_index_on_main_path)
-        #     self.current_index_on_main_path += 1
-        #     return self.get_main_path_event()
         if u2_event_str is None:
             self.logger.warning("event is None on main path node %d" % self.current_index_on_main_path)
             self.current_index_on_main_path += 1
@@ -583,12 +548,6 @@ class MutatePolicy(UtgBasedInputPolicy):
         """
         if self.index_on_main_path_after_mutation == -1:
             for i in range(len(self.main_path_list) - 1, -1, -1):
-                # event_dict = self.main_path_list[i]
-                # event = self.get_event_from_dict(event_dict)
-
-                # if event is None:
-                #     continue
-                # self.index_on_main_path_after_mutation = i + 1
 
                 event_str = self.main_path_list[i]
                 if event_str is None:
@@ -596,11 +555,6 @@ class MutatePolicy(UtgBasedInputPolicy):
                 self.index_on_main_path_after_mutation = i + 1
                 return event_str
         else:
-            # event_dict = self.main_path_list[self.index_on_main_path_after_mutation]
-            # event = self.get_event_from_dict(event_dict)
-            # if event is None:
-            #     return None
-
             event_str = self.main_path_list[self.index_on_main_path_after_mutation]
             if event_str is None:
                 return None
@@ -609,74 +563,6 @@ class MutatePolicy(UtgBasedInputPolicy):
             return event_str
         return None
 
-    def get_event_from_dict(self, event_dict):
-        view = None
-        event = None
-        if event_dict["event_type"] == "set_text":
-            view = self.current_state.get_view_by_attribute(event_dict["ui_element"])
-            if view is None:
-                self.logger.warning("view is None")
-                return None
-            if 'text' in event_dict:
-                event = SetTextEvent(view=view, text=event_dict['text'])
-            elif 'text_prefix' in event_dict:
-                random_text = st.text(
-                    alphabet=string.ascii_letters, min_size=1, max_size=5
-                ).example()
-                event = SetTextEvent(
-                    view=view,
-                    text=event_dict['text_prefix'] + random_text,
-                )
-            else:
-                if not self.last_random_text is None and "resource_id" in event_dict['ui_element'] and "search" in \
-                        event_dict['ui_element']['resource_id'] and "use_prior_text" in event_dict:
-                    self.logger.info("use the last random text %s" % self.last_random_text)
-                    charactor = random.choice(self.last_random_text)
-                    event = SetTextEvent(
-                        view=view,
-                        text=charactor,
-                    )
-                    return event
-
-                random_text = st.text(
-                    alphabet=string.ascii_letters, min_size=1, max_size=5
-                ).example()
-                event = SetTextEvent(
-                    view=view,
-                    text=random_text,
-                )
-                self.last_random_text = random_text
-            return event
-
-        if "ui_element" in event_dict:
-            view = self.current_state.get_view_by_attribute(event_dict["ui_element"], random_select=True)
-            if view is None:
-                self.logger.warning("view is None")
-                return None
-
-        if event_dict["event_type"] == "click":
-            event = TouchEvent(view=view)
-        elif event_dict["event_type"] == "long_click":
-            event = LongTouchEvent(view=view)
-        elif event_dict["event_type"] == "back":
-            event = KeyEvent(name="BACK")
-        elif event_dict["event_type"] == "enter":
-            event = KeyEvent(name="ENTER")
-        elif event_dict["event_type"] == "search":
-            event = SearchEvent()
-        elif event_dict["event_type"] == "scroll":
-            if event_dict["direction"] == "up":
-                event = ScrollEvent(view=view, direction="UP")
-            elif event_dict["direction"] == "down":
-                event = ScrollEvent(view=view, direction="DOWN")
-            elif event_dict["direction"] == "left":
-                event = ScrollEvent(view=view, direction="LEFT")
-            else:
-                event = ScrollEvent(view=view, direction="RIGHT")
-        elif event_dict["event_type"] == "wait":
-            wait_time = event_dict["time"]
-            time.sleep(wait_time)
-        return event
 
     def explore_app(self):
         """

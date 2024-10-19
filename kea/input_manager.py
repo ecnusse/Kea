@@ -54,7 +54,6 @@ class InputManager(object):
         master=None,
         replay_output=None,
         android_check=None,
-        main_path=None,
         number_of_events_that_restart_app=100,
         run_initial_rules_after_every_mutation=True
     ):
@@ -75,9 +74,7 @@ class InputManager(object):
         self.events = []
         self.policy = None
         self.script = None
-        # 生成事件数量
         self.event_count = event_count
-        #  事件之间时间间隔
         self.event_interval = event_interval
         self.replay_output = replay_output
 
@@ -93,7 +90,6 @@ class InputManager(object):
             self.script = DroidBotScript(script_dict)
 
         self.android_check = android_check
-        self.main_path = main_path
         
         self.profiling_method = profiling_method
         self.number_of_events_that_restart_app = number_of_events_that_restart_app
@@ -110,7 +106,6 @@ class InputManager(object):
                 app,
                 self.random_input,
                 self.android_check,
-                main_path=self.main_path,
                 run_initial_rules_after_every_mutation = self.run_initial_rules_after_every_mutation
             )
         elif self.policy_name == POLICY_RANDOM:
@@ -141,7 +136,7 @@ class InputManager(object):
             return
         self.events.append(event)
 
-        #记录并将事件发送到设备
+        #Record and send events to the device.
         event_log = EventLog(self.device, self.app, event, self.profiling_method)
         event_log.start()
         while True:

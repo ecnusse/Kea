@@ -240,8 +240,8 @@ kea -f [property_file_name1] [property_file_name2] -a [apk_file_name]
 [Yiheng Xiong](https://xyiheng.github.io/), [Xiangcheng Shen](https://xiangchenshen.github.io/), [Ting Su](http://tingsu.github.io/)
 
 
-# Acknowledgement
+# Relevant Tools
 
 1. [droidbot](https://github.com/honeynet/droidbot)
 2. [uiautomator2](https://github.com/openatx/uiautomator2)
-
+3. [hypothesis](https://github.com/HypothesisWorks/hypothesis)

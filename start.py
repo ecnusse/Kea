@@ -46,7 +46,7 @@ def import_and_instantiate_classes(files):
         try:
             module = importlib.import_module(module_name)
 
-            # 寻找模块中的所有类，并尝试实例化它们
+            # Find all classes in the module and attempt to instantiate them.
             for attr_name in dir(module):
                 attr = getattr(module, attr_name)
                 if isinstance(attr, type) and issubclass(attr, Kea) and attr is not Kea:

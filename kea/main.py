@@ -112,7 +112,6 @@ class Setting:
     apk_path: str
     device_serial: str ="emulator-5554"     #设备号
     output_dir:str ="output"
-    main_path: str =None
     is_emulator: bool =True     #使用emulator则为true，使用真机则为false
     policy_name: str =input_manager.DEFAULT_POLICY
     random_input: bool =True
@@ -169,7 +168,6 @@ def run_android_check_as_test(android_check_class, settings = None):
             ignore_ad=settings.ignore_ad,
             replay_output=settings.replay_output,
             android_check=android_check_class,
-            main_path=settings.main_path,
             number_of_events_that_restart_app=settings.number_of_events_that_restart_app,
             run_initial_rules_after_every_mutation=settings.run_initial_rules_after_every_mutation
         )

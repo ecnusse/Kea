@@ -21,7 +21,6 @@ def parse_args():
                         help="Timeout in seconds. Default: %d" % input_manager.DEFAULT_TIMEOUT)
     parser.add_argument("-n","--number_of_events_that_restart_app", action="store", dest="number_of_events_that_restart_app", default=100, type=int,
                         help="Every xx number of events, then restart the app. Default: 100")
-    parser.add_argument("-m", "--main_path", action="store", dest="main_path", default=None)
     parser.add_argument("-debug", action="store_true", dest="debug_mode",
                         help="Run in debug mode (dump debug messages).")
     parser.add_argument("-keep_app", action="store_true", dest="keep_app",
@@ -70,7 +69,6 @@ def main():
                        number_of_events_that_restart_app=options.number_of_events_that_restart_app,
                        debug_mode=options.debug_mode,
                        keep_app=options.keep_app,
-                       main_path=options.main_path
                        )
     print(Kea._rules_per_class)
     run_android_check_as_test(test_classes[0],setting)

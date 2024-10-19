@@ -1,7 +1,6 @@
 import random
 import string
 
-# from kea.main import *
 from hypothesis import strategies as st
 
 class Bundle():

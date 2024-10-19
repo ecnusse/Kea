@@ -93,11 +93,8 @@ def initialize():
 def main_path():
     def accept(f):
         def mainpath_wrapper(*args, **kwargs):
-            # 获取函数的源代码
             source_code = inspect.getsource(f)
-            # 将源代码分割成行，并去掉空行和缩进
             code_lines = [line.strip() for line in source_code.splitlines() if line.strip()]
-            # 将代码行转换为字符串形式
             code_lines = [line for line in code_lines if not line.startswith('def ') and not line.startswith('@') and not line.startswith('#')]
             return code_lines
 
@@ -110,9 +107,9 @@ def main_path():
 @dataclass
 class Setting:
     apk_path: str
-    device_serial: str ="emulator-5554"     #设备号
+    device_serial: str ="emulator-5554"
     output_dir:str ="output"
-    is_emulator: bool =True     #使用emulator则为true，使用真机则为false
+    is_emulator: bool =True     #True for emulator, false for real device.
     policy_name: str =input_manager.DEFAULT_POLICY
     random_input: bool =True
     script_path: str=None
@@ -282,13 +279,13 @@ class Kea(object):
             import traceback
             tb = traceback.extract_tb(e.__traceback__)
     
-            # 找到最后一个回溯信息，即在 `rule.function` 内部的错误
+            # Find the last traceback information, specifically the error inside rule.function
             last_call = tb[1]
             line_number = last_call.lineno
             file_name = last_call.filename
             code_context = last_call.line.strip()
 
-            # 打印出错误行号和代码内容
+            # Print the line number and code content of the error.
             self.logger.info(f"Error occurred in file {file_name} on line {line_number}:")
             self.logger.info(f"Code causing the error: {code_context}")
             return 2

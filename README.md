@@ -10,6 +10,8 @@ Kea currently supports Android and is planned to support HarmonyOS soon.
 > Yiheng Xiong, Ting Su, Jue Wang, Jingling Sun, Geguang Pu, Zhendong Su.
 > In ASE 2024. 
 
+You can find more about our work on testing/analyzing mobile apps at this [website](https://mobile-app-analysis.github.io).
+
 📘 [User manual & Documentation](https://droidchecker-doc.readthedocs.io/en/latest/)
 
 

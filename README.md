@@ -1,11 +1,20 @@
 # Kea
 ![logo](kea/resources/kea_log(1).png)
 
-Kea is a general and practical testing tool based on the idea of property-based testing for finding functional bugs in Android apps.
+Kea is a general and practical testing tool based on the idea of [property-based testing](https://en.wikipedia.org/wiki/Software_testing#Property_testing) for finding functional bugs in mobile (GUI) apps.
+Kea currently supports Android and is planned to support HarmonyOS soon.
 
-📘 [Documentation](https://droidchecker-doc.readthedocs.io/en/latest/)
+📘 [Kea's Paper@ASE 2024](https://xyiheng.github.io//files/Property_Based_Testing_for_Android_Apps.pdf)
+
+> "General and Practical Property-based Testing for Android Apps". 
+> Yiheng Xiong, Ting Su, Jue Wang, Jingling Sun, Geguang Pu, Zhendong Su.
+> In ASE 2024. 
+
+📘 [User manual & Documentation](https://droidchecker-doc.readthedocs.io/en/latest/)
+
 
 The apk file used in our evaluation can be downloaded from [here](https://drive.google.com/drive/folders/19Ysgnnwr1HDvrXBW7t1uYB_T7QdwkZKC?usp=sharing)
+
 ## Setup
 
 Requirements:
@@ -214,7 +223,7 @@ Suppose we have several properties in different files, we can run them together 
 kea -f [property_file_name1] [property_file_name2] -a [apk_file_name]
 ```
 
-## Bug list found by Kea
+## Functional bugs found by Kea
 
 * OmniNotes: [#942](https://github.com/federicoiosue/Omni-Notes/issues/942), [#946](https://github.com/federicoiosue/Omni-Notes/issues/946), [#948](https://github.com/federicoiosue/Omni-Notes/issues/948), [#949](https://github.com/federicoiosue/Omni-Notes/issues/949), [#950](https://github.com/federicoiosue/Omni-Notes/issues/950), [#951](https://github.com/federicoiosue/Omni-Notes/issues/951), [#954](https://github.com/federicoiosue/Omni-Notes/issues/954), [#956](https://github.com/federicoiosue/Omni-Notes/issues/956), [#939](https://github.com/federicoiosue/Omni-Notes/issues/939), [#981](https://github.com/federicoiosue/Omni-Notes/issues/981), [#937](https://github.com/federicoiosue/Omni-Notes/issues/937), [#938](https://github.com/federicoiosue/Omni-Notes/issues/938), [#938](https://github.com/federicoiosue/Omni-Notes/issues/937), [#939](https://github.com/federicoiosue/Omni-Notes/issues/937), [#940](https://github.com/federicoiosue/Omni-Notes/issues/940), [#941](https://github.com/federicoiosue/Omni-Notes/issues/941), [#945](https://github.com/federicoiosue/Omni-Notes/issues/945),
 * Markor: [#2153](https://github.com/gsantner/markor/issues/2153), [#2196](https://github.com/gsantner/markor/issues/2196), [#2197](https://github.com/gsantner/markor/issues/2197), [#2198](https://github.com/gsantner/markor/issues/2198), [#2199](https://github.com/gsantner/markor/issues/2199), [#2250](https://github.com/gsantner/markor/issues/2250)
@@ -223,7 +232,14 @@ kea -f [property_file_name1] [property_file_name2] -a [apk_file_name]
 * transistor: [#488](https://codeberg.org/y20k/transistor/issues/488), [#489](https://codeberg.org/y20k/transistor/issues/489), [#495](https://codeberg.org/y20k/transistor/issues/495)
 * Simpletask: [#1230](https://github.com/mpcjanssen/simpletask-android/issues/1230)
 
+
+# Maintainers
+
+[Yiheng Xiong](https://xyiheng.github.io/), [Xiangcheng Shen](https://xiangchenshen.github.io/), [Ting Su](http://tingsu.github.io/)
+
+
 # Acknowledgement
 
 1. [droidbot](https://github.com/honeynet/droidbot)
 2. [uiautomator2](https://github.com/openatx/uiautomator2)
+

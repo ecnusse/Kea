@@ -224,7 +224,7 @@ class Kea(object):
         return cls._rules_per_class[cls]
 
     @classmethod
-    def mainpath_rules(cls):
+    def mainpath_lists(cls):
         try:
             return cls._main_path_per_class[cls]
         except KeyError:

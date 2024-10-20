@@ -127,7 +127,7 @@ class InputPolicy(object):
 
                 self.device.u2.set_fastinput_ime(True)
                 if self.action_count == 0 and self.master is None:
-                    #若应用运行关闭应用
+                    #If the application is running, close the application.
                     event = KillAppEvent(app=self.app)
                 elif self.action_count == 1 and self.master is None:
                     event = IntentEvent(self.app.get_start_intent())
@@ -367,7 +367,7 @@ class MutatePolicy(UtgBasedInputPolicy):
             device, app, random_input, android_check
         )
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.list_main_path = self.android_check.mainpath_rules()
+        self.list_main_path = self.android_check.mainpath_lists()
         if self.list_main_path:
             self.logger.info("main path with length %d" % len(self.list_main_path))
         else:

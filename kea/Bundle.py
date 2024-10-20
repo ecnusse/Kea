@@ -10,30 +10,35 @@ class Bundle():
 
     def add_data(self, name = None):
         if name is None:
-            name = st.text(alphabet=string.ascii_letters,min_size=1, max_size=10).example()
+            raise ValueError("the value of " + self.type + " cannot be None")
         self.data.append(name)
-        return name
+        print(self.type, self.data)
 
     def del_data(self, name = None):
         if name is None:
-            random_item = random.choice(self.data)
-            name = random_item
+            raise ValueError("the value of " + self.type + " cannot be None")
         self.data.remove(name)
-        return name
+        print(self.type, self.data)
 
     def update_data(self, name = None, value = None):
         if value is None:
-            value = st.text(alphabet=string.ascii_letters,min_size=1, max_size=10).example()
+            raise ValueError("the new name of " + self.type + " cannot be None")
         if name is None:
-            random_item = random.choice(self.data)
-            name = random_item
+            raise ValueError("the old name of " + self.type + " cannot be None")
         try:
             self.data.remove(name)
             self.data.append(value)
         except KeyError:
             print(f"'{name}' is not a object of Bundle.")
-        return name, value
+        print(self.type, self.data)
 
     def get_all_data(self):
         return self.data
 
+    def get_random_name(self, name_len = 10):
+        name = st.text(alphabet=string.ascii_letters, min_size=1, max_size=name_len).example()
+        return name
+
+    def get_random_data(self):
+        random_item = random.choice(self.data)
+        return random_item

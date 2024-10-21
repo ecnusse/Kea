@@ -10,6 +10,7 @@ import traceback
 import attr
 import uiautomator2 as u2
 from kea import env_manager, input_manager
+from kea.Bundle import Bundle
 from kea.droidbot import DroidBot
 import inspect
 from copy import copy
@@ -25,12 +26,17 @@ RULE_MARKER = "tool_rule"
 INITIALIZE_RULE_MARKER = "tool_initialize_rule"
 PRECONDITIONS_MARKER = "tool_preconditions"
 INVARIANT_MARKER = "tool_invariant"
+MAINPATH_MARKER = "tool_main_path"
 
 @attr.s()
 class Rule:
     function = attr.ib()
     preconditions = attr.ib()
 
+@attr.s()
+class MainPath:
+    function = attr.ib()
+    path = attr.ib()
 
 def rule() -> Callable:
     def accept(f):
@@ -84,13 +90,26 @@ def initialize():
 
     return accept
 
+def main_path():
+    def accept(f):
+        def mainpath_wrapper(*args, **kwargs):
+            source_code = inspect.getsource(f)
+            code_lines = [line.strip() for line in source_code.splitlines() if line.strip()]
+            code_lines = [line for line in code_lines if not line.startswith('def ') and not line.startswith('@') and not line.startswith('#')]
+            return code_lines
+
+        main_path = MainPath(function=f, path=mainpath_wrapper())
+        setattr(mainpath_wrapper, MAINPATH_MARKER, main_path)
+        return mainpath_wrapper
+
+    return accept
+
 @dataclass
 class Setting:
     apk_path: str
     device_serial: str ="emulator-5554"
     output_dir:str ="output"
-    main_path: str =None
-    is_emulator: bool =True
+    is_emulator: bool =True     #True for emulator, false for real device.
     policy_name: str =input_manager.DEFAULT_POLICY
     random_input: bool =True
     script_path: str=None
@@ -146,7 +165,6 @@ def run_android_check_as_test(android_check_class, settings = None):
             ignore_ad=settings.ignore_ad,
             replay_output=settings.replay_output,
             android_check=android_check_class,
-            main_path=settings.main_path,
             number_of_events_that_restart_app=settings.number_of_events_that_restart_app,
             run_initial_rules_after_every_mutation=settings.run_initial_rules_after_every_mutation
         )
@@ -159,6 +177,8 @@ from hypothesis import strategies as st
 class Kea(object):
     _rules_per_class: Dict[type, List[classmethod]] = {}
     _initializers_per_class: Dict[type, List[classmethod]] = {}
+    _main_path_per_class: Dict[type, List[classmethod]] = {}
+    _bundles_: Dict[str, Bundle] = {}
 
     def __init__(
         self
@@ -182,12 +202,11 @@ class Kea(object):
             return cls._initializers_per_class[cls]
         except KeyError:
             pass
-
         cls._initializers_per_class[cls] = []
         for _, v in inspect.getmembers(cls):
             r = getattr(v, INITIALIZE_RULE_MARKER, None)
             if r is not None:
-                cls._initializers_per_class[cls].append(r)       
+                cls._initializers_per_class[cls].append(r)
         return cls._initializers_per_class[cls]
 
     @classmethod
@@ -203,6 +222,26 @@ class Kea(object):
             if r is not None:
                 cls._rules_per_class[cls].append(r)
         return cls._rules_per_class[cls]
+
+    @classmethod
+    def mainpath_lists(cls):
+        try:
+            return cls._main_path_per_class[cls]
+        except KeyError:
+            pass
+
+        cls._main_path_per_class[cls] = []
+        for _, v in inspect.getmembers(cls):
+            r = getattr(v, MAINPATH_MARKER, None)
+            if r is not None:
+                cls._main_path_per_class[cls].append(r)
+        return cls._main_path_per_class[cls]
+
+    @classmethod
+    def set_bundle(cls, type_name):
+        bundle = Bundle(type_name)
+        cls._bundles_[type_name] = bundle
+        return bundle
 
     def execute_initializers(self):
         for initializer in self._initialize_rules_to_run:
@@ -240,13 +279,13 @@ class Kea(object):
             import traceback
             tb = traceback.extract_tb(e.__traceback__)
     
-            # 找到最后一个回溯信息，即在 `rule.function` 内部的错误
+            # Find the last traceback information, specifically the error inside rule.function
             last_call = tb[1]
             line_number = last_call.lineno
             file_name = last_call.filename
             code_context = last_call.line.strip()
 
-            # 打印出错误行号和代码内容
+            # Print the line number and code content of the error.
             self.logger.info(f"Error occurred in file {file_name} on line {line_number}:")
             self.logger.info(f"Code causing the error: {code_context}")
             return 2
@@ -257,6 +296,12 @@ class Kea(object):
             result = 1
 
         return result
+
+    def get_main_path(self, mainpath) :
+        return mainpath.function, mainpath.path
+
+    def exec_main_path(self, event_str):
+        exec(event_str)
 
     def get_rules_that_pass_the_preconditions(self) -> List:
         '''Check all rules and return the list of rules that meet the preconditions.'''

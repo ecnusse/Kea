@@ -49,7 +49,6 @@ class DroidBot(object):
         ignore_ad=False,
         replay_output=None,
         android_check=None,
-        main_path=None,
         number_of_events_that_restart_app=100,
         run_initial_rules_after_every_mutation=True
     ):
@@ -67,12 +66,10 @@ class DroidBot(object):
         DroidBot.instance = self
         self.output_dir = output_dir
         if output_dir is not None:
-            #清空前一次运行留下的output，防止json匹配错误
+            #Clear the output left by the previous run to prevent JSON matching errors.
             if os.path.isdir(output_dir):
                 shutil.rmtree(output_dir)
             os.makedirs(output_dir)
-            # if not os.path.isdir(output_dir):
-            #     os.makedirs(output_dir)
             html_index_path = pkg_resources.resource_filename(
                 "kea", "resources/index.html"
             )
@@ -133,7 +130,6 @@ class DroidBot(object):
                 master=master,
                 replay_output=replay_output,
                 android_check=android_check,
-                main_path=main_path,
                 number_of_events_that_restart_app=number_of_events_that_restart_app,
                 run_initial_rules_after_every_mutation=run_initial_rules_after_every_mutation
             )

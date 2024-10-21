@@ -54,7 +54,6 @@ class InputManager(object):
         master=None,
         replay_output=None,
         android_check=None,
-        main_path=None,
         number_of_events_that_restart_app=100,
         run_initial_rules_after_every_mutation=True
     ):
@@ -91,7 +90,6 @@ class InputManager(object):
             self.script = DroidBotScript(script_dict)
 
         self.android_check = android_check
-        self.main_path = main_path
         
         self.profiling_method = profiling_method
         self.number_of_events_that_restart_app = number_of_events_that_restart_app
@@ -108,7 +106,6 @@ class InputManager(object):
                 app,
                 self.random_input,
                 self.android_check,
-                main_path=self.main_path,
                 run_initial_rules_after_every_mutation = self.run_initial_rules_after_every_mutation
             )
         elif self.policy_name == POLICY_RANDOM:
@@ -139,12 +136,14 @@ class InputManager(object):
             return
         self.events.append(event)
 
+        #Record and send events to the device.
         event_log = EventLog(self.device, self.app, event, self.profiling_method)
         event_log.start()
         while True:
             time.sleep(self.event_interval)
             if not self.device.pause_sending_event:
                 break
+
         event_log.stop()
 
     def start(self):

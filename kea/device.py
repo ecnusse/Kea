@@ -11,14 +11,12 @@ from .adapter.uiautomator2_helper import Uiautomator2_Helper
 
 from .adapter.adb import ADB
 
-# from .adapter.droidbot_app import DroidBotAppConn
 from .adapter.logcat import Logcat
 from .adapter.minicap import Minicap
 from .adapter.process_monitor import ProcessMonitor
 from .adapter.telnet import TelnetConsole
 from .adapter.user_input_monitor import UserInputMonitor
 
-# from .adapter.droidbot_ime import DroidBotIme
 from .app import App
 from .intent import Intent
 
@@ -97,13 +95,22 @@ class Device(object):
 
         # adapters
         self.adb = ADB(device=self)
+        #Start the emulator console via Telnet.
         self.telnet = TelnetConsole(device=self, auth_token=telnet_auth_token)
+
         # self.droidbot_app = DroidBotAppConn(device=self)
+
+        #Minicap is an open-source screen capture tool for Android, commonly used to capture screen content for automation testing or remote viewing.
         self.minicap = Minicap(device=self)
+        #Logcat is a logging tool in the Android system used to capture various log messages that occur on the device.
         self.logcat = Logcat(device=self)
+        #The UserInputMonitor class is typically used to monitor and handle user input events (such as touch, clicks, keyboard input, etc.) on Android devices.
         self.user_input_monitor = UserInputMonitor(device=self)
+        #ProcessMonitor is a class used to monitor and manage processes on the device.
         self.process_monitor = ProcessMonitor(device=self)
+        #Uiautomator2_Helper is a class used to handle the logic for interacting with UIAutomator2.
         self.uiautomator_helper = Uiautomator2_Helper(device=self)
+
         # self.droidbot_ime = DroidBotIme(device=self)
 
         self.adapters = {
@@ -875,36 +882,34 @@ class Device(object):
             self.adb.shell("rm %s" % remote_image_path)
 
         if remove_to_every_states:
-            # 这里主要是为了在property中每一个UI 事件之后将截图移动到every_states文件夹中
+            # This is mainly to move the screenshot to the 'every_states' folder after each UI event in the properties.
             self.remove_screenshot_to_every_states(local_image_path, event_name)
 
         return local_image_path
 
     def remove_screenshot_to_every_states(self,local_image_path, event_name):
-        # 首先便利every_States文件夹，获取最新png文件的名称。
-        # 然后将当前的截图移动到这个文件夹中，并且重命名为最新的png文件的名称
+        # First, iterate through the 'every_states' folder to get the name of the latest PNG file.
+        # Then, move the current screenshot to this folder and rename it to the name of the latest PNG file.
         import shutil
         every_states_dir = os.path.join(self.output_dir, "every_states")
         if not os.path.exists(every_states_dir):
             os.makedirs(every_states_dir)
-        # 获取every_states文件夹中最新的png文件
+        # Get the latest PNG file in the every_states folder.
         files = os.listdir(every_states_dir)
         files = [f for f in files if f.endswith(".png")]
         files.sort(key=lambda x: os.path.getmtime(os.path.join(every_states_dir,x)))
         if len(files) > 0:
-            latest_file = files[-1]
-            num_start = latest_file.find("_")
-            num_end = latest_file.find("_", num_start + 1)    
-            if num_end == -1:
-                num_end = latest_file.find(".png")
-            event_index = str(latest_file[num_start+1:num_end])
+            json_dir = os.path.join(self.output_dir, "report_screen_shoot.json")
+            with open(json_dir, 'r') as json_file:
+                report_screens = json.load(json_file)
+            latest_file = report_screens[-1]
+            event_index = latest_file["event_index"]
             if "." in event_index:
                 suffix = str(event_index.split(".")[1])
                 event_index = event_index.split(".")[0] + "." + str(int(suffix) + 1)
             else:
                 event_index = str(event_index+ ".1")
 
-            json_dir = os.path.join(self.output_dir, "report_screen_shoot.json")
             try:
                 with open(json_dir, 'r') as json_file:
                     report_screens = json.load(json_file)

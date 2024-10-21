@@ -1,13 +1,11 @@
 import os
-import string
-import sys
-import json
+
 import logging
 import random
 import copy
-from threading import Timer
 import time
-from .utils import Time, safe_get_dict
+
+from .utils import Time
 from abc import abstractmethod
 from .input_event import (
     InputEvent,
@@ -29,7 +27,6 @@ from .input_event import (
     KillAppEvent,
     UIEvent, KillAndRestartAppEvent,
 )
-from hypothesis import given, strategies as st
 from .utg import UTG
 from kea import utils
 from typing import TYPE_CHECKING
@@ -129,13 +126,14 @@ class InputPolicy(object):
             try:
 
                 self.device.u2.set_fastinput_ime(True)
-                self.logger.info("action count: %d" % self.action_count)
                 if self.action_count == 0 and self.master is None:
+                    #If the application is running, close the application.
                     event = KillAppEvent(app=self.app)
                 elif self.action_count == 1 and self.master is None:
                     event = IntentEvent(self.app.get_start_intent())
                 else:
                     event = self.generate_event()
+                self.logger.info("action count: %d" % self.action_count)
                 self.last_event = event
                 input_manager.add_event(event)
             except KeyboardInterrupt:
@@ -275,7 +273,7 @@ class UtgBasedInputPolicy(InputPolicy):
         generate an event
         @return:
         """
-        # 
+        #
         if self.action_count == 2:
             self.run_initial_rules()
         # Get current device state
@@ -363,21 +361,26 @@ class MutatePolicy(UtgBasedInputPolicy):
     
     """
 
-    def __init__(self, device, app, random_input, android_check=None, main_path=None,
+    def __init__(self, device, app, random_input, android_check=None,
                  run_initial_rules_after_every_mutation=True):
         super(MutatePolicy, self).__init__(
             device, app, random_input, android_check
         )
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.list_main_path = []
-        if isinstance(main_path, str):
-            self.list_main_path.append(main_path)
-            self.logger.info("single main path")
-        elif isinstance(main_path, list):
-            self.list_main_path = main_path
-            self.logger.info("multiple main path with length %d" % len(main_path))
+        self.list_main_path = self.android_check.mainpath_lists()
+        if self.list_main_path:
+            self.logger.info("main path with length %d" % len(self.list_main_path))
         else:
-            self.logger.error("main path is not a list or a string")
+            self.logger.error("no main path is found")
+
+        # if isinstance(main_path, str):
+        #     self.list_main_path.append(main_path)
+        #     self.logger.info("single main path")
+        # elif isinstance(main_path, list):
+        #     self.list_main_path = main_path
+        #     self.logger.info("multiple main path with length %d" % len(main_path))
+        # else:
+        #     self.logger.error("main path is not a list or a string")
         self.__nav_target = None
         self.__nav_num_steps = -1
         self.__num_restarts = 0
@@ -407,27 +410,21 @@ class MutatePolicy(UtgBasedInputPolicy):
             self.logger.error("main path is empty")
             return
         self.main_path = random.choice(self.list_main_path)
-        self.logger.info("select the main path: %s" % self.main_path)
-        self.main_path = self.get_main_path()
+        self.path_func, self.main_path =  self.android_check.get_main_path(self.main_path)
+        self.logger.info("select the main path function: %s" % self.path_func)
         self.main_path_list = copy.deepcopy(self.main_path)
         self.max_number_of_events_that_try_to_find_event_on_main_path = min(10, len(self.main_path))
         self.mutate_node_index_on_main_path = len(self.main_path)
 
-    def get_main_path(self):
-        import json
-        if self.main_path is None:
-            raise Exception("main path path is None")
-        f = open(self.main_path, "r")
-        event_list = json.load(f)
-        return event_list
 
     def generate_event(self):
         """
         
         """
+
         self.current_state = self.device.get_current_state(self.action_count)
 
-        self.__update_utg()
+        #Return relevant events based on whether the application is in the foreground.
         event = self.check_the_app_on_foreground()
         if event is not None:
             self.last_state = self.current_state
@@ -439,16 +436,20 @@ class MutatePolicy(UtgBasedInputPolicy):
                 isinstance(self.last_event, KillAndRestartAppEvent) and self.run_initial_rules_after_every_mutation):
             self.run_initial_rules()
             time.sleep(2)
-            return None
+            self.current_state = self.device.get_current_state(self.action_count)
+            self.__update_utg()
         if self.action_count == 3:
             self.utg.first_state_after_initialization = self.current_state
         if self.execute_main_path:
-            event = self.get_main_path_event()
-            if event:
-                self.last_state = self.current_state
-                self.last_event = event
-                return event
-
+            event_str = self.get_main_path_event()
+            if event_str:
+                self.android_check.exec_main_path(event_str)
+                if self.action_count > 2:
+                    self.action_count -= 1
+                    self.logger.info("*****main path running*****")
+                return None
+        else:
+            self.__update_utg()
         if event is None:
             event = self.mutate_the_main_path()
 
@@ -502,12 +503,13 @@ class MutatePolicy(UtgBasedInputPolicy):
                         self.check_rule_with_precondition()
                     return self.end_mutation()
 
-                event = self.get_event_from_main_path()
 
-                if event is not None:
-                    self.logger.info("find the event in thet main path")
-                    return event
-                else:
+                event_str = self.get_event_from_main_path()
+                try:
+                    self.android_check.exec_main_path(event_str)
+                    self.logger.info("find the event in the main path")
+                    return None
+                except Exception:
                     self.logger.info("can't find the event in the main path")
                     return self.end_mutation()
 
@@ -531,14 +533,14 @@ class MutatePolicy(UtgBasedInputPolicy):
             self.execute_main_path = False
             return None
         self.logger.info("execute node index on main path: %d" % self.current_index_on_main_path)
-        event_dict = self.main_path_list[self.current_index_on_main_path]
-        event = self.get_event_from_dict(event_dict)
-        if event is None:
+
+        u2_event_str = self.main_path_list[self.current_index_on_main_path]
+        if u2_event_str is None:
             self.logger.warning("event is None on main path node %d" % self.current_index_on_main_path)
             self.current_index_on_main_path += 1
             return self.get_main_path_event()
         self.current_index_on_main_path += 1
-        return event
+        return u2_event_str
 
     def get_event_from_main_path(self):
         """
@@ -546,89 +548,21 @@ class MutatePolicy(UtgBasedInputPolicy):
         """
         if self.index_on_main_path_after_mutation == -1:
             for i in range(len(self.main_path_list) - 1, -1, -1):
-                event_dict = self.main_path_list[i]
-                event = self.get_event_from_dict(event_dict)
-                if event is None:
+
+                event_str = self.main_path_list[i]
+                if event_str is None:
                     continue
                 self.index_on_main_path_after_mutation = i + 1
-                return event
+                return event_str
         else:
-            event_dict = self.main_path_list[self.index_on_main_path_after_mutation]
-            event = self.get_event_from_dict(event_dict)
-            if event is None:
+            event_str = self.main_path_list[self.index_on_main_path_after_mutation]
+            if event_str is None:
                 return None
+
             self.index_on_main_path_after_mutation += 1
-            return event
+            return event_str
         return None
 
-    def get_event_from_dict(self, event_dict):
-        view = None
-        event = None
-        if event_dict["event_type"] == "set_text":
-            view = self.current_state.get_view_by_attribute(event_dict["ui_element"])
-            if view is None:
-                self.logger.warning("view is None")
-                return None
-            if 'text' in event_dict:
-                event = SetTextEvent(view=view, text=event_dict['text'])
-            elif 'text_prefix' in event_dict:
-                random_text = st.text(
-                    alphabet=string.ascii_letters, min_size=1, max_size=5
-                ).example()
-                event = SetTextEvent(
-                    view=view,
-                    text=event_dict['text_prefix'] + random_text,
-                )
-            else:
-                if not self.last_random_text is None and "resource_id" in event_dict['ui_element'] and "search" in \
-                        event_dict['ui_element']['resource_id'] and "use_prior_text" in event_dict:
-                    self.logger.info("use the last random text %s" % self.last_random_text)
-                    charactor = random.choice(self.last_random_text)
-                    event = SetTextEvent(
-                        view=view,
-                        text=charactor,
-                    )
-                    return event
-
-                random_text = st.text(
-                    alphabet=string.ascii_letters, min_size=1, max_size=5
-                ).example()
-                event = SetTextEvent(
-                    view=view,
-                    text=random_text,
-                )
-                self.last_random_text = random_text
-            return event
-
-        if "ui_element" in event_dict:
-            view = self.current_state.get_view_by_attribute(event_dict["ui_element"], random_select=True)
-            if view is None:
-                self.logger.warning("view is None")
-                return None
-
-        if event_dict["event_type"] == "click":
-            event = TouchEvent(view=view)
-        elif event_dict["event_type"] == "long_click":
-            event = LongTouchEvent(view=view)
-        elif event_dict["event_type"] == "back":
-            event = KeyEvent(name="BACK")
-        elif event_dict["event_type"] == "enter":
-            event = KeyEvent(name="ENTER")
-        elif event_dict["event_type"] == "search":
-            event = SearchEvent()
-        elif event_dict["event_type"] == "scroll":
-            if event_dict["direction"] == "up":
-                event = ScrollEvent(view=view, direction="UP")
-            elif event_dict["direction"] == "down":
-                event = ScrollEvent(view=view, direction="DOWN")
-            elif event_dict["direction"] == "left":
-                event = ScrollEvent(view=view, direction="LEFT")
-            else:
-                event = ScrollEvent(view=view, direction="RIGHT")
-        elif event_dict["event_type"] == "wait":
-            wait_time = event_dict["time"]
-            time.sleep(wait_time)
-        return event
 
     def explore_app(self):
         """
@@ -916,6 +850,7 @@ class UtgRandomPolicy(UtgBasedInputPolicy):
         if current_state.state_str in self.__missed_states:
             self.__missed_states.remove(current_state.state_str)
 
+        #Get the depth of the app's activity in the activity stack
         if current_state.get_app_activity_depth(self.app) < 0:
             # If the app is not in the activity stack
             start_app_intent = self.app.get_start_intent()

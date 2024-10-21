@@ -26,13 +26,16 @@ class App(object):
                 os.makedirs(output_dir)
         from loguru import logger
 
-        # 禁用 `androguard` 模块的日志
+        # Disable the logging of the androguard module.
         logger.disable("androguard")
         from androguard.core.apk import APK
         self.apk = APK(self.app_path)
         self.package_name = self.apk.get_package()
+        #Used to get the main activity of the APK (i.e., the first activity that launches when the application starts).
         self.main_activity = self.apk.get_main_activity()
+        #Get the list of permissions for the application from the self.apk object.
         self.permissions = self.apk.get_permissions()
+        #Get the list of activities from the self.apk object.
         self.activities = self.apk.get_activities()
         self.possible_broadcasts = self.get_possible_broadcasts()
         self.dumpsys_main_activity = None

@@ -105,7 +105,7 @@ def generate_report(img_path, html_path, bug_information=None):
     bug_set = set()
     if bug_information is not None:
         for bug in bug_information:
-            property_name = "<p><strong>" + bug[2] + "</strong></p>"
+            property_name = "<p><strong>Property_Name:</strong>" + bug[2] + "</p>"
             bug_link = ( property_name + "<li><a href=\"#"+str(bug[0])+"\">"+str(bug[0])+"</a></li>" + '\n')
             bug_link_list.append(bug_link)
             bug_set.add(bug[0])
@@ -117,50 +117,41 @@ def generate_report(img_path, html_path, bug_information=None):
             )
     f_style = open(f_style, 'r', encoding='utf-8')
     # f_style = open("droidbot/resources/style/style.html", 'r', encoding='utf-8')
-    img_list = os.listdir(img_path)
-    sorted_img_list = sorted(
-        img_list, key=lambda x: os.path.getmtime(os.path.join(img_path, x))
-    )
     new_str = "<ul id=\"menu\">" + '\n'
     new_bug_str = ""
-    for img_name in sorted_img_list:
-        if ".png" in img_name:
-
-            state_num = 1
-
-            img_file = os.path.join("every_states", img_name)
-            json_dir = os.path.join(html_path, "report_screen_shoot.json")
-            with open(json_dir, 'r') as json_file:
-                report_screens = json.load(json_file)
-            report_screen = list(filter(lambda person: person["screen_shoot"] == img_name, report_screens))
-            report_screen = report_screen[0]
-            action_count = report_screen['event_index']
-            event_name = report_screen['event']
-            line = (
-                "      <li><img src=\""
-                + img_file
-                + "\" class=\"img\"><p>"
-                + action_count+ " " + event_name
-                + "</p></li>"
-                + '\n'
-            )
-            if bug_information is not None:
-                if "." not in action_count and int(action_count) in bug_set:
-                    line = (
-                        "      <li><img src=\""
-                        + img_file
-                        + "\" class=\"img\""
-                        + " id=\""
-                        + action_count
-                        + "\">"
-                        +"<p>"
-                        + action_count+ " " + event_name
-                        + "</p></li>"
-                        + '\n'
-                    )             
-            line_list.append((float(state_num), line))
+    json_dir = os.path.join(html_path, "report_screen_shoot.json")
+    with open(json_dir, 'r') as json_file:
+        report_screens = json.load(json_file)
+    for report_screen in report_screens:
+        action_count = report_screen['event_index']
+        event_name = report_screen['event']
+        img_name = report_screen['screen_shoot']
+        img_file = os.path.join("every_states", img_name)
+        line = (
+            "      <li><img src=\""
+            + img_file
+            + "\" class=\"img\"><p>"
+            + action_count+ " " + event_name
+            + "</p></li>"
+            + '\n'
+        )
+        if bug_information is not None:
+            if "." not in action_count and int(action_count) in bug_set:
+                line = (
+                    "      <li><img src=\""
+                    + img_file
+                    + "\" class=\"img\""
+                    + " id=\""
+                    + action_count
+                    + "\">"
+                    +"<p>"
+                    + action_count+ " " + event_name
+                    + "</p></li>"
+                    + '\n'
+                )
+        line_list.append(line)
     for item in line_list:
-        new_str = new_str + item[1]
+        new_str = new_str + item
     for item in bug_link_list:
         new_bug_str = new_bug_str + item
     new_str = new_str + "   </ul>"
@@ -168,10 +159,8 @@ def generate_report(img_path, html_path, bug_information=None):
     old_bug_str = "bug_link"
     for line in f_style:
         if bug_information is not None and "<ul>bug_link</ul>" in line:
-            # f_html.write(re.sub(old_bug_str,new_bug_str,line))
             f_html.write(line.replace(old_bug_str, new_bug_str))
             continue
-        # f_html.write(re.sub(old_str, new_str, line))
         f_html.write(line.replace(old_str, new_str))
         
 

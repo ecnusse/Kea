@@ -1,6 +1,5 @@
 from uiautomator2._selector import Selector, UiObject
 from uiautomator2 import Device
-import time
 from typing import Any, Union
 
 class Mobile(Device):
@@ -21,27 +20,27 @@ class Mobile(Device):
         self.droidbot = droidbot
 
     def rotate(self, mode: str):
-        super().set_orientation(mode)
         self.droidbot.device.take_screenshot(True, "rotate")
+        super().set_orientation(mode)
 
     def press(self, key: Union[int, str], meta=None):
-        super().press(key, meta)
         self.droidbot.device.take_screenshot(True, "press")
+        super().press(key, meta)
 
 
 class Ui(UiObject):
 
     def click(self, offset=None):
-        super().click(offset)
         self.session.droidbot.device.take_screenshot(True, "click")
+        super().click(offset)
 
     def long_click(self, duration: float = 0.5):
-        super().long_click(duration)
         self.session.droidbot.device.take_screenshot(True, "long_click")
+        super().long_click(duration)
     
     def set_text(self, text):
+        self.session.droidbot.device.take_screenshot(True, "set_text " + text)
         super().set_text(text)
-        self.session.droidbot.device.take_screenshot(True, "set_text "+text)
         
     def child(self, **kwargs):
         return Ui(self.session, self.selector.clone().child(**kwargs))

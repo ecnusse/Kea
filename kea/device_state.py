@@ -255,8 +255,6 @@ class DeviceState(object):
 
             if event is not None:
                 self.draw_event(event, dest_screenshot_path)
-                # os.rename(dest_screenshot_path, "%s/screen_%s.png" % (output_dir, self.tag))
-                # dest_screenshot_path = "%s/screen_%s.png" % (output_dir, self.tag)
                 report_screens[-1]["event"] = event.get_event_name()
 
             with open(json_dir, 'w') as json_file:

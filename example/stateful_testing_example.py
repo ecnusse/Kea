@@ -1,7 +1,4 @@
-import time
-
 from kea.main import *
-from kea.Bundle import Bundle
 
 class Test2(Kea):
     _files = Kea.set_bundle("files")
@@ -24,7 +21,7 @@ class Test2(Kea):
         d(resourceId="com.amaze.filemanager:id/design_menu_item_text", textContains="Internal Storage").click()
         d(resourceId="com.amaze.filemanager:id/sd_main_fab").click()
         d(resourceId="com.amaze.filemanager:id/sd_label", text="Folder").click()
-        file_name = self._files.get_random_test()
+        file_name = self._files.get_random_value()
         d.send_keys(file_name, clear=True)
         d(resourceId="com.amaze.filemanager:id/md_buttonDefaultPositive").click()
         self._files.add(file_name)
@@ -59,7 +56,7 @@ class Test2(Kea):
         d(description="Navigate up").click()
         d(resourceId="com.amaze.filemanager:id/design_menu_item_text", textContains="Internal Storage").click()
         file_name = self._files.get_random_data()
-        new_name = self._files.get_random_test()
+        new_name = self._files.get_random_value()
         d(scrollable=True).scroll.to(resourceId="com.amaze.filemanager:id/firstline", text=file_name)
         selected_file = d(resourceId="com.amaze.filemanager:id/firstline", text=file_name)
         selected_file.right(resourceId="com.amaze.filemanager:id/properties").click()

@@ -8,36 +8,36 @@ class Bundle():
         self.type = type
         self.data = []
 
-    def add(self, test = None):
-        if test is None:
-            raise ValueError("the value of " + self.type + " cannot be None")
-        self.data.append(test)
-        print(self.type, self.data)
-
-    def delete(self, test = None):
-        if test is None:
-            raise ValueError("the value of " + self.type + " cannot be None")
-        self.data.remove(test)
-        print(self.type, self.data)
-
-    def update(self, test = None, value = None):
+    def add(self, value = None):
         if value is None:
+            raise ValueError("the value of " + self.type + " cannot be None")
+        self.data.append(value)
+        print(self.type, self.data)
+
+    def delete(self, value = None):
+        if value is None:
+            raise ValueError("the value of " + self.type + " cannot be None")
+        self.data.remove(value)
+        print(self.type, self.data)
+
+    def update(self, value = None, new_value = None):
+        if new_value is None:
             raise ValueError("the new name of " + self.type + " cannot be None")
-        if test is None:
+        if value is None:
             raise ValueError("the old name of " + self.type + " cannot be None")
         try:
-            self.data.remove(test)
-            self.data.append(value)
+            self.data.remove(value)
+            self.data.append(new_value)
         except KeyError:
-            print(f"'{test}' is not a object of Bundle.")
+            print(f"'{value}' is not a object of Bundle.")
         print(self.type, self.data)
 
     def get_all_data(self):
         return self.data
 
-    def get_random_test(self, test_len = 10):
-        test = st.text(alphabet=string.ascii_letters, min_size=1, max_size=test_len).example()
-        return test
+    def get_random_value(self, value_len = 10):
+        value = st.text(alphabet=string.ascii_letters, min_size=1, max_size=value_len).example()
+        return value
 
     def get_random_data(self):
         random_item = random.choice(self.data)

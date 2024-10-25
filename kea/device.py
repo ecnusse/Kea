@@ -559,7 +559,7 @@ class Device(object):
         """
         r = self.adb.shell("dumpsys activity activities")
         activity_line_re = re.compile(
-            '\* Hist #\d+: ActivityRecord{[^ ]+ [^ ]+ ([^ ]+) t(\d+)}'
+            r'\* Hist[ ]+#\d+: ActivityRecord{[^ ]+ [^ ]+ ([^ ]+) t(\d+)}'
         )
         m = activity_line_re.search(r)
         if m:
@@ -598,7 +598,7 @@ class Device(object):
 
         lines = self.adb.shell("dumpsys activity activities").splitlines()
         activity_line_re = re.compile(
-            '\* Hist #\d+: ActivityRecord{[^ ]+ [^ ]+ ([^ ]+) t(\d+)}'
+            r'\* Hist[ ]+#\d+: ActivityRecord{[^ ]+ [^ ]+ ([^ ]+) t(\d+)}'
         )
 
         for line in lines:

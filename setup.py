@@ -34,12 +34,12 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'kea=start:main',
+            'kea=kea.start:main',
         ],
     },
     package_data={
         'kea': [os.path.relpath(x, 'kea') for x in findall('kea/resources/')]
     },
     # androidviewclient doesnot support pip install, thus you should install it with easy_install
-    install_requires=['networkx', 'Pillow','uiautomator2==3.2.2','androguard==4.0.0'],
+    install_requires=['networkx', 'Pillow','uiautomator2==3.2.2','androguard==4.0.0', 'attrs'],
 )

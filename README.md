@@ -12,7 +12,7 @@ Kea currently supports Android and is planned to support HarmonyOS soon.
 
 You can find more about our work on testing/analyzing mobile apps at this [website](https://mobile-app-analysis.github.io).
 
-📘 [User manual & Documentation](https://droidchecker-doc.readthedocs.io/en/latest/)
+📘 [User manual & Documentation](https://kea-doc.readthedocs.io/en/latest/)
 
 
 The apk file used in our evaluation can be downloaded from [here](https://drive.google.com/drive/folders/19Ysgnnwr1HDvrXBW7t1uYB_T7QdwkZKC?usp=sharing)

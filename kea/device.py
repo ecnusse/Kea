@@ -606,7 +606,7 @@ class Device(object):
             if line.startswith("Task id #"):
                 task_id = line[9:]
                 task_to_activities[task_id] = []
-            elif line.startswith("* Hist #"):
+            elif line.startswith("* Hist #") or line.startswith("* Hist  #"):
                 m = activity_line_re.match(line)
                 if m:
                     activity = m.group(1)

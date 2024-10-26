@@ -1,5 +1,5 @@
-from kea import input_manager
-from kea.main import Kea, Setting, run_android_check_as_test
+from .input_manager import DEFAULT_DEVICE_SERIAL, DEFAULT_POLICY, DEFAULT_TIMEOUT
+from .main import Kea, Setting, run_android_check_as_test
 
 import importlib
 import os
@@ -9,16 +9,16 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Start kea to test app.",
                                      formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("-f",nargs="+", action="store",dest="files", help="The python files to be tested.")
-    parser.add_argument("-d", "--device_serial", action="store", dest="device_serial", default=input_manager.DEFAULT_DEVICE_SERIAL,
+    parser.add_argument("-d", "--device_serial", action="store", dest="device_serial", default=DEFAULT_DEVICE_SERIAL,
                         help="The serial number of target device (use `adb devices` to find)")
     parser.add_argument("-a","--apk", action="store", dest="apk_path", required=True,
                         help="The file path to target APK")
     parser.add_argument("-o","--output", action="store", dest="output_dir", default="output",
                         help="directory of output")
-    parser.add_argument("-p","--policy", action="store", dest="policy",choices=["random", "mutate"], default=input_manager.DEFAULT_POLICY,
+    parser.add_argument("-p","--policy", action="store", dest="policy",choices=["random", "mutate"], default=DEFAULT_POLICY,
                         help='Policy to use for test input generation. ')
-    parser.add_argument("-t", "--timeout", action="store", dest="timeout", default=input_manager.DEFAULT_TIMEOUT, type=int,
-                        help="Timeout in seconds. Default: %d" % input_manager.DEFAULT_TIMEOUT)
+    parser.add_argument("-t", "--timeout", action="store", dest="timeout", default=DEFAULT_TIMEOUT, type=int,
+                        help="Timeout in seconds. Default: %d" % DEFAULT_TIMEOUT)
     parser.add_argument("-n","--number_of_events_that_restart_app", action="store", dest="number_of_events_that_restart_app", default=100, type=int,
                         help="Every xx number of events, then restart the app. Default: 100")
     parser.add_argument("-debug", action="store_true", dest="debug_mode",

@@ -33,6 +33,10 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .input_manager import InputManager
+    from .main import Kea
+    from .app import App
+    from .device import Device
+
 # Max number of restarts
 MAX_NUM_RESTARTS = 5
 # Max number of steps outside the app
@@ -83,7 +87,7 @@ class InputPolicy(object):
     It should call AppEventManager.send_event method continuously
     """
 
-    def __init__(self, device, app, android_check=None):
+    def __init__(self, device:"Device", app:"App", android_check:"Kea"=None):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.time_recoder = Time()
 
@@ -111,7 +115,7 @@ class InputPolicy(object):
             else:
                 self.logger.error("-------initialize failed-----------")
 
-    def start(self, input_manager):
+    def start(self, input_manager:"InputManager"):
         """
         start producing events
         :param input_manager: instance of InputManager

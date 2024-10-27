@@ -5,7 +5,6 @@ from typing import Any, Union
 class Mobile(Device):
     
     def __init__(self, delay=1) -> None:
-        
         self.delay = delay
 
     def set_device_serial(self, serial):
@@ -13,7 +12,8 @@ class Mobile(Device):
         # setting operation delay
         self.settings['operation_delay'] = (0, self.delay)
         self.settings['wait_timeout'] = 5.0 # 默认控件等待时间
-    def __call__(self, **kwargs: Any) -> Any:
+
+    def __call__(self, **kwargs: Any) -> "Ui":
         return Ui(self, Selector(**kwargs))
 
     def set_droidbot(self, droidbot):

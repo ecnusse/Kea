@@ -535,6 +535,8 @@ class MutatePolicy(UtgBasedInputPolicy):
             self.logger.info(
                 "reach the mutate index, start mutate on the node %d" % self.mutate_node_index_on_main_path)
             self.execute_main_path = False
+            self.current_state = self.device.get_current_state(self.action_count)
+            self.__update_utg()
             return None
         self.logger.info("execute node index on main path: %d" % self.current_index_on_main_path)
 

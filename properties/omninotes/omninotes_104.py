@@ -1,6 +1,4 @@
 import string
-import sys
-import time
 from kea.main import *
 
 class Test(Kea):
@@ -13,8 +11,8 @@ class Test(Kea):
         
         if d(text="Not now").exists():
             d(text="Not now").click()
-        
-        
+
+
 
     @precondition(lambda self: d(resourceId="it.feio.android.omninotes:id/menu_attachment").exists())
     @rule()
@@ -96,8 +94,6 @@ setting = Setting(
     device_serial="emulator-5554",
     output_dir="output/omninotes/104/mutate/1",
     policy_name="random",
-
-    main_path="main_path/omninotes/104.json"
 )
 run_android_check_as_test(t,setting)
 

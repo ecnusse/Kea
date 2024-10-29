@@ -16,9 +16,6 @@ class Test(Kea):
         d(resourceId="it.feio.android.omninotes.alpha:id/detail_content").set_text("read a book #Tag1")
         d(description="drawer open").click()
         d(resourceId="it.feio.android.omninotes.alpha:id/note_content").click()
-        d(resourceId="it.feio.android.omninotes.alpha:id/menu_tag").click()
-        d(resourceId="it.feio.android.omninotes.alpha:id/md_control").click()
-        d(resourceId="it.feio.android.omninotes.alpha:id/md_buttonDefaultPositive").click()
 
     @precondition(lambda self: d(resourceId="it.feio.android.omninotes.alpha:id/menu_tag").exists() and
                                "#" in d(resourceId="it.feio.android.omninotes.alpha:id/detail_content").info["text"]

@@ -1,11 +1,17 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
+
+    @main_path()
+    def delete_pics_should_work_mainpath(self):
+        d(resourceId="de.rampro.activitydiary:id/select_card_view").click()
+        d(resourceId="de.rampro.activitydiary:id/fab_attach_picture").click()
+        d(resourceId="com.android.camera:id/shutter_button").click()
+        d(resourceId="com.android.camera:id/btn_done").click()
+        d(description="Open Navigation").click()
+        d(text="Diary").click()
 
     @precondition(
         lambda self: d(text="Diary").exists() and d(resourceId="de.rampro.activitydiary:id/picture").exists()
@@ -36,10 +42,9 @@ class Test(Kea):
 t = Test()
 
 setting = Setting(
-    apk_path="./apk/activitydiary/1.4.2.apk",
+    apk_path="./apk/activitydiary/1.4.0.apk",
     device_serial="emulator-5554",
     output_dir="output/activitydiary/118/1",
     policy_name="random",
-
 )
 

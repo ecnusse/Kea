@@ -1,11 +1,12 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
+
+    @main_path()
+    def click_content_should_enter_diary_entry_mainpath(self):
+        d(resourceId="de.rampro.activitydiary:id/activity_name").click()
 
     @precondition(
         lambda self: d(text="Activity Diary").exists() and not d(text="<No Activity>").exists() and d(description="Statistics").info["selected"] and not d(text="Settings").exists()
@@ -27,7 +28,6 @@ setting = Setting(
     apk_path="./apk/activitydiary/1.4.2.apk",
     device_serial="emulator-5554",
     output_dir="output/activitydiary/253/1",
-    policy_name="random",
-
+    policy_name="random"
 )
 

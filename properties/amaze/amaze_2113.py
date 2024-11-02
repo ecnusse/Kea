@@ -1,7 +1,5 @@
-
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 

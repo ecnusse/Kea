@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -15,6 +13,11 @@ class Test(Kea):
         elif d(text="Allow").exists():
             d(text="Allow").click()
             
+    @main_path()
+    def rule_search_mainpath(self):
+        d(resourceId="com.amaze.filemanager:id/search").click()
+        d(resourceId="com.amaze.filemanager:id/search_edit_text").set_text("a")
+        d.press('search')
 
     @precondition(lambda self: d(textContains="Search results of").exists() and not 
                   d(resourceId="com.amaze.filemanager:id/telegram").exists() and 
@@ -40,8 +43,6 @@ setting = Setting(
     device_serial="emulator-5554",
     output_dir="output/amaze/1797/random_100/1",
     policy_name="random",
-
-    main_path="main_path/amaze/1797.json"
 )
 run_android_check_as_test(t,setting)
 

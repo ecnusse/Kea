@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -14,7 +12,15 @@ class Test(Kea):
             
         elif d(text="Allow").exists():
             d(text="Allow").click()
-            
+
+    @main_path()
+    def should_display_files_mainpath(self):
+        d(resourceId="com.amaze.filemanager:id/search").click()
+        d(resourceId="com.amaze.filemanager:id/search_edit_text").set_text("data")
+        d.press("search")
+        d(resourceId="com.amaze.filemanager:id/search").click()
+        d(resourceId="com.amaze.filemanager:id/search_edit_text").set_text("data")
+        d.press("search")
     
     @precondition(lambda self: d(textContains="Search results").exists())
     @rule()
@@ -34,9 +40,7 @@ setting = Setting(
     apk_path="./apk/amaze/amaze-3.8.4.apk",
     device_serial="emulator-5554",
     output_dir="output/amaze/1978/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/amaze/1978.json"
+    policy_name="random"
 )
 run_android_check_as_test(t,setting)
 

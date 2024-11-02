@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -21,7 +19,12 @@ class Test(Kea):
             
         elif d(text="Allow").exists():
             d(text="Allow").click()
-            
+
+    @main_path()
+    def click_exist_button_should_work_mainpath(self):
+        d(description="Navigate up").click()
+        d(scrollable=True).scroll.to(text="App Manager")
+        d(text="App Manager").click()
 
     @precondition(lambda self: d(text="App Manager").exists() and d(description="More options").exists() and not d(text="Settings").exists())
     @rule()
@@ -41,10 +44,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/amaze/amaze-9f3f1dc6c3.apk",
     device_serial="emulator-5554",
-    output_dir="output/amaze/2518/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/amaze/2518.json"
+    output_dir="../output/amaze/2518/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

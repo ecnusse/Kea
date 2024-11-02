@@ -411,11 +411,12 @@ class MutatePolicy(UtgBasedInputPolicy):
 
     def select_and_initialize_main_path(self):
         if len(self.list_main_path) == 0:
-            self.logger.error("main path is empty")
-            return
-        self.main_path = random.choice(self.list_main_path)
-        self.path_func, self.main_path =  self.android_check.get_main_path(self.main_path)
-        self.logger.info("select the main path function: %s" % self.path_func)
+            self.logger.info("main path is empty")
+            self.main_path = []
+        else:
+            self.main_path = random.choice(self.list_main_path)
+            self.path_func, self.main_path = self.android_check.get_main_path(self.main_path)
+            self.logger.info("select the main path function: %s" % self.path_func)
         self.main_path_list = copy.deepcopy(self.main_path)
         self.max_number_of_events_that_try_to_find_event_on_main_path = min(10, len(self.main_path))
         self.mutate_node_index_on_main_path = len(self.main_path)

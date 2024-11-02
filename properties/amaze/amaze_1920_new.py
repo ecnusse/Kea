@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -14,7 +12,13 @@ class Test(Kea):
             
         elif d(text="Allow").exists():
             d(text="Allow").click()
-            
+
+    @main_path()
+    def should_notice_user_when_no_network_mainpath(self):
+        d(description="Navigate up").click()
+        d(scrollable=True).scroll.to(text="FTP Server")
+        d(text="FTP Server").click()
+
     # 1920
     @precondition(lambda self: d(text="FTP Server").exists() and d(text="START").exists())
     @rule()
@@ -29,10 +33,10 @@ class Test(Kea):
 t = Test()
 
 setting = Setting(
-    apk_path="./apk/amaze/3.8.4.apk",
+    apk_path="./apk/amaze/amaze-3.8.4.apk",
     device_serial="emulator-5554",
     output_dir="output/amaze/1920/random_100/1",
-    policy_name="random",
+    policy_name="mutate",
     
     number_of_events_that_restart_app = 100
 )

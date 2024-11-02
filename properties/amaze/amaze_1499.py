@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -13,7 +11,15 @@ class Test(Kea):
             
         elif d(text="Allow").exists():
             d(text="Allow").click()
-            
+
+    @main_path()
+    def rule_go_back_mainpath(self):
+        d(description="Navigate up").click()
+        d(resourceId="com.amaze.filemanager:id/design_navigation_view").scroll(steps=10)
+        d(text="Settings").click()
+        d(scrollable = True).scroll.to(text="Back navigation")
+        d(text="Back navigation").click()
+        d.press("back")
 
     @precondition(lambda self: d(text="Go Back").exists() and 
                   d(resourceId="com.amaze.filemanager:id/second").exists() and 
@@ -43,8 +49,6 @@ setting = Setting(
     device_serial="emulator-5554",
     output_dir="output/amaze/1499/mutate/1",
     policy_name="random",
-
-    main_path="main_path/amaze/1499.json"
 )
-run_android_check_as_test(t,setting)
+run_android_check_as_test(t, setting)
 

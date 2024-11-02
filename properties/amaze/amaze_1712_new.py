@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -58,8 +56,6 @@ setting = Setting(
     device_serial="emulator-5554",
     output_dir="output/amaze/1712/mutate/1",
     policy_name="random",
-
-    main_path="main_path/amaze/1712.json"
 )
 run_android_check_as_test(t,setting)
 

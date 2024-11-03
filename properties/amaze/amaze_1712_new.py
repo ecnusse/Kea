@@ -54,7 +54,7 @@ t = Test()
 setting = Setting(
     apk_path="./apk/amaze/amaze-3.8.4.apk",
     device_serial="emulator-5554",
-    output_dir="output/amaze/1712/mutate/1",
+    output_dir="../output/amaze/1712/mutate/1",
     policy_name="random",
 )
 run_android_check_as_test(t,setting)

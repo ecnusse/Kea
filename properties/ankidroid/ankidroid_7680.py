@@ -1,11 +1,15 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
+
+    @main_path()
+    def rename_dialog_shouldnot_hide_mainpath(self):
+        d(resourceId="com.ichi2.anki:id/fab_expand_menu_button").click()
+        d(text="Create deck").click()
+        d(className="android.widget.EditText").set_text('Custom study session')
+        d(text="OK").click()
 
     @precondition(
         lambda self: d(resourceId="com.ichi2.anki:id/fab_expand_menu_button").exists() and 
@@ -33,10 +37,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/ankidroid/2.13.5.apk",
     device_serial="emulator-5554",
-    output_dir="output/ankidroid/7680/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/ankidroid/7680.json"
+    output_dir="../output/ankidroid/7680/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

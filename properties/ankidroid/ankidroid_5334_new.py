@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -11,11 +9,23 @@ class Test(Kea):
     def set_up(self):
         d(text="Get Started").click()
 
+    @main_path()
+    def text_should_display_after_type_answer_mainpath(self):
+        d(resourceId="com.ichi2.anki:id/fab_main").click()
+        d(text="Add").click()
+        d(resourceId="com.ichi2.anki:id/note_type_spinner").click()
+        d(text="Basic (type in the answer)").click()
+        d(description="Front").set_text("Hello World")
+        d(resourceId="com.ichi2.anki:id/action_save").click()
+        d(description="Navigate up").click()
+        d(resourceId="com.ichi2.anki:id/deckpicker_name").click()
+        d(resourceId="com.ichi2.anki:id/answer_field").set_text("Hello World")
+
     # 5334
     @precondition(
         lambda self: 
         d(resourceId="com.ichi2.anki:id/new_number").exists() and
-        d(resourceId="com.ichi2.anki:id/answer_field").exists() and 
+        d(resourceId="com.ichi2.anki:id/answer_field").exists() and
         d(resourceId="com.ichi2.anki:id/answer_field").get_text() != "Type answer" and
         d(resourceId="com.ichi2.anki:id/answer_options_layout").exists()
     )
@@ -38,10 +48,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/ankidroid/2.18alpha6.apk",
     device_serial="emulator-5554",
-    output_dir="output/ankidroid/5334/mutate_new/1",
+    output_dir="../output/ankidroid/5334/mutate_new",
     policy_name="random",
-
-    main_path="main_path/ankidroid/5334_new.json",
     send_document=False
 )
 

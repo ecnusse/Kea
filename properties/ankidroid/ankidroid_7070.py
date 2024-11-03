@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -10,6 +8,13 @@ class Test(Kea):
     @initialize()
     def set_up(self):
         pass
+
+    @main_path()
+    def filter_by_tag_mainpath(self):
+        d(resourceId="com.ichi2.anki:id/deckpicker_name").click()
+        d(description="Navigate up").click()
+        d(text="Card browser").click()
+        d(resourceId="com.ichi2.anki:id/card_sfld").click()
 
     @precondition(
         lambda self: d(text="Edit note").exists() and
@@ -47,8 +52,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/ankidroid/2.12.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/ankidroid/7070/random_100/1",
-    policy_name="random",
+    output_dir="../output/ankidroid/7070/mutate",
+    policy_name="mutate",
     
     number_of_events_that_restart_app = 100
 )

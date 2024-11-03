@@ -1,12 +1,12 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
     
-     
+    @main_path()
+    def reschedule_should_display_another_card_mainpath(self):
+        d(resourceId="com.ichi2.anki:id/deckpicker_name").click()
 
     @precondition(
         lambda self: d(resourceId="com.ichi2.anki:id/flashcard_frame").exists() and
@@ -40,9 +40,7 @@ setting = Setting(
     apk_path="./apk/ankidroid/2.9alpha55.apk",
     device_serial="emulator-5554",
     output_dir="output/ankidroid/5167/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/ankidroid/5167.json"
+    policy_name="random"
 )
 run_android_check_as_test(t,setting)
 

@@ -1,11 +1,13 @@
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-     
+
+    @main_path()
+    def add_new_card_should_update_new_card_count_mainpath(self):
+        d(resourceId="com.ichi2.anki:id/deckpicker_name").click()
 
     @precondition(
         lambda self: d(resourceId="com.ichi2.anki:id/new_number").exists() and 
@@ -45,8 +47,6 @@ setting = Setting(
     device_serial="emulator-5554",
     output_dir="output/ankidroid/6887/mutate/1",
     policy_name="random",
-
-    main_path="main_path/ankidroid/6887.json"
 )
 run_android_check_as_test(t,setting)
 

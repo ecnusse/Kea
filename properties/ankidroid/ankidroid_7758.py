@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -20,7 +18,13 @@ class Test(Kea):
         d(scrollable=True).scroll.to(text="日本語")
         
         d(text="日本語").click()
-        
+
+    @main_path()
+    def card_info_should_be_translated_mainpath(self):
+        d(description="前に戻る").click()
+        d(text="カードブラウザ").click()
+        d(resourceId="com.ichi2.anki:id/dropdown_deck_name").click()
+        d(text="全てのデッキ").click()
 
     @precondition(
         lambda self: d(resourceId="com.ichi2.anki:id/card_sfld").exists() and 
@@ -42,10 +46,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/ankidroid/2.14.0.apk",
     device_serial="emulator-5554",
-    output_dir="output/ankidroid/7758/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/ankidroid/7758.json"
+    output_dir="../output/ankidroid/7758/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

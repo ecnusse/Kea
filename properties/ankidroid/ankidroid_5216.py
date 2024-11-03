@@ -1,12 +1,15 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
     
-    
+    @main_path()
+    def only_new_card_can_be_reposition_mainpath(self):
+        d(text="考研").click()
+        d.press("back")
+        d(description="Navigate up").click()
+        d(text="Card browser").click()
 
     @precondition(
         lambda self: d(resourceId="com.ichi2.anki:id/card_sfld").exists() and
@@ -42,10 +45,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/ankidroid/2.9alpha58.apk",
     device_serial="emulator-5554",
-    output_dir="output/ankidroid/5216/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/ankidroid/5216.json"
+    output_dir="../output/ankidroid/5216/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

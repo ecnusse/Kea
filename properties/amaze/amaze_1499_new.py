@@ -39,13 +39,13 @@ class Test(Kea):
         assert after_path == expected_path
 
 
-#
-# t = Test()
-#
-# setting = Setting(
-#     apk_path="./apk/amaze-3.8.4.apk",
-#     device_serial="emulator-5554",
-#     output_dir="output/amaze/1499/1",
-# )
-# run_android_check_as_test(t,setting)
+
+t = Test()
+
+setting = Setting(
+    apk_path="./apk/amaze-3.8.4.apk",
+    device_serial="emulator-5554",
+    output_dir="../output/amaze/1499/1",
+)
+run_android_check_as_test(t,setting)
 

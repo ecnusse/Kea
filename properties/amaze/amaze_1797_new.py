@@ -48,7 +48,7 @@ t = Test()
 setting = Setting(
     apk_path="./apk/amaze/3.10.apk",
     device_serial="emulator-5554",
-    output_dir="output/amaze/1797/1",
+    output_dir="../output/amaze/1797/1",
     policy_name="random",
 
 )

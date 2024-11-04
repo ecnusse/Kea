@@ -1,11 +1,13 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
+
+    @main_path()
+    def should_add_station_mainpath(self):
+        d(resourceId="org.y20k.transistor:id/menu_add").click()
+        d(className="android.widget.EditText").set_text("Hello")
 
     @precondition(
         lambda self: d(text="Add new station").exists() and 
@@ -28,9 +30,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/transistor/1.1.4.apk",
     device_serial="emulator-5554",
-    output_dir="output/transistor/9/random_100/1",
-    policy_name="random",
-    
+    output_dir="../output/transistor/9/mutate",
+    policy_name="mutate",
     number_of_events_that_restart_app = 100
 )
 run_android_check_as_test(t,setting)

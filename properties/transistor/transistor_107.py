@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -42,8 +40,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/transistor/2.1.5.apk",
     device_serial="emulator-5554",
-    output_dir="output/transistor/107/random_100/1",
-    policy_name="random",
+    output_dir="../output/transistor/107/mutate",
+    policy_name="mutate",
     
     number_of_events_that_restart_app = 100
 )

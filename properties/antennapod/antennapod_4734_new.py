@@ -1,11 +1,16 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
+
+    @main_path()
+    def share_menu_should_display_mainpath(self):
+        d(description="Open menu").click()
+        d(text="Add podcast").click()
+        d(text="Show suggestions").click()
+        d(resourceId="de.danoeh.antennapod:id/discovery_cover").click()
+        d(text="Subscribe").click()
 
     @precondition(
         lambda self: d(resourceId="de.danoeh.antennapod:id/butShowInfo").exists()
@@ -22,10 +27,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/antennapod/3.2.0.apk",
     device_serial="emulator-5554",
-    output_dir="output/antennapod/4734/mutate_new/1",
-    policy_name="random",
-
-    main_path="main_path/antennapod/5003_new.json"
+    output_dir="../output/antennapod/4734/mutate_new",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

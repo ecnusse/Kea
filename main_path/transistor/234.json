@@ -1,9 +1,0 @@
-[
-    {
-        "ui_element": {
-            "resource_id": "org.y20k.transistor:id/player_sheet"
-        },
-        "event_type": "scroll",
-        "direction": "up"
-    }
-]

@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -24,7 +22,15 @@ class Test(Kea):
         if d(text="OK").exists():
             d(text="OK").click()
             
-        
+    @main_path()
+    def search_result_should_not_contain_other_notes_mainpath(self):
+        d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").click()
+        d(text="Text note").click()
+        d(resourceId="it.feio.android.omninotes:id/detail_content").set_text("Hello world")
+        d(className="android.widget.ImageButton").click()
+        d(resourceId="it.feio.android.omninotes:id/menu_search").click()
+        d(resourceId="it.feio.android.omninotes:id/search_src_text").set_text("Hello world")
+        d.press("enter")
     
     @precondition(lambda self: d(resourceId="it.feio.android.omninotes:id/search_query").exists() and d(resourceId="it.feio.android.omninotes:id/root").exists() and not d(text="SETTINGS").exists())
     @rule()
@@ -52,10 +58,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/omninotes/OmniNotes-5.2.15.apk",
     device_serial="emulator-5554",
-    output_dir="output/omninotes/283/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/omninotes/283.json"
+    output_dir="../output/omninotes/283/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

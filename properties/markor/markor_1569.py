@@ -1,8 +1,5 @@
 import string
 from kea.main import *
-import time
-import sys
-import re
 from hypothesis import strategies as st
 class Test(Kea):
     
@@ -24,7 +21,12 @@ class Test(Kea):
         
         if d(text="OK").exists():
             d(text="OK").click()
-        
+
+    @main_path()
+    def share_file_to_quicknote_shouldnot_influence_original_content_mainpath(self):
+        d(resourceId="net.gsantner.markor:id/nav_quicknote").click()
+        d(className="android.widget.EditText").set_text("Hello")
+
     # bug #1569
     @precondition(lambda self: d(resourceId="net.gsantner.markor:id/toolbar").child(text="QuickNote").exists() and d(description="More options").exists())
     @rule()
@@ -72,9 +74,10 @@ t = Test()
 setting = Setting(
     apk_path="./apk/markor/2.8.5.apk",
     device_serial="emulator-5554",
-    output_dir="output/markor/1569/random_10/1",
-    policy_name="random",
+    output_dir="../output/markor/1569/mutate",
+    policy_name="mutate",
     
     number_of_events_that_restart_app = 10
 )
 
+run_android_check_as_test(t,setting)

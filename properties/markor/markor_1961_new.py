@@ -1,8 +1,4 @@
-import string
 from kea.main import *
-import time
-import sys
-import re
 
 class Test(Kea):
     
@@ -22,9 +18,12 @@ class Test(Kea):
         
         if d(text="OK").exists():
             d(text="OK").click()
-        
-        
-    
+
+    @main_path()
+    def search_in_the_file_mainpath(self):
+        d(resourceId="net.gsantner.markor:id/nav_todo").click()
+        d(className="android.widget.EditText").set_text("Hello")
+
     # bug #1961
     @precondition(lambda self: d(resourceId="net.gsantner.markor:id/document__fragment__edit__highlighting_editor").exists() and 
                   d(resourceId="net.gsantner.markor:id/document__fragment__edit__highlighting_editor").get_text() is not None and 
@@ -56,10 +55,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/markor/2.11.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/markor/1961/1",
-    policy_name="random",
-
-    main_path="main_path/markor/1961_new.json"
+    output_dir="../output/markor/1961/mutate_new",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

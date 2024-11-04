@@ -1,8 +1,4 @@
-import string
 from kea.main import *
-import time
-import sys
-import re
 
 class Test(Kea):
     
@@ -11,7 +7,16 @@ class Test(Kea):
     def set_up(self):      
         if d(text="OK").exists():
             d(text="OK").click()
-        
+
+    @main_path()
+    def selection_should_discard_after_clicking_new_main_path(self):
+        d(resourceId="net.gsantner.markor:id/fab_add_new_item").click()
+        d(resourceId="net.gsantner.markor:id/note__activity__edit_note_title").set_text("Hello World!")
+        d(resourceId="net.gsantner.markor:id/document__fragment__edit__content_editor__scrolling_parent").click()
+        d.send_keys("hello")
+        d(description="Navigate up").click()
+        d(resourceId="net.gsantner.markor:id/note_title").long_click(duration=1)
+
     @precondition(lambda self: d(text="Select entries").exists() and 
                   d(resourceId="net.gsantner.markor:id/note_title").exists()
                   )
@@ -32,18 +37,14 @@ class Test(Kea):
             new_number_of_selected = int(new_number_of_selected)
             assert new_number_of_selected == number_of_selected - 1 or new_number_of_selected == number_of_selected + 1, "number of selected not correct"
 
-        
-
 
 t = Test()
 
 setting = Setting(
     apk_path="./apk/markor/1.3.0.apk",
     device_serial="emulator-5554",
-    output_dir="output/markor/420/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/markor/420.json"
+    output_dir="../output/markor/420/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

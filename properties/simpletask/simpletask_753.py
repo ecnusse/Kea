@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -11,7 +9,12 @@ class Test(Kea):
     def set_up(self):
         if d(text="OK").exists():
             d(text="OK").click()
-        
+
+    @main_path()
+    def task_prefilled_when_filtered_mainapth(self):
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello World!")
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
 
     @precondition(
         lambda self: int(d(resourceId="nl.mpcjanssen.simpletask:id/tasktext").count) > 0 and not 
@@ -62,10 +65,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/simpletask/9.0.2.apk",
     device_serial="emulator-5554",
-    output_dir="output/simpletask/753/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/simpletask/753.json"
+    output_dir="../output/simpletask/753/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

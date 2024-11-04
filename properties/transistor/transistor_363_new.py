@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -28,7 +26,6 @@ class Test(Kea):
             random_selected_station.click()
             
             d(text="Add").click()
-            
 
     @precondition(
         lambda self: d(resourceId="org.y20k.transistor:id/station_card").exists() and d(resourceId="org.y20k.transistor:id/station_card").count > 1 and d(resourceId="org.y20k.transistor:id/player_play_button").exists()
@@ -59,11 +56,10 @@ t = Test()
 setting = Setting(
     apk_path="./apk/transistor/4.1.7.apk",
     device_serial="emulator-5554",
-    output_dir="output/transistor/363/1",
-    policy_name="random",
+    output_dir="../output/transistor/363/mutate_new",
+    policy_name="mutate",
     timeout=86400,
-    number_of_events_that_restart_app = 100,
-    main_path="main_path/transistor/363_new.json"
+    number_of_events_that_restart_app = 100
 )
 run_android_check_as_test(t,setting)
 

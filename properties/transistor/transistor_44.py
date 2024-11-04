@@ -1,6 +1,5 @@
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -26,6 +25,12 @@ class Test(Kea):
         d(className="android.widget.EditText").set_text("http://www.101smoothjazz.com/101-smoothjazz.m3u")
         
         d(text="ADD").click()
+
+    @main_path()
+    def rename_station_not_change_station_state_mainapth(self):
+        d(resourceId="org.y20k.transistor:id/list_item_textview").click()
+        d(resourceId="org.y20k.transistor:id/player_playback_button").click()
+        d.press("back")
 
     @precondition(
         lambda self: d(resourceId="org.y20k.transistor:id/list_item_more_button").exists() and d(resourceId="org.y20k.transistor:id/list_item_playback_indicator").exists()
@@ -57,10 +62,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/transistor/1.2.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/transistor/44/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/transistor/44.json"
+    output_dir="../output/transistor/44/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

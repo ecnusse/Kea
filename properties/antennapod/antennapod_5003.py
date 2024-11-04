@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -10,6 +8,16 @@ class Test(Kea):
     @initialize()
     def set_up(self):
         d.press("back")
+
+    @main_path()
+    def remove_podcast_should_close_miniplayed_mainpath(self):
+        d(description="Open menu").click()
+        d(text="Add Podcast",resourceId="de.danoeh.antennapod:id/txtvTitle").click()
+        d(resourceId="de.danoeh.antennapod.debug:id/discovery_cover").click()
+        d(text="Subscribe").click()
+        d(resourceId="de.danoeh.antennapod.debug:id/status").click()
+        d(resourceId="de.danoeh.antennapod.debug:id/butAction1Text").click()
+        d(resourceId="de.danoeh.antennapod.debug:id/playerFragment").click()
 
     @precondition(
         lambda self: d(resourceId="de.danoeh.antennapod.debug:id/add_to_favorites_item").exists() and 
@@ -39,10 +47,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/antennapod/2.2.0-beta1.apk",
     device_serial="emulator-5554",
-    output_dir="output/antennapod/5003/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/antennapod/5003.json"
+    output_dir="../output/antennapod/5003/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -20,6 +18,14 @@ class Test(Kea):
         time.sleep(3)
         d(text="Subscribe").click()
 
+    @main_path()
+    def suggestion_should_be_hiden_mainpath(self):
+        d(description="Open menu").click()
+        d(text="Add podcast").click()
+        d(resourceId="de.danoeh.antennapod:id/discover_more").click()
+        d(description="More options").click()
+        d(text="Hide").click()
+
     @precondition(
         lambda self: d(text="You selected to hide suggestions.").exists()
     )
@@ -35,8 +41,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/antennapod/3.2.0.apk",
     device_serial="emulator-5554",
-    output_dir="output/antennapod/4669/random_100/1",
-    policy_name="random",
+    output_dir="../output/antennapod/4669/mutate_new",
+    policy_name="mutate",
     
     number_of_events_that_restart_app = 100
 )

@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -26,8 +24,13 @@ class Test(Kea):
         
         if d(text="OK").exists():
             d(text="OK").click()
-            
-        
+
+    @main_path()
+    def rule_restore_backup_shouldnot_change_note_mainpath(self):
+        d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").long_click()
+        d(resourceId="it.feio.android.omninotes:id/detail_title").set_text("Hello")
+        d(resourceId="it.feio.android.omninotes:id/detail_content").set_text("Hello world")
+        d(description="drawer open").click()
     
     @precondition(lambda self: d(resourceId="it.feio.android.omninotes:id/menu_search").exists() and d(resourceId="it.feio.android.omninotes:id/note_title").exists() and d(text="Notes").exists() and not d(text="SETTINGS").exists())
     @rule()
@@ -105,10 +108,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/omninotes/OmniNotes-6.3.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/omninotes/812/1",
-    policy_name="random",
-
-    main_path="main_path/omninotes/812_new.json"
+    output_dir="../output/omninotes/812/mutate_new",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

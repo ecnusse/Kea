@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -20,9 +18,16 @@ class Test(Kea):
         d(resourceId="it.feio.android.omninotes:id/next").click()
         
         d(resourceId="it.feio.android.omninotes:id/done").click()
-        
-        
-    
+
+    @main_path()
+    def rule_search_by_tag_should_display_results_mainpath(self):
+        d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").long_click()
+        d(resourceId="it.feio.android.omninotes:id/detail_content").set_text("#hello")
+        d.press("back")
+        d.press("back")
+        d(resourceId="it.feio.android.omninotes:id/menu_search").click()
+        d(resourceId="it.feio.android.omninotes:id/menu_tags").click()
+
     # bug 277
     @precondition(
             lambda self: 
@@ -68,10 +73,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/omninotes/OmniNotes-6.3.0.apk",
     device_serial="emulator-5554",
-    output_dir="output/omninotes/277/mutate_new/1",
-    policy_name="random",
-
-    main_path="main_path/omninotes/277_new.json"
+    output_dir="../output/omninotes/277/mutate_new",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

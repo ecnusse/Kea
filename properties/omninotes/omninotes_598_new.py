@@ -1,6 +1,5 @@
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -78,7 +77,8 @@ class Test(Kea):
         d(text="OK").click()
         time.sleep(2)
         d.press("back")
-        
+
+
     
     @precondition(lambda self: d(text="Data").exists() and d(text="Password").exists())
     @rule()
@@ -154,8 +154,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/omninotes/OmniNotes-6.3.0.apk",
     device_serial="emulator-5554",
-    output_dir="output/omninotes/598/1",
-    policy_name="random",
+    output_dir="../output/omninotes/598/mutate_new",
+    policy_name="mutate",
     
     number_of_events_that_restart_app = 100
 )

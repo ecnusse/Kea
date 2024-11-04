@@ -1,11 +1,9 @@
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
 
     @initialize()
     def set_up(self):
@@ -13,23 +11,52 @@ class Test(Kea):
             d(text="OK").click()
 
 
-    @initialize()
-    def set_up(self):
-        d.set_fastinput_ime(True)
-        d(text="OK").click()
-        
+    @main_path()
+    def enter_task_and_back_should_keep_position_mainpath(self):
         d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
-        content = st.text(alphabet=string.ascii_letters,min_size=1, max_size=10).example()
-        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text(content)
-        
-        d(resourceId="nl.mpcjanssen.simpletask:id/btnProject").click()
-        
-        tag_name = st.text(alphabet=string.ascii_letters,min_size=1, max_size=6).example()
-        print("tag name: "+str(tag_name))
-        d(resourceId="nl.mpcjanssen.simpletask:id/new_item_text").set_text(tag_name)
-        
-        d(text="OK").click()
-        
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello World!")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello1")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello2")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello3")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello4")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello5")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello6")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello7")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello8")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello9")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello10")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello11")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello12")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello13")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello14")
         d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
 
     @precondition(
@@ -60,8 +87,9 @@ t = Test()
 setting = Setting(
     apk_path="./apk/simpletask/11.0.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/simpletask/941/1",
-    policy_name="random",
+    output_dir="../output/simpletask/941/mutate_new",
+    policy_name="mutate",
 
 )
 
+run_android_check_as_test(t,setting)

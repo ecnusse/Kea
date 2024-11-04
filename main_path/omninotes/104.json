@@ -1,8 +1,0 @@
-[
-    {
-        "ui_element": {
-            "resource_id": "it.feio.android.omninotes:id/menu_add"
-        },
-        "event_type": "click"
-    }
-]

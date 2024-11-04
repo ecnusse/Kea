@@ -1,8 +1,0 @@
-[
-    {
-        "ui_element": {
-            "resource_id": "com.amaze.filemanager:id/firstline"
-        },
-        "event_type": "long_click"
-    }
-]

@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -26,7 +24,11 @@ class Test(Kea):
         
         if d(text="OK").exists():
             d(text="OK").click()
-            
+
+    @main_path()
+    def remove_password_should_not_affect_notes_MAINPATH(self):
+        d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").long_click()
+        d(resourceId="it.feio.android.omninotes:id/detail_title").set_text("Hello")
 
     @precondition(lambda self: d(resourceId="it.feio.android.omninotes:id/menu_attachment").exists() and d(resourceId="it.feio.android.omninotes:id/detail_title").get_text() != "Title")
     @rule()
@@ -110,11 +112,10 @@ t = Test()
 setting = Setting(
     apk_path="./apk/omninotes/OmniNotes-6.3.0.apk",
     device_serial="emulator-5554",
-    output_dir="output/omninotes/104/mutate_new/1",
-    policy_name="random",
+    output_dir="../output/omninotes/104/mutate_new",
+    policy_name="mutate",
     timeout=86400,
-    number_of_events_that_restart_app = 100,
-    main_path="main_path/omninotes/104_new.json"
+    number_of_events_that_restart_app = 100
 )
 run_android_check_as_test(t,setting)
 

@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -24,9 +22,23 @@ class Test(Kea):
         
         if d(text="OK").exists():
             d(text="OK").click()
-            
-        
-    
+
+    @main_path()
+    def remove_password_in_setting_should_effect_mainpath(self):
+        d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").long_click()
+        d(resourceId="it.feio.android.omninotes:id/detail_content").set_text("Hello world")
+        d(description="More options").click()
+        d(text="Lock").click()
+        d(resourceId="it.feio.android.omninotes:id/password").set_text("1")
+        d(resourceId="it.feio.android.omninotes:id/password_check").set_text("1")
+        d(resourceId="it.feio.android.omninotes:id/question").set_text("1")
+        d(resourceId="it.feio.android.omninotes:id/answer").set_text("1")
+        d(resourceId="it.feio.android.omninotes:id/answer_check").set_text("1")
+        d(scrollable=True).scroll.to(text="OK")
+        d(text="OK").click()
+        d.press("back")
+        d.press("back")
+
     @precondition(lambda self: d(text="Insert password").exists() and d(text="PASSWORD FORGOTTEN").exists())
     @rule()
     def remove_password_in_setting_should_effect(self):
@@ -56,8 +68,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/omninotes/OmniNotes-5.5.3.apk",
     device_serial="emulator-5554",
-    output_dir="output/omninotes/598/random_100/1",
-    policy_name="random",
+    output_dir="../output/omninotes/598/mutate",
+    policy_name="mutate",
     
     number_of_events_that_restart_app = 100
 )

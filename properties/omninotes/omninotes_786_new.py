@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -26,7 +24,11 @@ class Test(Kea):
         
         if d(text="OK").exists():
             d(text="OK").click()
-             
+
+    @main_path()
+    def rule_remove_tag_from_note_shouldnot_affect_content_mainpath(self):
+        d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").long_click()
+        d(resourceId="it.feio.android.omninotes:id/detail_content").set_text("#hello")
     
     @precondition(lambda self: d(resourceId="it.feio.android.omninotes:id/menu_attachment").exists()
                    and d(resourceId="it.feio.android.omninotes:id/menu_share").exists() and 
@@ -85,10 +87,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/omninotes/OmniNotes-6.2.8.apk",
     device_serial="emulator-5554",
-    output_dir="output/omninotes/786/mutate_new/1",
-    policy_name="random",
-
-    main_path="main_path/omninotes/786_new.json"
+    output_dir="../output/omninotes/786/mutate_new",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

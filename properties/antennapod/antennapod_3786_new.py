@@ -1,16 +1,24 @@
-import string
+import random
 import sys
-import time
+from itertools import count
+
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
+
+    @main_path()
+    def change_setting_should_not_influence_Download_function_mainpath(self):
+        d(description="Open menu").click()
+        d(text="Add podcast").click()
+        d(text="Show suggestions").click()
+        d(resourceId="de.danoeh.antennapod:id/discovery_cover").click()
+        d(text="Subscribe").click()
+        d(resourceId="de.danoeh.antennapod:id/txtvTitle")[random.randint(1, d(resourceId="de.danoeh.antennapod:id/txtvTitle").count - 1)].click()
 
     @precondition(
         lambda self: d(text="Download").exists() and 
-        d(text="Stream").exists() and
-        d(resourceId="de.danoeh.antennapod:id/visit_website_item").exists() and not 
+        d(text="Stream").exists() and not
         d(resourceId="de.danoeh.antennapod:id/butFF").exists()
     )
     @rule()
@@ -26,10 +34,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/antennapod/3.2.0.apk",
     device_serial="emulator-5554",
-    output_dir="output/antennapod/3786/random_100/1",
-    policy_name="random",
-
-    main_path="main_path/antennapod/3786.json"
+    output_dir="../output/antennapod/3786/mutate_new",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

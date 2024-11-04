@@ -1,8 +1,4 @@
-import string
 from kea.main import *
-import time
-import sys
-import re
 
 class Test(Kea):
     
@@ -22,7 +18,16 @@ class Test(Kea):
         
         if d(text="OK").exists():
             d(text="OK").click()
-        
+
+    @main_path()
+    def create_file_with_same_name_should_not_overwrite_mainpath(self):
+        d(resourceId= "net.gsantner.markor:id/fab_add_new_item").click()
+        d(resourceId="net.gsantner.markor:id/new_file_dialog__name").set_text("Hello World")
+        d(text="OK").click()
+        d(resourceId="net.gsantner.markor:id/document__fragment__edit__content_editor__scrolling_parent").set_text("Hello World!!!")
+        d(resourceId="net.gsantner.markor:id/action_save").click()
+        d.press("back")
+        d.press("back")
         
     #bug 994
     @precondition(
@@ -73,10 +78,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/markor/2.11.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/markor/994/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/markor/994_new.json"
+    output_dir="../output/markor/994/mutate_new",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

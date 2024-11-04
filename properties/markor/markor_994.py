@@ -1,8 +1,4 @@
-import string
 from kea.main import *
-import time
-import sys
-import re
 
 class Test(Kea):
     
@@ -24,8 +20,15 @@ class Test(Kea):
         
         if d(text="OK").exists():
             d(text="OK").click()
-        
-        
+
+    @main_path()
+    def create_file_with_same_name_should_not_overwrite_mainpath(self):
+        d(resourceId="net.gsantner.markor:id/fab_add_new_item").click()
+        d(resourceId="net.gsantner.markor:id/new_file_dialog__name").set_text("Hello World")
+        d(text="OK").click()
+        d(resourceId="net.gsantner.markor:id/document__fragment__edit__highlighting_editor").set_text("Hello World!!!")
+        d(description="Navigate up").click()
+
     @precondition(
         lambda self: d(resourceId="net.gsantner.markor:id/ui__filesystem_item__title").exists() and
         d(resourceId="net.gsantner.markor:id/ui__filesystem_item__title").count >= 2 and 
@@ -73,10 +76,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/markor/2.2.10.apk",
     device_serial="emulator-5554",
-    output_dir="output/markor/994/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/markor/994.json"
+    output_dir="../output/markor/994/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

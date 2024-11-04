@@ -1,8 +1,5 @@
 import string
 from kea.main import *
-import time
-import sys
-import re
 
 class Test(Kea):
     
@@ -61,12 +58,14 @@ class Test(Kea):
 
 
 
+t = Test()
 setting = Setting(
     apk_path="./apk/markor/2.11.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/markor/1481/random_10/1",
-    policy_name="random",
+    output_dir="../output/markor/1481/mutate",
+    policy_name="mutate",
     
     number_of_events_that_restart_app = 10
 )
+run_android_check_as_test(t,setting)
 

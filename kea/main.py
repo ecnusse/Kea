@@ -175,9 +175,9 @@ def start_kea(kea_core, settings = None):
 
 from hypothesis import strategies as st
 class Kea(object):
-    _rules_per_class: Dict[type, List[classmethod]] = {}
-    _initializers_per_class: Dict[type, List[classmethod]] = {}
-    _main_path_per_class: Dict[type, List[classmethod]] = {}
+    _rules_per_class: Dict[type, List["Rule"]] = {}
+    _initializers_per_class: Dict[type, List["Rule"]] = {}
+    _main_path_per_class: Dict[type, List["MainPath"]] = {}
     _bundles_: Dict[str, Bundle] = {}
 
     def __init__(
@@ -305,15 +305,14 @@ class Kea(object):
 
     def get_rules_that_pass_the_preconditions(self) -> List:
         '''Check all rules and return the list of rules that meet the preconditions.'''
-        rules_to_check = self.rules()
-        rules_meeting_preconditions = []
-        for class_name in self._rules_per_class:
-            rules_to_check = self._rules_per_class[class_name]
-            for rule_to_check in rules_to_check:
-                if len(rule_to_check.preconditions) > 0:
-                    if all(precond(self) for precond in rule_to_check.preconditions):
-                        rules_meeting_preconditions.append(rule_to_check)
-        return rules_meeting_preconditions
+        rules_passed_precondition = []
+        for rule_list in self._rules_per_class.values():
+            for target_rule in rule_list:
+                if len(target_rule.preconditions) > 0:
+                    if all(precond(self) for precond in target_rule.preconditions):
+                        rules_passed_precondition.append(target_rule)
+
+        return rules_passed_precondition
 
     def get_rules_without_preconditions(self):
         '''Return the list of rules that do not have preconditions.'''

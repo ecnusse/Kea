@@ -21,6 +21,8 @@ import warnings
 from dataclasses import dataclass
 from kea.dsl import Mobile
 warnings.filterwarnings("ignore", category=NonInteractiveExampleWarning)
+import coloredlogs
+coloredlogs.install()
 
 RULE_MARKER = "tool_rule"
 INITIALIZE_RULE_MARKER = "tool_initialize_rule"

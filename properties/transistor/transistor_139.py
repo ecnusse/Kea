@@ -48,5 +48,5 @@ setting = Setting(
 
     main_path="main_path/transistor/139.json"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

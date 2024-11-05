@@ -46,5 +46,5 @@ setting = Setting(
     send_document=False,
     main_path="main_path/ankidroid/6167_new.json"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

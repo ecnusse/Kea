@@ -50,5 +50,5 @@ setting = Setting(
 
     main_path="main_path/antennapod/4548.json"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

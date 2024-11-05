@@ -37,4 +37,4 @@ setting = Setting(
     apk_path="./apk/omninotes/OmniNotes-6.2.8.apk",
 )
 t = Test()
-run_android_check_as_test(t,setting)
+start_kea(t,setting)

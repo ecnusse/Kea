@@ -62,5 +62,5 @@ setting = Setting(
     run_initial_rules_after_every_mutation=False,
     main_path="main_path/transistor/66_new.json"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

@@ -73,5 +73,5 @@ setting = Setting(
     number_of_events_that_restart_app = 100,
     main_path="main_path/omninotes/381_new.json"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

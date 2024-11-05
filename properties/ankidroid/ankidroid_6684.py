@@ -1,12 +1,13 @@
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
     
-       
+    @main_path()
+    def cloze_should_work_mainpath(self):
+        d(resourceId="com.ichi2.anki:id/fab_expand_menu_button").click()
 
     @precondition(
         lambda self: d(text="Add").exists() and 
@@ -35,10 +36,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/ankidroid/2.12.0beta6.apk",
     device_serial="emulator-5554",
-    output_dir="output/ankidroid/6684/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/ankidroid/6684.json"
+    output_dir="../output/ankidroid/6684/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

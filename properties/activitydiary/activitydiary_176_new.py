@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -32,7 +30,6 @@ setting = Setting(
     apk_path="./apk/activitydiary/1.4.2.apk",
     device_serial="emulator-5554",
     output_dir="output/activitydiary/176/1",
-    policy_name="random",
-
+    policy_name="random"
 )
 

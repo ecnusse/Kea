@@ -1,15 +1,18 @@
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
 
     @initialize()
     def set_up(self):
         pass
+
+    @main_path()
+    def add_card_in_one_deck_should_work_mainpath(self):
+        d(description="Navigate up").click()
+        d(text="Card browser").click()
 
     @precondition(
         lambda self: d(resourceId="com.ichi2.anki:id/dropdown_deck_name").exists() and not d(resourceId="com.ichi2.anki:id/navdrawer_items_container").exists()
@@ -50,8 +53,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/ankidroid/2.11alpha7.apk",
     device_serial="emulator-5554",
-    output_dir="output/ankidroid/6288/random_100/1",
-    policy_name="random",
+    output_dir="../output/ankidroid/6288/mutate",
+    policy_name="mutate",
     
     number_of_events_that_restart_app = 100
 )

@@ -1,11 +1,19 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
+
+    @main_path()
+    def click_podcast_should_work_mainpath(self):
+        d(description="Open menu").click()
+        d(text="Add podcast").click()
+        d(text="Show suggestions").click()
+        d(resourceId="de.danoeh.antennapod:id/discovery_cover").click()
+        d(text="Subscribe").click()
+        d(resourceId="de.danoeh.antennapod:id/status").click()
+        d(resourceId="de.danoeh.antennapod:id/butAction1Text").click()
+        d(resourceId="de.danoeh.antennapod:id/playerFragment").click()
 
     @precondition(
         lambda self: d(resourceId="de.danoeh.antennapod:id/butPlay").exists() and 
@@ -29,8 +37,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/antennapod/3.2.0.apk",
     device_serial="emulator-5554",
-    output_dir="output/antennapod/4010/random_100/1",
-    policy_name="random",
+    output_dir="../output/antennapod/4010/mutate_new",
+    policy_name="mutate",
     
     number_of_events_that_restart_app = 100
 )

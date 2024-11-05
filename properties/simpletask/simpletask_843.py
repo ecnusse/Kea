@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -11,6 +9,12 @@ class Test(Kea):
     def set_up(self):
         if d(text="OK").exists():
             d(text="OK").click()
+
+    @main_path()
+    def rotate_device_should_keep_text_mainpath(self):
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").click()
+        d.send_keys("Hello World")
 
     @precondition(
         lambda self: d(text="Add Task").exists() and 
@@ -36,10 +40,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/simpletask/10.0.7.apk",
     device_serial="emulator-5554",
-    output_dir="output/simpletask/843/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/simpletask/843.json"
+    output_dir="../output/simpletask/843/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

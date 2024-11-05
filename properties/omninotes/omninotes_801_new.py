@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -24,7 +22,22 @@ class Test(Kea):
         
         if d(text="OK").exists():
             d(text="OK").click()
-            
+
+    @main_path()
+    def swipe_locked_note_mainpath(self):
+        d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").long_click()
+        d(resourceId="it.feio.android.omninotes:id/detail_content").set_text("Hello world")
+        d(description="More options").click()
+        d(text="Lock").click()
+        d(resourceId="it.feio.android.omninotes:id/password").set_text("1")
+        d(resourceId="it.feio.android.omninotes:id/password_check").set_text("1")
+        d(resourceId="it.feio.android.omninotes:id/question").set_text("1")
+        d(resourceId="it.feio.android.omninotes:id/answer").set_text("1")
+        d(resourceId="it.feio.android.omninotes:id/answer_check").set_text("1")
+        d(scrollable=True).scroll.to(text="OK")
+        d(text="OK").click()
+        d.press("back")
+        d.press("back")
 
     @precondition(lambda self: d(resourceId="it.feio.android.omninotes:id/note_title").exists() and d(text="Notes").exists() and not d(text="Settings").exists() and d(resourceId="it.feio.android.omninotes:id/lockedIcon").exists())
     @rule()
@@ -53,10 +66,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/omninotes/OmniNotes-6.0.5.apk",
     device_serial="emulator-5554",
-    output_dir="output/omninotes/801/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/omninotes/801.json"
+    output_dir="../output/omninotes/801/mutate_new",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

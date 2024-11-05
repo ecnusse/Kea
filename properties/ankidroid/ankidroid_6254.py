@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -10,6 +8,12 @@ class Test(Kea):
     def set_up(self):
         if d(text="OK").exists():
             d(text="OK").click()
+
+    @main_path()
+    def yue_should_display_in_language_mainpath(self):
+        d(description="Navigate up").click()
+        d(text="Settings").click()
+        d(text="AnkiDroid").click()
 
     @precondition(
         lambda self: d(text="Language").exists() and 
@@ -28,10 +32,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/ankidroid/2.11alpha6.apk",
     device_serial="emulator-5554",
-    output_dir="output/ankidroid/6254/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/ankidroid/6254.json"
+    output_dir="../output/ankidroid/6254/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

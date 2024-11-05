@@ -1,12 +1,21 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
-    
+
+    @main_path()
+    def play_episode_should_add_to_queue_mainpath(self):
+        d(description="Open menu").click()
+        d(text="Add podcast").click()
+        d(text="Show suggestions").click()
+        d(resourceId="de.danoeh.antennapod:id/discovery_cover").click()
+        d(text="Subscribe").click()
+        d(resourceId="de.danoeh.antennapod:id/progress").click()
+        d(resourceId="de.danoeh.antennapod:id/butAction1").click()
+        d.press("back")
+        d(description="Open menu").click()
+        d(text="Queue").click()
 
     @precondition(
         lambda self: d(text="Queue").exists() and 
@@ -30,11 +39,10 @@ t = Test()
 setting = Setting(
     apk_path="./apk/antennapod/3.3.2.apk",
     device_serial="emulator-5554",
-    output_dir="output/antennapod/4026/mutate_new/1",
-    policy_name="random",
+    output_dir="../output/antennapod/4026/mutate_new",
+    policy_name="mutate",
     timeout=86400,
-    number_of_events_that_restart_app = 100,
-    main_path="main_path/antennapod/4026_new.json"
+    number_of_events_that_restart_app = 100
 )
 run_android_check_as_test(t,setting)
 

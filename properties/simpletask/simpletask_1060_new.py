@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -11,6 +9,10 @@ class Test(Kea):
     def set_up(self):
         if d(text="OK").exists():
             d(text="OK").click()
+
+    @main_path()
+    def filter_by_tag_mainpath(self):
+        d(description="Select list").click()
 
     # bug #1060
     @precondition(
@@ -59,8 +61,9 @@ t = Test()
 setting = Setting(
     apk_path="./apk/simpletask/11.0.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/simpletask/1060/1",
-    policy_name="random",
+    output_dir="../output/simpletask/1060/mutate_new",
+    policy_name="mutate",
 
 )
+run_android_check_as_test(t,setting)
 

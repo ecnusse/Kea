@@ -8,7 +8,6 @@ from typing import (
 )
 import traceback
 import attr
-import uiautomator2 as u2
 from kea import env_manager, input_manager
 from kea.Bundle import Bundle
 from kea.droidbot import DroidBot

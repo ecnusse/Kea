@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -20,8 +18,12 @@ class Test(Kea):
         d(resourceId="it.feio.android.omninotes:id/next").click()
         
         d(resourceId="it.feio.android.omninotes:id/done").click()
-        
-        
+
+    @main_path()
+    def rule_add_category_should_change_number_mainpath(self):
+        d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").long_click()
+        d(resourceId="it.feio.android.omninotes:id/detail_content").set_text("Hello")
+        d(resourceId="it.feio.android.omninotes:id/detail_title").set_text("Hello22")
     
     @precondition(lambda self: d(resourceId="it.feio.android.omninotes:id/menu_attachment").exists() and d(resourceId="it.feio.android.omninotes:id/menu_share").exists() and d(resourceId="it.feio.android.omninotes:id/menu_tag").exists()  )
     @rule()
@@ -54,8 +56,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/omninotes/OmniNotes-6.0.5.apk",
     device_serial="emulator-5554",
-    output_dir="output/omninotes/631/random_100/1",
-    policy_name="random",
+    output_dir="../output/omninotes/631/mutate",
+    policy_name="mutate",
     
     number_of_events_that_restart_app = 100
 )

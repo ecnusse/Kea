@@ -1,8 +1,0 @@
-[
-    {
-        "ui_element": {
-            "resource_id": "com.ichi2.anki:id/fab_expand_menu_button"
-        },
-        "event_type": "click"
-    }
-]

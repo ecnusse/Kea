@@ -1,12 +1,14 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
     
-      
+    @main_path()
+    def option_on_one_filter_deck_should_work_mainpath(self):
+        d(description="More options").click()
+        d(text="Create filtered deck").click()
+        d(text="CREATE").click()
 
     @precondition(
         lambda self: 
@@ -38,10 +40,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/ankidroid/2.9.7.apk",
     device_serial="emulator-5554",
-    output_dir="output/ankidroid/5091/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/ankidroid/5091.json"
+    output_dir="../output/ankidroid/5091/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

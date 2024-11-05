@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -24,16 +22,13 @@ class Test(Kea):
         current_activity_name = d(resourceId="de.rampro.activitydiary:id/edit_activity_name").get_text()
         assert current_activity_name == activity_name, "activity name not match "+ str(activity_name) + " " + str(current_activity_name)
 
-
 t = Test()
 
 setting = Setting(
     apk_path="./apk/activitydiary/1.2.5.apk",
     device_serial="emulator-5554",
     output_dir="output/activitydiary/176/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/activitydiary/176.json"
+    policy_name="random"
 )
 run_android_check_as_test(t,setting)
 

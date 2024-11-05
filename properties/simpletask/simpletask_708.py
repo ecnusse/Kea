@@ -1,6 +1,5 @@
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -40,8 +39,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/simpletask/8.2.0.apk",
     device_serial="emulator-5554",
-    output_dir="output/simpletask/708/random_100/1",
-    policy_name="random",
+    output_dir="../output/simpletask/708/mutate",
+    policy_name="mutate",
     
     number_of_events_that_restart_app = 100
 )

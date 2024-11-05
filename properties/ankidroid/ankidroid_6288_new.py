@@ -11,6 +11,12 @@ class Test(Kea):
     def set_up(self):
         d(text="Get Started").click()
 
+    @main_path()
+    def add_card_in_one_deck_should_work_mainpath(self):
+        d(description="Open drawer").click()
+        d(text="Card browser").click()
+
+
     # 6288
     @precondition(
         lambda self: d(resourceId="com.ichi2.anki:id/dropdown_deck_name").exists() and not d(resourceId="com.ichi2.anki:id/navdrawer_items_container").exists()
@@ -57,9 +63,7 @@ setting = Setting(
     apk_path="./apk/ankidroid/2.18alpha6.apk",
     device_serial="emulator-5554",
     output_dir="output/ankidroid/6288/mutate_new/1",
-    policy_name="random",
-
-    main_path="main_path/ankidroid/6288_new.json"
+    policy_name="random"
 )
 run_android_check_as_test(t,setting)
 

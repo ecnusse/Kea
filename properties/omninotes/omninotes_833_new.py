@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -26,9 +24,14 @@ class Test(Kea):
         
         if d(text="OK").exists():
             d(text="OK").click()
-            
-        
-    
+
+    @main_path()
+    def change_language_to_chinese_mainpath(self):
+        d(description="drawer open").click()
+        d(text="Settings").click()
+        d(text="Interface").click()
+
+
     @precondition(lambda self: d(text="Interface").exists() and d(text="Language").exists())
     @rule()
     def change_language_to_chinese(self):
@@ -49,10 +52,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/omninotes/OmniNotes-6.2.8.apk",
     device_serial="emulator-5554",
-    output_dir="output/omninotes/833/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/omninotes/833.json"
+    output_dir="../output/omninotes/833/mutate_new",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

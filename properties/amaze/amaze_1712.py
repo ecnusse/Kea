@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -17,7 +15,7 @@ class Test(Kea):
             
     
     @precondition(lambda self: d(resourceId="com.amaze.filemanager:id/firstline").exists() and 
-                  d(resourceId="com.amaze.filemanager:id/sd_main_fab").exists() and not 
+                  d(resourceId="com.amaze.filemanager:id/sd_main_fab").exists() and not
                   d(resourceId="com.amaze.filemanager:id/donate").exists())
     @rule()
     def rule_hide_unhide_file(self):
@@ -56,10 +54,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/amaze/amaze-3.4.3.apk",
     device_serial="emulator-5554",
-    output_dir="output/amaze/1712/mutate/1",
+    output_dir="../output/amaze/1712/mutate/1",
     policy_name="random",
-
-    main_path="main_path/amaze/1712.json"
 )
 run_android_check_as_test(t,setting)
 

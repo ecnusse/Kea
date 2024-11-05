@@ -1,8 +1,4 @@
-import string
 from kea.main import *
-import time
-import sys
-import re
 
 class Test(Kea):
     
@@ -11,7 +7,6 @@ class Test(Kea):
     def set_up(self):
         if d(text="OK").exists():
             d(text="OK").click()
-        
     
     # bug #457
     @precondition(lambda self: d(resourceId="net.gsantner.markor:id/nav_notebook").exists())
@@ -34,10 +29,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/markor/1.5.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/markor/457/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/markor/457.json"
+    output_dir="../output/markor/457/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

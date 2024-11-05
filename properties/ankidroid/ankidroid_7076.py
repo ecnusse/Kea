@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -24,10 +22,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/ankidroid/2.14alpha1.apk",
     device_serial="emulator-5554",
-    output_dir="output/ankidroid/7076/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/ankidroid/7076.json"
+    output_dir="../output/ankidroid/7076/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

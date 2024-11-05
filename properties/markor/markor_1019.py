@@ -1,8 +1,4 @@
-import string
 from kea.main import *
-import time
-import sys
-import re
 
 class Test(Kea):
     
@@ -25,7 +21,10 @@ class Test(Kea):
         if d(text="OK").exists():
             d(text="OK").click()
         
-    
+    @main_path()
+    def rotate_device_should_not_change_the_title_mainpath(self):
+        d(resourceId="net.gsantner.markor:id/ui__filesystem_item__title").click()
+
     @precondition(
         lambda self: 
         d(resourceId="net.gsantner.markor:id/ui__filesystem_item__description").exists() and 
@@ -45,10 +44,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/markor/2.3.2.apk",
     device_serial="emulator-5554",
-    output_dir="output/markor/1019/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/markor/1019.json"
+    output_dir="../output/markor/1019/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

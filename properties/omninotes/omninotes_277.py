@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -30,7 +28,15 @@ class Test(Kea):
         
         d.press("back")
         
-    
+    @main_path()
+    def rule_search_by_tag_should_display_results_mainpath(self):
+        d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").long_click()
+        d(resourceId="it.feio.android.omninotes:id/detail_content").set_text("#")
+        d.press("back")
+        d.press("back")
+        d(resourceId="it.feio.android.omninotes:id/menu_search").click()
+        d(resourceId="it.feio.android.omninotes:id/menu_tags").click()
+
     @precondition(
             lambda self: 
             d(text="Search in notes").exists() and 
@@ -64,8 +70,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/omninotes/5.2.10.apk",
     device_serial="emulator-5554",
-    output_dir="output/omninotes/277/random_100/1",
-    policy_name="random",
+    output_dir="../output/omninotes/277/mutate",
+    policy_name="mutate",
     
     number_of_events_that_restart_app = 100
 )

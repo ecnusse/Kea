@@ -1,11 +1,13 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
+    @main_path()
+    def delete_activity_mainpath(self):
+        d(description="Open navigation").click()
+        d(text="Edit Activities").click()
+
     @precondition(
         lambda self: d(text="Manage activities").exists() and d(resourceId="de.rampro.activitydiary:id/action_show_hide_deleted").exists() and d(description="Navigate up").exists() and d(resourceId="de.rampro.activitydiary:id/activity_name").exists()
     )
@@ -26,11 +28,10 @@ class Test(Kea):
 t = Test()
 
 setting = Setting(
-    apk_path="./apk/activitydiary/1.4.2.apk",
+    apk_path="./apk/activitydiary/1.4.0.apk",
     device_serial="emulator-5554",
     output_dir="output/activitydiary/59/1",
-    policy_name="random",
-    main_path="main_path/activitydiary/59.json"
+    policy_name="random"
 )
 run_android_check_as_test(t,setting)
 

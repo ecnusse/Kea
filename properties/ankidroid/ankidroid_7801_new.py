@@ -1,11 +1,16 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
+
+    @main_path()
+    def edit_card_in_preview_shouldnot_switch_to_other_mainpath(self):
+        d(description="Navigate up").click()
+        d(text="Card browser").click()
+        d(resourceId="com.ichi2.anki:id/dropdown_deck_name").click()
+        d(text="All decks").click()
+        d(resourceId="com.ichi2.anki:id/card_sfld").long_click()
 
     @precondition(
         lambda self: 
@@ -42,9 +47,7 @@ setting = Setting(
     apk_path="./apk/ankidroid/2.18alpha6.apk",
     device_serial="emulator-5554",
     output_dir="output/ankidroid/7801/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/ankidroid/7801.json"
+    policy_name="random"
 )
 run_android_check_as_test(t,setting)
 

@@ -1,8 +1,0 @@
-[
-    {
-        "ui_element": {
-            "resource_id": "org.y20k.transistor:id/list_item_textview"
-        },
-        "event_type": "long_click"
-    }
-]

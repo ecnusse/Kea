@@ -1,11 +1,15 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
+
+    @main_path()
+    def Fail_to_send_feedback_mainpath(self):
+        d(description="Navigate up").click()
+        d(text="Help").click()
+        d(text="Get Help").click()
+        d(text="Send troubleshooting report").click()
 
     @precondition(
         lambda self: 
@@ -29,10 +33,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/ankidroid/2.15alpha34.apk",
     device_serial="emulator-5554",
-    output_dir="output/ankidroid/8379/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/ankidroid/8379.json"
+    output_dir="../output/ankidroid/8379/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

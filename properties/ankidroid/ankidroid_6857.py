@@ -1,6 +1,5 @@
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 from hypothesis import strategies as st
@@ -10,6 +9,13 @@ class Test(Kea):
     @initialize()
     def set_up(self):
         pass
+
+    @main_path()
+    def edit_card_should_remember_scroll_position_mainpath(self):
+        d(text="考研").click()
+        d.press("back")
+        d(description="Navigate up").click()
+        d(text="Card browser").click()
 
     @precondition(
         lambda self: d(resourceId="com.ichi2.anki:id/card_sfld").exists() and 
@@ -42,10 +48,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/ankidroid/2.12.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/ankidroid/6857/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/ankidroid/6857.json"
+    output_dir="../output/ankidroid/6857/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

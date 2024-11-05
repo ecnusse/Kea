@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -26,8 +24,19 @@ class Test(Kea):
         
         if d(text="OK").exists():
             d(text="OK").click()
-            
-    
+
+    @main_path()
+    def rule_trash_note_cannot_be_searched_mainapth(self):
+        d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").long_click()
+        d(resourceId="it.feio.android.omninotes:id/detail_title").set_text("Hello")
+        d(resourceId="it.feio.android.omninotes:id/detail_content").set_text("Hello world")
+        d(description="drawer open").click()
+        d(resourceId="it.feio.android.omninotes:id/note_title").long_click()
+        d(description="More options").click()
+        d(text="Trash").click()
+        d(description="drawer open").click()
+        d(text="Trash").click()
+
     @precondition(lambda self: d(resourceId="it.feio.android.omninotes:id/note_title").exists() and d(text="Trash").exists() and not d(text="Settings").exists())
     @rule()
     def rule_trash_note_cannot_be_searched(self):
@@ -75,11 +84,10 @@ t = Test()
 setting = Setting(
     apk_path="./apk/omninotes/OmniNotes-6.3.0.apk",
     device_serial="emulator-5554",
-    output_dir="output/omninotes/886/mutate_new/1",
-    policy_name="random",
+    output_dir="../output/omninotes/886/mutate_new",
+    policy_name="mutate",
     timeout=86400,
-    number_of_events_that_restart_app = 100,
-    main_path="main_path/omninotes/886_new.json"
+    number_of_events_that_restart_app = 100
 )
 run_android_check_as_test(t,setting)
 

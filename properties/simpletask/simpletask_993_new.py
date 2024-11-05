@@ -1,6 +1,5 @@
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -15,23 +14,10 @@ class Test(Kea):
         if d(text="Saved filters").exists():
             d.press("back")
 
-    @initialize()
-    def set_up(self):
-        d.set_fastinput_ime(True)
-        d(text="OK").click()
-        
+    @main_path()
+    def save_reopen_task_should_not_change_number_mainpath(self):
         d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
-        content = st.text(alphabet=string.ascii_letters,min_size=1, max_size=10).example()
-        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text(content)
-        
-        d(resourceId="nl.mpcjanssen.simpletask:id/btnProject").click()
-        
-        tag_name = st.text(alphabet=string.ascii_letters,min_size=1, max_size=6).example()
-        print("tag name: "+str(tag_name))
-        d(resourceId="nl.mpcjanssen.simpletask:id/new_item_text").set_text(tag_name)
-        
-        d(text="OK").click()
-        
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello World!")
         d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
 
     @precondition(
@@ -68,8 +54,7 @@ t = Test()
 setting = Setting(
     apk_path="./apk/simpletask/11.0.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/simpletask/993/1",
-    policy_name="random",
-
+    output_dir="output/simpletask/993/mutate_new",
+    policy_name="mutate"
 )
-
+run_android_check_as_test(t,setting)

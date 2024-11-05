@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -12,6 +10,53 @@ class Test(Kea):
         if d(text="OK").exists():
             d(text="OK").click()
         
+    @main_path()
+    def enter_task_and_back_should_keep_position_mainpath(self):
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello World!")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello1")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello2")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello3")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello4")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello5")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello6")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello7")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello8")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello9")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello10")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello11")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello12")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello13")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello14")
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnSave").click()
 
     @precondition(
         lambda self: int(d(resourceId="nl.mpcjanssen.simpletask:id/tasktext").count) > 13 and not d(text="Settings").exists() and not d(text="Saved filters").exists())
@@ -40,10 +85,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/simpletask/10.2.4.apk",
     device_serial="emulator-5554",
-    output_dir="output/simpletask/941/random_100/1",
-    policy_name="random",
-
-    main_path="main_path/simpletask/941.json"
+    output_dir="../output/simpletask/941/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

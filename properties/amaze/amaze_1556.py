@@ -1,6 +1,5 @@
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -16,7 +15,8 @@ class Test(Kea):
             d(text="Allow").click()
             
 
-    @precondition(lambda self: d(resourceId="com.amaze.filemanager:id/firstline").exists() and d(resourceId="com.amaze.filemanager:id/fab_expand_menu_button").exists() and not d(resourceId="com.amaze.filemanager:id/design_menu_item_action_area").exists())
+    @precondition(lambda self: d(resourceId="com.amaze.filemanager:id/firstline").exists()and
+                not d(resourceId="com.amaze.filemanager:id/design_menu_item_action_area").exists())
     @rule()
     def rule_rename(self):
 
@@ -48,9 +48,9 @@ t = Test()
 setting = Setting(
     apk_path="./apk/amaze/amaze-3.3.2.apk",
     device_serial="emulator-5554",
-    output_dir="output/amaze/1556/random_100/1",
+    output_dir="../output/amaze/1556/random_100/1",
     policy_name="random",
-    
+
     number_of_events_that_restart_app = 100
 )
 run_android_check_as_test(t,setting)

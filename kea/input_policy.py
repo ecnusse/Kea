@@ -182,13 +182,13 @@ class InputPolicy(object):
         pass
 
 
-class UtgBasedInputPolicy(InputPolicy):
+class KeaRandomInputPolicy(InputPolicy):
     """
     state-based input policy
     """
 
     def __init__(self, device, app, random_input, kea_core=None):
-        super(UtgBasedInputPolicy, self).__init__(device, app, kea_core)
+        super(KeaRandomInputPolicy, self).__init__(device, app, kea_core)
         self.random_input = random_input
         self.script = None
         self.master = None
@@ -360,14 +360,14 @@ class UtgBasedInputPolicy(InputPolicy):
         #         self.rules[rule]["#trigger the bug"]))
 
 
-class MutatePolicy(UtgBasedInputPolicy):
+class KeaMutateInputPolicy(KeaRandomInputPolicy):
     """
     
     """
 
     def __init__(self, device, app, random_input, kea_core=None,
                  run_initial_rules_after_every_mutation=True):
-        super(MutatePolicy, self).__init__(
+        super(KeaMutateInputPolicy, self).__init__(
             device, app, random_input, kea_core
         )
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -750,7 +750,7 @@ class MutatePolicy(UtgBasedInputPolicy):
         self.utg.add_transition(self.last_event, self.last_state, self.current_state)
 
 
-class UtgRandomPolicy(UtgBasedInputPolicy):
+class UtgRandomPolicy(KeaRandomInputPolicy):
     """
     random input policy based on UTG
     """

@@ -36,5 +36,5 @@ setting = Setting(
     number_of_events_that_restart_app = 100,
     main_path="main_path/antennapod/4026_new.json"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

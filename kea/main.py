@@ -134,45 +134,45 @@ class Setting:
 OUTPUT_DIR = "output"
 d = Mobile()
 
-def run_android_check_as_test(android_check_class, settings = None):
+def start_kea(kea_core, settings = None):
     if settings is None:
-        settings = android_check_class.TestCase.settings
+        settings = kea_core.TestCase.settings
 
-    def run_android_check(android_check_class):
 
-        droid = DroidBot(
-            app_path=settings.apk_path,
-            device_serial=settings.device_serial,
-            is_emulator=settings.is_emulator,
-            output_dir=settings.output_dir,
-            env_policy=env_manager.POLICY_NONE,
-            policy_name=settings.policy_name,
-            random_input=settings.random_input,
-            script_path=settings.script_path,
-            event_interval=settings.event_interval,
-            timeout=settings.timeout,
-            event_count=settings.event_count,
-            cv_mode=settings.cv_mode,
-            debug_mode=settings.debug_mode,
-            keep_app=settings.keep_app,
-            keep_env=settings.keep_env,
-            profiling_method=settings.profiling_method,
-            grant_perm=settings.grant_perm,
-            send_document=settings.send_document,
-            enable_accessibility_hard=settings.enable_accessibility_hard,
-            master=settings.master,
-            humanoid=settings.humanoid,
-            ignore_ad=settings.ignore_ad,
-            replay_output=settings.replay_output,
-            android_check=android_check_class,
-            number_of_events_that_restart_app=settings.number_of_events_that_restart_app,
-            run_initial_rules_after_every_mutation=settings.run_initial_rules_after_every_mutation
-        )
-        global d
-        d.set_device_serial(settings.device_serial)
-        d.set_droidbot(droid)
-        droid.start()
-    run_android_check(android_check_class)
+    droid = DroidBot(
+        app_path=settings.apk_path,
+        device_serial=settings.device_serial,
+        is_emulator=settings.is_emulator,
+        output_dir=settings.output_dir,
+        env_policy=env_manager.POLICY_NONE,
+        policy_name=settings.policy_name,
+        random_input=settings.random_input,
+        script_path=settings.script_path,
+        event_interval=settings.event_interval,
+        timeout=settings.timeout,
+        event_count=settings.event_count,
+        cv_mode=settings.cv_mode,
+        debug_mode=settings.debug_mode,
+        keep_app=settings.keep_app,
+        keep_env=settings.keep_env,
+        profiling_method=settings.profiling_method,
+        grant_perm=settings.grant_perm,
+        send_document=settings.send_document,
+        enable_accessibility_hard=settings.enable_accessibility_hard,
+        master=settings.master,
+        humanoid=settings.humanoid,
+        ignore_ad=settings.ignore_ad,
+        replay_output=settings.replay_output,
+        kea_core=kea_core,
+        number_of_events_that_restart_app=settings.number_of_events_that_restart_app,
+        run_initial_rules_after_every_mutation=settings.run_initial_rules_after_every_mutation
+    )
+    
+    global d
+    d.set_device_serial(settings.device_serial)
+    d.set_droidbot(droid)
+    droid.start()
+
 from hypothesis import strategies as st
 class Kea(object):
     _rules_per_class: Dict[type, List[classmethod]] = {}

@@ -1,8 +1,0 @@
-[
-    {
-        "ui_element": {
-            "resource_id": "net.gsantner.markor:id/nav_more"
-        },
-        "event_type": "click"
-    }
-]

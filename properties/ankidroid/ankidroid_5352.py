@@ -1,6 +1,5 @@
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -10,6 +9,11 @@ class Test(Kea):
     @initialize()
     def set_up(self):
         pass
+
+    @main_path()
+    def note_type_should_be_consistent_mainpath(self):
+        d(description="More options").click()
+        d(text="Manage note types").click()
 
     @precondition(
         lambda self: d(text="Manage note types").exists() and 
@@ -41,8 +45,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/ankidroid/2.9alpha75.apk",
     device_serial="emulator-5554",
-    output_dir="output/ankidroid/5352/random_100/1",
-    policy_name="random",
+    output_dir="../output/ankidroid/5352/mutate",
+    policy_name="mutate",
     
     number_of_events_that_restart_app = 100
 )

@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -25,9 +23,9 @@ class Test(Kea):
         selected_deck.click()
         
         d.press("back")
-        
+
         d(description="Open drawer").click()
-        
+
         d(text="Card browser").click()
         
         deck_name = d(resourceId="com.ichi2.anki:id/dropdown_deck_name").get_text()
@@ -42,10 +40,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/ankidroid/2.18alpha6.apk",
     device_serial="emulator-5554",
-    output_dir="output/ankidroid/4999/mutate_new/1",
-    policy_name="random",
-
-    main_path="main_path/ankidroid/4999_new.json"
+    output_dir="../output/ankidroid/4999/mutate_new",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

@@ -1,17 +1,18 @@
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
-    
 
     @initialize()
     def set_up(self):
         d(text="Get Started").click()
-        
+
+    @main_path()
+    def cloze_should_work_mainpath(self):
+        d(resourceId="com.ichi2.anki:id/fab_expand_menu_button").click()
+
     @precondition(
         lambda self: d(text="Add").exists() and 
         d(text="Get shared decks").exists() 

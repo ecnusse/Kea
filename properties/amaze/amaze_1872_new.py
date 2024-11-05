@@ -1,11 +1,15 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
+    @initialize()
+    def set_up(self):
+        if d(text="ALLOW").exists():
+            d(text="ALLOW").click()
+
+        elif d(text="Allow").exists():
+            d(text="Allow").click()
 
     # 1872
     @precondition(lambda self: 
@@ -47,8 +51,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/amaze/3.10.apk",
     device_serial="emulator-5554",
-    output_dir="output/amaze/1872/1",
-    policy_name="random",
+    output_dir="../output/amaze/1872/mutate_new",
+    policy_name="random"
 
 )
-
+run_android_check_as_test(t,setting)

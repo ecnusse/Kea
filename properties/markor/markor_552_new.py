@@ -1,8 +1,5 @@
 import string
 from kea.main import *
-import time
-import sys
-import re
 
 class Test(Kea):
     
@@ -22,7 +19,17 @@ class Test(Kea):
         
         if d(text="OK").exists():
             d(text="OK").click()
-        
+
+    @main_path()
+    def modify_content_should_update_time_mainpath(self):
+        d(resourceId="net.gsantner.markor:id/fab_add_new_item").click()
+        d(resourceId="net.gsantner.markor:id/new_file_dialog__name").set_text("Hello2222")
+        d(text="OK").click()
+        d(resourceId="net.gsantner.markor:id/document__fragment__edit__highlighting_editor").click()
+        d.send_keys("Hello")
+        d(resourceId="net.gsantner.markor:id/action_save").click()
+        d.press("back")
+        d.press("back")
         
     #bug 552
     @precondition(
@@ -76,10 +83,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/markor/2.11.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/markor/552/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/markor/552_new.json"
+    output_dir="../output/markor/552/mutate_new",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

@@ -1,7 +1,5 @@
-
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -54,7 +52,7 @@ t = Test()
 setting = Setting(
     apk_path="./apk/amaze/amaze-3.5.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/amaze/2113/random_100/1",
+    output_dir="../output/amaze/2113/random_100/1",
     policy_name="random",
     
     number_of_events_that_restart_app = 100

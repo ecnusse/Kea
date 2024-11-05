@@ -1,6 +1,5 @@
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -11,6 +10,11 @@ class Test(Kea):
     def set_up(self):
         if d(text="OK").exists():
             d(text="OK").click()
+
+    @main_path()
+    def add_tag_mainpath(self):
+        d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
+        d(resourceId="nl.mpcjanssen.simpletask:id/btnProject").click()
 
     @precondition(
         lambda self: d(resourceId="nl.mpcjanssen.simpletask:id/alertTitle",text="Tag").exists() and 
@@ -25,7 +29,7 @@ class Test(Kea):
         
         d.set_fastinput_ime(False)
         
-        d(description="Done").click()
+        # d(description="Done").click()
         
         d(text="OK").click()
         
@@ -41,10 +45,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/simpletask/10.1.15.apk",
     device_serial="emulator-5554",
-    output_dir="output/simpletask/907/random_100/1",
-    policy_name="random",
-
-    main_path="main_path/simpletask/907.json"
+    output_dir="../output/simpletask/907/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

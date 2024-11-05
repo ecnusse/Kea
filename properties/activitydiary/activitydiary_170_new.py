@@ -1,11 +1,14 @@
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
+
+    @main_path()
+    def import_an_backup_should_take_effect_mainpath(self):
+        d(description="Open navigation").click()
+        d(text="Settings").click()
 
     @precondition(
         lambda self: d(text="Settings").exists() and d(text="Behavior").exists()
@@ -18,7 +21,7 @@ class Test(Kea):
         d(text="Export database").click()
         backup_title = st.text(alphabet=string.ascii_letters,min_size=1, max_size=5).example()
         print("backup title: " + backup_title)
-        d(text="ActivityDiary_Export.sqlite3").set_text(backup_title)
+        d(text="SAVE").left(text="ActivityDiary_Export.sqlite3").set_text(backup_title)
         
         d(text="SAVE").click()
         
@@ -57,10 +60,10 @@ class Test(Kea):
 t = Test()
 
 setting = Setting(
-    apk_path="./apk/activitydiary/1.4.2.apk",
+    apk_path="./apk/activitydiary/1.4.0.apk",
     device_serial="emulator-5554",
     output_dir="output/activitydiary/176/1",
-    policy_name="random",
+    policy_name="random"
 
 )
 

@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -33,10 +31,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/simpletask/9.0.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/simpletask/738/random_100/1",
-    policy_name="random",
-
-    main_path="main_path/simpletask/738.json"
+    output_dir="../output/simpletask/738/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

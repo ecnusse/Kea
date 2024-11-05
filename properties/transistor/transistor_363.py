@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -55,10 +53,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/transistor/4.0.15.apk",
     device_serial="emulator-5554",
-    output_dir="output/transistor/363/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/transistor/363.json"
+    output_dir="../output/transistor/363/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

@@ -1,8 +1,4 @@
-import string
 from kea.main import *
-import time
-import sys
-import re
 
 class Test(Kea):
     
@@ -22,7 +18,17 @@ class Test(Kea):
         
         if d(text="OK").exists():
             d(text="OK").click()
-        
+
+    @main_path()
+    def view_file_should_exist_in_recent_viewed_documents_mainpath(self):
+        d(resourceId="net.gsantner.markor:id/fab_add_new_item").click()
+        d(resourceId="net.gsantner.markor:id/new_file_dialog__name").set_text("Hello")
+        d(text="OK").click()
+        d(resourceId="net.gsantner.markor:id/document__fragment__edit__content_editor__scrolling_parent").set_text("World")
+        d(resourceId="net.gsantner.markor:id/action_save").click()
+        d.press("back")
+        d.press("back")
+
     @precondition(
         lambda self: d(resourceId="net.gsantner.markor:id/fab_add_new_item").exists() and 
         d(resourceId="net.gsantner.markor:id/opoc_filesystem_item__title").exists() and 
@@ -66,10 +72,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/markor/2.11.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/markor/1478/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/markor/1478_new.json"
+    output_dir="../output/markor/1478/mutate_new",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

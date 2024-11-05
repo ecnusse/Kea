@@ -1,8 +1,5 @@
 import string
 from kea.main import *
-import time
-import sys
-import re
 
 class Test(Kea):
     
@@ -63,10 +60,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/markor/2.11.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/markor/389/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/markor/389_new.json"
+    output_dir="../output/markor/389/mutate_new",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

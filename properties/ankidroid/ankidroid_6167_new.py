@@ -1,6 +1,4 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -10,6 +8,17 @@ class Test(Kea):
     @initialize()
     def set_up(self):
         d(text="Get Started").click()
+
+    @main_path()
+    def question_and_answer_should_be_consistent_mainpath(self):
+        d(resourceId="com.ichi2.anki:id/fab_main").click()
+        d(text="Add").click()
+        d(description="Front").set_text("Hello World")
+        d(description="Back").set_text("Hello World 111")
+        d(resourceId="com.ichi2.anki:id/action_save").click()
+        d(description="Navigate up").click()
+        d(description="Open drawer").click()
+        d(text="Card browser").click()
 
     # 6167
     @precondition(
@@ -42,9 +51,7 @@ setting = Setting(
     device_serial="emulator-5554",
     output_dir="output/ankidroid/6167/mutate_new/1",
     policy_name="random",
-
-    send_document=False,
-    main_path="main_path/ankidroid/6167_new.json"
+    send_document=False
 )
 run_android_check_as_test(t,setting)
 

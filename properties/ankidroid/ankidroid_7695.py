@@ -1,11 +1,15 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
+
+    @main_path()
+    def rename_note_type_shouldnot_display_mainpath(self):
+        d(description="More options").click()
+        d(text="Manage note types").click()
+        d(resourceId="com.ichi2.anki:id/model_list_item_1").click()
+        d(text="Front").click()
 
     @precondition(
         lambda self: d(text="Front").exists() and 
@@ -25,10 +29,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/ankidroid/2.13.5.apk",
     device_serial="emulator-5554",
-    output_dir="output/ankidroid/7695/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/ankidroid/7695.json"
+    output_dir="../output/ankidroid/7695/mutate",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

@@ -1,11 +1,14 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
+
+    @main_path()
+    def import_an_backup_should_take_effect_mainpath(self):
+        d(description="Open navigation").click()
+        d(text="Settings").click()
+        d(scrollable=True).scroll.to(text="Import database")
 
     @precondition(
         lambda self: d(text="Settings").exists() and d(text="Import database").exists()
@@ -33,9 +36,7 @@ setting = Setting(
     apk_path="./apk/activitydiary/1.2.5.apk",
     device_serial="emulator-5554",
     output_dir="output/activitydiary/170/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/activitydiary/170.json"
+    policy_name="random"
 )
 run_android_check_as_test(t,setting)
 

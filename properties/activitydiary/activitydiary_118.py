@@ -1,11 +1,8 @@
-import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    
 
     @initialize()
     def set_up(self):
@@ -22,6 +19,15 @@ class Test(Kea):
             d(text="Allow all the time").click()
             
         d.press("back")
+
+    @main_path()
+    def delete_pics_should_work_mainpath(self):
+        d(resourceId="de.rampro.activitydiary.debug:id/select_card_view").click()
+        d(resourceId="de.rampro.activitydiary.debug:id/fab_attach_picture").click()
+        d(resourceId="com.android.camera:id/shutter_button").click()
+        d(resourceId="com.android.camera:id/btn_done").click()
+        d(description = "Open Navigation").click()
+        d(text="Diary").click()
 
     @precondition(
         lambda self: d(text="Diary").exists() and 
@@ -50,16 +56,14 @@ class Test(Kea):
             assert pic_name != selected_pic_name, "pic not deleted "+pic_name+" "+selected_pic_name
 
 
-
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/activitydiary/1.1.8.apk",
-    device_serial="emulator-5554",
-    output_dir="output/activitydiary/118/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/activitydiary/118.json"
-)
-run_android_check_as_test(t,setting)
+#
+# t = Test()
+#
+# setting = Setting(
+#     apk_path="./apk/activitydiary/1.1.8.apk",
+#     device_serial="emulator-5554",
+#     output_dir="output/activitydiary/118/mutate/1",
+#     policy_name="random"
+# )
+# run_android_check_as_test(t,setting)
 

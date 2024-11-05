@@ -1,6 +1,5 @@
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -11,6 +10,11 @@ class Test(Kea):
     def set_up(self):
         
         pass
+
+    @main_path()
+    def text_should_display_when_episodes_is_empty_mainpath(self):
+        d(description="Open menu").click()
+        d(text="Settings").click()
 
     @precondition(
         lambda self: d(text="Settings").exists() and 
@@ -38,8 +42,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/antennapod/1.7.1.apk",
     device_serial="emulator-5554",
-    output_dir="output/antennapod/4640/random_100/1",
-    policy_name="random",
+    output_dir="../output/antennapod/4640/mutate",
+    policy_name="mutate",
     
     number_of_events_that_restart_app = 100
 )

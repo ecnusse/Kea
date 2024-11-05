@@ -1,6 +1,5 @@
 import string
 import sys
-import time
 sys.path.append("..")
 from kea.main import *
 
@@ -26,8 +25,11 @@ class Test(Kea):
         
         if d(text="OK").exists():
             d(text="OK").click()
-             
-    
+
+    @main_path()
+    def hash_tag_with_number_start_shouldbe_recognized_mainpath(self):
+        d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").long_click()
+
     @precondition(lambda self: d(resourceId="it.feio.android.omninotes:id/menu_attachment").exists() and d(resourceId="it.feio.android.omninotes:id/menu_share").exists() and d(resourceId="it.feio.android.omninotes:id/menu_tag").exists() )
     @rule()
     def hash_tag_shouldbe_recognized(self):
@@ -62,10 +64,8 @@ t = Test()
 setting = Setting(
     apk_path="./apk/omninotes/OmniNotes-6.3.0.apk",
     device_serial="emulator-5554",
-    output_dir="output/omninotes/237/mutate_new/1",
-    policy_name="random",
-
-    main_path="main_path/omninotes/237_new.json"
+    output_dir="../output/omninotes/237/mutate_new",
+    policy_name="mutate"
 )
 run_android_check_as_test(t,setting)
 

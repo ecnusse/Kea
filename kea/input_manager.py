@@ -8,11 +8,11 @@ from .input_policy import (
     POLICY_MUTATE_MAIN_PATH,
     POLICY_RANDOM_TWO,
     POLICY_RANDOM_100,
-    MutatePolicy,
+    KeaMutateInputPolicy,
     POLICY_MUTATE,
     POLICY_BUILD_MODEL,
     POLICY_RANDOM,
-    UtgBasedInputPolicy,
+    KeaRandomInputPolicy,
     UtgRandomPolicy,
     POLICY_NAIVE_DFS,
     POLICY_GREEDY_DFS,
@@ -101,7 +101,7 @@ class InputManager(object):
         elif self.policy_name == POLICY_MONKEY:
             input_policy = None
         elif self.policy_name == POLICY_MUTATE:
-            input_policy = MutatePolicy(
+            input_policy = KeaMutateInputPolicy(
                 device,
                 app,
                 self.random_input,
@@ -121,7 +121,7 @@ class InputManager(object):
                 "No valid input policy specified. Using policy \"none\"."
             )
             input_policy = None
-        if isinstance(input_policy, UtgBasedInputPolicy):
+        if isinstance(input_policy, KeaRandomInputPolicy):
             input_policy.script = self.script
             input_policy.master = master
         return input_policy

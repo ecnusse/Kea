@@ -119,14 +119,14 @@ def generate_report(img_path, html_path, bug_information=None):
     # f_style = open("droidbot/resources/style/style.html", 'r', encoding='utf-8')
     new_str = "<ul id=\"menu\">" + '\n'
     new_bug_str = ""
-    json_dir = os.path.join(html_path, "report_screen_shoot.json")
+    json_dir = os.path.join(html_path, "report_screenshot.json")
     with open(json_dir, 'r') as json_file:
         report_screens = json.load(json_file)
     for report_screen in report_screens:
         action_count = report_screen['event_index']
         event_name = report_screen['event']
         img_name = report_screen['screen_shoot']
-        img_file = os.path.join("every_states", img_name)
+        img_file = os.path.join("all_states", img_name)
         line = (
             "      <li><img src=\""
             + img_file

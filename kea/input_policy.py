@@ -323,7 +323,7 @@ class KeaRandomInputPolicy(InputPolicy):
         """
         # mark the bug information on the bug report html
         if len(self.triggered_bug_information) > 0:
-            bug_report_path = os.path.join(self.device.output_dir, "every_states")
+            bug_report_path = os.path.join(self.device.output_dir, "all_states")
             utils.generate_report(
                 bug_report_path,
                 self.device.output_dir,

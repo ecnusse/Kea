@@ -67,5 +67,5 @@ setting = Setting(
 
     main_path="main_path/omninotes/237_new.json"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

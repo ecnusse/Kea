@@ -29,5 +29,5 @@ setting = Setting(
     policy_name="mutate",
     grant_perm=False
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

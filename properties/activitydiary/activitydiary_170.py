@@ -38,5 +38,5 @@ setting = Setting(
     output_dir="output/activitydiary/170/mutate/1",
     policy_name="random"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

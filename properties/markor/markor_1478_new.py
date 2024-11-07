@@ -75,5 +75,5 @@ setting = Setting(
     output_dir="../output/markor/1478/mutate_new",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

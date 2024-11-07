@@ -117,5 +117,5 @@ setting = Setting(
     timeout=86400,
     number_of_events_that_restart_app = 100
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

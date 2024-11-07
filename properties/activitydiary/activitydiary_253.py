@@ -25,14 +25,16 @@ class Test(Kea):
         assert current_activity_name == activity_name, "activity name changed from "+ activity_name + " to " + current_activity_name
 
 
-#
-# t = Test()
-#
-# setting = Setting(
-#     apk_path="./apk/activitydiary/1.4.0.apk",
-#     device_serial="emulator-5554",
-#     output_dir="output/activitydiary/253/mutate/1",
-#     policy_name="random",
-# )
-# run_android_check_as_test(t,setting)
+
+t = Test()
+
+setting = Setting(
+    apk_path="./apk/activitydiary/1.4.0.apk",
+    device_serial="emulator-5554",
+    output_dir="output/activitydiary/253/mutate/1",
+    policy_name="random",
+
+    main_path="main_path/activitydiary/253.json"
+)
+start_kea(t,setting)
 

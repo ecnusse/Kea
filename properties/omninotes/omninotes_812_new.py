@@ -111,5 +111,5 @@ setting = Setting(
     output_dir="../output/omninotes/812/mutate_new",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

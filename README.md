@@ -1,5 +1,17 @@
-# Kea
-![logo](kea/resources/kea_log(1).png)
+<div align="center">
+<h1>Kea</h1>
+
+<a href='https://dl.acm.org/doi/10.1145/3691620.3694986'><img src='https://img.shields.io/badge/acm-10.1145-blue.svg'></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ <a href='LICENSE'><img src='https://img.shields.io/badge/License-MIT-blue'></a>
+</div>
+
+<div align="center">
+    <img src="kea/resources/kea_log(1).png" alt="kea_logo" style="border-radius: 18px"/>
+</div>
+
+<p>
+
+</p>
 
 Kea is a general and practical testing tool based on the idea of [property-based testing](https://en.wikipedia.org/wiki/Software_testing#Property_testing) for finding functional bugs in mobile (GUI) apps.
 Kea currently supports Android and is planned to support HarmonyOS soon.

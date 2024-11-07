@@ -56,5 +56,5 @@ setting = Setting(
     output_dir="output/ankidroid/7070/mutate_new/1",
     policy_name="random"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

@@ -20,6 +20,8 @@ import warnings
 from dataclasses import dataclass
 from kea.dsl import Mobile
 warnings.filterwarnings("ignore", category=NonInteractiveExampleWarning)
+import coloredlogs
+coloredlogs.install()
 
 RULE_MARKER = "tool_rule"
 INITIALIZE_RULE_MARKER = "tool_initialize_rule"
@@ -133,50 +135,50 @@ class Setting:
 OUTPUT_DIR = "output"
 d = Mobile()
 
-def run_android_check_as_test(android_check_class, settings = None):
+def start_kea(kea_core, settings = None):
     if settings is None:
-        settings = android_check_class.TestCase.settings
+        settings = kea_core.TestCase.settings
 
-    def run_android_check(android_check_class):
 
-        droid = DroidBot(
-            app_path=settings.apk_path,
-            device_serial=settings.device_serial,
-            is_emulator=settings.is_emulator,
-            output_dir=settings.output_dir,
-            env_policy=env_manager.POLICY_NONE,
-            policy_name=settings.policy_name,
-            random_input=settings.random_input,
-            script_path=settings.script_path,
-            event_interval=settings.event_interval,
-            timeout=settings.timeout,
-            event_count=settings.event_count,
-            cv_mode=settings.cv_mode,
-            debug_mode=settings.debug_mode,
-            keep_app=settings.keep_app,
-            keep_env=settings.keep_env,
-            profiling_method=settings.profiling_method,
-            grant_perm=settings.grant_perm,
-            send_document=settings.send_document,
-            enable_accessibility_hard=settings.enable_accessibility_hard,
-            master=settings.master,
-            humanoid=settings.humanoid,
-            ignore_ad=settings.ignore_ad,
-            replay_output=settings.replay_output,
-            android_check=android_check_class,
-            number_of_events_that_restart_app=settings.number_of_events_that_restart_app,
-            run_initial_rules_after_every_mutation=settings.run_initial_rules_after_every_mutation
-        )
-        global d
-        d.set_device_serial(settings.device_serial)
-        d.set_droidbot(droid)
-        droid.start()
-    run_android_check(android_check_class)
+    droid = DroidBot(
+        app_path=settings.apk_path,
+        device_serial=settings.device_serial,
+        is_emulator=settings.is_emulator,
+        output_dir=settings.output_dir,
+        env_policy=env_manager.POLICY_NONE,
+        policy_name=settings.policy_name,
+        random_input=settings.random_input,
+        script_path=settings.script_path,
+        event_interval=settings.event_interval,
+        timeout=settings.timeout,
+        event_count=settings.event_count,
+        cv_mode=settings.cv_mode,
+        debug_mode=settings.debug_mode,
+        keep_app=settings.keep_app,
+        keep_env=settings.keep_env,
+        profiling_method=settings.profiling_method,
+        grant_perm=settings.grant_perm,
+        send_document=settings.send_document,
+        enable_accessibility_hard=settings.enable_accessibility_hard,
+        master=settings.master,
+        humanoid=settings.humanoid,
+        ignore_ad=settings.ignore_ad,
+        replay_output=settings.replay_output,
+        kea_core=kea_core,
+        number_of_events_that_restart_app=settings.number_of_events_that_restart_app,
+        run_initial_rules_after_every_mutation=settings.run_initial_rules_after_every_mutation
+    )
+    
+    global d
+    d.set_device_serial(settings.device_serial)
+    d.set_droidbot(droid)
+    droid.start()
+
 from hypothesis import strategies as st
 class Kea(object):
-    _rules_per_class: Dict[type, List[classmethod]] = {}
-    _initializers_per_class: Dict[type, List[classmethod]] = {}
-    _main_path_per_class: Dict[type, List[classmethod]] = {}
+    _rules_per_class: Dict[type, List["Rule"]] = {}
+    _initializers_per_class: Dict[type, List["Rule"]] = {}
+    _main_path_per_class: Dict[type, List["MainPath"]] = {}
     _bundles_: Dict[str, Bundle] = {}
 
     def __init__(
@@ -304,15 +306,14 @@ class Kea(object):
 
     def get_rules_that_pass_the_preconditions(self) -> List:
         '''Check all rules and return the list of rules that meet the preconditions.'''
-        rules_to_check = self.rules()
-        rules_meeting_preconditions = []
-        for class_name in self._rules_per_class:
-            rules_to_check = self._rules_per_class[class_name]
-            for rule_to_check in rules_to_check:
-                if len(rule_to_check.preconditions) > 0:
-                    if all(precond(self) for precond in rule_to_check.preconditions):
-                        rules_meeting_preconditions.append(rule_to_check)
-        return rules_meeting_preconditions
+        rules_passed_precondition = []
+        for rule_list in self._rules_per_class.values():
+            for target_rule in rule_list:
+                if len(target_rule.preconditions) > 0:
+                    if all(precond(self) for precond in target_rule.preconditions):
+                        rules_passed_precondition.append(target_rule)
+
+        return rules_passed_precondition
 
     def get_rules_without_preconditions(self):
         '''Return the list of rules that do not have preconditions.'''

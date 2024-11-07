@@ -56,14 +56,16 @@ class Test(Kea):
             assert pic_name != selected_pic_name, "pic not deleted "+pic_name+" "+selected_pic_name
 
 
-#
-# t = Test()
-#
-# setting = Setting(
-#     apk_path="./apk/activitydiary/1.1.8.apk",
-#     device_serial="emulator-5554",
-#     output_dir="output/activitydiary/118/mutate/1",
-#     policy_name="random"
-# )
-# run_android_check_as_test(t,setting)
+
+t = Test()
+
+setting = Setting(
+    apk_path="./apk/activitydiary/1.1.8.apk",
+    device_serial="emulator-5554",
+    output_dir="output/activitydiary/118/mutate/1",
+    policy_name="random",
+
+    main_path="main_path/activitydiary/118.json"
+)
+start_kea(t,setting)
 

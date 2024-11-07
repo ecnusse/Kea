@@ -47,5 +47,5 @@ setting = Setting(
     device_serial="emulator-5554",
     output_dir="../output/amaze/1499/1",
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

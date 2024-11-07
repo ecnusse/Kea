@@ -1,5 +1,5 @@
 from .input_manager import DEFAULT_DEVICE_SERIAL, DEFAULT_POLICY, DEFAULT_TIMEOUT
-from .main import Kea, Setting, run_android_check_as_test
+from .main import Kea, Setting, start_kea
 
 import importlib
 import os
@@ -71,7 +71,7 @@ def main():
                        keep_app=options.keep_app,
                        )
     print(Kea._rules_per_class)
-    run_android_check_as_test(test_classes[0],setting)
+    start_kea(test_classes[0],setting)
 
 if __name__ == "__main__":
     main()

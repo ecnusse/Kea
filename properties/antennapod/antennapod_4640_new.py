@@ -5,7 +5,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def text_should_display_when_episodes_is_empty_mainpath(self):
         d(description="Open menu").click()
         d(text="Settings").click()

@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
     
-    @main_path()
+    @mainPath()
     def reschedule_should_display_another_card_mainpath(self):
         d(resourceId="com.ichi2.anki:id/deckpicker_name").click()
 

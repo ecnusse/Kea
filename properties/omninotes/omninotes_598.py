@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d.set_fastinput_ime(True)
         d(resourceId="it.feio.android.omninotes:id/next").click()
@@ -23,7 +23,7 @@ class Test(Kea):
         if d(text="OK").exists():
             d(text="OK").click()
 
-    @main_path()
+    @mainPath()
     def remove_password_in_setting_should_effect_mainpath(self):
         d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").long_click()
         d(resourceId="it.feio.android.omninotes:id/detail_content").set_text("Hello world")

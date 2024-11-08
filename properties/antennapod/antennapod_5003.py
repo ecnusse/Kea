@@ -5,11 +5,11 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d.press("back")
 
-    @main_path()
+    @mainPath()
     def remove_podcast_should_close_miniplayed_mainpath(self):
         d(description="Open menu").click()
         d(text="Add Podcast",resourceId="de.danoeh.antennapod:id/txtvTitle").click()

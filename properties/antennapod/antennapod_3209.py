@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def remove_favorite_mainpath(self):
         d(text="Add Podcast").click()
         d(text="SEARCH ITUNES").click()

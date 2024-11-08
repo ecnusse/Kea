@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def question_and_answer_should_be_consistent_mainpath(self):
         d(resourceId="com.ichi2.anki:id/fab_expand_menu_button").click()
         d(text="Add").click()

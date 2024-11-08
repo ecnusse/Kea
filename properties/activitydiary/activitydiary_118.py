@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Cinema").click()
         
@@ -20,7 +20,7 @@ class Test(Kea):
             
         d.press("back")
 
-    @main_path()
+    @mainPath()
     def delete_pics_should_work_mainpath(self):
         d(resourceId="de.rampro.activitydiary.debug:id/select_card_view").click()
         d(resourceId="de.rampro.activitydiary.debug:id/fab_attach_picture").click()

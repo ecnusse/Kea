@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(resourceId="it.feio.android.omninotes:id/next").click()
         
@@ -20,7 +20,7 @@ class Test(Kea):
         d(resourceId="it.feio.android.omninotes:id/done").click()
 
 
-    @main_path()
+    @mainPath()
     def dataloss_on_search_text_mainpath(self):
         d(resourceId="it.feio.android.omninotes:id/menu_search").click()
         d(resourceId="it.feio.android.omninotes:id/search_plate").set_text("Hello World")

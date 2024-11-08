@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(description="Navigate up").click()
         
@@ -19,7 +19,7 @@ class Test(Kea):
         
         d(text="日本語").click()
 
-    @main_path()
+    @mainPath()
     def card_info_should_be_translated_mainpath(self):
         d(description="前に戻る").click()
         d(text="カードブラウザ").click()

@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(description="Open menu").click()
         
@@ -18,7 +18,7 @@ class Test(Kea):
         time.sleep(3)
         d(text="Subscribe").click()
 
-    @main_path()
+    @mainPath()
     def remove_podcast_should_close_miniplayed_mainpath(self):
         d(resourceId="de.danoeh.antennapod:id/txtvTitle")[random.randint(1, d(resourceId="de.danoeh.antennapod:id/txtvTitle").count - 1)].click()
         d(text="Stream").click()

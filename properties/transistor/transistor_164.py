@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
     
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Add a new station").click()
         

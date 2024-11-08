@@ -3,7 +3,7 @@ from kea.main import *
 class Test2(Kea):
     _files = Kea.set_bundle("files")
 
-    @initialize()
+    @initializer()
     def set_up(self):
         if d(text="Allow").exists():
             d(text="Allow").click()

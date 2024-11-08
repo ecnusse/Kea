@@ -5,12 +5,12 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         if d(text="OK").exists():
             d(text="OK").click()
 
-    @main_path()
+    @mainPath()
     def filter_by_tag_mainpath(self):
         d(description="Select list").click()
 

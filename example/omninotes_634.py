@@ -3,7 +3,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         for _ in range(5):
             d(resourceId="it.feio.android.omninotes:id/next").click()

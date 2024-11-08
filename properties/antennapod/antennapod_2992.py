@@ -4,11 +4,11 @@ from kea.main import *
 
 class Test(Kea):
     
-    @initialize()
+    @initializer()
     def set_up(self):
         d.press("back")
 
-    @main_path()
+    @mainPath()
     def rotate_device_shouldnot_make_cover_disappear_mainpath(self):
         d(description="Open menu").click()
         d(text="Add Podcast").click()

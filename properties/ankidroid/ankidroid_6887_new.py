@@ -5,7 +5,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def add_new_card_should_update_new_card_count_mainpath(self):
         d(resourceId="com.ichi2.anki:id/deckpicker_name").click()
 

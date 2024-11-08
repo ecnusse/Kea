@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import os
 
 import logging
@@ -75,6 +76,19 @@ POLICY_MEMORY_GUIDED = "memory_guided"  # implemented in input_policy2
 GUIDE = "guide"
 DIVERSE = "diverse"
 MAX_NUM_STEPS_OUTSIDE_THE_SHORTEST_PATH = 10
+
+@dataclass
+class RULE_STATE:
+    SATISFY_PRE = "#satisfy pre"
+    CHECK_PROPERTY = "#check property"
+    TRIGGER_BUG = "#trigger the bug"
+
+@dataclass
+class CHECK_RESULT:
+    ASSERTION_ERROR = 0
+    PASS = 1
+    UI_NOT_FOUND = 2
+    PRECON_NOT_SATISFIED = 3
 
 
 class InputInterruptedException(Exception):
@@ -174,7 +188,7 @@ class InputPolicy(object):
         pass
 
     @abstractmethod
-    def explore_app(self):
+    def generate_explore_event(self):
         """
         generate an event
         @return:
@@ -207,7 +221,7 @@ class KeaRandomInputPolicy(InputPolicy):
         # retrive all the rules from the provided properties
         self.rules = {}
         for rule in self.kea_core.all_rules:
-            self.rules[rule.function.__name__] = {"#satisfy pre": 0, "#check property": 0, "#trigger the bug": 0}
+            self.rules[rule.function.__name__] = {RULE_STATE.SATISFY_PRE: 0, RULE_STATE.CHECK_PROPERTY: 0, RULE_STATE.TRIGGER_BUG: 0}
         # record the action count, time and property name when the bug is triggered
         self.triggered_bug_information = []
 
@@ -221,36 +235,35 @@ class KeaRandomInputPolicy(InputPolicy):
             # continue
 
         for rule in rules_to_check:
-            self.rules[rule.function.__name__]["#satisfy pre"] += 1
+            self.rules[rule.function.__name__][RULE_STATE.SATISFY_PRE] += 1
         rule_to_check = random.choice(rules_to_check)
 
         if rule_to_check is not None:
             self.logger.info("-------check rule : %s------" % rule_to_check)
-            self.rules[rule_to_check.function.__name__]["#check property"] += 1
-            '''
-            0: assertion error
-            1: check property pass
-            2: UiObjectNotFoundError
-            3: don't need to check property,because the precondition is not satisfied
-            '''
+            self.rules[rule_to_check.function.__name__][RULE_STATE.CHECK_PROPERTY] += 1
 
+            # check rule, record relavant info and output log
             result = self.kea_core.execute_rule(rule_to_check)
-            if result == 0:
+            if result == CHECK_RESULT.ASSERTION_ERROR:
                 self.logger.error("-------check rule : assertion error------")
                 self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))
-                self.rules[rule_to_check.function.__name__]["#trigger the bug"] += 1
+                self.rules[rule_to_check.function.__name__][RULE_STATE.TRIGGER_BUG] += 1
                 self.triggered_bug_information.append(
                     (self.action_count, self.time_recoder.get_time_duration(), rule_to_check.function.__name__))
 
 
-            elif result == 1:
+            elif result == CHECK_RESULT.PASS:
                 self.logger.info("-------check rule : pass------")
                 self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))
 
-            elif result == 2:
-                self.logger.error("-------rule execute failed UiObjectNotFoundError-----------")
-            else:
+            elif result == CHECK_RESULT.UI_NOT_FOUND:
+                self.logger.error("-------rule execute failed: UiObjectNotFoundError-----------")
+
+            elif result == CHECK_RESULT.PRECON_NOT_SATISFIED:
                 self.logger.info("-------precondition is not satisfied-----------")
+            
+            else:
+                raise AttributeError(f"invalid check rule result {result}")
 
     def check_rule_without_precondition(self):
         rules_to_check = self.kea_core.get_rules_without_preconditions()
@@ -295,7 +308,7 @@ class KeaRandomInputPolicy(InputPolicy):
         # first explore the app, then test the properties
         if self.action_count < self.input_manager.explore_event_count:
             self.logger.info("Explore the app")
-            event = self.explore_app()
+            event = self.generate_explore_event()
         elif self.action_count == self.input_manager.explore_event_count:
             event = KillAppEvent(app=self.app)
         else:
@@ -356,8 +369,8 @@ class KeaRandomInputPolicy(InputPolicy):
 
         # for rule in self.rules:
         #     self.logger.info("property: %s, #satisfy precondition: %d, #check property: %d, #trigger the bug: %d" % (
-        #         rule, self.rules[rule]["#satisfy pre"], self.rules[rule]["#check property"],
-        #         self.rules[rule]["#trigger the bug"]))
+        #         rule, self.rules[rule][RULE_STATE.SATISFY_PRE], self.rules[rule][RULE_STATE.CHECK_PROPERTY],
+        #         self.rules[rule][RULE_STATE.TRIGGER_BUG]))
 
 
 class KeaMutateInputPolicy(KeaRandomInputPolicy):
@@ -474,7 +487,11 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
         self.logger.info("reach the max number of mutate steps on single node, restart the app")
         return KillAndRestartAppEvent(app=self.app)
 
-    def check_property_with_probability(self):
+    def check_property_with_probability(self, p=0.5):
+        """
+        try to check property with probability (default 50%)
+        return 1 if the property has been checked.
+        """
         rules_to_check = self.kea_core.get_rules_that_pass_the_preconditions()
 
         if len(rules_to_check) > 0:
@@ -482,7 +499,7 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
             self.time_needed_to_satisfy_precondition.append(t)
             self.logger.info(
                 "has rule that matches the precondition and the time duration is " + self.time_recoder.get_time_duration())
-            if random.random() < 0.5:
+            if random.random() < p:
                 self.time_to_check_rule.append(t)
                 self.logger.info(" check rule")
                 self.check_rule_with_precondition()
@@ -522,9 +539,10 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
         self.index_on_main_path_after_mutation = -1
 
         if self.check_property_with_probability() == 1:
+            # if the property has been checked, don't return any event
             return None
 
-        event = self.explore_app()
+        event = self.generate_explore_event()
         return event
 
     def get_main_path_event(self):
@@ -570,9 +588,9 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
         return None
 
 
-    def explore_app(self):
+    def generate_explore_event(self):
         """
-        generate an event based on current UTG
+        generate an event based on current UTG to explore the app
         @return: InputEvent
         """
         current_state = self.current_state

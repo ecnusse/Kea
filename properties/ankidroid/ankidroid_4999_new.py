@@ -6,7 +6,7 @@ class Test(Kea):
     
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Get Started").click()
 

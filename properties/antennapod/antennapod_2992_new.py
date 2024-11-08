@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def rotate_device_shouldnot_make_cover_disappear_mainpath(self):
         d(description="Open menu").click()
         d(text="Add podcast").click()

@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def Fail_to_send_feedback_mainpath(self):
         d(description="Navigate up").click()
         d(text="Help").click()

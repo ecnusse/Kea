@@ -3,12 +3,12 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):      
         if d(text="OK").exists():
             d(text="OK").click()
 
-    @main_path()
+    @mainPath()
     def selection_should_discard_after_clicking_new_main_path(self):
         d(resourceId="net.gsantner.markor:id/fab_add_new_item").click()
         d(resourceId="net.gsantner.markor:id/note__activity__edit_note_title").set_text("Hello World!")

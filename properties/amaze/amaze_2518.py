@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         if d(text="GRANT").exists():
             d(text="GRANT").click()
@@ -20,7 +20,7 @@ class Test(Kea):
         elif d(text="Allow").exists():
             d(text="Allow").click()
 
-    @main_path()
+    @mainPath()
     def click_exist_button_should_work_mainpath(self):
         d(description="Navigate up").click()
         d(scrollable=True).scroll.to(text="App Manager")

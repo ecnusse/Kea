@@ -7,7 +7,7 @@ class Test(Kea):
 
 
 
-    @main_path()
+    @mainPath()
     def clear_download_log_should_work_main_path(self):
         d(description="Open menu").click()
         d(text="Add podcast").click()

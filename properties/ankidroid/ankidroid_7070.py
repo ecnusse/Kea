@@ -5,11 +5,11 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         pass
 
-    @main_path()
+    @mainPath()
     def filter_by_tag_mainpath(self):
         d(resourceId="com.ichi2.anki:id/deckpicker_name").click()
         d(description="Navigate up").click()

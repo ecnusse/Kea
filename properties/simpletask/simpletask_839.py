@@ -5,12 +5,12 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         if d(text="OK").exists():
             d(text="OK").click()
 
-    @main_path()
+    @mainPath()
     def unclick_filter_should_work_mainpath(self):
         d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
         d(resourceId="nl.mpcjanssen.simpletask:id/btnProject").click()

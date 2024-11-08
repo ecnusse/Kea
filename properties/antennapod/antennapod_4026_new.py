@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def play_episode_should_add_to_queue_mainpath(self):
         d(description="Open menu").click()
         d(text="Add podcast").click()

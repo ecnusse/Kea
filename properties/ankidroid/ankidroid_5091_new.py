@@ -4,13 +4,13 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def option_on_one_filter_deck_should_work_mainpath(self):
         d(resourceId="com.ichi2.anki:id/fab_main").click()
         d(text="Create filtered deck").click()
         d(text="ok").click()
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Get Started").click()
 

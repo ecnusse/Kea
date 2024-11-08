@@ -3,7 +3,7 @@ sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    @main_path()
+    @mainPath()
     def delete_activity_mainpath(self):
         d(description="Open navigation").click()
         d(text="Edit Activities").click()

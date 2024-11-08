@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
     
-    @initialize()
+    @initializer()
     def set_up(self):
         d(description="Add").click()
         
@@ -24,7 +24,7 @@ class Test(Kea):
         
         d(text="ADD").click()
 
-    @main_path()
+    @mainPath()
     def exit_app_and_start_again_shouldnot_change_state_mainpath(self):
         d(resourceId="org.y20k.transistor:id/list_item_textview").click()
         d(resourceId="org.y20k.transistor:id/player_playback_button").click()

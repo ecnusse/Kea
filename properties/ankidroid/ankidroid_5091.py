@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
     
-    @main_path()
+    @mainPath()
     def option_on_one_filter_deck_should_work_mainpath(self):
         d(description="More options").click()
         d(text="Create filtered deck").click()

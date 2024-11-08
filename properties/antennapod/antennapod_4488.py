@@ -5,12 +5,12 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         if not d(text="Setting").exists() and d(description="Open menu").exists():
             d(description="Open menu").click()
 
-    @main_path()
+    @mainPath()
     def search_in_one_podcast_should_not_display_others_mainpath(self):
         d(resourceId="de.danoeh.antennapod.debug:id/txtvTitle", text="Add Podcast").click()
         d(resourceId="de.danoeh.antennapod.debug:id/discovery_cover").click()

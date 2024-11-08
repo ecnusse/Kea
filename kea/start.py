@@ -70,7 +70,7 @@ def main():
                        debug_mode=options.debug_mode,
                        keep_app=options.keep_app,
                        )
-    print(Kea._rules_per_class)
+    print(Kea._all_testCase)
     start_kea(test_classes[0],setting)
 
 if __name__ == "__main__":

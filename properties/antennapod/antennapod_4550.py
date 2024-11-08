@@ -5,11 +5,11 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d.press("back")
 
-    @main_path()
+    @mainPath()
     def text_should_display_when_episodes_is_empty_mainpath(self):
         d(description="Open menu").click()
         d(text="Episodes", reousrceId="de.danoeh.antennapod.debug:id/txtvTitle").click()

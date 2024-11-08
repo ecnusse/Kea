@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def rule_allow_permission_three_points_exists_mainpath(self):
         d(text="Allow").click()
 

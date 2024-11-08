@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def click_content_should_enter_diary_entry_mainpath(self):
         d(resourceId="de.rampro.activitydiary:id/activity_name").click()
 

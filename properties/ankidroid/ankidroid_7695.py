@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def rename_note_type_shouldnot_display_mainpath(self):
         d(description="More options").click()
         d(text="Manage note types").click()

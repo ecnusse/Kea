@@ -3,7 +3,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(resourceId="net.gsantner.markor:id/next").click()
         
@@ -19,7 +19,7 @@ class Test(Kea):
         if d(text="OK").exists():
             d(text="OK").click()
 
-    @main_path()
+    @mainPath()
     def rotation_should_keep_view_mode_mainpath(self):
         d(resourceId="net.gsantner.markor:id/fab_add_new_item").click()
         d(resourceId="net.gsantner.markor:id/new_file_dialog__name").set_text("Hello World!")

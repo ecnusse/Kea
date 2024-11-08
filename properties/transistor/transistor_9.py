@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def should_add_station_mainpath(self):
         d(resourceId="org.y20k.transistor:id/menu_add").click()
         d(className="android.widget.EditText").set_text("Hello")

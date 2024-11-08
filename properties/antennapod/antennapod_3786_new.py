@@ -7,7 +7,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def change_setting_should_not_influence_Download_function_mainpath(self):
         d(description="Open menu").click()
         d(text="Add podcast").click()

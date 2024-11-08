@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(resourceId="it.feio.android.omninotes:id/next").click()
         
@@ -22,7 +22,7 @@ class Test(Kea):
         if d(text="OK").exists():
             d(text="OK").click()
 
-    @main_path()
+    @mainPath()
     def delete_category_should_remove_immediately_mainpath(self):
         d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").long_click()
         d(resourceId="it.feio.android.omninotes:id/detail_title").set_text("Hello World")

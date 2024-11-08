@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Settings").click()
         
@@ -14,7 +14,7 @@ class Test(Kea):
         
         d.press("back")
 
-    @main_path()
+    @mainPath()
     def should_add_station_mainpath(self):
         d(resourceId="org.y20k.transistor:id/card_add_new_station").click()
 

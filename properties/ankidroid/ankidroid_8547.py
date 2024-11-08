@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def card_count_should_be_the_same_as_selectall_mainpath(self):
         d(resourceId="com.ichi2.anki:id/deckpicker_name").click()
         d(description="Navigate up").click()

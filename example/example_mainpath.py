@@ -3,13 +3,13 @@ from kea.main import *
 
 class Test(Kea):
 
-    @initialize()
+    @initializer()
     def set_up(self):
         for _ in range(5):
             d(resourceId="it.feio.android.omninotes.alpha:id/next").click()
         d(resourceId="it.feio.android.omninotes.alpha:id/done").click()
 
-    @main_path()
+    @mainPath()
     def test_main(self):
         d(resourceId="it.feio.android.omninotes.alpha:id/fab_expand_menu_button").long_click()
         d(resourceId="it.feio.android.omninotes.alpha:id/detail_content").click()

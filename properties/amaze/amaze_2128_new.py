@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
         
-    @initialize()
+    @initializer()
     def set_up(self):
         if d(text="Allow").exists():
             d(text="Allow").click()

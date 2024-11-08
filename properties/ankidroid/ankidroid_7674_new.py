@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def reposition_should_not_be_missing_mainpath(self):
         d(description="Open drawer").click()
         d(text="Card browser").click()

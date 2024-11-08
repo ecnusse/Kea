@@ -5,7 +5,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @initialize()
+    @initializer()
     def set_up(self):
         if d(text="ALLOW").exists():
             d(text="ALLOW").click()
@@ -13,7 +13,7 @@ class Test(Kea):
         elif d(text="Allow").exists():
             d(text="Allow").click()
 
-    @main_path()
+    @mainPath()
     def rule_search_mainpath(self):
         d(resourceId="com.amaze.filemanager:id/search").click()
         d(resourceId="com.amaze.filemanager:id/search_edit_text").set_text("a")

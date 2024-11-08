@@ -5,11 +5,11 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d.press("back")
 
-    @main_path()
+    @mainPath()
     def play_video_should_not_play_as_audio_mainpath(self):
         d(resourceId="de.danoeh.antennapod:id/combinedFeedSearchBox").set_text("look at book")
         d.press("enter")

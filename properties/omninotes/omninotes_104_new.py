@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         if d(text="OK").exists():
             d(text="OK").click()
@@ -25,7 +25,7 @@ class Test(Kea):
         if d(text="OK").exists():
             d(text="OK").click()
 
-    @main_path()
+    @mainPath()
     def remove_password_should_not_affect_notes_MAINPATH(self):
         d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").long_click()
         d(resourceId="it.feio.android.omninotes:id/detail_title").set_text("Hello")

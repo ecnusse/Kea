@@ -104,11 +104,11 @@ class InputPolicy(object):
         self.last_event = None
 
     def run_initial_rules(self):
-        if len(self.kea_core.initialize_rules()) == 0:
+        if len(self.kea_core.get_initializer_list()) == 0:
             self.logger.info("No initialize rules")
         else:
             result = self.kea_core.execute_rules(
-                self.kea_core.initialize_rules()
+                self.kea_core.get_initializer_list()
             )
             if result:
                 self.logger.info("-------initialize successfully-----------")
@@ -203,11 +203,11 @@ class KeaRandomInputPolicy(InputPolicy):
         if self.device.humanoid is not None:
             self.humanoid_view_trees = []
             self.humanoid_events = []
-        rules = self.kea_core._rules_per_class
+        
+        # retrive all the rules from the provided properties
         self.rules = {}
-        for classname in rules:
-            for rule in rules[classname]:
-                self.rules[rule.function.__name__] = {"#satisfy pre": 0, "#check property": 0, "#trigger the bug": 0}
+        for rule in self.kea_core.all_rules:
+            self.rules[rule.function.__name__] = {"#satisfy pre": 0, "#check property": 0, "#trigger the bug": 0}
         # record the action count, time and property name when the bug is triggered
         self.triggered_bug_information = []
 
@@ -371,7 +371,7 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
             device, app, random_input, kea_core
         )
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.list_main_path = self.kea_core.mainpath_lists()
+        self.list_main_path = self.kea_core.get_mainPath_list()
         if self.list_main_path:
             self.logger.info("main path with length %d" % len(self.list_main_path))
         else:
@@ -414,7 +414,7 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
             self.logger.error("main path is empty")
             return
         self.main_path = random.choice(self.list_main_path)
-        self.path_func, self.main_path =  self.kea_core.get_main_path(self.main_path)
+        self.path_func, self.main_path =  self.kea_core.get_mainPath(self.main_path)
         self.logger.info("select the main path function: %s" % self.path_func)
         self.main_path_list = copy.deepcopy(self.main_path)
         self.max_number_of_events_that_try_to_find_event_on_main_path = min(10, len(self.main_path))
@@ -447,7 +447,7 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
         if self.execute_main_path:
             event_str = self.get_main_path_event()
             if event_str:
-                self.kea_core.exec_main_path(event_str)
+                self.kea_core.exec_mainPath(event_str)
                 if self.action_count > 2:
                     self.action_count -= 1
                     self.logger.info("*****main path running*****")
@@ -510,7 +510,7 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
 
                 event_str = self.get_event_from_main_path()
                 try:
-                    self.kea_core.exec_main_path(event_str)
+                    self.kea_core.exec_mainPath(event_str)
                     self.logger.info("find the event in the main path")
                     return None
                 except Exception:

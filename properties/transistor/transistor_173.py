@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Add a new station").click()
         
@@ -13,7 +13,7 @@ class Test(Kea):
         
         d(text="ADD").click()
         
-    @main_path()
+    @mainPath()
     def timer_can_be_started_when_playback_are_started_mainpath(self):
         d(resourceId="org.y20k.transistor:id/list_item_textview").long_click()
 

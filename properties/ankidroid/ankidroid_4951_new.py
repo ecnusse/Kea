@@ -4,11 +4,11 @@ from kea.main import *
 
 class Test(Kea):
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Get Started").click()
 
-    @main_path()
+    @mainPath()
     def rule_allow_permission_three_points_exists_mainpath(self):
         d(text="ALLOW").click()
 

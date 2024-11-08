@@ -5,11 +5,11 @@ from kea.main import *
 
 class Test(Kea):
 
-    @initialize()
+    @initializer()
     def set_up(self):
         pass
 
-    @main_path()
+    @mainPath()
     def add_card_in_one_deck_should_work_mainpath(self):
         d(description="Navigate up").click()
         d(text="Card browser").click()

@@ -9,7 +9,7 @@ class Test(Kea):
     # def set_up(self):
     #     pass
 
-    @main_path()
+    @mainPath()
     def change_language_to_chinese_mainpath(self):
         d(description="drawer open").click()
         d(text="SETTINGS").click()

@@ -54,7 +54,7 @@ The following sample command will help you create an emulator, which will help y
 ```bash
 sdkmanager "build-tools;29.0.3" "platform-tools" "platforms;android-29"
 sdkmanager "system-images;android-29;google_apis;x86"
-avdmanager create avd --force --name Android10.0 --package “system-images;android-29;google_apis;x86” --abi google_apis/x86 --sdcard 1024M --device "pixel_2"
+avdmanager create avd --force --name Android10.0 --package "system-images;android-29;google_apis;x86" --abi google_apis/x86 --sdcard 1024M --device "pixel_2"
 ```
 
 Next, you can start one emulator and assign their port numbers with the following commands:
@@ -89,7 +89,7 @@ That's it! You can see the test results in the "output" directory.
 
 # Maintainers
 
-[Yiheng Xiong](https://xyiheng.github.io/), [Xiangcheng Shen](https://xiangchenshen.github.io/), [Ting Su](http://tingsu.github.io/)
+[Yiheng Xiong](https://xyiheng.github.io/), [Xiangchen Shen](https://xiangchenshen.github.io/), [Ting Su](http://tingsu.github.io/)
 
 
 # Relevant Tools

@@ -5,11 +5,11 @@ from kea.main import *
 class Test(Kea):
       
 
-    @initialize()
+    @initializer()
     def set_up(self):
         pass
 
-    @main_path()
+    @mainPath()
     def preview_card_should_not_preview_wrong_card_mainpath(self):
         d(description="Navigate up").click()
         d(text="Card browser").click()
@@ -47,5 +47,5 @@ setting = Setting(
     output_dir="../output/ankidroid/7286/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

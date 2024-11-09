@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
     
-    @main_path()
+    @mainPath()
     def change_setting_should_not_influence_Download_function_mainpath(self):
         d.press("back")
         d(resourceId="de.danoeh.antennapod:id/discovery_cover").click()
@@ -30,5 +30,5 @@ setting = Setting(
     output_dir="../output/antennapod/3786/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

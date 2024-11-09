@@ -6,11 +6,11 @@ class Test(Kea):
     
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Get Started").click()
 
-    @main_path()
+    @mainPath()
     def only_new_card_can_be_reposition_mainpath(self):
         d(resourceId="com.ichi2.anki:id/deckpicker_name").click()
         d.press("back")
@@ -53,5 +53,5 @@ setting = Setting(
     output_dir="output/ankidroid/5216/mutate_new/1",
     policy_name="random"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

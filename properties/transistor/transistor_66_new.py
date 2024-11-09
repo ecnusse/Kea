@@ -5,7 +5,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Settings").click()
         
@@ -59,5 +59,5 @@ setting = Setting(
     policy_name="mutate",
     # run_initial_rules_after_every_mutation=False
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

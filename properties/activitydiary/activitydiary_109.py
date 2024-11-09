@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def delete_activity_mainpath(self):
         d(description="Open Navigation").click()
         d(text="Edit Activities").click()
@@ -40,5 +40,5 @@ setting = Setting(
     policy_name="random",
     number_of_events_that_restart_app = 100
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

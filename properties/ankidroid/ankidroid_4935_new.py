@@ -4,11 +4,11 @@ from kea.main import *
 
 class Test(Kea):
      
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Get Started").click()
 
-    @main_path()
+    @mainPath()
     def back_should_navigate_to_last_page_mainpath(self):
         d(description="Navigate up").click()
         d(text="Settings").click()
@@ -37,5 +37,5 @@ setting = Setting(
     output_dir="output/ankidroid/4935/mutate_new/1",
     policy_name="random"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

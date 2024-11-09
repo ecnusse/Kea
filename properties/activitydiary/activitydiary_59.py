@@ -3,7 +3,7 @@ sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    @main_path()
+    @mainPath()
     def delete_activity_mainpath(self):
         d(description = "Open Navigation").click()
         d(text="Edit Activities").click()
@@ -35,5 +35,5 @@ setting = Setting(
     output_dir="output/activitydiary/59/mutate/1",
     policy_name="random"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

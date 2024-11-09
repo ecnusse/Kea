@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(description="Add").click()
         
@@ -25,7 +25,7 @@ class Test(Kea):
         
         d(text="ADD").click()
 
-    @main_path()
+    @mainPath()
     def duplicate_playback_indicator_shouldnot_appear_mainapth(self):
         d(resourceId="org.y20k.transistor:id/list_item_textview").click()
 
@@ -47,5 +47,5 @@ setting = Setting(
     output_dir="../output/transistor/139/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

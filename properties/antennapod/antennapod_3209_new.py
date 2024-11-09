@@ -3,11 +3,11 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         pass
 
-    @main_path()
+    @mainPath()
     def remove_favorite_mainpath(self):
         d(description="Open menu").click()
         d(text="Add podcast").click()
@@ -59,5 +59,5 @@ setting = Setting(
     timeout=86400,
     number_of_events_that_restart_app = 100
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

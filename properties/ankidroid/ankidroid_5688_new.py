@@ -6,11 +6,11 @@ class Test(Kea):
     
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Get Started").click()
 
-    @main_path()
+    @mainPath()
     def rotate_device_should_keep_review_card_mainpath(self):
         d(resourceId="com.ichi2.anki:id/deckpicker_name").click()
         d(description="Navigate up").click()

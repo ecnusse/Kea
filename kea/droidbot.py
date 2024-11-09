@@ -48,7 +48,7 @@ class DroidBot(object):
         humanoid=None,
         ignore_ad=False,
         replay_output=None,
-        android_check=None,
+        kea_core=None,
         number_of_events_that_restart_app=100,
         run_initial_rules_after_every_mutation=True
     ):
@@ -98,7 +98,7 @@ class DroidBot(object):
         self.replay_output = replay_output
 
         self.enabled = True
-        self.android_check = android_check
+        self.kea_core = kea_core
         try:
             self.app = App(app_path, output_dir=self.output_dir)
             self.device = Device(
@@ -129,7 +129,7 @@ class DroidBot(object):
                 profiling_method=profiling_method,
                 master=master,
                 replay_output=replay_output,
-                android_check=android_check,
+                kea_core=kea_core,
                 number_of_events_that_restart_app=number_of_events_that_restart_app,
                 run_initial_rules_after_every_mutation=run_initial_rules_after_every_mutation
             )

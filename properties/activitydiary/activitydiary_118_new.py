@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def delete_pics_should_work_mainpath(self):
         d(resourceId="de.rampro.activitydiary:id/select_card_view").click()
         d(resourceId="de.rampro.activitydiary:id/fab_attach_picture").click()

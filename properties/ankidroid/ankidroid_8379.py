@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def Fail_to_send_feedback_mainpath(self):
         d(description="Navigate up").click()
         d(text="Help").click()
@@ -36,5 +36,5 @@ setting = Setting(
     output_dir="../output/ankidroid/8379/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

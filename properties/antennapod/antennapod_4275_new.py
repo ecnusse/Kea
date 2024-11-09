@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def play_video_should_not_play_as_audio_mainpath(self):
         d(resourceId="de.danoeh.antennapod:id/combinedFeedSearchBox").set_text("look at book")
         d.press("enter")
@@ -37,5 +37,5 @@ setting = Setting(
     
     number_of_events_that_restart_app = 100
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

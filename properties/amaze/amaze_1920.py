@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         if d(text="ALLOW").exists():
             d(text="ALLOW").click()
@@ -13,7 +13,7 @@ class Test(Kea):
         elif d(text="Allow").exists():
             d(text="Allow").click()
 
-    @main_path()
+    @mainPath()
     def should_notice_user_when_no_network_mainpath(self):
         d(description="Navigate up").click()
         d(scrollable=True).scroll.to(text="FTP Server")
@@ -39,5 +39,5 @@ setting = Setting(
     
     number_of_events_that_restart_app = 100
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

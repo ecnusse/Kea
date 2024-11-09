@@ -5,12 +5,12 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         if d(text="OK").exists():
             d(text="OK").click()
 
-    @main_path()
+    @mainPath()
     def should_keep_scroll_posistion_mainpath(self):
         d(resourceId="nl.mpcjanssen.simpletask:id/fab").click()
         d(resourceId="nl.mpcjanssen.simpletask:id/taskText").set_text("Hello World!")
@@ -81,5 +81,5 @@ setting = Setting(
     output_dir="../output/simpletask/520/mutate_new",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

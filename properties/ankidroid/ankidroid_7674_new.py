@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def reposition_should_not_be_missing_mainpath(self):
         d(description="Open drawer").click()
         d(text="Card browser").click()
@@ -45,5 +45,5 @@ setting = Setting(
     output_dir="../output/ankidroid/7674/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

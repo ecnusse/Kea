@@ -5,11 +5,11 @@ from kea.main import *
 
 class Test(Kea):
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Get Started").click()
 
-    @main_path()
+    @mainPath()
     def cloze_should_work_mainpath(self):
         d(resourceId="com.ichi2.anki:id/fab_expand_menu_button").click()
 
@@ -45,5 +45,5 @@ setting = Setting(
     
     number_of_events_that_restart_app = 100
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def rename_note_type_shouldnot_display_mainpath(self):
         d(description="More options").click()
         d(text="Manage note types").click()
@@ -32,5 +32,5 @@ setting = Setting(
     output_dir="../output/ankidroid/7695/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

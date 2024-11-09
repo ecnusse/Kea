@@ -219,7 +219,7 @@ class DeviceState(object):
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
             dest_state_json_path = "%s/state_%s.json" % (output_dir, self.tag)
-            json_dir = os.path.join(self.device.output_dir, "report_screen_shoot.json")
+            json_dir = os.path.join(self.device.output_dir, "report_screenshot.json")
             if self.device.adapters[self.device.minicap]:
                 dest_screenshot_path = "%s/screen_%s.jpg" % (output_dir, self.tag)
             else:
@@ -267,6 +267,7 @@ class DeviceState(object):
         except Exception as e:
             self.device.logger.warning(e)
     def draw_event(self, event, screenshot_path):
+        return "not implmented"
         import cv2
         image = cv2.imread(screenshot_path)
         if event is not None and screenshot_path is not None:

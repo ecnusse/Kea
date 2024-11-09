@@ -844,19 +844,15 @@ class Device(object):
 
     def mkdir(self,path):
         self.adb.run_cmd(["shell","mkdir",path])
-    def take_screenshot(self, remove_to_every_states=False, event_name = None):
-        # image = None
-        #
-        # received = self.adb.shell("screencap -p").replace("\r\n", "\n")
-        # import StringIO
-        # stream = StringIO.StringIO(received)
-        #
-        # try:
-        #     from PIL import Image
-        #     image = Image.open(stream)
-        # except IOError as e:
-        #     self.logger.warning("exception in take_screenshot: %s" % e)
-        # return image
+    
+    def save_screenshot_for_report(self, event_name = None):
+        """
+        save screenshot for report, save to "all_states" dir
+        """
+        local_image_path = self.take_screenshot()
+        self.save_to_all_states_dir(local_image_path, event_name)
+        
+    def take_screenshot(self):
         if self.output_dir is None:
             return None
 
@@ -881,25 +877,21 @@ class Device(object):
             self.pull_file(remote_image_path, local_image_path)
             self.adb.shell("rm %s" % remote_image_path)
 
-        if remove_to_every_states:
-            # This is mainly to move the screenshot to the 'every_states' folder after each UI event in the properties.
-            self.remove_screenshot_to_every_states(local_image_path, event_name)
-
         return local_image_path
 
-    def remove_screenshot_to_every_states(self,local_image_path, event_name):
-        # First, iterate through the 'every_states' folder to get the name of the latest PNG file.
+    def save_to_all_states_dir(self,local_image_path, event_name):
+        # First, iterate through the 'all_states' folder to get the name of the latest PNG file.
         # Then, move the current screenshot to this folder and rename it to the name of the latest PNG file.
         import shutil
-        every_states_dir = os.path.join(self.output_dir, "every_states")
-        if not os.path.exists(every_states_dir):
-            os.makedirs(every_states_dir)
-        # Get the latest PNG file in the every_states folder.
-        files = os.listdir(every_states_dir)
-        files = [f for f in files if f.endswith(".png")]
-        files.sort(key=lambda x: os.path.getmtime(os.path.join(every_states_dir,x)))
-        if len(files) > 0:
-            json_dir = os.path.join(self.output_dir, "report_screen_shoot.json")
+        all_states_dir = os.path.join(self.output_dir, "all_states")
+        if not os.path.exists(all_states_dir):
+            os.makedirs(all_states_dir)
+        # Get the latest PNG file in the all_states folder.
+        files = os.listdir(all_states_dir)
+        png_files = [f for f in files if f.endswith(".png")]
+        png_files.sort(key=lambda x: os.path.getmtime(os.path.join(all_states_dir,x)))
+        if len(png_files) > 0:
+            json_dir = os.path.join(self.output_dir, "report_screenshot.json")
             with open(json_dir, 'r') as json_file:
                 report_screens = json.load(json_file)
             latest_file = report_screens[-1]
@@ -924,7 +916,7 @@ class Device(object):
 
             with open(json_dir, 'w') as json_file:
                 json.dump(report_screens, json_file, indent=4)
-            dest_file = "%s/%s" % (every_states_dir, "screen_%s.png" % event_index)
+            dest_file = "%s/%s" % (all_states_dir, "screen_%s.png" % event_index)
             shutil.move(local_image_path, dest_file)
         else:
             report_screens = []
@@ -934,10 +926,10 @@ class Device(object):
                 "screen_shoot": "screen_1.png"
             }
             report_screens.append(report_screen)
-            json_dir = os.path.join(self.output_dir, "report_screen_shoot.json")
+            json_dir = os.path.join(self.output_dir, "report_screenshot.json")
             with open(json_dir, 'w') as json_file:
                 json.dump(report_screens, json_file, indent=4)
-            dest_file = "%s/%s" % (every_states_dir, "screen_1.png")
+            dest_file = "%s/%s" % (all_states_dir, "screen_1.png")
             shutil.move(local_image_path, dest_file)
         
 

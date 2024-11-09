@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         if not d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").exists() and d(description="drawer open").exists():
             d(description="drawer open").click()
@@ -23,7 +23,7 @@ class Test(Kea):
         
         d(resourceId="it.feio.android.omninotes:id/done").click()
 
-    @main_path()
+    @mainPath()
     def rule_restore_backup_shouldnot_change_note_mainpath(self):
         d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").click()
         d(text="Text note").click()
@@ -99,5 +99,5 @@ setting = Setting(
     output_dir="../output/omninotes/812/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

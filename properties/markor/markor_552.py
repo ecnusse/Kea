@@ -4,7 +4,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(resourceId="net.gsantner.markor:id/next").click()
         
@@ -24,7 +24,7 @@ class Test(Kea):
         if d(text="OK").exists():
             d(text="OK").click()
 
-    @main_path()
+    @mainPath()
     def modify_content_should_update_time_mainpath(self):
         d(resourceId="net.gsantner.markor:id/fab_add_new_item").click()
         d(resourceId="net.gsantner.markor:id/new_file_dialog__name").set_text("Hello1111")
@@ -85,5 +85,5 @@ setting = Setting(
     output_dir="../output/markor/552/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

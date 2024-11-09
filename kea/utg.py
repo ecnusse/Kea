@@ -116,7 +116,7 @@ class UTG(object):
     def add_node(self, state,event=None):
         if not state:
             return
-        output_dir = os.path.join(self.device.output_dir, "every_states")
+        output_dir = os.path.join(self.device.output_dir, "all_states")
         state.save2dir(output_dir,event)
         utils.generate_report(img_path=output_dir, html_path=self.device.output_dir)
         if state.state_str not in self.G.nodes():

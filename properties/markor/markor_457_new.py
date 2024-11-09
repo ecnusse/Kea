@@ -3,7 +3,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(resourceId="net.gsantner.markor:id/next").click()
         
@@ -42,5 +42,5 @@ setting = Setting(
     output_dir="../output/markor/457/mutate_new",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

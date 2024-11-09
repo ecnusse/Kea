@@ -5,11 +5,11 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Get Started").click()
 
-    @main_path()
+    @mainPath()
     def rename_note_type_shouldnot_display_mainpath(self):
         d(description="More options").click()
         d(text="Manage note types").click()
@@ -40,5 +40,5 @@ setting = Setting(
     output_dir="output/ankidroid/7695/mutate_new/1",
     policy_name="random"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

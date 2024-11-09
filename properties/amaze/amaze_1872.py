@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
     
-    @initialize()
+    @initializer()
     def set_up(self):
         if d(text="ALLOW").exists():
             d(text="ALLOW").click()
@@ -54,5 +54,5 @@ setting = Setting(
     output_dir="../output/amaze/1872/mutate/1",
     policy_name="random"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

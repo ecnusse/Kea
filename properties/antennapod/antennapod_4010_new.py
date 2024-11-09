@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def click_podcast_should_work_mainpath(self):
         d(description="Open menu").click()
         d(text="Add podcast").click()
@@ -42,5 +42,5 @@ setting = Setting(
     
     number_of_events_that_restart_app = 100
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

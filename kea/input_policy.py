@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import os
 
 import logging
@@ -76,6 +77,19 @@ GUIDE = "guide"
 DIVERSE = "diverse"
 MAX_NUM_STEPS_OUTSIDE_THE_SHORTEST_PATH = 10
 
+@dataclass
+class RULE_STATE:
+    SATISFY_PRE = "#satisfy pre"
+    CHECK_PROPERTY = "#check property"
+    TRIGGER_BUG = "#trigger the bug"
+
+@dataclass
+class CHECK_RESULT:
+    ASSERTION_ERROR = 0
+    PASS = 1
+    UI_NOT_FOUND = 2
+    PRECON_NOT_SATISFIED = 3
+
 
 class InputInterruptedException(Exception):
     pass
@@ -87,7 +101,7 @@ class InputPolicy(object):
     It should call AppEventManager.send_event method continuously
     """
 
-    def __init__(self, device:"Device", app:"App", android_check:"Kea"=None):
+    def __init__(self, device:"Device", app:"App", kea_core:"Kea"=None):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.time_recoder = Time()
 
@@ -95,7 +109,7 @@ class InputPolicy(object):
         self.app = app
         self.action_count = 0
         self.master = None
-        self.android_check = android_check
+        self.kea_core = kea_core
         self.input_manager = None
         self.time_needed_to_satisfy_precondition = []
 
@@ -104,11 +118,11 @@ class InputPolicy(object):
         self.last_event = None
 
     def run_initial_rules(self):
-        if len(self.android_check.initialize_rules()) == 0:
+        if len(self.kea_core.get_initializer_list()) == 0:
             self.logger.info("No initialize rules")
         else:
-            result = self.android_check.execute_rules(
-                self.android_check.initialize_rules()
+            result = self.kea_core.execute_rules(
+                self.kea_core.get_initializer_list()
             )
             if result:
                 self.logger.info("-------initialize successfully-----------")
@@ -174,7 +188,7 @@ class InputPolicy(object):
         pass
 
     @abstractmethod
-    def explore_app(self):
+    def generate_explore_event(self):
         """
         generate an event
         @return:
@@ -182,13 +196,13 @@ class InputPolicy(object):
         pass
 
 
-class UtgBasedInputPolicy(InputPolicy):
+class KeaRandomInputPolicy(InputPolicy):
     """
     state-based input policy
     """
 
-    def __init__(self, device, app, random_input, android_check=None):
-        super(UtgBasedInputPolicy, self).__init__(device, app, android_check)
+    def __init__(self, device, app, random_input, kea_core=None):
+        super(KeaRandomInputPolicy, self).__init__(device, app, kea_core)
         self.random_input = random_input
         self.script = None
         self.master = None
@@ -203,16 +217,16 @@ class UtgBasedInputPolicy(InputPolicy):
         if self.device.humanoid is not None:
             self.humanoid_view_trees = []
             self.humanoid_events = []
-        rules = self.android_check._rules_per_class
+        
+        # retrive all the rules from the provided properties
         self.rules = {}
-        for classname in rules:
-            for rule in rules[classname]:
-                self.rules[rule.function.__name__] = {"#satisfy pre": 0, "#check property": 0, "#trigger the bug": 0}
+        for rule in self.kea_core.all_rules:
+            self.rules[rule.function.__name__] = {RULE_STATE.SATISFY_PRE: 0, RULE_STATE.CHECK_PROPERTY: 0, RULE_STATE.TRIGGER_BUG: 0}
         # record the action count, time and property name when the bug is triggered
         self.triggered_bug_information = []
 
     def check_rule_with_precondition(self):
-        rules_to_check = self.android_check.get_rules_that_pass_the_preconditions()
+        rules_to_check = self.kea_core.get_rules_that_pass_the_preconditions()
         if len(rules_to_check) == 0:
             self.logger.debug("No rules match the precondition")
             if hasattr(self, "not_reach_precondition_path_number"):
@@ -221,42 +235,41 @@ class UtgBasedInputPolicy(InputPolicy):
             # continue
 
         for rule in rules_to_check:
-            self.rules[rule.function.__name__]["#satisfy pre"] += 1
+            self.rules[rule.function.__name__][RULE_STATE.SATISFY_PRE] += 1
         rule_to_check = random.choice(rules_to_check)
 
         if rule_to_check is not None:
             self.logger.info("-------check rule : %s------" % rule_to_check)
-            self.rules[rule_to_check.function.__name__]["#check property"] += 1
-            '''
-            0: assertion error
-            1: check property pass
-            2: UiObjectNotFoundError
-            3: don't need to check property,because the precondition is not satisfied
-            '''
+            self.rules[rule_to_check.function.__name__][RULE_STATE.CHECK_PROPERTY] += 1
 
-            result = self.android_check.execute_rule(rule_to_check)
-            if result == 0:
+            # check rule, record relavant info and output log
+            result = self.kea_core.execute_rule(rule_to_check)
+            if result == CHECK_RESULT.ASSERTION_ERROR:
                 self.logger.error("-------check rule : assertion error------")
                 self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))
-                self.rules[rule_to_check.function.__name__]["#trigger the bug"] += 1
+                self.rules[rule_to_check.function.__name__][RULE_STATE.TRIGGER_BUG] += 1
                 self.triggered_bug_information.append(
                     (self.action_count, self.time_recoder.get_time_duration(), rule_to_check.function.__name__))
 
 
-            elif result == 1:
+            elif result == CHECK_RESULT.PASS:
                 self.logger.info("-------check rule : pass------")
                 self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))
 
-            elif result == 2:
-                self.logger.error("-------rule execute failed UiObjectNotFoundError-----------")
-            else:
+            elif result == CHECK_RESULT.UI_NOT_FOUND:
+                self.logger.error("-------rule execute failed: UiObjectNotFoundError-----------")
+
+            elif result == CHECK_RESULT.PRECON_NOT_SATISFIED:
                 self.logger.info("-------precondition is not satisfied-----------")
+            
+            else:
+                raise AttributeError(f"invalid check rule result {result}")
 
     def check_rule_without_precondition(self):
-        rules_to_check = self.android_check.get_rules_without_preconditions()
+        rules_to_check = self.kea_core.get_rules_without_preconditions()
         if len(rules_to_check) > 0:
-            result = self.android_check.execute_rules(
-                self.android_check.get_rules_without_preconditions()
+            result = self.kea_core.execute_rules(
+                self.kea_core.get_rules_without_preconditions()
             )
             if result:
                 self.logger.info("-------rule_without_precondition execute success-----------")
@@ -295,7 +308,7 @@ class UtgBasedInputPolicy(InputPolicy):
         # first explore the app, then test the properties
         if self.action_count < self.input_manager.explore_event_count:
             self.logger.info("Explore the app")
-            event = self.explore_app()
+            event = self.generate_explore_event()
         elif self.action_count == self.input_manager.explore_event_count:
             event = KillAppEvent(app=self.app)
         else:
@@ -323,7 +336,7 @@ class UtgBasedInputPolicy(InputPolicy):
         """
         # mark the bug information on the bug report html
         if len(self.triggered_bug_information) > 0:
-            bug_report_path = os.path.join(self.device.output_dir, "every_states")
+            bug_report_path = os.path.join(self.device.output_dir, "all_states")
             utils.generate_report(
                 bug_report_path,
                 self.device.output_dir,
@@ -356,22 +369,22 @@ class UtgBasedInputPolicy(InputPolicy):
 
         # for rule in self.rules:
         #     self.logger.info("property: %s, #satisfy precondition: %d, #check property: %d, #trigger the bug: %d" % (
-        #         rule, self.rules[rule]["#satisfy pre"], self.rules[rule]["#check property"],
-        #         self.rules[rule]["#trigger the bug"]))
+        #         rule, self.rules[rule][RULE_STATE.SATISFY_PRE], self.rules[rule][RULE_STATE.CHECK_PROPERTY],
+        #         self.rules[rule][RULE_STATE.TRIGGER_BUG]))
 
 
-class MutatePolicy(UtgBasedInputPolicy):
+class KeaMutateInputPolicy(KeaRandomInputPolicy):
     """
     
     """
 
-    def __init__(self, device, app, random_input, android_check=None,
+    def __init__(self, device, app, random_input, kea_core=None,
                  run_initial_rules_after_every_mutation=True):
-        super(MutatePolicy, self).__init__(
-            device, app, random_input, android_check
+        super(KeaMutateInputPolicy, self).__init__(
+            device, app, random_input, kea_core
         )
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.list_main_path = self.android_check.mainpath_lists()
+        self.list_main_path = self.kea_core.get_mainPath_list()
         if self.list_main_path:
             self.logger.info("main path with length %d" % len(self.list_main_path))
         else:
@@ -411,12 +424,11 @@ class MutatePolicy(UtgBasedInputPolicy):
 
     def select_and_initialize_main_path(self):
         if len(self.list_main_path) == 0:
-            self.logger.info("main path is empty")
-            self.main_path = []
-        else:
-            self.main_path = random.choice(self.list_main_path)
-            self.path_func, self.main_path = self.android_check.get_main_path(self.main_path)
-            self.logger.info("select the main path function: %s" % self.path_func)
+            self.logger.error("main path is empty")
+            return
+        self.main_path = random.choice(self.list_main_path)
+        self.path_func, self.main_path =  self.kea_core.get_mainPath(self.main_path)
+        self.logger.info("select the main path function: %s" % self.path_func)
         self.main_path_list = copy.deepcopy(self.main_path)
         self.max_number_of_events_that_try_to_find_event_on_main_path = min(10, len(self.main_path))
         self.mutate_node_index_on_main_path = len(self.main_path)
@@ -448,7 +460,7 @@ class MutatePolicy(UtgBasedInputPolicy):
         if self.execute_main_path:
             event_str = self.get_main_path_event()
             if event_str:
-                self.android_check.exec_main_path(event_str)
+                self.kea_core.exec_mainPath(event_str)
                 if self.action_count > 2:
                     self.action_count -= 1
                     self.logger.info("*****main path running*****")
@@ -475,15 +487,19 @@ class MutatePolicy(UtgBasedInputPolicy):
         self.logger.info("reach the max number of mutate steps on single node, restart the app")
         return KillAndRestartAppEvent(app=self.app)
 
-    def check_property_with_probability(self):
-        rules_to_check = self.android_check.get_rules_that_pass_the_preconditions()
+    def check_property_with_probability(self, p=0.5):
+        """
+        try to check property with probability (default 50%)
+        return 1 if the property has been checked.
+        """
+        rules_to_check = self.kea_core.get_rules_that_pass_the_preconditions()
 
         if len(rules_to_check) > 0:
             t = self.time_recoder.get_time_duration()
             self.time_needed_to_satisfy_precondition.append(t)
             self.logger.info(
                 "has rule that matches the precondition and the time duration is " + self.time_recoder.get_time_duration())
-            if random.random() < 0.5:
+            if random.random() < p:
                 self.time_to_check_rule.append(t)
                 self.logger.info(" check rule")
                 self.check_rule_with_precondition()
@@ -501,7 +517,7 @@ class MutatePolicy(UtgBasedInputPolicy):
                 self.number_of_events_that_try_to_find_event_on_main_path += 1
                 if self.index_on_main_path_after_mutation == len(self.main_path_list):
                     self.logger.info("reach the end of the main path")
-                    rules_to_check = self.android_check.get_rules_that_pass_the_preconditions()
+                    rules_to_check = self.kea_core.get_rules_that_pass_the_preconditions()
                     if len(rules_to_check) > 0:
                         t = self.time_recoder.get_time_duration()
                         self.time_needed_to_satisfy_precondition.append(t)
@@ -511,7 +527,7 @@ class MutatePolicy(UtgBasedInputPolicy):
 
                 event_str = self.get_event_from_main_path()
                 try:
-                    self.android_check.exec_main_path(event_str)
+                    self.kea_core.exec_mainPath(event_str)
                     self.logger.info("find the event in the main path")
                     return None
                 except Exception:
@@ -523,9 +539,10 @@ class MutatePolicy(UtgBasedInputPolicy):
         self.index_on_main_path_after_mutation = -1
 
         if self.check_property_with_probability() == 1:
+            # if the property has been checked, don't return any event
             return None
 
-        event = self.explore_app()
+        event = self.generate_explore_event()
         return event
 
     def get_main_path_event(self):
@@ -571,9 +588,9 @@ class MutatePolicy(UtgBasedInputPolicy):
         return None
 
 
-    def explore_app(self):
+    def generate_explore_event(self):
         """
-        generate an event based on current UTG
+        generate an event based on current UTG to explore the app
         @return: InputEvent
         """
         current_state = self.current_state
@@ -753,15 +770,15 @@ class MutatePolicy(UtgBasedInputPolicy):
         self.utg.add_transition(self.last_event, self.last_state, self.current_state)
 
 
-class UtgRandomPolicy(UtgBasedInputPolicy):
+class UtgRandomPolicy(KeaRandomInputPolicy):
     """
     random input policy based on UTG
     """
 
-    def __init__(self, device, app, random_input=True, android_check=None, restart_app_after_check_property=False,
+    def __init__(self, device, app, random_input=True, kea_core=None, restart_app_after_check_property=False,
                  number_of_events_that_restart_app=100, clear_and_restart_app_data_after_100_events=False):
         super(UtgRandomPolicy, self).__init__(
-            device, app, random_input, android_check
+            device, app, random_input, kea_core
         )
         self.restart_app_after_check_property = restart_app_after_check_property
         self.number_of_events_that_restart_app = number_of_events_that_restart_app
@@ -813,7 +830,7 @@ class UtgRandomPolicy(UtgBasedInputPolicy):
         if self.action_count % self.number_of_events_that_restart_app == 0 and self.clear_and_restart_app_data_after_100_events:
             self.logger.info("clear and restart app after %s events" % self.number_of_events_that_restart_app)
             return ReInstallAppEvent(self.app)
-        rules_to_check = self.android_check.get_rules_that_pass_the_preconditions()
+        rules_to_check = self.kea_core.get_rules_that_pass_the_preconditions()
 
         if len(rules_to_check) > 0:
             t = self.time_recoder.get_time_duration()

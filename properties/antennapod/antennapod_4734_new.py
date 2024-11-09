@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def share_menu_should_display_mainpath(self):
         d(description="Open menu").click()
         d(text="Add podcast").click()
@@ -30,5 +30,5 @@ setting = Setting(
     output_dir="../output/antennapod/4734/mutate_new",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

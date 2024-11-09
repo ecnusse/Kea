@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(description="Open menu").click()
         
@@ -18,7 +18,7 @@ class Test(Kea):
         time.sleep(3)
         d(text="Subscribe").click()
 
-    @main_path()
+    @mainPath()
     def suggestion_should_be_hiden_mainpath(self):
         d(description="Open menu").click()
         d(text="Add podcast").click()
@@ -46,5 +46,5 @@ setting = Setting(
     
     number_of_events_that_restart_app = 100
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

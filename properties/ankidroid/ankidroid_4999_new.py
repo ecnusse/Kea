@@ -6,7 +6,7 @@ class Test(Kea):
     
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Get Started").click()
 
@@ -43,5 +43,5 @@ setting = Setting(
     output_dir="../output/ankidroid/4999/mutate_new",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

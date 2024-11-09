@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def import_an_backup_should_take_effect_mainpath(self):
         d(description="Open navigation").click()
         d(text="Settings").click()
@@ -38,5 +38,5 @@ setting = Setting(
     output_dir="output/activitydiary/170/mutate/1",
     policy_name="random"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

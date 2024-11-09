@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def rotate_device_shouldnot_make_cover_disappear_mainpath(self):
         d(description="Open menu").click()
         d(text="Add podcast").click()
@@ -40,5 +40,5 @@ setting = Setting(
     timeout=86400,
     number_of_events_that_restart_app = 100
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

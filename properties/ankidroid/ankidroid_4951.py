@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def rule_allow_permission_three_points_exists_mainpath(self):
         d(text="Allow").click()
 
@@ -29,5 +29,5 @@ setting = Setting(
     policy_name="mutate",
     grant_perm=False
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

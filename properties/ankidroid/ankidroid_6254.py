@@ -4,12 +4,12 @@ from kea.main import *
 
 class Test(Kea):
      
-    @initialize()
+    @initializer()
     def set_up(self):
         if d(text="OK").exists():
             d(text="OK").click()
 
-    @main_path()
+    @mainPath()
     def yue_should_display_in_language_mainpath(self):
         d(description="Navigate up").click()
         d(text="Settings").click()
@@ -35,5 +35,5 @@ setting = Setting(
     output_dir="../output/ankidroid/6254/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

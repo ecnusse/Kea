@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
     
-    @main_path()
+    @mainPath()
     def reschedule_should_display_another_card_mainpath(self):
         d(resourceId="com.ichi2.anki:id/deckpicker_name").click()
 
@@ -42,5 +42,5 @@ setting = Setting(
     output_dir="output/ankidroid/5167/mutate/1",
     policy_name="random"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

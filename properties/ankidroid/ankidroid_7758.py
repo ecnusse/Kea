@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(description="Navigate up").click()
         
@@ -19,7 +19,7 @@ class Test(Kea):
         
         d(text="日本語").click()
 
-    @main_path()
+    @mainPath()
     def card_info_should_be_translated_mainpath(self):
         d(description="前に戻る").click()
         d(text="カードブラウザ").click()
@@ -49,5 +49,5 @@ setting = Setting(
     output_dir="../output/ankidroid/7758/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

@@ -7,7 +7,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def change_setting_should_not_influence_Download_function_mainpath(self):
         d(description="Open menu").click()
         d(text="Add podcast").click()
@@ -37,5 +37,5 @@ setting = Setting(
     output_dir="../output/antennapod/3786/mutate_new",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

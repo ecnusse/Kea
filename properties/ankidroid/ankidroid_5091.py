@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
     
-    @main_path()
+    @mainPath()
     def option_on_one_filter_deck_should_work_mainpath(self):
         d(description="More options").click()
         d(text="Create filtered deck").click()
@@ -43,5 +43,5 @@ setting = Setting(
     output_dir="../output/ankidroid/5091/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

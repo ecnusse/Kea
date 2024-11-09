@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(resourceId="it.feio.android.omninotes.alpha:id/next").click()
         
@@ -18,7 +18,7 @@ class Test(Kea):
         
         d(resourceId="it.feio.android.omninotes.alpha:id/done").click()
 
-    @main_path()
+    @mainPath()
     def dataloss_on_search_text_mainpath(self):
         d(resourceId="it.feio.android.omninotes.alpha:id/menu_search").click()
         d(resourceId="it.feio.android.omninotes.alpha:id/search_src_text").set_text("Hello World")
@@ -42,4 +42,4 @@ setting = Setting(
     output_dir="../output/omninotes/888/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)

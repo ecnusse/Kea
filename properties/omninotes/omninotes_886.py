@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(resourceId="it.feio.android.omninotes:id/next").click()
         
@@ -19,7 +19,7 @@ class Test(Kea):
         
         d(resourceId="it.feio.android.omninotes:id/done").click()
         
-    @main_path()
+    @mainPath()
     def rule_trash_note_cannot_be_searched_mainapth(self):
         d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").click()
         d(text="Text note").click()
@@ -82,5 +82,5 @@ setting = Setting(
     output_dir="../output/omninotes/886/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

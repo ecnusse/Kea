@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(description="Open menu").click()
         
@@ -18,7 +18,7 @@ class Test(Kea):
         time.sleep(3)
         d(text="Subscribe").click()
 
-    @main_path()
+    @mainPath()
     def delete_should_update_the_filter_episodes_mainpath(self):
         d(description="Open menu").click()
         d(text="Add podcast").click()
@@ -67,5 +67,5 @@ setting = Setting(
     output_dir="../output/antennapod/4548/mutate_new",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

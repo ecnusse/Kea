@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def edit_card_in_preview_shouldnot_switch_to_other_mainpath(self):
         d(description="Navigate up").click()
         d(text="Card browser").click()
@@ -49,5 +49,5 @@ setting = Setting(
     output_dir="output/ankidroid/7801/mutate/1",
     policy_name="random"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

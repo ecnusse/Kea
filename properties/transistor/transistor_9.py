@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def should_add_station_mainpath(self):
         d(resourceId="org.y20k.transistor:id/menu_add").click()
         d(className="android.widget.EditText").set_text("Hello")
@@ -34,5 +34,5 @@ setting = Setting(
     policy_name="mutate",
     number_of_events_that_restart_app = 100
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

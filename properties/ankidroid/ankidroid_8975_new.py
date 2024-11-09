@@ -4,11 +4,11 @@ from kea.main import *
 
 class Test(Kea):
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Get Started").click()
 
-    @main_path()
+    @mainPath()
     def card_should_be_searched_in_all_decks_mainpath(self):
         d(resourceId="com.ichi2.anki:id/deckpicker_name").click()
         d(description="Open drawer").click()
@@ -53,5 +53,5 @@ setting = Setting(
     output_dir="output/ankidroid/8975/mutate_new/1",
     policy_name="random"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

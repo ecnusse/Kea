@@ -7,7 +7,7 @@ class Test(Kea):
 
 
 
-    @main_path()
+    @mainPath()
     def clear_download_log_should_work_main_path(self):
         d(description="Open menu").click()
         d(text="Add podcast").click()
@@ -40,5 +40,5 @@ setting = Setting(
     output_dir="../output/antennapod/4656/mutate_new",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

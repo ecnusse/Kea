@@ -3,7 +3,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(resourceId="net.gsantner.markor:id/next").click()
         
@@ -21,7 +21,7 @@ class Test(Kea):
         if d(text="OK").exists():
             d(text="OK").click()
         
-    @main_path()
+    @mainPath()
     def setting_should_be_clicked_mainpath(self):
         d(resourceId="net.gsantner.markor:id/nav_more").click()
     
@@ -49,5 +49,5 @@ setting = Setting(
     output_dir="../output/markor/1443/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

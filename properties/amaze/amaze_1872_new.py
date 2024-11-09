@@ -3,7 +3,7 @@ sys.path.append("..")
 from kea.main import *
 
 class Test(Kea):
-    @initialize()
+    @initializer()
     def set_up(self):
         if d(text="ALLOW").exists():
             d(text="ALLOW").click()

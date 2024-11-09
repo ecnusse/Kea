@@ -1,8 +1,16 @@
-from uiautomator2._selector import Selector, UiObject
-from uiautomator2 import Device
-from typing import Any, Union
+"""
+DSL for Domain Sepcific Language
+This is the PDL (Property Desciption Language) for Mobile app testing.
+Please checkout our paper for details.
+"""
 
-class Mobile(Device):
+from uiautomator2._selector import Selector, UiObject
+from uiautomator2 import Device as Driver
+from typing import Any, Union, TYPE_CHECKING
+if TYPE_CHECKING:
+    from kea.droidbot import DroidBot
+
+class Mobile(Driver):
     
     def __init__(self, delay=1) -> None:
         self.delay = delay
@@ -16,30 +24,31 @@ class Mobile(Device):
     def __call__(self, **kwargs: Any) -> "Ui":
         return Ui(self, Selector(**kwargs))
 
-    def set_droidbot(self, droidbot):
+    def set_droidbot(self, droidbot:"DroidBot"):
         self.droidbot = droidbot
 
     def rotate(self, mode: str):
-        self.droidbot.device.take_screenshot(True, "rotate")
+        self.droidbot.device.save_screenshot_for_report(event_name="rotate")
         super().set_orientation(mode)
 
     def press(self, key: Union[int, str], meta=None):
-        self.droidbot.device.take_screenshot(True, "press")
+        self.droidbot.device.save_screenshot_for_report(event_name="press")
         super().press(key, meta)
 
 
 class Ui(UiObject):
+    session:"Mobile"
 
     def click(self, offset=None):
-        self.session.droidbot.device.take_screenshot(True, "click")
+        self.session.droidbot.device.save_screenshot_for_report(event_name="click")
         super().click(offset)
 
     def long_click(self, duration: float = 0.5):
-        self.session.droidbot.device.take_screenshot(True, "long_click")
+        self.session.droidbot.device.save_screenshot_for_report(event_name="long_click")
         super().long_click(duration)
     
     def set_text(self, text):
-        self.session.droidbot.device.take_screenshot(True, "set_text " + text)
+        self.session.droidbot.device.save_screenshot_for_report(event_name="set_text " + text)
         super().set_text(text)
         
     def child(self, **kwargs):

@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(resourceId="it.feio.android.omninotes:id/next").click()
         
@@ -22,7 +22,7 @@ class Test(Kea):
         if d(text="OK").exists():
             d(text="OK").click()
 
-    @main_path()
+    @mainPath()
     def rule_remove_tag_from_note_shouldnot_affect_content_mainpath(self):
         d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").long_click()
         d(resourceId="it.feio.android.omninotes:id/detail_content").set_text("#hello")
@@ -90,5 +90,5 @@ setting = Setting(
     
     number_of_events_that_restart_app = 100
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

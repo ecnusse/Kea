@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def rotate_device_should_keep_review_card_mainpath(self):
         d(resourceId="com.ichi2.anki:id/deckpicker_name").click()
         d(description="Navigate up").click()
@@ -42,5 +42,5 @@ setting = Setting(
     output_dir="../output/ankidroid/5688/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

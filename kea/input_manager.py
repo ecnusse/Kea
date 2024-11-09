@@ -8,11 +8,11 @@ from .input_policy import (
     POLICY_MUTATE_MAIN_PATH,
     POLICY_RANDOM_TWO,
     POLICY_RANDOM_100,
-    MutatePolicy,
+    KeaMutateInputPolicy,
     POLICY_MUTATE,
     POLICY_BUILD_MODEL,
     POLICY_RANDOM,
-    UtgBasedInputPolicy,
+    KeaRandomInputPolicy,
     UtgRandomPolicy,
     POLICY_NAIVE_DFS,
     POLICY_GREEDY_DFS,
@@ -53,7 +53,7 @@ class InputManager(object):
         profiling_method=None,
         master=None,
         replay_output=None,
-        android_check=None,
+        kea_core=None,
         number_of_events_that_restart_app=100,
         run_initial_rules_after_every_mutation=True
     ):
@@ -89,7 +89,7 @@ class InputManager(object):
 
             self.script = DroidBotScript(script_dict)
 
-        self.android_check = android_check
+        self.kea_core = kea_core
         
         self.profiling_method = profiling_method
         self.number_of_events_that_restart_app = number_of_events_that_restart_app
@@ -101,19 +101,19 @@ class InputManager(object):
         elif self.policy_name == POLICY_MONKEY:
             input_policy = None
         elif self.policy_name == POLICY_MUTATE:
-            input_policy = MutatePolicy(
+            input_policy = KeaMutateInputPolicy(
                 device,
                 app,
                 self.random_input,
-                self.android_check,
+                self.kea_core,
                 run_initial_rules_after_every_mutation = self.run_initial_rules_after_every_mutation
             )
         elif self.policy_name == POLICY_RANDOM:
-            input_policy = UtgRandomPolicy(device, app, random_input=self.random_input,android_check=self.android_check,number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True)
+            input_policy = UtgRandomPolicy(device, app, random_input=self.random_input,kea_core=self.kea_core,number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True)
         elif self.policy_name == POLICY_RANDOM_TWO:
-            input_policy = UtgRandomPolicy(device, app, random_input=self.random_input,android_check=self.android_check, restart_app_after_check_property=True)
+            input_policy = UtgRandomPolicy(device, app, random_input=self.random_input,kea_core=self.kea_core, restart_app_after_check_property=True)
         elif self.policy_name == POLICY_RANDOM_100:
-            input_policy = UtgRandomPolicy(device, app, random_input=self.random_input,android_check=self.android_check, clear_and_restart_app_data_after_100_events=True)
+            input_policy = UtgRandomPolicy(device, app, random_input=self.random_input,kea_core=self.kea_core, clear_and_restart_app_data_after_100_events=True)
         elif self.policy_name == POLICY_RANDOM:
             input_policy = UtgRandomPolicy(device, app)
         else:
@@ -121,7 +121,7 @@ class InputManager(object):
                 "No valid input policy specified. Using policy \"none\"."
             )
             input_policy = None
-        if isinstance(input_policy, UtgBasedInputPolicy):
+        if isinstance(input_policy, KeaRandomInputPolicy):
             input_policy.script = self.script
             input_policy.master = master
         return input_policy

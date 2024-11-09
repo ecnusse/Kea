@@ -6,12 +6,12 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         
         pass
 
-    @main_path()
+    @mainPath()
     def text_should_display_when_episodes_is_empty_mainpath(self):
         d(description="Open menu").click()
         d(text="Settings").click()
@@ -47,5 +47,5 @@ setting = Setting(
     
     number_of_events_that_restart_app = 100
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

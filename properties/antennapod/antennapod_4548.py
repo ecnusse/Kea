@@ -5,11 +5,11 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d.press("back")
 
-    @main_path()
+    @mainPath()
     def delete_should_update_the_filter_episodes_mainpath(self):
         d(description="Open menu").click()
         d(text="Add Podcast", resourceId="de.danoeh.antennapod:id/txtvTitle").click()
@@ -57,5 +57,5 @@ setting = Setting(
     output_dir="../output/antennapod/4548/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

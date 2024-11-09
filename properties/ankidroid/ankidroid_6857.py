@@ -6,11 +6,11 @@ from hypothesis import strategies as st
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         pass
 
-    @main_path()
+    @mainPath()
     def edit_card_should_remember_scroll_position_mainpath(self):
         d(text="考研").click()
         d.press("back")
@@ -51,5 +51,5 @@ setting = Setting(
     output_dir="../output/ankidroid/6857/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

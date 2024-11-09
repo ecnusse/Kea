@@ -3,7 +3,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(resourceId="net.gsantner.markor:id/next").click()
         
@@ -19,7 +19,7 @@ class Test(Kea):
         if d(text="OK").exists():
             d(text="OK").click()
 
-    @main_path()
+    @mainPath()
     def search_in_the_file_mainpath(self):
         d(resourceId="net.gsantner.markor:id/nav_todo").click()
         d(className="android.widget.EditText").set_text("Hello")
@@ -58,5 +58,5 @@ setting = Setting(
     output_dir="../output/markor/1961/mutate_new",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

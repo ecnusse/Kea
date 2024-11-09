@@ -3,7 +3,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         for _ in range(5):
             d(resourceId="it.feio.android.omninotes:id/next").click()
@@ -37,4 +37,4 @@ setting = Setting(
     apk_path="./apk/omninotes/OmniNotes-6.2.8.apk",
 )
 t = Test()
-run_android_check_as_test(t,setting)
+start_kea(t,setting)

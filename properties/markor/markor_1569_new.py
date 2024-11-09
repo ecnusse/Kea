@@ -4,7 +4,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(resourceId="net.gsantner.markor:id/next").click()
         
@@ -20,7 +20,7 @@ class Test(Kea):
         if d(text="OK").exists():
             d(text="OK").click()
 
-    @main_path()
+    @mainPath()
     def share_file_to_quicknote_shouldnot_influence_original_content_mainpath(self):
         d(resourceId="net.gsantner.markor:id/nav_quicknote").click()
         d(className="android.widget.EditText").set_text("Hello")
@@ -77,5 +77,5 @@ setting = Setting(
     output_dir="../output/markor/1569/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

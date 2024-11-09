@@ -5,11 +5,11 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Get Started").click()
 
-    @main_path()
+    @mainPath()
     def text_should_display_after_type_answer_mainpath(self):
         d(resourceId="com.ichi2.anki:id/fab_main").click()
         d(text="Add").click()

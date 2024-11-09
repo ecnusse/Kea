@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
     
-    @main_path()
+    @mainPath()
     def only_new_card_can_be_reposition_mainpath(self):
         d(text="考研").click()
         d.press("back")
@@ -48,5 +48,5 @@ setting = Setting(
     output_dir="../output/ankidroid/5216/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

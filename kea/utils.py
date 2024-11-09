@@ -119,14 +119,14 @@ def generate_report(img_path, html_path, bug_information=None):
     # f_style = open("droidbot/resources/style/style.html", 'r', encoding='utf-8')
     new_str = "<ul id=\"menu\">" + '\n'
     new_bug_str = ""
-    json_dir = os.path.join(html_path, "report_screen_shoot.json")
+    json_dir = os.path.join(html_path, "report_screenshot.json")
     with open(json_dir, 'r') as json_file:
         report_screens = json.load(json_file)
     for report_screen in report_screens:
         action_count = report_screen['event_index']
         event_name = report_screen['event']
         img_name = report_screen['screen_shoot']
-        img_file = os.path.join("every_states", img_name)
+        img_file = os.path.join("all_states", img_name)
         line = (
             "      <li><img src=\""
             + img_file
@@ -170,3 +170,22 @@ class Time(object):
 
     def get_time_duration(self):
         return str(int(time.time() - self.start_time))
+
+class SingletonMeta(type):
+    """
+    The Singleton class can be implemented in different ways in Python. Some
+    possible methods include: base class, decorator, metaclass. We will use the
+    metaclass because it is best suited for this purpose.
+    """
+
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        """
+        Possible changes to the value of the `__init__` argument do not affect
+        the returned instance.
+        """
+        if cls not in cls._instances:
+            instance = super().__call__(*args, **kwargs)
+            cls._instances[cls] = instance
+        return cls._instances[cls]

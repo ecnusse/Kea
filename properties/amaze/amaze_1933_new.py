@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         if d(text="ALLOW").exists():
             d(text="ALLOW").click()
@@ -13,7 +13,7 @@ class Test(Kea):
         elif d(text="Allow").exists():
             d(text="Allow").click()
 
-    @main_path()
+    @mainPath()
     def should_not_contains_fba_mainpath(self):
         d(description="Navigate up").click()
         d(scrollable=True).scroll.to(text="FTP Server")
@@ -35,5 +35,5 @@ setting = Setting(
     output_dir="../output/amaze/1933/random_100/1",
     policy_name="random",
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

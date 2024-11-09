@@ -5,11 +5,11 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Get Started").click()
 
-    @main_path()
+    @mainPath()
     def question_and_answer_should_be_consistent_mainpath(self):
         d(resourceId="com.ichi2.anki:id/fab_main").click()
         d(text="Add").click()
@@ -53,5 +53,5 @@ setting = Setting(
     policy_name="random",
     send_document=False
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

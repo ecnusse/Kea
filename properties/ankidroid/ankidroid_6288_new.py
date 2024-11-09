@@ -7,11 +7,11 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(text="Get Started").click()
 
-    @main_path()
+    @mainPath()
     def add_card_in_one_deck_should_work_mainpath(self):
         d(description="Open drawer").click()
         d(text="Card browser").click()
@@ -65,5 +65,5 @@ setting = Setting(
     output_dir="output/ankidroid/6288/mutate_new/1",
     policy_name="random"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

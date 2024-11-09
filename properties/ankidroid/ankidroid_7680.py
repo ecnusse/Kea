@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
 
-    @main_path()
+    @mainPath()
     def rename_dialog_shouldnot_hide_mainpath(self):
         d(resourceId="com.ichi2.anki:id/fab_expand_menu_button").click()
         d(text="Create deck").click()
@@ -40,5 +40,5 @@ setting = Setting(
     output_dir="../output/ankidroid/7680/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

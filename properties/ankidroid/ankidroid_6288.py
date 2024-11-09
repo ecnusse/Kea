@@ -5,11 +5,11 @@ from kea.main import *
 
 class Test(Kea):
 
-    @initialize()
+    @initializer()
     def set_up(self):
         pass
 
-    @main_path()
+    @mainPath()
     def add_card_in_one_deck_should_work_mainpath(self):
         d(description="Navigate up").click()
         d(text="Card browser").click()
@@ -58,5 +58,5 @@ setting = Setting(
     
     number_of_events_that_restart_app = 100
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

@@ -4,7 +4,7 @@ from kea.main import *
 
 class Test(Kea):
     
-    @initialize()
+    @initializer()
     def set_up(self):
         if d(text="ALLOW").exists():
             d(text="ALLOW").click()
@@ -12,7 +12,7 @@ class Test(Kea):
         elif d(text="Allow").exists():
             d(text="Allow").click()
 
-    @main_path()
+    @mainPath()
     def rule_go_back_mainpath(self):
         d(description="Navigate up").click()
         d(resourceId="com.amaze.filemanager:id/design_navigation_view").scroll(steps=10)
@@ -50,5 +50,5 @@ setting = Setting(
     output_dir="../output/amaze/1499/mutate/1",
     policy_name="random",
 )
-run_android_check_as_test(t, setting)
+start_kea(t,setting)
 

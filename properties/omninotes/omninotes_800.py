@@ -5,7 +5,7 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initialize()
+    @initializer()
     def set_up(self):
         d(resourceId="it.feio.android.omninotes:id/next").click()
         
@@ -20,7 +20,7 @@ class Test(Kea):
         d(resourceId="it.feio.android.omninotes:id/done").click()
         
 
-    @main_path()
+    @mainPath()
     def count_char_in_note_mainpath(self):
         d(resourceId="it.feio.android.omninotes:id/fab_expand_menu_button").long_click()
         d(resourceId="it.feio.android.omninotes:id/detail_content").set_text("Hello")
@@ -60,5 +60,5 @@ setting = Setting(
     output_dir="../output/omninotes/800/mutate",
     policy_name="mutate"
 )
-run_android_check_as_test(t,setting)
+start_kea(t,setting)
 

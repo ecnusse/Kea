@@ -2,7 +2,7 @@ from kea.main import *
 
 class Test1(Kea):
 
-    @initialize()
+    @initializer()
     def pass_welcome_pages(self):
         for _ in range(5):
             d(resourceId="it.feio.android.omninotes.alpha:id/next").click()

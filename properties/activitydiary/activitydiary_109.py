@@ -31,14 +31,15 @@ class Test(Kea):
 
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/activitydiary/1.1.8.apk",
-    device_serial="emulator-5554",
-    output_dir="output/activitydiary/109/random_100/1",
-    policy_name="random",
-    number_of_events_that_restart_app = 100
-)
-start_kea(t,setting)
-
+if __name__ == "__main__":
+    t = Test()
+    
+    setting = Setting(
+        apk_path="./apk/activitydiary/1.1.8.apk",
+        device_serial="emulator-5554",
+        output_dir="output/activitydiary/109/random_100/1",
+        policy_name="random",
+        number_of_events_that_restart_app = 100
+    )
+    start_kea(t,setting)
+    

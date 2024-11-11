@@ -28,13 +28,14 @@ class Test(Kea):
         assert d(resourceId="com.amaze.filemanager:id/check_icon").exists(), "rotate_should_persist_selected_item failed"
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/amaze/amaze-3.5.2.apk",
-    device_serial="emulator-5554",
-    output_dir="../output/amaze/2910/mutate",
-    policy_name="mutate"
-)
-start_kea(t,setting)
-
+if __name__ == "__main__":
+    t = Test()
+    
+    setting = Setting(
+        apk_path="./apk/amaze/amaze-3.5.2.apk",
+        device_serial="emulator-5554",
+        output_dir="../output/amaze/2910/mutate",
+        policy_name="mutate"
+    )
+    start_kea(t,setting)
+    

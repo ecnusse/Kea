@@ -51,15 +51,16 @@ class Test(Kea):
 
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/transistor/4.1.7.apk",
-    device_serial="emulator-5554",
-    output_dir="../output/transistor/363/mutate_new",
-    policy_name="mutate",
-    timeout=86400,
-    number_of_events_that_restart_app = 100
-)
-start_kea(t,setting)
-
+if __name__ == "__main__":
+    t = Test()
+    
+    setting = Setting(
+        apk_path="./apk/transistor/4.1.7.apk",
+        device_serial="emulator-5554",
+        output_dir="../output/transistor/363/mutate_new",
+        policy_name="mutate",
+        timeout=86400,
+        number_of_events_that_restart_app = 100
+    )
+    start_kea(t,setting)
+    

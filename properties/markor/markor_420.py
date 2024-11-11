@@ -38,13 +38,14 @@ class Test(Kea):
             assert new_number_of_selected == number_of_selected - 1 or new_number_of_selected == number_of_selected + 1, "number of selected not correct"
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/markor/1.3.0.apk",
-    device_serial="emulator-5554",
-    output_dir="../output/markor/420/mutate",
-    policy_name="mutate"
-)
-start_kea(t,setting)
-
+if __name__ == "__main__":
+    t = Test()
+    
+    setting = Setting(
+        apk_path="./apk/markor/1.3.0.apk",
+        device_serial="emulator-5554",
+        output_dir="../output/markor/420/mutate",
+        policy_name="mutate"
+    )
+    start_kea(t,setting)
+    

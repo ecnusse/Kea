@@ -30,15 +30,16 @@ class Test(Kea):
 
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/amaze/amaze-3.8.4.apk",
-    device_serial="emulator-5554",
-    output_dir="../output/amaze/1920/random_100/1",
-    policy_name="mutate",
+if __name__ == "__main__":
+    t = Test()
     
-    number_of_events_that_restart_app = 100
-)
-start_kea(t,setting)
-
+    setting = Setting(
+        apk_path="./apk/amaze/amaze-3.8.4.apk",
+        device_serial="emulator-5554",
+        output_dir="../output/amaze/1920/random_100/1",
+        policy_name="mutate",
+        
+        number_of_events_that_restart_app = 100
+    )
+    start_kea(t,setting)
+    

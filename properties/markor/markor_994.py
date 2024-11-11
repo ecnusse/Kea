@@ -71,13 +71,14 @@ class Test(Kea):
         assert original_content == new_content, "create file with same name should not overwrite"
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/markor/2.2.10.apk",
-    device_serial="emulator-5554",
-    output_dir="../output/markor/994/mutate",
-    policy_name="mutate"
-)
-start_kea(t,setting)
-
+if __name__ == "__main__":
+    t = Test()
+    
+    setting = Setting(
+        apk_path="./apk/markor/2.2.10.apk",
+        device_serial="emulator-5554",
+        output_dir="../output/markor/994/mutate",
+        policy_name="mutate"
+    )
+    start_kea(t,setting)
+    

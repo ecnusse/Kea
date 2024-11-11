@@ -36,13 +36,14 @@ class Test(Kea):
                     d(resourceId="de.danoeh.antennapod:id/container").child(resourceId="de.danoeh.antennapod:id/txtvTitle", text=selected_title_name).exists())
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/antennapod/1.7.2b.apk",
-    device_serial="emulator-5554",
-    output_dir="../output/antennapod/3209/mutate",
-    policy_name="mutate"
-)
-start_kea(t,setting)
-
+if __name__ == "__main__":
+    t = Test()
+    
+    setting = Setting(
+        apk_path="./apk/antennapod/1.7.2b.apk",
+        device_serial="emulator-5554",
+        output_dir="../output/antennapod/3209/mutate",
+        policy_name="mutate"
+    )
+    start_kea(t,setting)
+    

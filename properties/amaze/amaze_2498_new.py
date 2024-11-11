@@ -29,14 +29,15 @@ class Test(Kea):
 
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/amaze/amaze-3.8.4.apk",
-    device_serial="emulator-5554",
-    output_dir="../output/amaze/2498/1",
-    policy_name="random"
-
-)
-run_android_check_as_test(t,setting)
-
+if __name__ == "__main__":
+    t = Test()
+    
+    setting = Setting(
+        apk_path="./apk/amaze/amaze-3.8.4.apk",
+        device_serial="emulator-5554",
+        output_dir="../output/amaze/2498/1",
+        policy_name="random"
+    
+    )
+    start_kea(t,setting)
+    

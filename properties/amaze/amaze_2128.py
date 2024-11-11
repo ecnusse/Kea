@@ -26,13 +26,14 @@ class Test(Kea):
 
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/amaze/amaze-3.5.3.apk",
-    device_serial="emulator-5554",
-    output_dir="../output/amaze/2128/random_100/1",
-    policy_name="random"
-)
-start_kea(t,setting)
-
+if __name__ == "__main__":
+    t = Test()
+    
+    setting = Setting(
+        apk_path="./apk/amaze/amaze-3.5.3.apk",
+        device_serial="emulator-5554",
+        output_dir="../output/amaze/2128/random_100/1",
+        policy_name="random"
+    )
+    start_kea(t,setting)
+    

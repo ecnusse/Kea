@@ -55,15 +55,16 @@ class Test(Kea):
 
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/simpletask/10.5.2.apk",
-    device_serial="emulator-5554",
-    output_dir="../output/simpletask/1060/mutate",
-    policy_name="mutate",
+if __name__ == "__main__":
+    t = Test()
     
-    number_of_events_that_restart_app = 100
-)
-start_kea(t,setting)
-
+    setting = Setting(
+        apk_path="./apk/simpletask/10.5.2.apk",
+        device_serial="emulator-5554",
+        output_dir="../output/simpletask/1060/mutate",
+        policy_name="mutate",
+        
+        number_of_events_that_restart_app = 100
+    )
+    start_kea(t,setting)
+    

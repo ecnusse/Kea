@@ -47,13 +47,14 @@ class Test(Kea):
         d(text="CONFIRM").click()
         assert not d(text=selected_category_name).exists()
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/omninotes/OmniNotes-5.3.1.apk",
-    device_serial="emulator-5554",
-    output_dir="../output/omninotes/340/mutate",
-    policy_name="mutate"
-)
-start_kea(t,setting)
-
+if __name__ == "__main__":
+    t = Test()
+    
+    setting = Setting(
+        apk_path="./apk/omninotes/OmniNotes-5.3.1.apk",
+        device_serial="emulator-5554",
+        output_dir="../output/omninotes/340/mutate",
+        policy_name="mutate"
+    )
+    start_kea(t,setting)
+    

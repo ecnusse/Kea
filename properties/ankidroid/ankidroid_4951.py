@@ -20,14 +20,15 @@ class Test(Kea):
         
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/ankidroid/2.9alpha29.apk",
-    device_serial="emulator-5554",
-    output_dir="../output/ankidroid/4951/mutate",
-    policy_name="mutate",
-    grant_perm=False
-)
-start_kea(t,setting)
-
+if __name__ == "__main__":
+    t = Test()
+    
+    setting = Setting(
+        apk_path="./apk/ankidroid/2.9alpha29.apk",
+        device_serial="emulator-5554",
+        output_dir="../output/ankidroid/4951/mutate",
+        policy_name="mutate",
+        grant_perm=False
+    )
+    start_kea(t,setting)
+    

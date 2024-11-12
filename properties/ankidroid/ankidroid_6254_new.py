@@ -29,15 +29,16 @@ class Test(Kea):
 
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/ankidroid/2.18alpha6.apk",
-    device_serial="emulator-5554",
-    output_dir="../output/ankidroid/6254/mutate_new",
-    policy_name="random",
+if __name__ == "__main__":
+    t = Test()
     
-    number_of_events_that_restart_app = 100
-)
-start_kea(t,setting)
-
+    setting = Setting(
+        apk_path="./apk/ankidroid/2.18alpha6.apk",
+        device_serial="emulator-5554",
+        output_dir="../output/ankidroid/6254/mutate_new",
+        policy_name="random",
+        
+        number_of_events_that_restart_app = 100
+    )
+    start_kea(t,setting)
+    

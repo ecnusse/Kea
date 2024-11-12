@@ -73,13 +73,14 @@ class Test(Kea):
         
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/simpletask/11.0.1.apk",
-    device_serial="emulator-5554",
-    output_dir="../output/simpletask/520/mutate_new",
-    policy_name="mutate"
-)
-start_kea(t,setting)
-
+if __name__ == "__main__":
+    t = Test()
+    
+    setting = Setting(
+        apk_path="./apk/simpletask/11.0.1.apk",
+        device_serial="emulator-5554",
+        output_dir="../output/simpletask/520/mutate_new",
+        policy_name="mutate"
+    )
+    start_kea(t,setting)
+    

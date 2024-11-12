@@ -57,13 +57,14 @@ class Test(Kea):
         assert d(text=activity_name).exists(), "activity not exist after import" + str(activity_name)
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/activitydiary/1.4.0.apk",
-    device_serial="emulator-5554",
-    output_dir="output/activitydiary/176/1",
-    policy_name="random"
-
-)
-
+if __name__ == "__main__":
+    t = Test()
+    
+    setting = Setting(
+        apk_path="./apk/activitydiary/1.4.0.apk",
+        device_serial="emulator-5554",
+        output_dir="output/activitydiary/176/1",
+        policy_name="random"
+    
+    )
+    

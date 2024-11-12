@@ -35,6 +35,9 @@ class Rule:
     function = attr.ib()
     preconditions = attr.ib()
 
+    def __str__(self) -> str:
+        return f"Rule(function: {self.function.__qualname__})"
+
 @attr.s()
 class MainPath:
     function = attr.ib()
@@ -176,7 +179,7 @@ def start_kea(kea_core:"Kea", settings = None):
 
 from hypothesis import strategies as st
 
-class TestCase(metaclass=SingletonMeta):
+class TestCase:
     # TestCase requires a Singleton design to ensure the rule, initializer, mainPath can be correctly loaded
     
     rule_list:List["Rule"]
@@ -240,7 +243,17 @@ class Kea(object):
     def get_initializer_list(cls):
         current_TestCase = cls._all_testCase[cls] = cls._all_testCase.get(cls, TestCase())
         initializer_list = current_TestCase.get_list(INITIALIZER_MARKER, kea_core=cls)
-        return initializer_list
+        if len(initializer_list) > 0:
+            return initializer_list
+
+        print("No initializer for current property. Trying to find an initializer")
+        for testCaseName, testCase in cls._all_testCase.items():
+            r = testCase.get_list(INITIALIZER_MARKER, kea_core=cls)
+            if len(r) > 0:
+                print(f"Successfully found an initializer in {testCaseName}")
+                break
+
+        return r 
 
     @classmethod
     def get_rule_list(cls):
@@ -282,6 +295,7 @@ class Kea(object):
         return self.execute_rule(rule_to_check)
 
     def execute_rule(self, rule:"Rule"):
+        self.logger.info(f"executing rule:\n{rule}")
         if len(rule.preconditions) > 0:
             if not all(precond(self) for precond in rule.preconditions):
                 return 3
@@ -303,8 +317,8 @@ class Kea(object):
             code_context = last_call.line.strip()
 
             # Print the line number and code content of the error.
-            self.logger.info(f"Error occurred in file {file_name} on line {line_number}:")
-            self.logger.info(f"Code causing the error: {code_context}")
+            self.logger.warning(f"Error occurred in file {file_name} on line {line_number}:")
+            self.logger.warning(f"Code causing the error: {code_context}")
             return 2
         except AssertionError as e:
             self.logger.error("Assertion error. "+str(e))

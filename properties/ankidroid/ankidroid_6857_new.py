@@ -44,13 +44,14 @@ class Test(Kea):
         assert d(resourceId="com.ichi2.anki:id/card_column2")[0].get_text() == selected_card, "scroll position should not change"
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/ankidroid/2.18alpha6.apk",
-    device_serial="emulator-5554",
-    output_dir="output/ankidroid/6857/mutate_new/1",
-    policy_name="random"
-)
-start_kea(t,setting)
-
+if __name__ == "__main__":
+    t = Test()
+    
+    setting = Setting(
+        apk_path="./apk/ankidroid/2.18alpha6.apk",
+        device_serial="emulator-5554",
+        output_dir="output/ankidroid/6857/mutate_new/1",
+        policy_name="random"
+    )
+    start_kea(t,setting)
+    

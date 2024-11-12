@@ -26,15 +26,16 @@ class Test(Kea):
 
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/activitydiary/1.4.0.apk",
-    device_serial="emulator-5554",
-    output_dir="output/activitydiary/253/mutate/1",
-    policy_name="random",
-
-    main_path="main_path/activitydiary/253.json"
-)
-start_kea(t,setting)
-
+if __name__ == "__main__":
+    t = Test()
+    
+    setting = Setting(
+        apk_path="./apk/activitydiary/1.4.0.apk",
+        device_serial="emulator-5554",
+        output_dir="output/activitydiary/253/mutate/1",
+        policy_name="random",
+    
+        main_path="main_path/activitydiary/253.json"
+    )
+    start_kea(t,setting)
+    

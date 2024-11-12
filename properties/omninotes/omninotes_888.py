@@ -34,12 +34,13 @@ class Test(Kea):
         assert d(resourceId="it.feio.android.omninotes.alpha:id/search_src_text").exists() 
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/omninotes/OmniNotes-6.2.0alpha.apk",
-    device_serial="emulator-5554",
-    output_dir="../output/omninotes/888/mutate",
-    policy_name="mutate"
-)
-start_kea(t,setting)
+if __name__ == "__main__":
+    t = Test()
+    
+    setting = Setting(
+        apk_path="./apk/omninotes/OmniNotes-6.2.0alpha.apk",
+        device_serial="emulator-5554",
+        output_dir="../output/omninotes/888/mutate",
+        policy_name="mutate"
+    )
+    start_kea(t,setting)

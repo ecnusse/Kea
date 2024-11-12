@@ -40,13 +40,14 @@ class Test(Kea):
 
 
 
-t = Test()
-
-setting = Setting(
-    apk_path="./apk/ankidroid/2.18alpha6.apk",
-    device_serial="emulator-5554",
-    output_dir="output/ankidroid/6887/mutate/1",
-    policy_name="random",
-)
-start_kea(t,setting)
-
+if __name__ == "__main__":
+    t = Test()
+    
+    setting = Setting(
+        apk_path="./apk/ankidroid/2.18alpha6.apk",
+        device_serial="emulator-5554",
+        output_dir="output/ankidroid/6887/mutate/1",
+        policy_name="random",
+    )
+    start_kea(t,setting)
+    

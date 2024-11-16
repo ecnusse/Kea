@@ -1,6 +1,5 @@
 import json
 import logging
-import subprocess
 import time
 
 from .input_event import EventLog

@@ -267,7 +267,6 @@ class DeviceState(object):
         except Exception as e:
             self.device.logger.warning(e)
     def draw_event(self, event, screenshot_path):
-        return "not implmented"
         import cv2
         image = cv2.imread(screenshot_path)
         if event is not None and screenshot_path is not None:

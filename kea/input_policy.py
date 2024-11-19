@@ -26,7 +26,9 @@ from .input_event import (
     ManualEvent,
     SetTextEvent,
     KillAppEvent,
-    UIEvent, KillAndRestartAppEvent,
+    UIEvent,
+    KillAndRestartAppEvent,
+    U2StartEvent
 )
 from .utg import UTG
 from kea import utils
@@ -34,7 +36,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .input_manager import InputManager
-    from .main import Kea
+    from .main import Kea, mainPath
     from .app import App
     from .device import Device
 
@@ -144,6 +146,7 @@ class InputPolicy(object):
             try:
 
                 self.device.u2.set_fastinput_ime(True)
+                self.logger.info("action count: %d" % self.action_count)
                 if self.action_count == 0 and self.master is None:
                     #If the application is running, close the application.
                     event = KillAppEvent(app=self.app)
@@ -151,7 +154,6 @@ class InputPolicy(object):
                     event = IntentEvent(self.app.get_start_intent())
                 else:
                     event = self.generate_event()
-                self.logger.info("action count: %d" % self.action_count)
                 self.last_event = event
                 input_manager.add_event(event)
             except KeyboardInterrupt:
@@ -301,7 +303,7 @@ class KeaRandomInputPolicy(InputPolicy):
             time.sleep(5)
             return KeyEvent(name="BACK")
 
-        self.__update_utg()
+        self.update_utg()
 
         event = None
 
@@ -319,8 +321,11 @@ class KeaRandomInputPolicy(InputPolicy):
         self.last_event = event
         return event
 
-    def __update_utg(self):
+    def update_utg(self):
         self.utg.add_transition(self.last_event, self.last_state, self.current_state)
+
+    def update_node(self, event, state):
+        self.utg.add_node(state, event)
 
     @abstractmethod
     def generate_event_based_on_utg(self):
@@ -378,8 +383,7 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
     
     """
 
-    def __init__(self, device, app, random_input, kea_core=None,
-                 run_initial_rules_after_every_mutation=True):
+    def __init__(self, device, app, random_input, kea_core=None):
         super(KeaMutateInputPolicy, self).__init__(
             device, app, random_input, kea_core
         )
@@ -420,8 +424,6 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
         self.last_random_text = None
         self.last_rotate_events = KEY_RotateDeviceNeutralEvent
 
-        self.run_initial_rules_after_every_mutation = run_initial_rules_after_every_mutation
-
     def select_and_initialize_main_path(self):
         if len(self.list_main_path) == 0:
             self.logger.error("main path is empty")
@@ -444,29 +446,34 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
         #Return relevant events based on whether the application is in the foreground.
         event = self.check_the_app_on_foreground()
         if event is not None:
+            self.update_utg()
             self.last_state = self.current_state
             self.last_event = event
             return event
         if self.action_count == 2 or isinstance(self.last_event, ReInstallAppEvent):
             self.select_and_initialize_main_path()
-        if self.action_count == 2 or isinstance(self.last_event, ReInstallAppEvent) or (
-                isinstance(self.last_event, KillAndRestartAppEvent) and self.run_initial_rules_after_every_mutation):
+            if isinstance(self.last_event, ReInstallAppEvent):
+                self.update_utg()
+                self.last_state = self.current_state
+                self.last_event = event
+                initialize_start_event = U2StartEvent("InitializeStart")
+                self.update_node(initialize_start_event, self.last_state)
+                self.run_initial_rules()
+                return None
             self.run_initial_rules()
             time.sleep(2)
-            self.current_state = self.device.get_current_state(self.action_count)
-            self.__update_utg()
-        if self.action_count == 3:
-            self.utg.first_state_after_initialization = self.current_state
         if self.execute_main_path:
             event_str = self.get_main_path_event()
             if event_str:
-                self.kea_core.exec_mainPath(event_str)
-                if self.action_count > 2:
+                if 0 < self.current_index_on_main_path < self.mutate_node_index_on_main_path:
                     self.action_count -= 1
                     self.logger.info("*****main path running*****")
+                self.kea_core.exec_mainPath(event_str)
+                self.last_state = self.current_state
+                self.last_event = event
                 return None
         else:
-            self.__update_utg()
+            self.update_utg()
         if event is None:
             event = self.mutate_the_main_path()
 
@@ -502,6 +509,9 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
             if random.random() < p:
                 self.time_to_check_rule.append(t)
                 self.logger.info(" check rule")
+                # self.update_utg()
+                check_start_event = U2StartEvent("CheckStart")
+                self.update_node(check_start_event, self.last_state)
                 self.check_rule_with_precondition()
                 return 1
             else:
@@ -553,11 +563,15 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
             self.logger.info(
                 "reach the mutate index, start mutate on the node %d" % self.mutate_node_index_on_main_path)
             self.execute_main_path = False
-            self.current_state = self.device.get_current_state(self.action_count)
-            self.__update_utg()
             return None
-        self.logger.info("execute node index on main path: %d" % self.current_index_on_main_path)
+        if self.current_index_on_main_path == 0:
+            self.current_state = self.device.get_current_state(self.action_count)
+            self.update_utg()
+            self.last_state = self.current_state
+            mainPath_start_event = U2StartEvent("MainPathStart")
+            self.update_node(mainPath_start_event, self.last_state)
 
+        self.logger.info("execute node index on main path: %d" % self.current_index_on_main_path)
         u2_event_str = self.main_path_list[self.current_index_on_main_path]
         if u2_event_str is None:
             self.logger.warning("event is None on main path node %d" % self.current_index_on_main_path)
@@ -766,9 +780,6 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
             # If the app is in foreground
             self.__num_steps_outside = 0
 
-    def __update_utg(self):
-        self.utg.add_transition(self.last_event, self.last_state, self.current_state)
-
 
 class UtgRandomPolicy(KeaRandomInputPolicy):
     """
@@ -815,8 +826,15 @@ class UtgRandomPolicy(KeaRandomInputPolicy):
         """
 
         if self.action_count == 2 or isinstance(self.last_event, ReInstallAppEvent):
+            if isinstance(self.last_event, ReInstallAppEvent):
+                self.current_state = self.device.get_current_state(self.action_count)
+                self.update_utg()
+                self.last_state = self.current_state
+                initialize_start_event = U2StartEvent("InitializeStart")
+                self.update_node(initialize_start_event, self.last_state)
+                self.run_initial_rules()
+                return None
             self.run_initial_rules()
-
         # Get current device state
         self.current_state = self.device.get_current_state(self.action_count)
         if self.current_state is None:
@@ -824,8 +842,7 @@ class UtgRandomPolicy(KeaRandomInputPolicy):
             time.sleep(5)
             return KeyEvent(name="BACK")
 
-        self.__update_utg()
-        self.last_state = self.current_state
+        self.update_utg()
 
         if self.action_count % self.number_of_events_that_restart_app == 0 and self.clear_and_restart_app_data_after_100_events:
             self.logger.info("clear and restart app after %s events" % self.number_of_events_that_restart_app)
@@ -840,6 +857,8 @@ class UtgRandomPolicy(KeaRandomInputPolicy):
             if random.random() < 0.5:
                 self.time_to_check_rule.append(t)
                 self.logger.info(" check rule")
+                check_start_event = U2StartEvent("CheckStart")
+                self.update_node(check_start_event, self.last_state)
                 self.check_rule_with_precondition()
                 if self.restart_app_after_check_property:
                     self.logger.debug("restart app after check property")
@@ -938,5 +957,3 @@ class UtgRandomPolicy(KeaRandomInputPolicy):
         self.__event_trace += EVENT_FLAG_EXPLORE
         return random.choice(possible_events)
 
-    def __update_utg(self):
-        self.utg.add_transition(self.last_event, self.last_state, self.current_state)

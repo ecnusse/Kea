@@ -53,8 +53,7 @@ class InputManager(object):
         master=None,
         replay_output=None,
         kea_core=None,
-        number_of_events_that_restart_app=100,
-        run_initial_rules_after_every_mutation=True
+        number_of_events_that_restart_app=100
     ):
         """
         manage input event sent to the target device
@@ -76,8 +75,6 @@ class InputManager(object):
         self.event_count = event_count
         self.event_interval = event_interval
         self.replay_output = replay_output
-
-        self.run_initial_rules_after_every_mutation = run_initial_rules_after_every_mutation
 
         self.monkey = None
 
@@ -104,8 +101,7 @@ class InputManager(object):
                 device,
                 app,
                 self.random_input,
-                self.kea_core,
-                run_initial_rules_after_every_mutation = self.run_initial_rules_after_every_mutation
+                self.kea_core
             )
         elif self.policy_name == POLICY_RANDOM:
             input_policy = UtgRandomPolicy(device, app, random_input=self.random_input,kea_core=self.kea_core,number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True)

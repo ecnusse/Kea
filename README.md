@@ -111,4 +111,5 @@ That's it! You can see the test results in the "output" directory.
 
 1. [droidbot](https://github.com/honeynet/droidbot)
 2. [uiautomator2](https://github.com/openatx/uiautomator2)
-3. [hypothesis](https://github.com/HypothesisWorks/hypothesis)
+3. [hmdriver2](https://github.com/codematrixer/hmdriver2)
+4. [hypothesis](https://github.com/HypothesisWorks/hypothesis)

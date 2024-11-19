@@ -103,12 +103,24 @@ def generate_report(img_path, html_path, bug_information=None):
     bug_link_list = []
     # user can click to jump to the corresponding event, contains the event index of each bug
     bug_set = set()
+    json_dir = os.path.join(html_path, "report_screenshot.json")
+    with open(json_dir, 'r') as json_file:
+        report_screens = json.load(json_file)
     if bug_information is not None:
         for bug in bug_information:
-            property_name = "<p><strong>Property_Name:</strong>" + bug[2] + "</p>"
-            bug_link = ( property_name + "<li><a href=\"#"+str(bug[0])+"\">"+str(bug[0])+"</a></li>" + '\n')
+            property_name = "<p>" + bug[2] + "</p>"
+            interaction_end = str(bug[0]) + ".1"
+            for report_screen in report_screens:
+                if str(bug[0]) + "." in report_screen['event_index']:
+                    interaction_end = report_screen['event_index']
+            bug_link = ("<tr><td>" + property_name + "</td>" +
+                        "<td><a href=\"#"+str(bug[0])+"\">"+str(bug[0])+"</a></td>" +
+                        "<td><a href=\"#"+str(bug[0]) + ".1" + "\">"+str(bug[0])+ ".1 ~ " + interaction_end + "</a></td>" +
+                        "<td><a href=\"#"+str(bug[0] + 1) + "\">"+str(bug[0] + 1)+"</a></td></tr>")
             bug_link_list.append(bug_link)
-            bug_set.add(bug[0])
+            bug_set.add(str(bug[0]))
+            bug_set.add(str(bug[0] + 0.1))
+            bug_set.add(str(bug[0] + 1))
     f_html = open(
         os.path.join(html_path,  "bug_report.html"), 'w', encoding='utf-8'
     )
@@ -119,9 +131,6 @@ def generate_report(img_path, html_path, bug_information=None):
     # f_style = open("droidbot/resources/style/style.html", 'r', encoding='utf-8')
     new_str = "<ul id=\"menu\">" + '\n'
     new_bug_str = ""
-    json_dir = os.path.join(html_path, "report_screenshot.json")
-    with open(json_dir, 'r') as json_file:
-        report_screens = json.load(json_file)
     for report_screen in report_screens:
         action_count = report_screen['event_index']
         event_name = report_screen['event']
@@ -136,7 +145,7 @@ def generate_report(img_path, html_path, bug_information=None):
             + '\n'
         )
         if bug_information is not None:
-            if "." not in action_count and int(action_count) in bug_set:
+            if action_count in bug_set:
                 line = (
                     "      <li><img src=\""
                     + img_file
@@ -156,9 +165,9 @@ def generate_report(img_path, html_path, bug_information=None):
         new_bug_str = new_bug_str + item
     new_str = new_str + "   </ul>"
     old_str = "<ul id=\"menu\"></ul>"
-    old_bug_str = "bug_link"
+    old_bug_str = "<tr><td>bug_link</td><td>bug_link</td><td>bug_link</td><td>bug_link</td></tr>"
     for line in f_style:
-        if bug_information is not None and "<ul>bug_link</ul>" in line:
+        if bug_information is not None and old_bug_str in line:
             f_html.write(line.replace(old_bug_str, new_bug_str))
             continue
         f_html.write(line.replace(old_str, new_str))

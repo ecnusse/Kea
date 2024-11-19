@@ -31,19 +31,28 @@ def parse_args():
 
 def import_and_instantiate_classes(files):
     droidcheck_instance = []
-    current_path = os.path.abspath(os.getcwd())
+    workspace_path = os.path.abspath(os.getcwd())
     
     for file in files:
-        module_path = os.path.join(current_path, file)
-        module_dir = os.path.dirname(module_path)
+        
+        file_abspath = os.path.join(workspace_path, file) if not os.path.isabs(file) else file
+        
+        module_dir = os.path.dirname(file_abspath)
         
         if module_dir not in sys.path:
-            sys.path.insert(0, module_dir)  # 确保当前路径在 sys.path 中
+            sys.path.insert(0, module_dir)
+        
+        if not os.path.exists(file_abspath):
+            raise FileNotFoundError(f"{file} not exists.") 
+        
+        os.chdir(os.path.dirname(file_abspath))
 
-        module_name = os.path.splitext(os.path.relpath(file, start=current_path))[0]
-        module_name = module_name.replace("/", ".").replace("\\", ".")
+        module_name, extension_name = [str(_) for _ in os.path.splitext(os.path.basename(file_abspath))]
+        if not extension_name == ".py":
+            raise AttributeError(f"{file} is not a property. It should be a .py file")
         
         try:
+            # print(f"Importting module {module_name}")
             module = importlib.import_module(module_name)
 
             # Find all classes in the module and attempt to instantiate them.
@@ -54,6 +63,8 @@ def import_and_instantiate_classes(files):
                     droidcheck_instance.append(instance)
         except ModuleNotFoundError as e:
             print(f"Error importing module {module_name}: {e}")
+        
+    os.chdir(workspace_path)
     return droidcheck_instance
 
 def main():

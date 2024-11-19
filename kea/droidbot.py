@@ -49,8 +49,7 @@ class DroidBot(object):
         ignore_ad=False,
         replay_output=None,
         kea_core=None,
-        number_of_events_that_restart_app=100,
-        run_initial_rules_after_every_mutation=True
+        number_of_events_that_restart_app=100
     ):
         """
         initiate droidbot with configurations
@@ -130,8 +129,7 @@ class DroidBot(object):
                 master=master,
                 replay_output=replay_output,
                 kea_core=kea_core,
-                number_of_events_that_restart_app=number_of_events_that_restart_app,
-                run_initial_rules_after_every_mutation=run_initial_rules_after_every_mutation
+                number_of_events_that_restart_app=number_of_events_that_restart_app
             )
         except Exception:
             import traceback

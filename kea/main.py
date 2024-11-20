@@ -31,7 +31,7 @@ INVARIANT_MARKER = "tool_invariant"
 MAINPATH_MARKER = "tool_mainPath"
 
 @attr.s()
-class Rule:
+class Rule:    # tingsu: what does these mean, including Rule, MainPath, initializer, precondition?
     function = attr.ib()
     preconditions = attr.ib()
 
@@ -136,13 +136,13 @@ class Setting:
     number_of_events_that_restart_app:int =100
 
 OUTPUT_DIR = "output"
-d = Mobile()
+d = Mobile()  # tingsu: the name of d is wierd
 
 def start_kea(kea_core:"Kea", settings = None):
     # if settings is None:
     #     settings = kea_core.TestCase.settings
 
-    droid = DroidBot(
+    droid = DroidBot(    # tingsu: why not naming "droid" as "droidbot"?
         app_path=settings.apk_path,
         device_serial=settings.device_serial,
         is_emulator=settings.is_emulator,
@@ -177,7 +177,8 @@ def start_kea(kea_core:"Kea", settings = None):
 
 from hypothesis import strategies as st
 
-class TestCase:
+class TestCase:   # tingsu: what does TestCase stands for ??
+
     # TestCase requires a Singleton design to ensure the rule, initializer, mainPath can be correctly loaded
     
     rule_list:List["Rule"]
@@ -209,7 +210,7 @@ class TestCase:
 
 
 
-class Kea(object):
+class Kea(object):   # tingsu: what is the purpose of Kea? not very clear. It seems Kea manages the properties
     _all_testCase: Dict[type, "TestCase"] = {}
     _bundles_: Dict[str, Bundle] = {}
 

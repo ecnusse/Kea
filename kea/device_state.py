@@ -6,7 +6,7 @@ import os
 import random
 
 from .utils import md5
-from .input_event import SearchEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent
+from .input_event import SearchEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent, U2StartEvent
 
 
 class DeviceState(object):
@@ -254,7 +254,8 @@ class DeviceState(object):
                 report_screens.append(report_screen)
 
             if event is not None:
-                self.draw_event(event, dest_screenshot_path)
+                if event is not isinstance(event, U2StartEvent):
+                    self.draw_event(event, dest_screenshot_path)
                 report_screens[-1]["event"] = event.get_event_name()
 
             with open(json_dir, 'w') as json_file:
@@ -267,7 +268,6 @@ class DeviceState(object):
         except Exception as e:
             self.device.logger.warning(e)
     def draw_event(self, event, screenshot_path):
-        return "not implmented"
         import cv2
         image = cv2.imread(screenshot_path)
         if event is not None and screenshot_path is not None:

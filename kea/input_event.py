@@ -343,6 +343,28 @@ class ManualEvent(InputEvent):
     def get_event_str(self, state):
         return "%s(time=%s)" % (self.__class__.__name__, self.time)
 
+class U2StartEvent(InputEvent):
+    def __init__(self, name=None, event_dict=None):
+        super().__init__()
+        self.event_type = KEY_KeyEvent
+        self.name = name
+        if event_dict is not None:
+            self.__dict__.update(event_dict)
+
+    @staticmethod
+    def get_random_instance(device, app):
+        return None
+
+    def send(self, device):
+        # do nothing
+        pass
+
+    def get_event_str(self, state):
+        return "%s()" % self.__class__.__name__
+
+    def get_event_name(self):
+        return self.name
+
 
 class ExitEvent(InputEvent):
     """

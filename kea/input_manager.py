@@ -4,11 +4,11 @@ import time
 
 from .input_event import EventLog
 from .input_policy import (
-    KeaMutateInputPolicy,
-    POLICY_MUTATE,
+    GuidedPolicy,
+    POLICY_GUIDED,
     POLICY_RANDOM,
-    KeaRandomInputPolicy,
-    UtgRandomPolicy,
+    KeaInputPolicy,
+    RandomPolicy,
     POLICY_NONE,
 )
 
@@ -82,21 +82,21 @@ class InputManager(object):
     def get_input_policy(self, device, app, master):
         if self.policy_name == POLICY_NONE:
             input_policy = None
-        elif self.policy_name == POLICY_MUTATE:
-            input_policy = KeaMutateInputPolicy(
+        elif self.policy_name == POLICY_GUIDED:
+            input_policy = GuidedPolicy(
                 device,
                 app,
                 self.random_input,
                 self.kea_core
             )
         elif self.policy_name == POLICY_RANDOM:
-            input_policy = UtgRandomPolicy(device, app, random_input=self.random_input,kea_core=self.kea_core,number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True)
+            input_policy = RandomPolicy(device, app, random_input=self.random_input, kea_core=self.kea_core, number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True)
         else:
             self.logger.warning(
                 "No valid input policy specified. Using policy \"none\"."
             )
             input_policy = None
-        if isinstance(input_policy, KeaRandomInputPolicy):
+        if isinstance(input_policy, KeaInputPolicy):
             input_policy.script = self.script
             input_policy.master = master
         return input_policy

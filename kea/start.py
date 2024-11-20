@@ -25,6 +25,10 @@ def parse_args():
                         help="Run in debug mode (dump debug messages).")
     parser.add_argument("-keep_app", action="store_true", dest="keep_app",
                         help="Keep the app on the device after testing.")
+    parser.add_argument("-grant_perm", action="store_true", dest="grant_perm",
+                        help="Grant all permissions while installing. Useful for Android 6.0+.")
+    parser.add_argument("-is_emulator", action="store_true", dest="is_emulator",
+                        help="Declare the target device to be an emulator, which would be treated specially.")
     options = parser.parse_args()
     return options
 
@@ -80,6 +84,8 @@ def main():
                        number_of_events_that_restart_app=options.number_of_events_that_restart_app,
                        debug_mode=options.debug_mode,
                        keep_app=options.keep_app,
+                       grant_perm=options.grant_perm,
+                       is_emulator=options.is_emulator,
                        )
     print(Kea._all_testCase)
     start_kea(test_classes[0],setting)

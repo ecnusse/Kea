@@ -58,26 +58,9 @@ EVENT_FLAG_TOUCH = "+touch"
 
 # Policy taxanomy
 POLICY_MUTATE = "mutate"
-POLICY_BUILD_MODEL = "build_model"
 POLICY_RANDOM = "random"
-POLICY_RANDOM_TWO = "random_two"
-POLICY_RANDOM_100 = "random_100"
-POLICY_MUTATE_MAIN_PATH = "mutate_main_path"
-POLICY_MIX_RANDOM_MUTATE = "mix_random_mutate"
-POLICY_NAIVE_DFS = "dfs_naive"
-POLICY_GREEDY_DFS = "dfs_greedy"
-POLICY_NAIVE_BFS = "bfs_naive"
-POLICY_GREEDY_BFS = "bfs_greedy"
-POLICY_REPLAY = "replay"
-POLICY_MANUAL = "manual"
-POLICY_MONKEY = "monkey"
 POLICY_NONE = "none"
-POLICY_MEMORY_GUIDED = "memory_guided"  # implemented in input_policy2
 
-# explore mode
-GUIDE = "guide"
-DIVERSE = "diverse"
-MAX_NUM_STEPS_OUTSIDE_THE_SHORTEST_PATH = 10
 
 @dataclass
 class RULE_STATE:

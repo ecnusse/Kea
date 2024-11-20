@@ -146,9 +146,10 @@ class InputPolicy(object):
                 < input_manager.event_count
         ):
             try:
+                # TODO refactor this code. set ime when using android
+                if hasattr(self.device, "u2"):
+                    self.device.u2.set_fastinput_ime(True)
 
-                self.device.u2.set_fastinput_ime(True)
-                self.logger.info("action count: %d" % self.action_count)
                 if self.action_count == 0 and self.master is None:
                     #If the application is running, close the application.
                     event = KillAppEvent(app=self.app)

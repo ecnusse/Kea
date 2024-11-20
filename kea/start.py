@@ -16,7 +16,7 @@ def parse_args():
                         help="The file path to target APK")
     parser.add_argument("-o","--output", action="store", dest="output_dir", default="output",
                         help="directory of output")
-    parser.add_argument("-p","--policy", action="store", dest="policy",choices=["random", "mutate"], default=DEFAULT_POLICY,  # tingsu: can we change "mutate" to "guided"?
+    parser.add_argument("-p","--policy", action="store", dest="policy",choices=["random", "guided"], default=DEFAULT_POLICY,  # tingsu: can we change "mutate" to "guided"?
                         help='Policy to use for test input generation. ')
     parser.add_argument("-t", "--timeout", action="store", dest="timeout", default=DEFAULT_TIMEOUT, type=int,
                         help="Timeout in seconds. Default: %d" % DEFAULT_TIMEOUT)
@@ -26,6 +26,10 @@ def parse_args():
                         help="Run in debug mode (dump debug messages).")
     parser.add_argument("-keep_app", action="store_true", dest="keep_app",
                         help="Keep the app on the device after testing.")
+    parser.add_argument("-grant_perm", action="store_true", dest="grant_perm",
+                        help="Grant all permissions while installing. Useful for Android 6.0+.")
+    parser.add_argument("-is_emulator", action="store_true", dest="is_emulator",default=True,
+                        help="Declare the target device to be an emulator, which would be treated specially.")
     options = parser.parse_args()
     return options
 
@@ -116,6 +120,8 @@ def main():
                        debug_mode=options.debug_mode,
                        keep_app=options.keep_app,
                        is_harmonyos=options.is_harmonyos
+                       grant_perm=options.grant_perm,
+                       is_emulator=options.is_emulator,
                        )
     if options.files is not None:
         test_classes = import_and_instantiate_classes(options.files, settings)

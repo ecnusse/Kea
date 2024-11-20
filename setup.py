@@ -1,3 +1,4 @@
+# This file is a script to build and distribute Python packages
 # set up basic requirements for droidbot
 from setuptools import setup, find_packages, findall
 import os
@@ -8,12 +9,12 @@ setup(
     # this must be the same as the name above
     version="1.0.0",
     description="A property-based testing tool for mobile apps.",
-    author="Yiheng Xiong",
+    author="Yiheng Xiong, XiangChen Shen, Xixiang Liang, Ting Su",
     license="MIT",
     author_email="yihengx98@gmail.com",
     url="https://github.com/ecnusse/Kea",  # use the URL to the github repo
     # download_url='https://github.com/honeynet/droidbot/tarball/1.0.2b4',
-    keywords=["testing", "monkey", "exerciser"],  # arbitrary keywords
+    keywords=["GUI testing", "Property-based Testing", "Functional Bugs"],  # arbitrary keywords
     classifiers=[
         # How mature is this project? Common values are
         #   3 - Alpha
@@ -31,6 +32,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
+            # the entry point of Kea
             "kea=kea.start:main",
         ],
     },

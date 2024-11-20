@@ -782,8 +782,9 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
             # If the app is in foreground
             self.__num_steps_outside = 0
 
-
-class UtgRandomPolicy(KeaRandomInputPolicy):
+# tingsu: The random strategy should not depend on the utg random. it should be a simple random strategy
+# because we do not use utg at all.
+class UtgRandomPolicy(KeaRandomInputPolicy):  
     """
     random input policy based on UTG
     """
@@ -827,7 +828,7 @@ class UtgRandomPolicy(KeaRandomInputPolicy):
         @return:
         """
 
-        if self.action_count == 2 or isinstance(self.last_event, ReInstallAppEvent):
+        if self.action_count == 2 or isinstance(self.last_event, ReInstallAppEvent):  # tingsu: do not use such number 2
             if isinstance(self.last_event, ReInstallAppEvent):
                 self.current_state = self.device.get_current_state(self.action_count)
                 self.update_utg()

@@ -4,23 +4,11 @@ import time
 
 from .input_event import EventLog
 from .input_policy import (
-    POLICY_MUTATE_MAIN_PATH,
-    POLICY_RANDOM_TWO,
-    POLICY_RANDOM_100,
-    KeaMutateInputPolicy,
-    POLICY_MUTATE,
-    POLICY_BUILD_MODEL,
+    GuidedPolicy,
+    POLICY_GUIDED,
     POLICY_RANDOM,
-    KeaRandomInputPolicy,
-    UtgRandomPolicy,
-    POLICY_NAIVE_DFS,
-    POLICY_GREEDY_DFS,
-    POLICY_NAIVE_BFS,
-    POLICY_GREEDY_BFS,
-    POLICY_REPLAY,
-    POLICY_MEMORY_GUIDED,
-    POLICY_MANUAL,
-    POLICY_MONKEY,
+    KeaInputPolicy,
+    RandomPolicy,
     POLICY_NONE,
 )
 
@@ -94,29 +82,21 @@ class InputManager(object):
     def get_input_policy(self, device, app, master):
         if self.policy_name == POLICY_NONE:
             input_policy = None
-        elif self.policy_name == POLICY_MONKEY:
-            input_policy = None
-        elif self.policy_name == POLICY_MUTATE:
-            input_policy = KeaMutateInputPolicy(
+        elif self.policy_name == POLICY_GUIDED:
+            input_policy = GuidedPolicy(
                 device,
                 app,
                 self.random_input,
                 self.kea_core
             )
         elif self.policy_name == POLICY_RANDOM:
-            input_policy = UtgRandomPolicy(device, app, random_input=self.random_input,kea_core=self.kea_core,number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True)
-        elif self.policy_name == POLICY_RANDOM_TWO:
-            input_policy = UtgRandomPolicy(device, app, random_input=self.random_input,kea_core=self.kea_core, restart_app_after_check_property=True)
-        elif self.policy_name == POLICY_RANDOM_100:
-            input_policy = UtgRandomPolicy(device, app, random_input=self.random_input,kea_core=self.kea_core, clear_and_restart_app_data_after_100_events=True)
-        elif self.policy_name == POLICY_RANDOM:
-            input_policy = UtgRandomPolicy(device, app)
+            input_policy = RandomPolicy(device, app, random_input=self.random_input, kea_core=self.kea_core, number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True)
         else:
             self.logger.warning(
                 "No valid input policy specified. Using policy \"none\"."
             )
             input_policy = None
-        if isinstance(input_policy, KeaRandomInputPolicy):
+        if isinstance(input_policy, KeaInputPolicy):
             input_policy.script = self.script
             input_policy.master = master
         return input_policy

@@ -20,9 +20,10 @@ from .adapter.user_input_monitor import UserInputMonitor
 from .app import App
 from .intent import Intent
 
+from .input_event import SearchEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent
+
 DEFAULT_NUM = '1234567890'
 DEFAULT_CONTENT = 'Hello world!'
-
 
 class Device(object):
     """
@@ -845,13 +846,32 @@ class Device(object):
     def mkdir(self,path):
         self.adb.run_cmd(["shell","mkdir",path])
     
-    def save_screenshot_for_report(self, event_name = None):
+    def save_screenshot_for_report(self, event_name = None, event = None):
         """
         save screenshot for report, save to "all_states" dir
         """
         local_image_path = self.take_screenshot()
-        self.save_to_all_states_dir(local_image_path, event_name)
-        
+        self.save_to_all_states_dir(local_image_path, event_name, event)
+
+    def draw_event(self, event, event_name, screenshot_path):
+        import cv2
+        image = cv2.imread(screenshot_path)
+        if event is not None and screenshot_path is not None:
+            if event_name == "click":
+                cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (0, 0, 255), 5)
+            elif event_name == "long_click":
+                cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (0, 255, 0), 5)
+            elif event_name == "set_text":
+                cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (255, 0, 0), 5)
+            elif event_name == "press":
+                cv2.putText(image,event, (100,300), cv2.FONT_HERSHEY_SIMPLEX, 5,(0, 255, 0), 3, cv2.LINE_AA)
+            else:
+                return
+            try:
+                cv2.imwrite(screenshot_path, image)
+            except Exception as e:
+                self.logger.warning(e)
+
     def take_screenshot(self):
         if self.output_dir is None:
             return None
@@ -879,7 +899,7 @@ class Device(object):
 
         return local_image_path
 
-    def save_to_all_states_dir(self,local_image_path, event_name):
+    def save_to_all_states_dir(self,local_image_path, event_name, event):
         # First, iterate through the 'all_states' folder to get the name of the latest PNG file.
         # Then, move the current screenshot to this folder and rename it to the name of the latest PNG file.
         import shutil
@@ -931,6 +951,7 @@ class Device(object):
                 json.dump(report_screens, json_file, indent=4)
             dest_file = "%s/%s" % (all_states_dir, "screen_1.png")
             shutil.move(local_image_path, dest_file)
+        self.draw_event(event, event_name, dest_file)
         
 
     def get_current_state(self, action_count=None):

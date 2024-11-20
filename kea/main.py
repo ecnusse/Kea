@@ -134,7 +134,6 @@ class Setting:
     ignore_ad=None
     replay_output=None
     number_of_events_that_restart_app:int =100
-    run_initial_rules_after_every_mutation=True
 
 OUTPUT_DIR = "output"
 d = Mobile()
@@ -168,8 +167,7 @@ def start_kea(kea_core:"Kea", settings = None):
         ignore_ad=settings.ignore_ad,
         replay_output=settings.replay_output,
         kea_core=kea_core,
-        number_of_events_that_restart_app=settings.number_of_events_that_restart_app,
-        run_initial_rules_after_every_mutation=settings.run_initial_rules_after_every_mutation
+        number_of_events_that_restart_app=settings.number_of_events_that_restart_app
     )
     
     global d

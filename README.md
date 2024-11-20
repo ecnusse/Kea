@@ -102,7 +102,7 @@ That's it! You can see the test results in the "output" directory.
 # Maintainers
 
 [Yiheng Xiong](https://xyiheng.github.io/), 
-[Xiangcheng Shen](https://xiangchenshen.github.io/), 
+[Xiangchen Shen](https://xiangchenshen.github.io/), 
 [Xixian Liang](https://xixianliang.github.io/resume/),
 [Ting Su](http://tingsu.github.io/)
 

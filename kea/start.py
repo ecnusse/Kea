@@ -15,12 +15,12 @@ def parse_args():
                         help="The file path to target APK")
     parser.add_argument("-o","--output", action="store", dest="output_dir", default="output",
                         help="directory of output")
-    parser.add_argument("-p","--policy", action="store", dest="policy",choices=["random", "mutate"], default=DEFAULT_POLICY,
+    parser.add_argument("-p","--policy", action="store", dest="policy",choices=["random", "mutate"], default=DEFAULT_POLICY,  # tingsu: can we change "mutate" to "guided"?
                         help='Policy to use for test input generation. ')
     parser.add_argument("-t", "--timeout", action="store", dest="timeout", default=DEFAULT_TIMEOUT, type=int,
                         help="Timeout in seconds. Default: %d" % DEFAULT_TIMEOUT)
     parser.add_argument("-n","--number_of_events_that_restart_app", action="store", dest="number_of_events_that_restart_app", default=100, type=int,
-                        help="Every xx number of events, then restart the app. Default: 100")
+                        help="Restart the app when this number of events has been executed. Default: 100")
     parser.add_argument("-debug", action="store_true", dest="debug_mode",
                         help="Run in debug mode (dump debug messages).")
     parser.add_argument("-keep_app", action="store_true", dest="keep_app",
@@ -28,9 +28,9 @@ def parse_args():
     options = parser.parse_args()
     return options
 
-
+# tingsu: what does "instantiate" mean? better to give some explanations here
 def import_and_instantiate_classes(files):
-    droidcheck_instance = []
+    droidcheck_instance = []    # tingsu: rename "droidcheck" to "kea"?
     workspace_path = os.path.abspath(os.getcwd())
     
     for file in files:
@@ -69,7 +69,7 @@ def import_and_instantiate_classes(files):
 
 def main():
     options = parse_args()
-    test_classes = []
+    test_classes = []   # tingsu: why we use this name "test_classes"? any special purposes?
     if options.files is not None:
         test_classes = import_and_instantiate_classes(options.files)
     setting =  Setting(apk_path=options.apk_path,
@@ -77,12 +77,12 @@ def main():
                        output_dir=options.output_dir,
                        timeout=options.timeout,
                        policy_name=options.policy,
-                       number_of_events_that_restart_app=options.number_of_events_that_restart_app,
+                       number_of_events_that_restart_app=options.number_of_events_that_restart_app,  # tingsu: do we need a better name?
                        debug_mode=options.debug_mode,
                        keep_app=options.keep_app,
                        )
-    print(Kea._all_testCase)
-    start_kea(test_classes[0],setting)
+    print(Kea._all_testCase)   # tingsu: why we can directly access the internal variable of Kea "_all_testCase"
+    start_kea(test_classes[0],setting)  # tingsu: why giving test_classes[0] as the argument?
 
 if __name__ == "__main__":
     main()

@@ -10,7 +10,7 @@ from typing import Any, Union, TYPE_CHECKING
 if TYPE_CHECKING:
     from kea.droidbot import DroidBot
 
-class Mobile(Driver):
+class Mobile(Driver):   # tingsu: what is the design purpose of this class Mobile?
     
     def __init__(self, delay=1) -> None:
         self.delay = delay

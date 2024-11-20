@@ -9,24 +9,15 @@ import time
 from .utils import Time
 from abc import abstractmethod
 from .input_event import (
-    InputEvent,
     KEY_RotateDeviceNeutralEvent,
     KEY_RotateDeviceRightEvent,
     KeyEvent,
     IntentEvent,
-    LongTouchEvent,
     ReInstallAppEvent,
     RotateDevice,
     RotateDeviceNeutralEvent,
     RotateDeviceRightEvent,
-    ScrollEvent,
-    SearchEvent,
-    SetTextAndSearchEvent,
-    TouchEvent,
-    ManualEvent,
-    SetTextEvent,
     KillAppEvent,
-    UIEvent,
     KillAndRestartAppEvent,
     U2StartEvent
 )
@@ -36,7 +27,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .input_manager import InputManager
-    from .main import Kea, mainPath
+    from .main import Kea
     from .app import App
     from .device import Device
 
@@ -47,6 +38,7 @@ MAX_NUM_STEPS_OUTSIDE = 10
 MAX_NUM_STEPS_OUTSIDE_KILL = 10
 # Max number of replay tries
 MAX_REPLY_TRIES = 5
+ACTION_COUNT_TO_START = 2
 
 # Some input event flags
 EVENT_FLAG_STARTED = "+started"
@@ -57,7 +49,7 @@ EVENT_FLAG_NAVIGATE = "+navigate"
 EVENT_FLAG_TOUCH = "+touch"
 
 # Policy taxanomy
-POLICY_MUTATE = "mutate"
+POLICY_GUIDED = "guided"
 POLICY_RANDOM = "random"
 POLICY_NONE = "none"
 
@@ -183,13 +175,13 @@ class InputPolicy(object):
         pass
 
 
-class KeaRandomInputPolicy(InputPolicy):
+class KeaInputPolicy(InputPolicy):
     """
     state-based input policy
     """
 
     def __init__(self, device, app, random_input, kea_core=None):
-        super(KeaRandomInputPolicy, self).__init__(device, app, kea_core)
+        super(KeaInputPolicy, self).__init__(device, app, kea_core)
         self.random_input = random_input
         self.script = None
         self.master = None
@@ -277,34 +269,7 @@ class KeaRandomInputPolicy(InputPolicy):
         generate an event
         @return:
         """
-        #
-        if self.action_count == 2:
-            self.run_initial_rules()
-        # Get current device state
-        self.current_state = self.device.get_current_state()
-        if self.current_state is None:
-            import time
-
-            time.sleep(5)
-            return KeyEvent(name="BACK")
-
-        self.update_utg()
-
-        event = None
-
-        # first explore the app, then test the properties
-        if self.action_count < self.input_manager.explore_event_count:
-            self.logger.info("Explore the app")
-            event = self.generate_explore_event()
-        elif self.action_count == self.input_manager.explore_event_count:
-            event = KillAppEvent(app=self.app)
-        else:
-            self.logger.info("Test the app")
-            event = self.generate_event_based_on_utg()
-
-        self.last_state = self.current_state
-        self.last_event = event
-        return event
+        pass
 
     def update_utg(self):
         self.utg.add_transition(self.last_event, self.last_state, self.current_state)
@@ -363,13 +328,13 @@ class KeaRandomInputPolicy(InputPolicy):
         #         self.rules[rule][RULE_STATE.TRIGGER_BUG]))
 
 
-class KeaMutateInputPolicy(KeaRandomInputPolicy):
+class GuidedPolicy(KeaInputPolicy):
     """
     
     """
 
     def __init__(self, device, app, random_input, kea_core=None):
-        super(KeaMutateInputPolicy, self).__init__(
+        super(GuidedPolicy, self).__init__(
             device, app, random_input, kea_core
         )
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -379,37 +344,23 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
         else:
             self.logger.error("no main path is found")
 
-        # if isinstance(main_path, str):
-        #     self.list_main_path.append(main_path)
-        #     self.logger.info("single main path")
-        # elif isinstance(main_path, list):
-        #     self.list_main_path = main_path
-        #     self.logger.info("multiple main path with length %d" % len(main_path))
-        # else:
-        #     self.logger.error("main path is not a list or a string")
-        self.__nav_target = None
-        self.__nav_num_steps = -1
         self.__num_restarts = 0
         self.__num_steps_outside = 0
         self.__event_trace = ""
         self.__missed_states = set()
-        self.__random_explore = False
 
         self.execute_main_path = True
 
         self.current_index_on_main_path = 0
-
         self.max_number_of_mutate_steps_on_single_node = 20
         self.current_number_of_mutate_steps_on_single_node = 0
-
-        # self.max_number_of_events_that_try_to_find_event_on_main_path = min(10, len(self.main_path))
         self.number_of_events_that_try_to_find_event_on_main_path = 0
         self.index_on_main_path_after_mutation = -1
 
         self.last_random_text = None
         self.last_rotate_events = KEY_RotateDeviceNeutralEvent
 
-    def select_and_initialize_main_path(self):
+    def select_main_path(self):
         if len(self.list_main_path) == 0:
             self.logger.error("main path is empty")
             return
@@ -435,8 +386,8 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
             self.last_state = self.current_state
             self.last_event = event
             return event
-        if self.action_count == 2 or isinstance(self.last_event, ReInstallAppEvent):
-            self.select_and_initialize_main_path()
+        if self.action_count == ACTION_COUNT_TO_START or isinstance(self.last_event, ReInstallAppEvent):
+            self.select_main_path()
             if isinstance(self.last_event, ReInstallAppEvent):
                 self.update_utg()
                 self.last_state = self.current_state
@@ -671,46 +622,6 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
 
         return event
 
-    def __get_nav_target(self, current_state):
-        # If last event is a navigation event
-        if self.__nav_target and self.__event_trace.endswith(EVENT_FLAG_NAVIGATE):
-            navigation_steps = self.utg.get_navigation_steps(
-                from_state=current_state, to_state=self.__nav_target
-            )
-            if navigation_steps and 0 < len(navigation_steps) <= self.__nav_num_steps:
-                # If last navigation was successful, use current nav target
-                self.__nav_num_steps = len(navigation_steps)
-                return self.__nav_target
-            else:
-                # If last navigation was failed, add nav target to missing states
-                self.__missed_states.add(self.__nav_target.state_str)
-
-        reachable_states = self.utg.get_reachable_states(current_state)
-        if self.random_input:
-            random.shuffle(reachable_states)
-
-        for state in reachable_states:
-            # Only consider foreground states
-            if state.get_app_activity_depth(self.app) != 0:
-                continue
-            # Do not consider missed states
-            if state.state_str in self.__missed_states:
-                continue
-            # Do not consider explored states
-            if self.utg.is_state_explored(state):
-                continue
-            self.__nav_target = state
-            navigation_steps = self.utg.get_navigation_steps(
-                from_state=current_state, to_state=self.__nav_target
-            )
-            if navigation_steps is not None and len(navigation_steps) > 0:
-                self.__nav_num_steps = len(navigation_steps)
-                return state
-
-        self.__nav_target = None
-        self.__nav_num_steps = -1
-        return None
-
     def check_the_app_on_foreground(self):
         if self.current_state.get_app_activity_depth(self.app) < 0:
             # If the app is not in the activity stack
@@ -765,16 +676,14 @@ class KeaMutateInputPolicy(KeaRandomInputPolicy):
             # If the app is in foreground
             self.__num_steps_outside = 0
 
-# tingsu: The random strategy should not depend on the utg random. it should be a simple random strategy
-# because we do not use utg at all.
-class UtgRandomPolicy(KeaRandomInputPolicy):  
+class RandomPolicy(KeaInputPolicy):
     """
     random input policy based on UTG
     """
 
     def __init__(self, device, app, random_input=True, kea_core=None, restart_app_after_check_property=False,
                  number_of_events_that_restart_app=100, clear_and_restart_app_data_after_100_events=False):
-        super(UtgRandomPolicy, self).__init__(
+        super(RandomPolicy, self).__init__(
             device, app, random_input, kea_core
         )
         self.restart_app_after_check_property = restart_app_after_check_property
@@ -811,7 +720,7 @@ class UtgRandomPolicy(KeaRandomInputPolicy):
         @return:
         """
 
-        if self.action_count == 2 or isinstance(self.last_event, ReInstallAppEvent):  # tingsu: do not use such number 2
+        if self.action_count == ACTION_COUNT_TO_START or isinstance(self.last_event, ReInstallAppEvent): 
             if isinstance(self.last_event, ReInstallAppEvent):
                 self.current_state = self.device.get_current_state(self.action_count)
                 self.update_utg()

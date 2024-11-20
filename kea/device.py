@@ -42,7 +42,8 @@ class Device(object):
         enable_accessibility_hard=False,
         humanoid=None,
         ignore_ad=False,
-        app_package_name=None
+        app_package_name=None,
+        is_harmonyos=False
     ):
         """
         initialize a device connection
@@ -76,6 +77,7 @@ class Device(object):
         self.enable_accessibility_hard = enable_accessibility_hard
         self.humanoid = humanoid
         self.ignore_ad = ignore_ad
+        self.is_harmonyos = is_harmonyos
 
         self.u2 = uiautomator2.connect(self.serial)
         # disable keyboard

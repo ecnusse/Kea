@@ -6,25 +6,25 @@ from kea.main import *
 class Test(Kea):
     
 
-    @initializer()
-    def set_up(self):
-        if d(text="OK").exists():
-            d(text="OK").click()
+    # @initializer()
+    # def set_up(self):
+    #     if d(text="OK").exists():
+    #         d(text="OK").click()
             
-        d(resourceId="it.feio.android.omninotes:id/next").click()
+    #     d(resourceId="it.feio.android.omninotes:id/next").click()
         
-        d(resourceId="it.feio.android.omninotes:id/next").click()
+    #     d(resourceId="it.feio.android.omninotes:id/next").click()
         
-        d(resourceId="it.feio.android.omninotes:id/next").click()
+    #     d(resourceId="it.feio.android.omninotes:id/next").click()
         
-        d(resourceId="it.feio.android.omninotes:id/next").click()
+    #     d(resourceId="it.feio.android.omninotes:id/next").click()
         
-        d(resourceId="it.feio.android.omninotes:id/next").click()
+    #     d(resourceId="it.feio.android.omninotes:id/next").click()
         
-        d(resourceId="it.feio.android.omninotes:id/done").click()
+    #     d(resourceId="it.feio.android.omninotes:id/done").click()
         
-        if d(text="OK").exists():
-            d(text="OK").click()
+    #     if d(text="OK").exists():
+    #         d(text="OK").click()
 
     @mainPath()
     def hash_tag_with_number_start_shouldbe_recognized_mainpath(self):

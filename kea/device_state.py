@@ -5,7 +5,11 @@ import math
 import os
 import random
 
-from .utils import md5
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .device import Device
+
+from .utils import md5, deprecated
 from .input_event import SearchEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent, U2StartEvent
 
 
@@ -16,7 +20,7 @@ class DeviceState(object):
 
     def __init__(
         self,
-        device,
+        device:"Device",
         views,
         foreground_activity,
         activity_stack,
@@ -34,16 +38,26 @@ class DeviceState(object):
             tag = datetime.now().strftime("%Y-%m-%d_%H%M%S")
         self.tag = tag
         self.screenshot_path = screenshot_path
-        self.views = self.__parse_views(views)
-        self.view_tree = {}
-        self.__assemble_view_tree(self.view_tree, self.views)
-        self.__generate_view_strs()
-        self.state_str = self.__get_state_str()
-        self.structure_str = self.__get_content_free_state_str()
-        self.search_content = self.__get_search_content()
+        if foreground_activity is not None:
+            self.views = self.__parse_views(views)
+            self.view_tree = {}
+            self.__assemble_view_tree(self.view_tree, self.views)
+            self.__generate_view_strs()
+            self.state_str = self.__get_state_str()
+            self.structure_str = self.__get_content_free_state_str()
+            self.search_content = self.__get_search_content()
+            self.text_representation = self.get_text_representation()
+        else:
+            self.views = []
+            self.view_tree = {}
+            self.state_str = "home_page_or_lock_screen"
+            self.structure_str = "home_page_or_lock_screen"
+            self.search_content = "home_page_or_lock_screen"
+            self.text_representation = "home_page_or_lock_screen"
         self.possible_events = None
         self.width = device.get_width(refresh=True)
         self.height = device.get_height(refresh=False)
+        self.pagePath = self.__get_pagePath()
         self.logger = logging.getLogger(self.__class__.__name__)
 
     @property
@@ -68,7 +82,7 @@ class DeviceState(object):
         import json
 
         return json.dumps(self.to_dict(), indent=2)
-
+    
     def __parse_views(self, raw_views):
         views = []
         if not raw_views or len(raw_views) == 0:
@@ -85,6 +99,8 @@ class DeviceState(object):
 
     def __assemble_view_tree(self, root_view, views):
         if not len(self.view_tree):  # bootstrap
+            if not len(views):
+                return
             self.view_tree = copy.deepcopy(views[0])
             self.__assemble_view_tree(self.view_tree, views)
         else:
@@ -114,6 +130,12 @@ class DeviceState(object):
         view_dict['depth'] = depth
         for view_id in DeviceState.__safe_dict_get(view_dict, 'children', []):
             DeviceState.__assign_depth(views, views[view_id], depth + 1)
+    
+    def __get_pagePath(self):
+        for view in self.views:
+            pagePath = self.__safe_dict_get(view, "pagePath")
+            if pagePath:
+                return pagePath
 
     def __get_state_str(self):
         state_str_raw = self.__get_state_str_raw()
@@ -139,13 +161,14 @@ class DeviceState(object):
         else:
             view_signatures = set()
             for view in self.views:
+                if self.device.is_harmonyos:
+                    # exclude the com.ohos.sceneboard package in harmonyOS
+                    if self.__safe_dict_get(view, "package") == "com.ohos.sceneboard":
+                        continue
                 view_signature = DeviceState.__get_view_signature(view)
                 if view_signature:
                     view_signatures.add(view_signature)
-            return "%s{%s}" % (
-                self.foreground_activity,
-                ",".join(sorted(view_signatures)),
-            )
+            return "%s{%s}" % (self.foreground_activity, ",".join(sorted(view_signatures)))
 
     def __get_content_free_state_str(self):
         if self.device.humanoid is not None:
@@ -220,11 +243,15 @@ class DeviceState(object):
                 os.makedirs(output_dir)
             dest_state_json_path = "%s/state_%s.json" % (output_dir, self.tag)
             json_dir = os.path.join(self.device.output_dir, "report_screenshot.json")
-            if self.device.adapters[self.device.minicap]:
-                dest_screenshot_path = "%s/screen_%s.jpg" % (output_dir, self.tag)
-            else:
-                dest_screenshot_path = "%s/screen_%s.png" % (output_dir, self.tag)
 
+            # get screenshot according to the system
+            if not self.device.is_harmonyos:
+                if self.device.adapters[self.device.minicap]:
+                    dest_screenshot_path = "%s/screen_%s.jpg" % (output_dir, self.tag)
+                else:
+                    dest_screenshot_path = "%s/screen_%s.png" % (output_dir, self.tag)
+            else:
+                dest_screenshot_path = "%s/screen_%s.jpeg" % (output_dir, self.tag)
             try:
                 with open(json_dir, 'r') as json_file:
                     report_screens = json.load(json_file)
@@ -239,7 +266,7 @@ class DeviceState(object):
                 import shutil
 
                 shutil.copyfile(self.screenshot_path, dest_screenshot_path)
-                if self.device.adapters[self.device.minicap]:
+                if not self.device.is_harmonyos and self.device.adapters[self.device.minicap]:
                     report_screen = {
                         "event": "",
                         "event_index": str(self.tag),
@@ -297,10 +324,14 @@ class DeviceState(object):
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
             view_str = view_dict['view_str']
-            if self.device.adapters[self.device.minicap]:
-                view_file_path = "%s/view_%s.jpg" % (output_dir, view_str)
+            if not self.device.is_harmonyos:
+                if self.device.adapters[self.device.minicap]:
+                    view_file_path = "%s/view_%s.jpg" % (output_dir, view_str)
+                else:
+                    view_file_path = "%s/view_%s.png" % (output_dir, view_str)
             else:
-                view_file_path = "%s/view_%s.png" % (output_dir, view_str)
+                # HarmonyOS
+                view_file_path = "%s/view_%s.jpeg" % (output_dir, view_str)
             if os.path.exists(view_file_path):
                 return
             from PIL import Image
@@ -437,7 +468,8 @@ class DeviceState(object):
 
     @staticmethod
     def __safe_dict_get(view_dict, key, default=None):
-        return view_dict[key] if (key in view_dict) else default
+        value = view_dict[key] if key in view_dict else None
+        return value if value is not None else default
 
     @staticmethod
     def get_view_center(view_dict):
@@ -505,6 +537,8 @@ class DeviceState(object):
         """
         depth = 0
         for activity_str in self.activity_stack:
+            if not activity_str:
+                return -1
             if app.package_name in activity_str:
                 return depth
             depth += 1
@@ -529,7 +563,8 @@ class DeviceState(object):
                 not in [
                     'android:id/navigationBarBackground',
                     'android:id/statusBarBackground',
-                ]
+                ] 
+                and self.__safe_dict_get(view_dict, "package") != "com.ohos.sceneboard"
             ):
                 enabled_view_ids.append(view_dict['temp_id'])
 
@@ -629,6 +664,149 @@ class DeviceState(object):
 
         self.possible_events = possible_events
         return [] + possible_events
+    
+
+    def get_text_representation(self, merge_buttons=False):
+        """
+        Get a text representation of current state
+        """
+        enabled_view_ids = []
+        for view_dict in self.views:
+            # exclude navigation bar if exists
+            if self.__safe_dict_get(view_dict, 'visible') and \
+                self.__safe_dict_get(view_dict, 'resource_id') not in \
+               ['android:id/navigationBarBackground',
+                'android:id/statusBarBackground'] and \
+                self.__safe_dict_get(view_dict, "package") != "com.ohos.sceneboard":
+                enabled_view_ids.append(view_dict['temp_id'])
+        
+        text_frame = "<p id=@ text='&' attr=null bounds=null>#</p>"
+        btn_frame = "<button id=@ text='&' attr=null bounds=null>#</button>"
+        checkbox_frame = "<checkbox id=@ text='&' attr=null bounds=null>#</checkbox>"
+        input_frame = "<input id=@ text='&' attr=null bounds=null>#</input>"
+        scroll_frame = "<scrollbar id=@ attr=null bounds=null></scrollbar>"
+
+        view_descs = []
+        indexed_views = []
+        # available_actions = []
+        removed_view_ids = []
+
+        for view_id in enabled_view_ids:
+            if view_id in removed_view_ids:
+                continue
+            # print(view_id)
+            view = self.views[view_id]
+            clickable = self._get_self_ancestors_property(view, 'clickable')
+            scrollable = self.__safe_dict_get(view, 'scrollable')
+            checkable = self._get_self_ancestors_property(view, 'checkable')
+            long_clickable = self._get_self_ancestors_property(view, 'long_clickable')
+            editable = self.__safe_dict_get(view, 'editable')
+            actionable = clickable or scrollable or checkable or long_clickable or editable
+            checked = self.__safe_dict_get(view, 'checked', default=False)
+            selected = self.__safe_dict_get(view, 'selected', default=False)
+            content_description = self.__safe_dict_get(view, 'content_description', default='')
+            view_text = self.__safe_dict_get(view, 'text', default='')
+            # TODO: how to process the class?
+            # view_class = self.__safe_dict_get(view, 'class').split('.')[-1]
+            bounds = self.__safe_dict_get(view, 'bounds')
+            view_bounds = f'{bounds[0][0]},{bounds[0][1]},{bounds[1][0]},{bounds[1][1]}'
+            if not content_description and not view_text and not scrollable:  # actionable?
+                continue
+
+            # text = self._merge_text(view_text, content_description)
+            # view_status = ''
+            view_local_id = str(len(view_descs))
+            if editable:
+                view_desc = input_frame.replace('@', view_local_id).replace('#', view_text)
+                if content_description:
+                    view_desc = view_desc.replace('&', content_description)
+                else:
+                    view_desc = view_desc.replace(" text='&'", "")
+                # available_actions.append(SetTextEvent(view=view, text='HelloWorld'))
+            elif checkable:
+                view_desc = checkbox_frame.replace('@', view_local_id).replace('#', view_text)
+                if content_description:
+                    view_desc = view_desc.replace('&', content_description)
+                else:
+                    view_desc = view_desc.replace(" text='&'", "")
+                # available_actions.append(TouchEvent(view=view))
+            elif clickable:  # or long_clickable
+                if merge_buttons:
+                    # below is to merge buttons, led to bugs
+                    clickable_ancestor_id = self._get_ancestor_id(view=view, key='clickable')
+                    if not clickable_ancestor_id:
+                        clickable_ancestor_id = self._get_ancestor_id(view=view, key='checkable')
+                    clickable_children_ids = self._extract_all_children(id=clickable_ancestor_id)
+                    if view_id not in clickable_children_ids:
+                        clickable_children_ids.append(view_id)
+                    view_text, content_description = self._merge_text(clickable_children_ids)
+                    checked = self._get_children_checked(clickable_children_ids)
+                    # end of merging buttons
+                view_desc = btn_frame.replace('@', view_local_id).replace('#', view_text)
+                if content_description:
+                    view_desc = view_desc.replace('&', content_description)
+                else:
+                    view_desc = view_desc.replace(" text='&'", "")
+                # available_actions.append(TouchEvent(view=view))
+                if merge_buttons:
+                    for clickable_child in clickable_children_ids:
+                        if clickable_child in enabled_view_ids and clickable_child != view_id:
+                            removed_view_ids.append(clickable_child)
+            elif scrollable:
+                # print(view_id, 'continued')
+                view_desc = scroll_frame.replace('@', view_local_id)
+                # available_actions.append(ScrollEvent(view=view, direction='DOWN'))
+                # available_actions.append(ScrollEvent(view=view, direction='UP'))
+            else:
+                view_desc = text_frame.replace('@', view_local_id).replace('#', view_text)
+                if content_description:
+                    view_desc = view_desc.replace('&', content_description)
+                else:
+                    view_desc = view_desc.replace(" text='&'", "")
+                # available_actions.append(TouchEvent(view=view))
+
+            allowed_actions = ['touch']
+            special_attrs = []
+            if editable:
+                allowed_actions.append('set_text')
+            if checkable:
+                allowed_actions.extend(['select', 'unselect'])
+                allowed_actions.remove('touch')
+            if scrollable:
+                allowed_actions.extend(['scroll up', 'scroll down'])
+                allowed_actions.remove('touch')
+            if long_clickable:
+                allowed_actions.append('long_touch')
+            if checked or selected:
+                special_attrs.append('selected')
+            view['allowed_actions'] = allowed_actions
+            view['special_attrs'] = special_attrs
+            view['local_id'] = view_local_id
+            if len(special_attrs) > 0:
+                special_attrs = ','.join(special_attrs)
+                view_desc = view_desc.replace("attr=null", f"attr={special_attrs}")
+            else:
+                view_desc = view_desc.replace(" attr=null", "")
+            view_desc = view_desc.replace("bounds=null", f"bound_box={view_bounds}")
+            view_descs.append(view_desc)
+            view['desc'] = view_desc.replace(f' id={view_local_id}', '').replace(f' attr={special_attrs}', '')
+            indexed_views.append(view)
+
+        # prefix = 'The current state has the following UI elements: \n' #views and corresponding actions, with action id in parentheses:\n '
+        state_desc = '\n'.join(view_descs)
+        
+        activity = self.foreground_activity.split('/')[-1] if self.foreground_activity else None
+        
+        # print(views_without_id)
+        return state_desc, activity, indexed_views
+
+    def _get_self_ancestors_property(self, view, key, default=None):    
+        all_views = [view] + [self.views[i] for i in self.get_all_ancestors(view)]
+        for v in all_views:
+            value = self.__safe_dict_get(v, key)
+            if value:
+                return value
+        return default
 
     def get_view_by_attribute(self, attribute_dict,random_select=False):
         """

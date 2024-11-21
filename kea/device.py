@@ -843,7 +843,7 @@ class Device(object):
         self.adb.run_cmd(["push", local_file, remote_dir])
 
     def pull_file(self, remote_file, local_file):
-        self.adb.run_cmd(["pull", remote_file, local_file])
+        self.adb.run_cmd(["pull", remote_file, local_file], disable_log=True)
 
     def mkdir(self,path):
         self.adb.run_cmd(["shell","mkdir",path])

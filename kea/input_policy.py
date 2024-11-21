@@ -95,14 +95,12 @@ class InputPolicy(object):
         self.last_event = None
 
     def run_initial_rules(self):
-        initializer_list = self.kea_core.get_initializer_list()
-
-        if len(initializer_list) == 0:
+        if len(self.kea_core.initializer) == 0:
             self.logger.warning("No initializer")
             return
         
 
-        result = self.kea_core.execute_rules(initializer_list)
+        result = self.kea_core.execute_rules(self.kea_core.initializer)
         if result:
             self.logger.info("-------initialize successfully-----------")
         else:

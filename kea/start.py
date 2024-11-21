@@ -119,7 +119,7 @@ def main():
                        number_of_events_that_restart_app=options.number_of_events_that_restart_app,  # tingsu: do we need a better name?
                        debug_mode=options.debug_mode,
                        keep_app=options.keep_app,
-                       is_harmonyos=options.is_harmonyos
+                       is_harmonyos=options.is_harmonyos,
                        grant_perm=options.grant_perm,
                        is_emulator=options.is_emulator,
                        )

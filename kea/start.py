@@ -106,7 +106,6 @@ def get_mobile_driver(settings:"Setting"):
 def main():
     options = parse_args()
     options = parse_ymal_args(options)
-    # test_classes = []
     settings =  Setting(apk_path=options.apk_path,
                        device_serial=options.device_serial,
                        output_dir=options.output_dir,
@@ -119,8 +118,9 @@ def main():
                        grant_perm=options.grant_perm,
                        is_emulator=options.is_emulator
                        )
-    if options.files is not None:
-        kea_core = import_and_instantiate_classes(options.files, settings)
+    if options.files is None:
+        raise TypeError("Missing target property files")
+    kea_core = import_and_instantiate_classes(options.files, settings)
     print(f"Test cases: {kea_core._all_testCase}")
     start_kea(kea_core, settings)
 

@@ -47,7 +47,7 @@ class ADB(Adapter):
 
         self.cmd_prefix = ['adb', "-s", device.serial]
 
-    def run_cmd(self, extra_args):
+    def run_cmd(self, extra_args, disable_log=False):
         """
         run an adb command and return the output
         :return: output of adb command
@@ -67,7 +67,15 @@ class ADB(Adapter):
 
             self.logger.debug('command:')
             self.logger.debug(args)
-            r = subprocess.check_output(args).strip()
+            if not disable_log:
+                r = subprocess.check_output(args).strip()
+            else:
+                # redirect the output to stderr when disable ouput
+                # which will avoid logging in the terminal
+                r = subprocess.check_output(
+                    args,
+                    stderr=subprocess.STDOUT
+                )
             if not isinstance(r, str):
                 r = r.decode()
             self.logger.debug('return:')

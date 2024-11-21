@@ -226,15 +226,19 @@ class Kea(object):   # tingsu: what is the purpose of Kea? not very clear. It se
     _all_testCase: Dict[type, "TestCase"] = {}
     _bundles_: Dict[str, Bundle] = {}
 
-    def __init__(self, kea_core: "Kea" = None):
-        if kea_core is None:
+    def __init__(self, test_case: "Kea" = None):
+        if test_case is None:
             self.logger = logging.getLogger(self.__class__.__name__)
+            self.current_rule = None
+            self.execute_event = None
             return
-        self._initialize_rules_to_run = copy(kea_core.get_initializer_list())
-        if not kea_core.get_rule_list():
+
+        test_case.retrive_initializer_list()
+        test_case.retrive_mainPath_list()
+        test_case.retrive_rule_list()
+
+        if not test_case.retrive_rule_list():
             raise Exception(f"Type {type(self).__name__} defines no rules")
-        self.current_rule = None
-        self.execute_event = None
 
     def start(self):
         try:
@@ -261,23 +265,30 @@ class Kea(object):   # tingsu: what is the purpose of Kea? not very clear. It se
                 return r
 
         self.logger.warning("No initializer found for current apps.")
-        return [] 
+        return []
+    
+    @property
+    def all_mainPaths(self):
+        all_mainPaths = []
+        for testCase in self._all_testCase.values():
+            all_mainPaths.extend(testCase.mainPath_list)
+        return all_mainPaths
     
     @classmethod
-    def get_initializer_list(cls):
+    def retrive_initializer_list(cls):
         current_TestCase = cls._all_testCase[cls] = cls._all_testCase.get(cls, TestCase())
         initializer_list = current_TestCase.get_list(INITIALIZER_MARKER, kea_core=cls)
         if len(initializer_list) > 0:
             return initializer_list
 
     @classmethod
-    def get_rule_list(cls):
+    def retrive_rule_list(cls):
         current_TestCase = cls._all_testCase[cls] = cls._all_testCase.get(cls, TestCase())
         rule_list = current_TestCase.get_list(RULE_MARKER, kea_core=cls)
         return rule_list
 
     @classmethod
-    def get_mainPath_list(cls):
+    def retrive_mainPath_list(cls):
         current_TestCase = cls._all_testCase[cls] = cls._all_testCase.get(cls, TestCase())
         mainPath_list = current_TestCase.get_list(MAINPATH_MARKER, kea_core=cls)
         return mainPath_list
@@ -287,10 +298,6 @@ class Kea(object):   # tingsu: what is the purpose of Kea? not very clear. It se
         bundle = Bundle(type_name)
         cls._bundles_[type_name] = bundle
         return bundle
-
-    def execute_initializers(self):
-        for initializer in self._initialize_rules_to_run:
-            initializer.function(self)
 
     def execute_rules(self, rules):
         '''random choose a rule, if the rule has preconditions, check the preconditions.
@@ -343,11 +350,11 @@ class Kea(object):   # tingsu: what is the purpose of Kea? not very clear. It se
 
         return result
 
-    def get_mainPath(self, mainPath:"MainPath") :
+    def parse_mainPath(self, mainPath:"MainPath") :
         return mainPath.function, mainPath.path
 
-    def exec_mainPath(self, event_str):
-        exec(event_str)
+    def exec_mainPath(self, executable_script):
+        exec(executable_script)
 
     def get_rules_that_pass_the_preconditions(self) -> List:
         '''Check all rules and return the list of rules that meet the preconditions.'''

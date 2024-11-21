@@ -48,6 +48,8 @@ setup(
         "attrs",
         "opencv-python",
         "coloredlogs",
-        "hypothesis"
+        "hypothesis",
+        "hmdriver2",
+        "pyyaml"
     ],
 )

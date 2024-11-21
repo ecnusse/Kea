@@ -337,11 +337,11 @@ class GuidedPolicy(KeaInputPolicy):
             device, app, random_input, kea_core
         )
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.list_main_path = self.kea_core.get_mainPath_list()
-        if self.list_main_path:
-            self.logger.info("main path with length %d" % len(self.list_main_path))
+        
+        if len(self.kea_core.all_mainPaths):
+            self.logger.info("Found %d mainPaths" % len(self.kea_core.all_mainPaths))
         else:
-            self.logger.error("no main path is found")
+            self.logger.error("No mainPath found")
 
         self.__num_restarts = 0
         self.__num_steps_outside = 0
@@ -360,12 +360,12 @@ class GuidedPolicy(KeaInputPolicy):
         self.last_rotate_events = KEY_RotateDeviceNeutralEvent
 
     def select_main_path(self):
-        if len(self.list_main_path) == 0:
-            self.logger.error("main path is empty")
+        if len(self.kea_core.all_mainPaths) == 0:
+            self.logger.error("No mainPath")
             return
-        self.main_path = random.choice(self.list_main_path)
-        self.path_func, self.main_path =  self.kea_core.get_mainPath(self.main_path)
-        self.logger.info("select the main path function: %s" % self.path_func)
+        self.main_path = random.choice(self.kea_core.all_mainPaths)
+        self.path_func, self.main_path =  self.kea_core.parse_mainPath(self.main_path)
+        self.logger.info(f"Select the {len(self.main_path)} steps mainPath function: {self.path_func}")
         self.main_path_list = copy.deepcopy(self.main_path)
         self.max_number_of_events_that_try_to_find_event_on_main_path = min(10, len(self.main_path))
         self.mutate_node_index_on_main_path = len(self.main_path)

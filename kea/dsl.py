@@ -45,15 +45,15 @@ class Ui(UiObject):
         self.droidbot=droidbot
 
     def click(self, offset=None):
-        self.droidbot.device.save_screenshot_for_report(event_name="click")
+        self.droidbot.device.save_screenshot_for_report(event_name="click", event = self)
         super().click(offset)
 
     def long_click(self, duration: float = 0.5):
-        self.droidbot.device.save_screenshot_for_report(event_name="long_click")
+        self.droidbot.device.save_screenshot_for_report(event_name="long_click",  event = self)
         super().long_click(duration)
     
     def set_text(self, text):
-        self.droidbot.device.save_screenshot_for_report(event_name="set_text " + text)
+        self.droidbot.device.save_screenshot_for_report(event_name="set_text " + text, event = self)
         super().set_text(text)
         
     def child(self, **kwargs):

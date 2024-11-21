@@ -122,7 +122,7 @@ class InputPolicy(object):
                 # TODO refactor this code. set ime when using android
                 if hasattr(self.device, "u2"):
                     self.device.u2.set_fastinput_ime(True)
-
+                self.logger.info("action count: %d" % self.action_count)
                 if self.action_count == 0 and self.master is None:
                     #If the application is running, close the application.
                     event = KillAppEvent(app=self.app)
@@ -385,7 +385,7 @@ class GuidedPolicy(KeaInputPolicy):
             self.last_state = self.current_state
             self.last_event = event
             return event
-        if self.action_count == ACTION_COUNT_TO_START or isinstance(self.last_event, ReInstallAppEvent):
+        if (self.action_count == ACTION_COUNT_TO_START and self.current_index_on_main_path == 0) or isinstance(self.last_event, ReInstallAppEvent):
             self.select_main_path()
             if isinstance(self.last_event, ReInstallAppEvent):
                 self.update_utg()
@@ -402,7 +402,7 @@ class GuidedPolicy(KeaInputPolicy):
             if event_str:
                 if 0 < self.current_index_on_main_path < self.mutate_node_index_on_main_path:
                     self.action_count -= 1
-                    self.logger.info("*****main path running*****")
+                self.logger.info("*****main path running*****")
                 self.kea_core.exec_mainPath(event_str)
                 self.last_state = self.current_state
                 self.last_event = event

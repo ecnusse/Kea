@@ -33,7 +33,7 @@ The apk file used in our evaluation can be downloaded from [here](https://drive.
 
 Requirements:
 
-- Python 3.8+
+- Python 3.11+
 - Android SDK
 
 You can input following commands to grep and install the required packages.

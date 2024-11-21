@@ -4,6 +4,13 @@ import os
 import random
 import datetime
 import networkx as nx
+from typing import TYPE_CHECKING, Union
+if TYPE_CHECKING:
+    from .device_state import DeviceState
+    from .device import Device
+    from .device_hm import DeviceHM
+    from .app import App
+    from .app_hm import AppHM
 
 from kea import utils
 
@@ -13,7 +20,7 @@ class UTG(object):
     UI transition graph
     """
 
-    def __init__(self, device, app, random_input):
+    def __init__(self, device:Union["Device", "DeviceHM"], app:Union["App", "AppHM"], random_input):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.device = device
         self.app = app
@@ -113,11 +120,11 @@ class UTG(object):
             if len(events) == 0:
                 self.G2.remove_edge(old_state.structure_str, new_state.structure_str)
 
-    def add_node(self, state,event=None):
+    def add_node(self, state:"DeviceState", event=None):
         if not state:
             return
         output_dir = os.path.join(self.device.output_dir, "all_states")
-        state.save2dir(output_dir,event)
+        state.save2dir(output_dir, event)
         utils.generate_report(img_path=output_dir, html_path=self.device.output_dir)
         if state.state_str not in self.G.nodes():
             #state.save2dir()
@@ -202,7 +209,7 @@ class UTG(object):
                 iter(events.items()), key=lambda x: x[1]["id"]
             ):
                 event_short_descs.append((event_info["id"], event_str))
-                if self.device.adapters[self.device.minicap]:
+                if not self.device.is_harmonyos and self.device.adapters[self.device.minicap]:
                     view_images = [
                         "views/view_" + view["view_str"] + ".jpg"
                         for view in event_info["event"].get_views()

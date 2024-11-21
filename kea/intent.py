@@ -6,7 +6,7 @@ class Intent(object):
     def __init__(self, prefix="start", action=None, data_uri=None, mime_type=None, category=None,
                  component=None, flag=None, extra_keys=None, extra_string=None, extra_boolean=None,
                  extra_int=None, extra_long=None, extra_float=None, extra_uri=None, extra_component=None,
-                 extra_array_int=None, extra_array_long=None, extra_array_float=None, flags=None, suffix=""):
+                 extra_array_int=None, extra_array_long=None, extra_array_float=None, flags=None, suffix="", is_harmonyos=False):
         self.event_type = 'intent'
         self.prefix = prefix
         self.action = action
@@ -29,6 +29,7 @@ class Intent(object):
         self.flags = flags
         self.suffix = suffix
         self.cmd = None
+        self.is_harmonyos = is_harmonyos
         self.get_cmd()
 
     def get_cmd(self):
@@ -39,7 +40,13 @@ class Intent(object):
         """
         if self.cmd is not None:
             return self.cmd
-        cmd = "am "
+
+        if not self.is_harmonyos:
+            cmd = "am "
+        else:
+            # HarmonyOS intent form
+            cmd = "aa "
+
         if self.prefix:
             cmd += self.prefix
         if self.action is not None:

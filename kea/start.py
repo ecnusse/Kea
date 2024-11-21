@@ -87,7 +87,8 @@ def import_and_instantiate_classes(files, settings:"Setting")->"Kea":
             for attr_name in dir(module):
                 attr = getattr(module, attr_name)
                 if isinstance(attr, type) and issubclass(attr, Kea) and attr is not Kea:
-                    kea_core = Kea(attr)
+                    test_case = attr
+                    Kea(test_case)
         except ModuleNotFoundError as e:
             print(f"Error importing module {module_name}: {e}")
         

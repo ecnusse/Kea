@@ -1,5 +1,5 @@
 """
-DSL for Domain Sepcific Language
+DSL for Domain Sepcific Language, Android system
 This is the PDL (Property Desciption Language) for Mobile app testing.
 Please checkout our paper for details.
 """
@@ -10,8 +10,9 @@ from typing import Any, Union, TYPE_CHECKING
 if TYPE_CHECKING:
     from kea.droidbot import DroidBot
 
-class Mobile(Driver):   # tingsu: what is the design purpose of this class Mobile?
-    
+class Mobile(Driver):
+    droidbot = None    
+
     def __init__(self, delay=1) -> None:
         self.delay = delay
 
@@ -22,7 +23,7 @@ class Mobile(Driver):   # tingsu: what is the design purpose of this class Mobil
         self.settings['wait_timeout'] = 5.0 # 默认控件等待时间
 
     def __call__(self, **kwargs: Any) -> "Ui":
-        return Ui(self, Selector(**kwargs))
+        return Ui(self, Selector(**kwargs), droidbot=self.droidbot)
 
     def set_droidbot(self, droidbot:"DroidBot"):
         self.droidbot = droidbot
@@ -39,16 +40,20 @@ class Mobile(Driver):   # tingsu: what is the design purpose of this class Mobil
 class Ui(UiObject):
     session:"Mobile"
 
+    def __init__(self, session, selector: Selector, droidbot:"DroidBot"):
+        super().__init__(session, selector)
+        self.droidbot=droidbot
+
     def click(self, offset=None):
-        self.session.droidbot.device.save_screenshot_for_report(event_name="click", event = self)
+        self.droidbot.device.save_screenshot_for_report(event_name="click")
         super().click(offset)
 
     def long_click(self, duration: float = 0.5):
-        self.session.droidbot.device.save_screenshot_for_report(event_name="long_click", event = self)
+        self.droidbot.device.save_screenshot_for_report(event_name="long_click")
         super().long_click(duration)
     
     def set_text(self, text):
-        self.session.droidbot.device.save_screenshot_for_report(event_name="set_text " + text, event = self)
+        self.droidbot.device.save_screenshot_for_report(event_name="set_text " + text)
         super().set_text(text)
         
     def child(self, **kwargs):

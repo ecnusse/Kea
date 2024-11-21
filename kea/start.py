@@ -12,7 +12,7 @@ def parse_args():
     parser.add_argument("-f",nargs="+", action="store",dest="files", help="The python files to be tested.")
     parser.add_argument("-d", "--device_serial", action="store", dest="device_serial", default=DEFAULT_DEVICE_SERIAL,
                         help="The serial number of target device (use `adb devices` to find)")
-    parser.add_argument("-a","--apk", action="store", dest="apk_path", required=True,
+    parser.add_argument("-a","--apk", action="store", dest="apk_path",
                         help="The file path to target APK")
     parser.add_argument("-o","--output", action="store", dest="output_dir", default="output",
                         help="directory of output")
@@ -54,8 +54,7 @@ def parse_ymal_args(opts):
     return opts
 
 
-def import_and_instantiate_classes(files, settings:"Setting"):
-    droidcheck_instance = []
+def import_and_instantiate_classes(files, settings:"Setting")->"Kea":
     workspace_path = os.path.abspath(os.getcwd())
     
     d = get_mobile_driver(settings)
@@ -79,8 +78,6 @@ def import_and_instantiate_classes(files, settings:"Setting"):
         if not extension_name == ".py":
             raise AttributeError(f"{file} is not a property. It should be a .py file")
         
-
-
         try:
             # print(f"Importting module {module_name}")
             module = importlib.import_module(module_name)
@@ -90,13 +87,12 @@ def import_and_instantiate_classes(files, settings:"Setting"):
             for attr_name in dir(module):
                 attr = getattr(module, attr_name)
                 if isinstance(attr, type) and issubclass(attr, Kea) and attr is not Kea:
-                    instance = attr()  # 实例化子类
-                    droidcheck_instance.append(instance)
+                    kea_core = Kea(attr)
         except ModuleNotFoundError as e:
             print(f"Error importing module {module_name}: {e}")
         
     os.chdir(workspace_path)
-    return droidcheck_instance
+    return Kea()
 
 def get_mobile_driver(settings:"Setting"):
     # initialize the dsl according to the system
@@ -110,7 +106,7 @@ def get_mobile_driver(settings:"Setting"):
 def main():
     options = parse_args()
     options = parse_ymal_args(options)
-    test_classes = []
+    # test_classes = []
     settings =  Setting(apk_path=options.apk_path,
                        device_serial=options.device_serial,
                        output_dir=options.output_dir,
@@ -124,9 +120,9 @@ def main():
                        is_emulator=options.is_emulator
                        )
     if options.files is not None:
-        test_classes = import_and_instantiate_classes(options.files, settings)
-    print(Kea._all_testCase)
-    start_kea(test_classes[0], settings)
+        kea_core = import_and_instantiate_classes(options.files, settings)
+    print(f"Test cases: {kea_core._all_testCase}")
+    start_kea(kea_core, settings)
 
 if __name__ == "__main__":
     main()

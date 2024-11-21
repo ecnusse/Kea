@@ -226,13 +226,15 @@ class Kea(object):   # tingsu: what is the purpose of Kea? not very clear. It se
     _all_testCase: Dict[type, "TestCase"] = {}
     _bundles_: Dict[str, Bundle] = {}
 
-    def __init__(self):
-        self._initialize_rules_to_run = copy(self.get_initializer_list())
-        if not self.get_rule_list():
+    def __init__(self, kea_core: "Kea" = None):
+        if kea_core is None:
+            self.logger = logging.getLogger(self.__class__.__name__)
+            return
+        self._initialize_rules_to_run = copy(kea_core.get_initializer_list())
+        if not kea_core.get_rule_list():
             raise Exception(f"Type {type(self).__name__} defines no rules")
         self.current_rule = None
         self.execute_event = None
-        self.logger = logging.getLogger(self.__class__.__name__)
 
     def start(self):
         try:
@@ -250,21 +252,23 @@ class Kea(object):   # tingsu: what is the purpose of Kea? not very clear. It se
             all_rules.extend(testCase.rule_list)
         return all_rules
     
+    @property
+    def initializer(self):
+        for testCaseName, testCase in self._all_testCase.items():
+            r = testCase.get_list(INITIALIZER_MARKER, kea_core=self)
+            if len(r) > 0:
+                self.logger.info(f"Successfully found an initializer in {testCaseName}")
+                return r
+
+        self.logger.warning("No initializer found for current apps.")
+        return [] 
+    
     @classmethod
     def get_initializer_list(cls):
         current_TestCase = cls._all_testCase[cls] = cls._all_testCase.get(cls, TestCase())
         initializer_list = current_TestCase.get_list(INITIALIZER_MARKER, kea_core=cls)
         if len(initializer_list) > 0:
             return initializer_list
-
-        print("No initializer for current property. Trying to find an initializer")
-        for testCaseName, testCase in cls._all_testCase.items():
-            r = testCase.get_list(INITIALIZER_MARKER, kea_core=cls)
-            if len(r) > 0:
-                print(f"Successfully found an initializer in {testCaseName}")
-                break
-
-        return r 
 
     @classmethod
     def get_rule_list(cls):

@@ -10,10 +10,11 @@ import shutil
 from threading import Timer
 
 from .device import Device
+from .device_hm import DeviceHM
 from .app import App
+from .app_hm import AppHM
 from .env_manager import AppEnvManager
 from .input_manager import InputManager
-
 
 class DroidBot(object):
     """
@@ -49,7 +50,9 @@ class DroidBot(object):
         ignore_ad=False,
         replay_output=None,
         kea_core=None,
-        number_of_events_that_restart_app=100
+        number_of_events_that_restart_app=100,
+        run_initial_rules_after_every_mutation=True,
+        is_harmonyos=False
     ):
         """
         initiate droidbot with configurations
@@ -98,47 +101,103 @@ class DroidBot(object):
 
         self.enabled = True
         self.kea_core = kea_core
-        try:
-            self.app = App(app_path, output_dir=self.output_dir)
-            self.device = Device(
-                device_serial=device_serial,
-                is_emulator=is_emulator,
-                output_dir=self.output_dir,
-                cv_mode=cv_mode,
-                grant_perm=grant_perm,
-                send_document=send_document,
-                enable_accessibility_hard=self.enable_accessibility_hard,
-                humanoid=self.humanoid,
-                ignore_ad=ignore_ad,
-                app_package_name=self.app.package_name
-            )
-            self.app = App(app_path, output_dir=self.output_dir)
 
-            self.env_manager = AppEnvManager(
-                device=self.device, app=self.app, env_policy=env_policy
-            )
-            self.input_manager = InputManager(
-                device=self.device,
-                app=self.app,
-                policy_name=policy_name,
-                random_input=random_input,
-                event_interval=event_interval,
-                event_count=event_count,
-                script_path=script_path,
-                profiling_method=profiling_method,
-                master=master,
-                replay_output=replay_output,
-                kea_core=kea_core,
-                number_of_events_that_restart_app=number_of_events_that_restart_app
-            )
+        # param initializer
+        self.app_path = app_path
+        self.device_serial = device_serial
+        self.is_emulator = is_emulator
+        self.env_policy = env_policy
+        self.policy_name = policy_name
+        self.random_input = random_input
+        self.script_path = script_path
+        self.event_interval = event_interval
+        self.event_count = event_count
+        self.cv_mode = cv_mode
+        self.profiling_method = profiling_method
+        self.grant_perm = grant_perm
+        self.send_document = send_document
+        self.master = master
+        self.number_of_events_that_restart_app = number_of_events_that_restart_app
+        self.run_initial_rules_after_every_mutation = run_initial_rules_after_every_mutation
+
+        try:
+            self.init_droidbot(is_harmonyos)
         except Exception:
             import traceback
 
             traceback.print_exc()
             self.stop()
             sys.exit(-1)
-        
-        #self.send_documents()
+    
+    def init_droidbot(self, is_harmonyos):
+        # initializer for Android system
+        if not is_harmonyos:
+            self.app = App(self.app_path, output_dir=self.output_dir)
+            self.device = Device(
+                device_serial=self.device_serial,
+                is_emulator=self.is_emulator,
+                output_dir=self.output_dir,
+                cv_mode=self.cv_mode,
+                grant_perm=self.grant_perm,
+                send_document=self.send_document,
+                enable_accessibility_hard=self.enable_accessibility_hard,
+                humanoid=self.humanoid,
+                ignore_ad=self.ignore_ad,
+                app_package_name=self.app.package_name,
+                is_harmonyos=is_harmonyos
+            )
+            self.app = App(self.app_path, output_dir=self.output_dir)
+
+            self.env_manager = AppEnvManager(
+                device=self.device, app=self.app, env_policy=self.env_policy
+            )
+            self.input_manager = InputManager(
+                device=self.device,
+                app=self.app,
+                policy_name=self.policy_name,
+                random_input=self.random_input,
+                event_interval=self.event_interval,
+                event_count=self.event_count,
+                script_path=self.script_path,
+                profiling_method=self.profiling_method,
+                master=self.master,
+                replay_output=self.replay_output,
+                kea_core=self.kea_core,
+                number_of_events_that_restart_app=self.number_of_events_that_restart_app
+            )
+            # self.send_documents()
+        # initializer for HarmonyOS system
+        else:
+            self.device = DeviceHM(
+                    device_serial=self.device_serial,
+                    is_emulator=self.is_emulator,
+                    output_dir=self.output_dir,
+                    cv_mode=self.cv_mode,
+                    grant_perm=self.grant_perm,
+                    enable_accessibility_hard=self.enable_accessibility_hard,
+                    humanoid=self.humanoid,
+                    ignore_ad=self.ignore_ad,
+                    is_harmonyos=is_harmonyos,
+                    save_log=False)
+            self.app = AppHM(self.app_path, output_dir=self.output_dir)
+
+            self.env_manager = AppEnvManager(
+                device=self.device,
+                app=self.app,
+                env_policy=self.env_policy)
+            self.input_manager = InputManager(
+                device=self.device,
+                app=self.app,
+                policy_name=self.policy_name,
+                random_input=self.random_input,
+                event_count=self.event_count,
+                event_interval=self.event_interval,
+                script_path=self.script_path,
+                profiling_method=self.profiling_method,
+                master=self.master,
+                replay_output=self.replay_output,
+                kea_core=self.kea_core)
+
     @staticmethod
     def get_instance():
         if DroidBot.instance is None:

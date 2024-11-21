@@ -121,7 +121,7 @@ def main():
                        keep_app=options.keep_app,
                        is_harmonyos=options.is_harmonyos,
                        grant_perm=options.grant_perm,
-                       is_emulator=options.is_emulator,
+                       is_emulator=options.is_emulator
                        )
     if options.files is not None:
         test_classes = import_and_instantiate_classes(options.files, settings)

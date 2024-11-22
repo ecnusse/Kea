@@ -87,8 +87,8 @@ def import_and_instantiate_classes(files, settings:"Setting")->"Kea":
             for attr_name in dir(module):
                 attr = getattr(module, attr_name)
                 if isinstance(attr, type) and issubclass(attr, Kea) and attr is not Kea:
-                    test_case = attr
-                    Kea(test_case)
+                    print(f"Loading property {attr.__name__} from {file}")
+                    Kea.load_testCase(attr)
         except ModuleNotFoundError as e:
             print(f"Error importing module {module_name}: {e}")
         

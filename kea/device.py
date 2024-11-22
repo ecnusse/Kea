@@ -663,10 +663,13 @@ class Device(object):
         out = self.adb.shell(cmd)
         if re.search(r"(Error)|(Cannot find 'App')", out, re.IGNORECASE | re.MULTILINE):
             raise RuntimeError(out)
+        
     def send_documents(self, app):
         if not self.send_document:
-            self.logger.info("Donot sending documents")
+            self.logger.info("No document need to be sent")
             return
+        
+        self.logger.info("Sending documents.")
         for file in os.listdir(self.resource_path):
             if "anki" in app.package_name and file == "collection.anki2":
                 self.mkdir("/storage/emulated/0/AnkiDroid/")
@@ -697,7 +700,7 @@ class Device(object):
             install_cmd.append(app.app_path)
             install_p = subprocess.Popen(install_cmd, stdout=subprocess.PIPE)
             while self.connected and package_name not in self.adb.get_installed_apps():
-                print("Please wait while installing the app...")
+                self.logger.info("Please wait while installing the app...")
                 time.sleep(2)
             if not self.connected:
                 install_p.terminate()
@@ -795,7 +798,7 @@ class Device(object):
             uninstall_cmd = ["adb", "-s", self.serial, "uninstall", package_name]
             uninstall_p = subprocess.Popen(uninstall_cmd, stdout=subprocess.PIPE)
             while package_name in self.adb.get_installed_apps():
-                print("Please wait while uninstalling the app...")
+                self.logger.info("Please wait while uninstalling the app...")
                 time.sleep(2)
             uninstall_p.terminate()
 

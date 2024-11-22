@@ -6,6 +6,8 @@ import importlib
 import os
 import argparse
 import sys
+import inspect
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Start kea to test app.",
                                      formatter_class=argparse.RawTextHelpFormatter)
@@ -84,11 +86,10 @@ def load_user_property(files, settings:"Setting")->"Kea":
             module.d = d
 
             # Find all classes in the module and attempt to instantiate them.
-            for attr_name in dir(module):
-                attr = getattr(module, attr_name)
-                if isinstance(attr, type) and issubclass(attr, Kea) and attr is not Kea:
-                    print(f"Loading property {attr.__name__} from {file}")
-                    Kea.load_testCase(attr)
+            for _, obj in inspect.getmembers(module):
+                if inspect.isclass(obj) and issubclass(obj, Kea) and obj is not Kea:
+                    print(f"Loading property {obj.__name__} from {file}")
+                    Kea.load_testCase(obj)
         except ModuleNotFoundError as e:
             print(f"Error importing module {module_name}: {e}")
         

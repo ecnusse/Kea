@@ -6,6 +6,8 @@ import importlib
 import os
 import argparse
 import sys
+import inspect
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Start kea to test app.",
                                      formatter_class=argparse.RawTextHelpFormatter)
@@ -30,6 +32,10 @@ def parse_args():
                         help="Grant all permissions while installing. Useful for Android 6.0+.")
     parser.add_argument("-is_emulator", action="store_true", dest="is_emulator",default=True,
                         help="Declare the target device to be an emulator, which would be treated specially.")
+    parser.add_argument("-is_harmonyos", action="store_true", dest="is_harmonyos", default=False,
+                        help="use harmonyos devices")
+    parser.add_argument("-load_config", action="store_true", dest="load_config", default=False,
+                        help="load config from config.yml. The setting in config.yml will cover the commandline args.")
     options = parser.parse_args()
     return options
 
@@ -84,11 +90,10 @@ def load_user_property(files, settings:"Setting")->"Kea":
             module.d = d
 
             # Find all classes in the module and attempt to instantiate them.
-            for attr_name in dir(module):
-                attr = getattr(module, attr_name)
-                if isinstance(attr, type) and issubclass(attr, Kea) and attr is not Kea:
-                    print(f"Loading property {attr.__name__} from {file}")
-                    Kea.load_testCase(attr)
+            for _, obj in inspect.getmembers(module):
+                if inspect.isclass(obj) and issubclass(obj, Kea) and obj is not Kea:
+                    print(f"Loading property {obj.__name__} from {file}")
+                    Kea.load_testCase(obj)
         except ModuleNotFoundError as e:
             print(f"Error importing module {module_name}: {e}")
         
@@ -104,9 +109,19 @@ def get_mobile_driver(settings:"Setting"):
         from kea.dsl_hm import Mobile
         return Mobile(serial=settings.device_serial)
 
+def checkconfig(options):
+    if not options.apk_path or not str(options.apk_path).endswith((".apk", ".hap")):
+        raise AttributeError("No target app. Use -a to specify the app")
+    if not options.files:
+        raise AttributeError("No property. Use -f to specify the proeprty")
+    if not options.output_dir:
+        raise AttributeError("No output directory. Use -o to specify the output directory.")
+
 def main():
     options = parse_args()
-    options = parse_ymal_args(options)
+    if options.load_config:
+        options = parse_ymal_args(options)
+    checkconfig(options)
     settings =  Setting(apk_path=options.apk_path,
                        device_serial=options.device_serial,
                        output_dir=options.output_dir,

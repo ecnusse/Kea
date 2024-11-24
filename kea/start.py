@@ -32,6 +32,10 @@ def parse_args():
                         help="Grant all permissions while installing. Useful for Android 6.0+.")
     parser.add_argument("-is_emulator", action="store_true", dest="is_emulator",default=True,
                         help="Declare the target device to be an emulator, which would be treated specially.")
+    parser.add_argument("-is_harmonyos", action="store_true", dest="is_harmonyos", default=False,
+                        help="use harmonyos devices")
+    parser.add_argument("-load_config", action="store_true", dest="load_config", default=False,
+                        help="load config from config.yml. The setting in config.yml will cover the commandline args.")
     options = parser.parse_args()
     return options
 
@@ -105,9 +109,19 @@ def get_mobile_driver(settings:"Setting"):
         from kea.dsl_hm import Mobile
         return Mobile(serial=settings.device_serial)
 
+def checkconfig(options):
+    if not options.apk_path or not str(options.apk_path).endswith((".apk", ".hap")):
+        raise AttributeError("No target app. Use -a to specify the app")
+    if not options.files:
+        raise AttributeError("No property. Use -f to specify the proeprty")
+    if not options.output_dir:
+        raise AttributeError("No output directory. Use -o to specify the output directory.")
+
 def main():
     options = parse_args()
-    options = parse_ymal_args(options)
+    if options.load_config:
+        options = parse_ymal_args(options)
+    checkconfig(options)
     settings =  Setting(apk_path=options.apk_path,
                        device_serial=options.device_serial,
                        output_dir=options.output_dir,

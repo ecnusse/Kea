@@ -78,7 +78,7 @@ class InputPolicy(object):
     It should call AppEventManager.send_event method continuously
     """
 
-    def __init__(self, device:"Device", app:"App", kea_core:"Kea"=None):
+    def __init__(self, device:"Device", app:"App", kea:"Kea"=None):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.time_recoder = Time()
 
@@ -86,7 +86,7 @@ class InputPolicy(object):
         self.app = app
         self.action_count = 0
         self.master = None
-        self.kea_core = kea_core
+        self.kea = kea
         self.input_manager = None
         self.time_needed_to_satisfy_precondition = []
 
@@ -95,12 +95,12 @@ class InputPolicy(object):
         self.last_event = None
 
     def run_initial_rules(self):
-        if len(self.kea_core.initializer) == 0:
+        if len(self.kea.initializer) == 0:
             self.logger.warning("No initializer")
             return
         
 
-        result = self.kea_core.execute_rules(self.kea_core.initializer)
+        result = self.kea.execute_rules(self.kea.initializer)
         if result:
             self.logger.info("-------initialize successfully-----------")
         else:
@@ -180,8 +180,8 @@ class KeaInputPolicy(InputPolicy):
     state-based input policy
     """
 
-    def __init__(self, device, app, random_input, kea_core=None):
-        super(KeaInputPolicy, self).__init__(device, app, kea_core)
+    def __init__(self, device, app, random_input, kea=None):
+        super(KeaInputPolicy, self).__init__(device, app, kea)
         self.random_input = random_input
         self.script = None
         self.master = None
@@ -199,13 +199,13 @@ class KeaInputPolicy(InputPolicy):
         
         # retrive all the rules from the provided properties
         self.rules = {}
-        for rule in self.kea_core.all_rules:
+        for rule in self.kea.all_rules:
             self.rules[rule.function.__name__] = {RULE_STATE.SATISFY_PRE: 0, RULE_STATE.CHECK_PROPERTY: 0, RULE_STATE.TRIGGER_BUG: 0}
         # record the action count, time and property name when the bug is triggered
         self.triggered_bug_information = []
 
     def check_rule_with_precondition(self):
-        rules_list_to_check = self.kea_core.get_rules_that_pass_the_preconditions()
+        rules_list_to_check = self.kea.get_rules_that_pass_the_preconditions()
         if len(rules_list_to_check) == 0:
             self.logger.debug("No rules match the precondition")
             if hasattr(self, "not_reach_precondition_path_number"):
@@ -222,7 +222,7 @@ class KeaInputPolicy(InputPolicy):
             self.rules[rule_to_check.function.__name__][RULE_STATE.CHECK_PROPERTY] += 1
 
             # check rule, record relavant info and output log
-            result = self.kea_core.execute_rule(rule_to_check)
+            result = self.kea.execute_rule(rule_to_check)
             if result == CHECK_RESULT.ASSERTION_ERROR:
                 self.logger.error(f"-------Postcondition failed. Assertion error, Property:{rule_to_check}------")
                 self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))
@@ -245,10 +245,10 @@ class KeaInputPolicy(InputPolicy):
                 raise AttributeError(f"Invalid property checking result {result}")
 
     def check_rule_without_precondition(self):
-        rules_to_check = self.kea_core.get_rules_without_preconditions()
+        rules_to_check = self.kea.get_rules_without_preconditions()
         if len(rules_to_check) > 0:
-            result = self.kea_core.execute_rules(
-                self.kea_core.get_rules_without_preconditions()
+            result = self.kea.execute_rules(
+                self.kea.get_rules_without_preconditions()
             )
             if result:
                 self.logger.info("-------rule_without_precondition execute success-----------")
@@ -333,14 +333,14 @@ class GuidedPolicy(KeaInputPolicy):
     
     """
 
-    def __init__(self, device, app, random_input, kea_core=None):
+    def __init__(self, device, app, random_input, kea=None):
         super(GuidedPolicy, self).__init__(
-            device, app, random_input, kea_core
+            device, app, random_input, kea
         )
         self.logger = logging.getLogger(self.__class__.__name__)
         
-        if len(self.kea_core.all_mainPaths):
-            self.logger.info("Found %d mainPaths" % len(self.kea_core.all_mainPaths))
+        if len(self.kea.all_mainPaths):
+            self.logger.info("Found %d mainPaths" % len(self.kea.all_mainPaths))
         else:
             self.logger.error("No mainPath found")
 
@@ -361,11 +361,11 @@ class GuidedPolicy(KeaInputPolicy):
         self.last_rotate_events = KEY_RotateDeviceNeutralEvent
 
     def select_main_path(self):
-        if len(self.kea_core.all_mainPaths) == 0:
+        if len(self.kea.all_mainPaths) == 0:
             self.logger.error("No mainPath")
             return
-        self.main_path = random.choice(self.kea_core.all_mainPaths)
-        self.path_func, self.main_path =  self.kea_core.parse_mainPath(self.main_path)
+        self.main_path = random.choice(self.kea.all_mainPaths)
+        self.path_func, self.main_path =  self.kea.parse_mainPath(self.main_path)
         self.logger.info(f"Select the {len(self.main_path)} steps mainPath function: {self.path_func}")
         self.main_path_list = copy.deepcopy(self.main_path)
         self.max_number_of_events_that_try_to_find_event_on_main_path = min(10, len(self.main_path))
@@ -404,7 +404,7 @@ class GuidedPolicy(KeaInputPolicy):
                 if 0 < self.current_index_on_main_path < self.mutate_node_index_on_main_path:
                     self.action_count -= 1
                 self.logger.info("*****main path running*****")
-                self.kea_core.exec_mainPath(event_str)
+                self.kea.exec_mainPath(event_str)
                 self.last_state = self.current_state
                 self.last_event = event
                 return None
@@ -435,7 +435,7 @@ class GuidedPolicy(KeaInputPolicy):
         try to check property with probability (default 50%)
         return 1 if the property has been checked.
         """
-        rules_list_to_check = self.kea_core.get_rules_that_pass_the_preconditions()
+        rules_list_to_check = self.kea.get_rules_that_pass_the_preconditions()
 
         if len(rules_list_to_check) > 0:
             t = self.time_recoder.get_time_duration()
@@ -462,7 +462,7 @@ class GuidedPolicy(KeaInputPolicy):
                 self.number_of_events_that_try_to_find_event_on_main_path += 1
                 if self.index_on_main_path_after_mutation == len(self.main_path_list):
                     self.logger.info("reach the end of the main path")
-                    rules_to_check = self.kea_core.get_rules_that_pass_the_preconditions()
+                    rules_to_check = self.kea.get_rules_that_pass_the_preconditions()
                     if len(rules_to_check) > 0:
                         t = self.time_recoder.get_time_duration()
                         self.time_needed_to_satisfy_precondition.append(t)
@@ -472,7 +472,7 @@ class GuidedPolicy(KeaInputPolicy):
 
                 event_str = self.get_event_from_main_path()
                 try:
-                    self.kea_core.exec_mainPath(event_str)
+                    self.kea.exec_mainPath(event_str)
                     self.logger.info("find the event in the main path")
                     return None
                 except Exception:
@@ -680,10 +680,10 @@ class RandomPolicy(KeaInputPolicy):
     random input policy based on UTG
     """
 
-    def __init__(self, device, app, random_input=True, kea_core=None, restart_app_after_check_property=False,
+    def __init__(self, device, app, random_input=True, kea=None, restart_app_after_check_property=False,
                  number_of_events_that_restart_app=100, clear_and_restart_app_data_after_100_events=False):
         super(RandomPolicy, self).__init__(
-            device, app, random_input, kea_core
+            device, app, random_input, kea
         )
         self.restart_app_after_check_property = restart_app_after_check_property
         self.number_of_events_that_restart_app = number_of_events_that_restart_app
@@ -741,7 +741,7 @@ class RandomPolicy(KeaInputPolicy):
         if self.action_count % self.number_of_events_that_restart_app == 0 and self.clear_and_restart_app_data_after_100_events:
             self.logger.info("clear and restart app after %s events" % self.number_of_events_that_restart_app)
             return ReInstallAppEvent(self.app)
-        rules_to_check = self.kea_core.get_rules_that_pass_the_preconditions()
+        rules_to_check = self.kea.get_rules_that_pass_the_preconditions()
 
         if len(rules_to_check) > 0:
             t = self.time_recoder.get_time_duration()

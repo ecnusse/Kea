@@ -40,7 +40,7 @@ class InputManager(object):
         profiling_method=None,
         master=None,
         replay_output=None,
-        kea_core=None,
+        kea=None,
         number_of_events_that_restart_app=100
     ):
         """
@@ -73,7 +73,7 @@ class InputManager(object):
 
             self.script = DroidBotScript(script_dict)
 
-        self.kea_core = kea_core
+        self.kea = kea
         
         self.profiling_method = profiling_method
         self.number_of_events_that_restart_app = number_of_events_that_restart_app
@@ -87,10 +87,10 @@ class InputManager(object):
                 device,
                 app,
                 self.random_input,
-                self.kea_core
+                self.kea
             )
         elif self.policy_name == POLICY_RANDOM:
-            input_policy = RandomPolicy(device, app, random_input=self.random_input, kea_core=self.kea_core, number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True)
+            input_policy = RandomPolicy(device, app, random_input=self.random_input, kea=self.kea, number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True)
         else:
             self.logger.warning(
                 "No valid input policy specified. Using policy \"none\"."

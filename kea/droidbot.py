@@ -9,10 +9,6 @@ import pkg_resources
 import shutil
 from threading import Timer
 
-from .device import Device
-from .device_hm import DeviceHM
-from .app import App
-from .app_hm import AppHM
 from .env_manager import AppEnvManager
 from .input_manager import InputManager
 
@@ -132,6 +128,8 @@ class DroidBot(object):
     def init_droidbot(self, is_harmonyos):
         # initializer for Android system
         if not is_harmonyos:
+            from .app import App
+            from .device import Device
             self.app = App(self.app_path, output_dir=self.output_dir)
             self.device = Device(
                 device_serial=self.device_serial,
@@ -168,6 +166,8 @@ class DroidBot(object):
             # self.send_documents()
         # initializer for HarmonyOS system
         else:
+            from .device_hm import DeviceHM
+            from .app_hm import AppHM
             self.device = DeviceHM(
                     device_serial=self.device_serial,
                     is_emulator=self.is_emulator,

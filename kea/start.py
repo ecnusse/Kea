@@ -60,7 +60,7 @@ def parse_ymal_args(opts):
     return opts
 
 
-def load_user_property(files, settings:"Setting")->"Kea":
+def load_properties(files, settings:"Setting")->"Kea":
     workspace_path = os.path.abspath(os.getcwd())
     
     d = get_mobile_driver(settings)
@@ -136,8 +136,8 @@ def main():
                        )
     if options.files is None:
         raise TypeError("Missing target property files")
-    kea_core = load_user_property(options.files, settings)
-    print(f"Test cases: {kea_core._all_testCase}")
+    kea_core = load_properties(options.files, settings)
+    print(f"Test cases: {kea_core._all_testCases}")
     start_kea(kea_core, settings)
 
 if __name__ == "__main__":

@@ -223,7 +223,7 @@ class TestCase:   # tingsu: what does TestCase stands for ??
 
 
 class Kea:   # tingsu: what is the purpose of Kea? not very clear. It seems Kea manages the properties
-    _all_testCase: Dict[type, "TestCase"] = {}
+    _all_testCases: Dict[type, "TestCase"] = {}
     _bundles_: Dict[str, Bundle] = {}
 
     def __init__(self):
@@ -243,13 +243,13 @@ class Kea:   # tingsu: what is the purpose of Kea? not very clear. It seems Kea 
         :return: load rules from all the provided testCases 
         """
         all_rules = []
-        for testCase in self._all_testCase.values():
+        for testCase in self._all_testCases.values():
             all_rules.extend(testCase.rule_list)
         return all_rules
     
     @property
     def initializer(self):
-        for testCaseName, testCase in self._all_testCase.items():
+        for testCaseName, testCase in self._all_testCases.items():
             r = testCase.get_list(INITIALIZER_MARKER, kea_core=self)
             if len(r) > 0:
                 self.logger.info(f"Successfully found an initializer in {testCaseName}")
@@ -261,7 +261,7 @@ class Kea:   # tingsu: what is the purpose of Kea? not very clear. It seems Kea 
     @property
     def all_mainPaths(self):
         all_mainPaths = []
-        for testCase in self._all_testCase.values():
+        for testCase in self._all_testCases.values():
             all_mainPaths.extend(testCase.mainPath_list)
         return all_mainPaths
     
@@ -276,20 +276,20 @@ class Kea:   # tingsu: what is the purpose of Kea? not very clear. It seems Kea 
     
     @classmethod
     def load_initializer_list(cls):
-        current_TestCase = cls._all_testCase[cls] = cls._all_testCase.get(cls, TestCase())
+        current_TestCase = cls._all_testCases[cls] = cls._all_testCases.get(cls, TestCase())
         initializer_list = current_TestCase.get_list(INITIALIZER_MARKER, kea_core=cls)
         if len(initializer_list) > 0:
             return initializer_list
 
     @classmethod
     def load_rule_list(cls):
-        current_TestCase = cls._all_testCase[cls] = cls._all_testCase.get(cls, TestCase())
+        current_TestCase = cls._all_testCases[cls] = cls._all_testCases.get(cls, TestCase())
         rule_list = current_TestCase.get_list(RULE_MARKER, kea_core=cls)
         return rule_list
 
     @classmethod
     def load_mainPath_list(cls):
-        current_TestCase = cls._all_testCase[cls] = cls._all_testCase.get(cls, TestCase())
+        current_TestCase = cls._all_testCases[cls] = cls._all_testCases.get(cls, TestCase())
         mainPath_list = current_TestCase.get_list(MAINPATH_MARKER, kea_core=cls)
         return mainPath_list
 

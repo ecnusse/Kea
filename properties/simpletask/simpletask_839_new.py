@@ -2,7 +2,7 @@ import sys
 from socket import send_fds
 
 sys.path.append("..")
-from kea.main import *
+from kea.core import *
 
 class Test(Kea):
     

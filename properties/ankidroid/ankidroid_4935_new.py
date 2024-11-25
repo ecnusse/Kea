@@ -1,6 +1,6 @@
 import sys
 sys.path.append("..")
-from kea.main import *
+from kea.core import *
 
 class Test(Kea):
      

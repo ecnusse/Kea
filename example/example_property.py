@@ -1,9 +1,12 @@
-from kea.main import *
+from kea.core import *
 
 class Test1(Kea):
 
     @initializer()
     def pass_welcome_pages(self):
+        if d(text="Allow").exists():
+            d(text="Allow").click()
+
         for _ in range(5):
             d(resourceId="it.feio.android.omninotes.alpha:id/next").click()
         d(resourceId="it.feio.android.omninotes.alpha:id/done").click()

@@ -1,5 +1,5 @@
 import string
-from kea.main import *
+from kea.core import *
 from hypothesis import strategies as st
 class Test(Kea):
     

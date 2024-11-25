@@ -21,8 +21,8 @@ from dataclasses import dataclass
 from kea.utils import SingletonMeta
 from typing import TYPE_CHECKING, Union
 if TYPE_CHECKING:
-    from kea.dsl import Mobile as Android_Mobile
-    from kea.dsl_hm import Mobile as HarmonyOS_Mobile
+    from kea.pdl import PDL as Android_PDL
+    from kea.pdl_hm import PDL as HarmonyOS_PDL
 
 warnings.filterwarnings("ignore", category=NonInteractiveExampleWarning)
 import coloredlogs
@@ -142,9 +142,7 @@ class Setting:
     is_harmonyos:bool=False
 
 OUTPUT_DIR = "output"
-from .dsl import Mobile
-# d:Union["Android_Mobile", "HarmonyOS_Mobile"] | None = Mobile()
-d:Union["Android_Mobile", "HarmonyOS_Mobile"] | None = None
+d:Union["Android_PDL", "HarmonyOS_PDL"] | None = None
 
 def start_kea(kea_core:"Kea", settings:"Setting" = None):
     # if settings is None:

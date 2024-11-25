@@ -13,6 +13,11 @@ LOGCAT_THREADTIME_RE = re.compile(
     '(?P<level>[VDIWEFS])\s+(?P<tag>[^:]*):\s+(?P<content>.*)$'
 )
 
+RULE_MARKER = "tool_rule"
+INITIALIZER_MARKER = "tool_initializer"
+PRECONDITIONS_MARKER = "tool_preconditions"
+INVARIANT_MARKER = "tool_invariant"
+MAINPATH_MARKER = "tool_mainPath"
 
 def lazy_property(func):
     attribute = '_lazy_' + func.__name__

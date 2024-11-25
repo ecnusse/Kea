@@ -23,6 +23,7 @@ from .input_event import (
 )
 from .utg import UTG
 from kea import utils
+from kea.kea import CHECK_RESULT
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -53,24 +54,14 @@ POLICY_GUIDED = "guided"
 POLICY_RANDOM = "random"
 POLICY_NONE = "none"
 
-
 @dataclass
 class RULE_STATE:
     SATISFY_PRE = "#satisfy pre"
     CHECK_PROPERTY = "#check property"
     TRIGGER_BUG = "#trigger the bug"
 
-@dataclass
-class CHECK_RESULT:
-    ASSERTION_ERROR = 0
-    PASS = 1
-    UI_NOT_FOUND = 2
-    PRECON_NOT_SATISFIED = 3
-
-
 class InputInterruptedException(Exception):
     pass
-
 
 class InputPolicy(object):
     """
@@ -849,4 +840,3 @@ class RandomPolicy(KeaInputPolicy):
 
         self.__event_trace += EVENT_FLAG_EXPLORE
         return random.choice(possible_events)
-

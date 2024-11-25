@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import traceback
 import logging
 import random
@@ -13,7 +14,14 @@ if TYPE_CHECKING:
 
 from .utils import INITIALIZER_MARKER, RULE_MARKER, MAINPATH_MARKER
 
-class Kea:   # tingsu: what is the purpose of Kea? not very clear. It seems Kea manages the properties
+@dataclass
+class CHECK_RESULT:
+    ASSERTION_ERROR = 0
+    PASS = 1
+    UI_NOT_FOUND = 2
+    PRECON_INVALID = 3
+
+class Kea:
     _all_testCases: Dict[type, "TestCase"] = {}
     _bundles_: Dict[str, "Bundle"] = {}
 
@@ -91,18 +99,13 @@ class Kea:   # tingsu: what is the purpose of Kea? not very clear. It seems Kea 
         return bundle
 
     def execute_rules(self, rules):
-        '''random choose a rule, if the rule has preconditions, check the preconditions.
-        if the preconditions are satisfied, execute the rule.'''
         '''
-
-        0: assertion error
-        1: check property pass
-        2: UiObjectNotFoundError
-        3: don't need to check property,because the precondition is not satisfied
+        random choose a rule, if the rule has preconditions, check the preconditions.
+        if the preconditions are satisfied, execute the rule.
         '''
         
         if len(rules) == 0:
-            return 3
+            return CHECK_RESULT.PRECON_INVALID
         rule_to_check = random.choice(rules)
         self.current_rule = rule_to_check
         return self.execute_rule(rule_to_check)
@@ -111,9 +114,9 @@ class Kea:   # tingsu: what is the purpose of Kea? not very clear. It seems Kea 
         self.logger.info(f"executing rule:\n{rule}")
         if len(rule.preconditions) > 0:
             if not all(precond(self) for precond in rule.preconditions):
-                return 3
+                return CHECK_RESULT.PRECON_INVALID
         # try to execute the rule and catch the exception if assertion error throws
-        result = 1
+        result = CHECK_RESULT.PASS
         try:
             time.sleep(1)
             result = rule.function(self)
@@ -132,14 +135,14 @@ class Kea:   # tingsu: what is the purpose of Kea? not very clear. It seems Kea 
             # Print the line number and code content of the error.
             self.logger.warning(f"Error occurred in file {file_name} on line {line_number}:")
             self.logger.warning(f"Code causing the error: {code_context}")
-            return 2
+            return CHECK_RESULT.UI_NOT_FOUND
         except AssertionError as e:
             self.logger.error("Assertion error. "+str(e))
-            return 0
+            return CHECK_RESULT.ASSERTION_ERROR
         finally:
-            result = 1
+            result = CHECK_RESULT.PASS
 
-        return result
+        return CHECK_RESULT.PASS
 
     def parse_mainPath(self, mainPath:"MainPath") :
         return mainPath.function, mainPath.path

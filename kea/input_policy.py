@@ -27,7 +27,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .input_manager import InputManager
-    from .main import Kea
+    from .core import Kea
     from .app import App
     from .device import Device
 

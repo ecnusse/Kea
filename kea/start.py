@@ -1,5 +1,5 @@
 from .input_manager import DEFAULT_DEVICE_SERIAL, DEFAULT_POLICY, DEFAULT_TIMEOUT
-from .main import Kea, Setting, start_kea
+from .core import Kea, Setting, start_kea
 from .utils import get_yml_config
 
 import importlib

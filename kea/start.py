@@ -103,11 +103,11 @@ def load_properties(files, settings:"Setting")->"Kea":
 def get_mobile_driver(settings:"Setting"):
     # initialize the dsl according to the system
     if not settings.is_harmonyos:
-        from kea.dsl import Mobile
-        return Mobile()
+        from kea.pdl import PDL
+        return PDL()
     else:
-        from kea.dsl_hm import Mobile
-        return Mobile(serial=settings.device_serial)
+        from kea.pdl_hm import PDL
+        return PDL(serial=settings.device_serial)
 
 def checkconfig(options):
     if not options.apk_path or not str(options.apk_path).endswith((".apk", ".hap")):

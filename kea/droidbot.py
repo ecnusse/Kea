@@ -49,7 +49,7 @@ class DroidBot(object):
         humanoid=None,
         ignore_ad=False,
         replay_output=None,
-        kea_core=None,
+        kea=None,
         number_of_events_that_restart_app=100,
         run_initial_rules_after_every_mutation=True,
         is_harmonyos=False
@@ -100,7 +100,7 @@ class DroidBot(object):
         self.replay_output = replay_output
 
         self.enabled = True
-        self.kea_core = kea_core
+        self.kea = kea
 
         # param initializer
         self.app_path = app_path
@@ -162,7 +162,7 @@ class DroidBot(object):
                 profiling_method=self.profiling_method,
                 master=self.master,
                 replay_output=self.replay_output,
-                kea_core=self.kea_core,
+                kea=self.kea,
                 number_of_events_that_restart_app=self.number_of_events_that_restart_app
             )
             # self.send_documents()
@@ -196,7 +196,7 @@ class DroidBot(object):
                 profiling_method=self.profiling_method,
                 master=self.master,
                 replay_output=self.replay_output,
-                kea_core=self.kea_core)
+                kea=self.kea)
 
     @staticmethod
     def get_instance():

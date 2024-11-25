@@ -144,9 +144,9 @@ class Setting:
 OUTPUT_DIR = "output"
 d:Union["Android_PDL", "HarmonyOS_PDL"] | None = None
 
-def start_kea(kea_core:"Kea", settings:"Setting" = None):
+def start_kea(kea:"Kea", settings:"Setting" = None):
     # if settings is None:
-    #     settings = kea_core.TestCase.settings
+    #     settings = kea.TestCase.settings
 
     droid = DroidBot(    # tingsu: why not naming "droid" as "droidbot"?
         app_path=settings.apk_path,
@@ -172,7 +172,7 @@ def start_kea(kea_core:"Kea", settings:"Setting" = None):
         humanoid=settings.humanoid,
         ignore_ad=settings.ignore_ad,
         replay_output=settings.replay_output,
-        kea_core=kea_core,
+        kea=kea,
         number_of_events_that_restart_app=settings.number_of_events_that_restart_app,
         run_initial_rules_after_every_mutation=settings.run_initial_rules_after_every_mutation,
         is_harmonyos=settings.is_harmonyos
@@ -195,7 +195,7 @@ class TestCase:   # tingsu: what does TestCase stands for ??
     initializer_list:List["Rule"]
     mainPath_list:List["MainPath"]
 
-    def get_list(self, MARKER:str, kea_core:"Kea"):
+    def get_list(self, MARKER:str, kea:"Kea"):
         """
         Dynamically get the rule/initializer/mainPath list from the testCase.
         """
@@ -212,7 +212,7 @@ class TestCase:   # tingsu: what does TestCase stands for ??
         # Else, initialize the list 
         # (TestCase is singleton so the other initialized lists won't be covered)
         setattr(self, TARGET_LIST_NAME, [])
-        for _, v in inspect.getmembers(kea_core):
+        for _, v in inspect.getmembers(kea):
             r = getattr(v, MARKER, None)
             if r is not None:
                 getattr(self, TARGET_LIST_NAME).append(r)
@@ -248,7 +248,7 @@ class Kea:   # tingsu: what is the purpose of Kea? not very clear. It seems Kea 
     @property
     def initializer(self):
         for testCaseName, testCase in self._all_testCases.items():
-            r = testCase.get_list(INITIALIZER_MARKER, kea_core=self)
+            r = testCase.get_list(INITIALIZER_MARKER, kea=self)
             if len(r) > 0:
                 self.logger.info(f"Successfully found an initializer in {testCaseName}")
                 return r
@@ -275,20 +275,20 @@ class Kea:   # tingsu: what is the purpose of Kea? not very clear. It seems Kea 
     @classmethod
     def load_initializer_list(cls):
         current_TestCase = cls._all_testCases[cls] = cls._all_testCases.get(cls, TestCase())
-        initializer_list = current_TestCase.get_list(INITIALIZER_MARKER, kea_core=cls)
+        initializer_list = current_TestCase.get_list(INITIALIZER_MARKER, kea=cls)
         if len(initializer_list) > 0:
             return initializer_list
 
     @classmethod
     def load_rule_list(cls):
         current_TestCase = cls._all_testCases[cls] = cls._all_testCases.get(cls, TestCase())
-        rule_list = current_TestCase.get_list(RULE_MARKER, kea_core=cls)
+        rule_list = current_TestCase.get_list(RULE_MARKER, kea=cls)
         return rule_list
 
     @classmethod
     def load_mainPath_list(cls):
         current_TestCase = cls._all_testCases[cls] = cls._all_testCases.get(cls, TestCase())
-        mainPath_list = current_TestCase.get_list(MAINPATH_MARKER, kea_core=cls)
+        mainPath_list = current_TestCase.get_list(MAINPATH_MARKER, kea=cls)
         return mainPath_list
 
     @classmethod

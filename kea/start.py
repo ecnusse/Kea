@@ -136,9 +136,9 @@ def main():
                        )
     if options.files is None:
         raise TypeError("Missing target property files")
-    kea_core = load_properties(options.files, settings)
-    print(f"Test cases: {kea_core._all_testCases}")
-    start_kea(kea_core, settings)
+    kea = load_properties(options.files, settings)
+    print(f"Test cases: {kea._all_testCases}")
+    start_kea(kea, settings)
 
 if __name__ == "__main__":
     main()

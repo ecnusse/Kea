@@ -13,6 +13,11 @@ LOGCAT_THREADTIME_RE = re.compile(
     '(?P<level>[VDIWEFS])\s+(?P<tag>[^:]*):\s+(?P<content>.*)$'
 )
 
+RULE_MARKER = "tool_rule"
+INITIALIZER_MARKER = "tool_initializer"
+PRECONDITIONS_MARKER = "tool_preconditions"
+INVARIANT_MARKER = "tool_invariant"
+MAINPATH_MARKER = "tool_mainPath"
 
 def lazy_property(func):
     attribute = '_lazy_' + func.__name__
@@ -176,7 +181,7 @@ def generate_report(img_path, html_path, bug_information=None):
         
 def get_yml_config()->dict[str,str]:
     if not any(os.path.exists(ymal_path := os.path.join(os.getcwd(), _)) for _ in ["config.yml", "config.yaml"]):
-        raise "config.yml not found"
+        raise FileNotFoundError("config.yml not found")
 
     with open(ymal_path, "r") as fp:
         config_dir:dict[str, str] = yaml.safe_load(fp)

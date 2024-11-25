@@ -1,7 +1,7 @@
 """
-DSL for Domain Sepcific Language, Android system
-This is the PDL (Property Desciption Language) for Mobile app testing.
-Please checkout our paper for details.
+This is the PDL (Property Desciption Language) for Android app testing, which is 
+kind of DSL(Domain Sepcific Language).
+Please checkout our doc and paper for details.
 """
 
 from uiautomator2._selector import Selector, UiObject
@@ -10,7 +10,7 @@ from typing import Any, Union, TYPE_CHECKING
 if TYPE_CHECKING:
     from kea.droidbot import DroidBot
 
-class Mobile(Driver):
+class PDL(Driver):
     droidbot = None    
 
     def __init__(self, delay=1) -> None:
@@ -38,9 +38,7 @@ class Mobile(Driver):
 
 
 class Ui(UiObject):
-    session:"Mobile"
-
-    def __init__(self, session, selector: Selector, droidbot:"DroidBot"):
+    def __init__(self, session:"PDL", selector: Selector, droidbot:"DroidBot"):
         super().__init__(session, selector)
         self.droidbot=droidbot
 

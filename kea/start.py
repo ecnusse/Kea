@@ -1,5 +1,5 @@
 from .input_manager import DEFAULT_DEVICE_SERIAL, DEFAULT_POLICY, DEFAULT_TIMEOUT
-from .main import Kea, Setting, start_kea
+from .core import Kea, Setting, start_kea
 from .utils import get_yml_config
 
 import importlib
@@ -60,7 +60,7 @@ def parse_ymal_args(opts):
     return opts
 
 
-def load_user_property(files, settings:"Setting")->"Kea":
+def load_properties(files, settings:"Setting")->"Kea":
     workspace_path = os.path.abspath(os.getcwd())
     
     d = get_mobile_driver(settings)
@@ -103,11 +103,11 @@ def load_user_property(files, settings:"Setting")->"Kea":
 def get_mobile_driver(settings:"Setting"):
     # initialize the dsl according to the system
     if not settings.is_harmonyos:
-        from kea.dsl import Mobile
-        return Mobile()
+        from kea.pdl import PDL
+        return PDL()
     else:
-        from kea.dsl_hm import Mobile
-        return Mobile(serial=settings.device_serial)
+        from kea.pdl_hm import PDL
+        return PDL(serial=settings.device_serial)
 
 def checkconfig(options):
     if not options.apk_path or not str(options.apk_path).endswith((".apk", ".hap")):
@@ -136,9 +136,9 @@ def main():
                        )
     if options.files is None:
         raise TypeError("Missing target property files")
-    kea_core = load_user_property(options.files, settings)
-    print(f"Test cases: {kea_core._all_testCase}")
-    start_kea(kea_core, settings)
+    kea = load_properties(options.files, settings)
+    print(f"Test cases: {kea._all_testCases}")
+    start_kea(kea, settings)
 
 if __name__ == "__main__":
     main()

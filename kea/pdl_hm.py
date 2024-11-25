@@ -1,7 +1,7 @@
 """
-DSL for Domain Sepcific Language, HarmonyOS system
-This is the PDL (Property Desciption Language) for Mobile app testing.
-Please checkout our paper for details.
+This is the PDL (Property Desciption Language) for HarmonyOS app testing, which is 
+kind of DSL(Domain Sepcific Language).
+Please checkout our doc and paper for details.
 """
 
 from hmdriver2._client import HmClient
@@ -18,7 +18,7 @@ from typing import Any, Union, TYPE_CHECKING
 if TYPE_CHECKING:
     from kea.droidbot import DroidBot
 
-class Mobile(Driver):
+class PDL(Driver):
     
     def __init__(self, delay=1, serial=None) -> None:
         self.delay = delay
@@ -26,10 +26,6 @@ class Mobile(Driver):
 
     def set_device_serial(self, serial):
         pass
-        # super().__init__(serial=serial)
-        # setting operation delay
-        # self.settings['operation_delay'] = (0, self.delay)
-        # self.settings['wait_timeout'] = 5.0 # 默认控件等待时间
     
     def __new__(cls: Type[Any], serial: str) -> Any:
         return super().__new__(cls, serial)
@@ -52,7 +48,7 @@ class Mobile(Driver):
 
 
 class Ui(UiObject):
-    def __init__(self, session:"Mobile", **kwargs) -> None:
+    def __init__(self, session:"PDL", **kwargs) -> None:
         client = session._client
         droidbot = session.droidbot
         self.droidbot = droidbot

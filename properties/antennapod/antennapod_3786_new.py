@@ -3,7 +3,7 @@ import sys
 from itertools import count
 
 sys.path.append("..")
-from kea.main import *
+from kea.core import *
 
 class Test(Kea):
 

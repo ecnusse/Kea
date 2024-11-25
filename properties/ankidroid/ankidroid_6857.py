@@ -1,7 +1,7 @@
 import string
 import sys
 sys.path.append("..")
-from kea.main import *
+from kea.core import *
 from hypothesis import strategies as st
 class Test(Kea):
     

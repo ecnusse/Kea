@@ -4,7 +4,7 @@ from kea.kea import Kea
 from hypothesis.errors import NonInteractiveExampleWarning
 import warnings
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Union, Optional
 if TYPE_CHECKING:
     from kea.pdl import PDL as Android_PDL
     from kea.pdl_hm import PDL as HarmonyOS_PDL
@@ -44,7 +44,7 @@ class Setting:
     is_harmonyos:bool=False
 
 OUTPUT_DIR = "output"
-d:Union["Android_PDL", "HarmonyOS_PDL"] | None = None
+d:Optional[Union["Android_PDL", "HarmonyOS_PDL"]] | None = None
 
 def start_kea(kea:"Kea", settings:"Setting" = None):
     # if settings is None:
@@ -82,7 +82,7 @@ def start_kea(kea:"Kea", settings:"Setting" = None):
 
     global d
     d = settings.d
-
+    kea.d = d
     d.set_device_serial(settings.device_serial)
     d.set_droidbot(droidbot)
     droidbot.start()

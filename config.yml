@@ -7,8 +7,8 @@ system: android
 
 device: emulator-5554
 app_path: example/omninotes.apk
-policy: random
+policy: guided
 count: 100
 properties: 
-  - example/example.py
-  - example/example_mainpath.py
+#  - example/example.py
+  - example/example_mainpath_property.py

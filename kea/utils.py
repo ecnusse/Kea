@@ -192,7 +192,7 @@ def generate_report(img_path, html_path, bug_information=None, precondition_info
         new_num_str = "<div style=\"color:red;\">Triggered " + str(len(bug_information)) + " bugs.</div><br>"
 
     if precondition_information is not None:
-        new_num_str = new_num_str + "<div> Satisfied: "+ str(len(precondition_information)) + " preconditions</div><br>" + "<div>Total Events: " + str(total_count) + " </div>"
+        new_num_str = new_num_str + "<div> Satisfied "+ str(len(precondition_information)) + " preconditions</div><br>" + "<div>Total Events: " + str(total_count) + " </div>"
     else:
         new_num_str = new_num_str + "<div>Satisfied 0 preconditions.</div>"
     for line in f_style:

@@ -1,3 +1,4 @@
+from asyncio import sleep
 from dataclasses import dataclass
 import os
 
@@ -5,6 +6,7 @@ import logging
 import random
 import copy
 import time
+
 
 from .utils import Time
 from abc import abstractmethod
@@ -18,8 +20,7 @@ from .input_event import (
     RotateDeviceNeutralEvent,
     RotateDeviceRightEvent,
     KillAppEvent,
-    KillAndRestartAppEvent,
-    U2StartEvent
+    KillAndRestartAppEvent
 )
 from .utg import UTG
 from kea import utils
@@ -84,6 +85,10 @@ class InputPolicy(object):
         self.time_to_check_rule = []
 
         self.last_event = None
+        self.from_state = None
+        self.to_state = None
+        self.generate_utg = False
+        self.triggered_bug_information = []
 
     def run_initial_rules(self):
         if len(self.kea.initializer) == 0:
@@ -122,8 +127,18 @@ class InputPolicy(object):
                     event = IntentEvent(self.app.get_start_intent())
                 else:
                     event = self.generate_event()
-                self.last_event = event
-                input_manager.add_event(event)
+                if event is not None:
+                    self.from_state = self.device.save_screenshot_for_report(event=event)
+                    input_manager.add_event(event)
+                    if isinstance(event, RotateDevice) or isinstance(event, IntentEvent):
+                        time.sleep(1)
+                    self.to_state = self.device.get_current_state()
+                    self.last_event = event
+                    if self.generate_utg:
+                        self.update_utg()
+
+                bug_report_path = os.path.join(self.device.output_dir, "all_states")
+                utils.generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.get_count(), self.time_recoder.get_time_duration())
             except KeyboardInterrupt:
                 break
             except InputInterruptedException as e:
@@ -141,6 +156,9 @@ class InputPolicy(object):
                 traceback.print_exc()
             self.action_count += 1
         self.tear_down()
+
+    def update_utg(self):
+        self.utg.add_transition(self.last_event, self.from_state, self.to_state)
 
     @abstractmethod
     def tear_down(self):
@@ -178,8 +196,8 @@ class KeaInputPolicy(InputPolicy):
         self.master = None
         self.script_events = []
         self.last_event = None
-        self.last_state = None
-        self.current_state = None
+        self.from_state = None
+        self.to_state = None
         self.utg = UTG(
             device=device, app=app, random_input=random_input
         )
@@ -211,15 +229,16 @@ class KeaInputPolicy(InputPolicy):
         if rule_to_check is not None:
             self.logger.info(f"-------Check Property : {rule_to_check}------")
             self.rules[rule_to_check.function.__name__][RULE_STATE.CHECK_PROPERTY] += 1
-
+            pre_id = self.device.get_count()
             # check rule, record relavant info and output log
             result = self.kea.execute_rule(rule_to_check)
             if result == CHECK_RESULT.ASSERTION_ERROR:
                 self.logger.error(f"-------Postcondition failed. Assertion error, Property:{rule_to_check}------")
                 self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))
                 self.rules[rule_to_check.function.__name__][RULE_STATE.TRIGGER_BUG] += 1
+                post_id = self.device.get_count()
                 self.triggered_bug_information.append(
-                    (self.action_count, self.time_recoder.get_time_duration(), rule_to_check.function.__name__))
+                    ((pre_id, post_id), self.time_recoder.get_time_duration(), rule_to_check.function.__name__))
 
 
             elif result == CHECK_RESULT.PASS:
@@ -263,10 +282,8 @@ class KeaInputPolicy(InputPolicy):
         pass
 
     def update_utg(self):
-        self.utg.add_transition(self.last_event, self.last_state, self.current_state)
+        self.utg.add_transition(self.last_event, self.from_state, self.to_state)
 
-    def update_node(self, event, state):
-        self.utg.add_node(state, event)
 
     @abstractmethod
     def generate_event_based_on_utg(self):
@@ -281,42 +298,27 @@ class KeaInputPolicy(InputPolicy):
         
         """
         # mark the bug information on the bug report html
-        if len(self.triggered_bug_information) > 0:
-            bug_report_path = os.path.join(self.device.output_dir, "all_states")
-            utils.generate_report(
-                bug_report_path,
-                self.device.output_dir,
-                self.triggered_bug_information
-            )
-        self.logger.info("----------------------------------------")
-
-        if len(self.triggered_bug_information) > 0:
-            self.logger.info("Time needed to trigger the first bug: %s" % self.triggered_bug_information[0][1])
-
-        if len(self.time_needed_to_satisfy_precondition) > 0:
-            self.logger.info(
-                "Time needed to satisfy the first precondition: %s" % self.time_needed_to_satisfy_precondition[0])
-            self.logger.info(
-                "The precondition(s) is/are satisfied %s times" % len(self.time_needed_to_satisfy_precondition))
-            if len(self.triggered_bug_information) > 0:
-                self.logger.info("Triggered %s bug:" % len(self.triggered_bug_information))
-            # self.logger.info("----------------------------------------")
-            # self.logger.info(
-            #     "the time needed to satisfy the precondition: %s" % self.time_needed_to_satisfy_precondition)
-            # self.logger.info("How many times check the property: %s" % len(self.time_to_check_rule))
-            # self.logger.info("the time needed to check the property: %s" % self.time_to_check_rule)
-        else:
-            self.logger.info("No precondition has been satisfied.")
-
-        if len(self.triggered_bug_information) > 0:
-            self.logger.info("the action count, time needed to trigger the bug, and the property name: %s" % self.triggered_bug_information)
-        else:
-            self.logger.info("No bug has been triggered.")
-
-        # for rule in self.rules:
-        #     self.logger.info("property: %s, #satisfy precondition: %d, #check property: %d, #trigger the bug: %d" % (
-        #         rule, self.rules[rule][RULE_STATE.SATISFY_PRE], self.rules[rule][RULE_STATE.CHECK_PROPERTY],
-        #         self.rules[rule][RULE_STATE.TRIGGER_BUG]))
+        bug_report_path = os.path.join(self.device.output_dir, "all_states")
+        utils.generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.get_count(), self.time_recoder.get_time_duration())
+        # self.logger.info("----------------------------------------")
+        #
+        # if len(self.triggered_bug_information) > 0:
+        #     self.logger.info("Time needed to trigger the first bug: %s" % self.triggered_bug_information[0][1])
+        #
+        # if len(self.time_needed_to_satisfy_precondition) > 0:
+        #     self.logger.info(
+        #         "Time needed to satisfy the first precondition: %s" % self.time_needed_to_satisfy_precondition[0])
+        #     self.logger.info(
+        #         "The precondition(s) is/are satisfied %s times" % len(self.time_needed_to_satisfy_precondition))
+        #     if len(self.triggered_bug_information) > 0:
+        #         self.logger.info("Triggered %s bug:" % len(self.triggered_bug_information))
+        # else:
+        #     self.logger.info("No precondition has been satisfied.")
+        #
+        # if len(self.triggered_bug_information) > 0:
+        #     self.logger.info("the action count, time needed to trigger the bug, and the property name: %s" % self.triggered_bug_information)
+        # else:
+        #     self.logger.info("No bug has been triggered.")
 
 
 class GuidedPolicy(KeaInputPolicy):
@@ -324,7 +326,7 @@ class GuidedPolicy(KeaInputPolicy):
     
     """
 
-    def __init__(self, device, app, random_input, kea=None):
+    def __init__(self, device, app, random_input, kea=None, generate_utg = False):
         super(GuidedPolicy, self).__init__(
             device, app, random_input, kea
         )
@@ -351,6 +353,8 @@ class GuidedPolicy(KeaInputPolicy):
         self.last_random_text = None
         self.last_rotate_events = KEY_RotateDeviceNeutralEvent
 
+        self.generate_utg = generate_utg
+
     def select_main_path(self):
         if len(self.kea.all_mainPaths) == 0:
             self.logger.error("No mainPath")
@@ -368,44 +372,28 @@ class GuidedPolicy(KeaInputPolicy):
         
         """
 
-        self.current_state = self.device.get_current_state(self.action_count)
+        current_state = self.device.get_current_state()
 
         #Return relevant events based on whether the application is in the foreground.
-        event = self.check_the_app_on_foreground()
+
+        event = self.check_the_app_on_foreground(current_state)
         if event is not None:
-            self.update_utg()
-            self.last_state = self.current_state
-            self.last_event = event
             return event
+
+
         if (self.action_count == ACTION_COUNT_TO_START and self.current_index_on_main_path == 0) or isinstance(self.last_event, ReInstallAppEvent):
             self.select_main_path()
-            if isinstance(self.last_event, ReInstallAppEvent):
-                self.update_utg()
-                self.last_state = self.current_state
-                self.last_event = event
-                initialize_start_event = U2StartEvent("InitializeStart")
-                self.update_node(initialize_start_event, self.last_state)
-                self.run_initial_rules()
-                return None
             self.run_initial_rules()
             time.sleep(2)
         if self.execute_main_path:
             event_str = self.get_main_path_event()
             if event_str:
-                if 0 < self.current_index_on_main_path < self.mutate_node_index_on_main_path:
-                    self.action_count -= 1
                 self.logger.info("*****main path running*****")
                 self.kea.exec_mainPath(event_str)
-                self.last_state = self.current_state
-                self.last_event = event
                 return None
-        else:
-            self.update_utg()
         if event is None:
             event = self.mutate_the_main_path()
 
-        self.last_state = self.current_state
-        self.last_event = event
         return event
 
     def end_mutation(self):
@@ -435,9 +423,6 @@ class GuidedPolicy(KeaInputPolicy):
             if random.random() < p:
                 self.time_to_check_rule.append(t)
                 self.logger.info(" check rule")
-                # self.update_utg()
-                check_start_event = U2StartEvent("CheckStart")
-                self.update_node(check_start_event, self.last_state)
                 self.check_rule_with_precondition()
                 return 1
             else:
@@ -490,12 +475,6 @@ class GuidedPolicy(KeaInputPolicy):
                 "reach the mutate index, start mutate on the node %d" % self.mutate_node_index_on_main_path)
             self.execute_main_path = False
             return None
-        if self.current_index_on_main_path == 0:
-            self.current_state = self.device.get_current_state(self.action_count)
-            self.update_utg()
-            self.last_state = self.current_state
-            mainPath_start_event = U2StartEvent("MainPathStart")
-            self.update_node(mainPath_start_event, self.last_state)
 
         self.logger.info("execute node index on main path: %d" % self.current_index_on_main_path)
         u2_event_str = self.main_path_list[self.current_index_on_main_path]
@@ -533,7 +512,7 @@ class GuidedPolicy(KeaInputPolicy):
         generate an event based on current UTG to explore the app
         @return: InputEvent
         """
-        current_state = self.current_state
+        current_state = self.device.get_current_state()
         self.logger.info("Current state: %s" % current_state.state_str)
         if current_state.state_str in self.__missed_states:
             self.__missed_states.remove(current_state.state_str)
@@ -612,8 +591,8 @@ class GuidedPolicy(KeaInputPolicy):
 
         return event
 
-    def check_the_app_on_foreground(self):
-        if self.current_state.get_app_activity_depth(self.app) < 0:
+    def check_the_app_on_foreground(self, current_state):
+        if current_state.get_app_activity_depth(self.app) < 0:
             # If the app is not in the activity stack
             start_app_intent = self.app.get_start_intent()
 
@@ -648,7 +627,7 @@ class GuidedPolicy(KeaInputPolicy):
                     self.logger.info("Trying to start the app...")
                     return IntentEvent(intent=start_app_intent)
 
-        elif self.current_state.get_app_activity_depth(self.app) > 0:
+        elif current_state.get_app_activity_depth(self.app) > 0:
             # If the app is in activity stack but is not in foreground
             self.__num_steps_outside += 1
 
@@ -672,7 +651,7 @@ class RandomPolicy(KeaInputPolicy):
     """
 
     def __init__(self, device, app, random_input=True, kea=None, restart_app_after_check_property=False,
-                 number_of_events_that_restart_app=100, clear_and_restart_app_data_after_100_events=False):
+                 number_of_events_that_restart_app=100, clear_and_restart_app_data_after_100_events=False, generate_utg=False):
         super(RandomPolicy, self).__init__(
             device, app, random_input, kea
         )
@@ -704,30 +683,22 @@ class RandomPolicy(KeaInputPolicy):
 
         self.last_rotate_events = KEY_RotateDeviceNeutralEvent
 
+        self.generate_utg = generate_utg
+
     def generate_event(self):
         """
         generate an event
         @return:
         """
 
-        if self.action_count == ACTION_COUNT_TO_START or isinstance(self.last_event, ReInstallAppEvent): 
-            if isinstance(self.last_event, ReInstallAppEvent):
-                self.current_state = self.device.get_current_state(self.action_count)
-                self.update_utg()
-                self.last_state = self.current_state
-                initialize_start_event = U2StartEvent("InitializeStart")
-                self.update_node(initialize_start_event, self.last_state)
-                self.run_initial_rules()
-                return None
+        if self.action_count == ACTION_COUNT_TO_START or isinstance(self.last_event, ReInstallAppEvent):
             self.run_initial_rules()
-        # Get current device state
-        self.current_state = self.device.get_current_state(self.action_count)
-        if self.current_state is None:
+        current_state = self.device.get_current_state()
+        if current_state is None:
             import time
             time.sleep(5)
             return KeyEvent(name="BACK")
 
-        self.update_utg()
 
         if self.action_count % self.number_of_events_that_restart_app == 0 and self.clear_and_restart_app_data_after_100_events:
             self.logger.info("clear and restart app after %s events" % self.number_of_events_that_restart_app)
@@ -741,8 +712,6 @@ class RandomPolicy(KeaInputPolicy):
             if random.random() < 0.5:
                 self.time_to_check_rule.append(t)
                 self.logger.info("Check property")
-                check_start_event = U2StartEvent("CheckStart")
-                self.update_node(check_start_event, self.last_state)
                 self.check_rule_with_precondition()
                 if self.restart_app_after_check_property:
                     self.logger.debug("restart app after check property")
@@ -763,8 +732,6 @@ class RandomPolicy(KeaInputPolicy):
                 self.last_rotate_events = KEY_RotateDeviceNeutralEvent
                 event = RotateDeviceNeutralEvent()
 
-        self.last_state = self.current_state
-        self.last_event = event
         return event
 
     def generate_event_based_on_utg(self):
@@ -772,7 +739,7 @@ class RandomPolicy(KeaInputPolicy):
         generate an event based on current UTG
         @return: InputEvent
         """
-        current_state = self.current_state
+        current_state = self.device.get_current_state()
         self.logger.debug("Current state: %s" % current_state.state_str)
         if current_state.state_str in self.__missed_states:
             self.__missed_states.remove(current_state.state_str)

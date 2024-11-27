@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from .device import Device
 
 from .utils import md5, deprecated
-from .input_event import SearchEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent, U2StartEvent
+from .input_event import SearchEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent
 
 
 class DeviceState(object):
@@ -232,68 +232,6 @@ class DeviceState(object):
                 property_values.add(property_value)
         return property_values
 
-    def save2dir(self, output_dir=None,event=None):
-        try:
-            if output_dir is None:
-                if self.device.output_dir is None:
-                    return
-                else:
-                    output_dir = os.path.join(self.device.output_dir, "states")
-            if not os.path.exists(output_dir):
-                os.makedirs(output_dir)
-            dest_state_json_path = "%s/state_%s.json" % (output_dir, self.tag)
-            json_dir = os.path.join(self.device.output_dir, "report_screenshot.json")
-
-            # get screenshot according to the system
-            if not self.device.is_harmonyos:
-                if self.device.adapters[self.device.minicap]:
-                    dest_screenshot_path = "%s/screen_%s.jpg" % (output_dir, self.tag)
-                else:
-                    dest_screenshot_path = "%s/screen_%s.png" % (output_dir, self.tag)
-            else:
-                dest_screenshot_path = "%s/screen_%s.jpeg" % (output_dir, self.tag)
-            try:
-                with open(json_dir, 'r') as json_file:
-                    report_screens = json.load(json_file)
-            except FileNotFoundError:
-                report_screens = []
-
-            if self.screenshot_path != dest_screenshot_path:
-
-                state_json_file = open(dest_state_json_path, "w")
-                state_json_file.write(self.to_json())
-                state_json_file.close()
-                import shutil
-
-                shutil.copyfile(self.screenshot_path, dest_screenshot_path)
-                if not self.device.is_harmonyos and self.device.adapters[self.device.minicap]:
-                    report_screen = {
-                        "event": "",
-                        "event_index": str(self.tag),
-                        "screen_shoot": "screen_" + str(self.tag) + ".jpg"
-                    }
-                else:
-                    report_screen = {
-                        "event": "",
-                        "event_index": str(self.tag),
-                        "screen_shoot": "screen_" + str(self.tag) + ".png"
-                    }
-                report_screens.append(report_screen)
-
-            if event is not None:
-                if event is not isinstance(event, U2StartEvent):
-                    self.draw_event(event, dest_screenshot_path)
-                report_screens[-1]["event"] = event.get_event_name()
-
-            with open(json_dir, 'w') as json_file:
-                json.dump(report_screens, json_file, indent=4)
-
-            self.screenshot_path = dest_screenshot_path
-            # from PIL.Image import Image
-            # if isinstance(self.screenshot_path, Image):
-            #     self.screenshot_path.save(dest_screenshot_path)
-        except Exception as e:
-            self.device.logger.warning(e)
     def draw_event(self, event, screenshot_path):
         import cv2
         image = cv2.imread(screenshot_path)

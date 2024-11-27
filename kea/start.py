@@ -36,6 +36,8 @@ def parse_args():
                         help="use harmonyos devices")
     parser.add_argument("-load_config", action="store_true", dest="load_config", default=False,
                         help="load config from config.yml. The setting in config.yml will cover the commandline args.")
+    parser.add_argument("-utg", action="store_true", dest="generate_utg", default=False,
+                        help="Generate UI transition graph")
     options = parser.parse_args()
     return options
 
@@ -132,7 +134,8 @@ def main():
                        keep_app=options.keep_app,
                        is_harmonyos=options.is_harmonyos,
                        grant_perm=options.grant_perm,
-                       is_emulator=options.is_emulator
+                       is_emulator=options.is_emulator,
+                       generate_utg=options.generate_utg
                        )
     if options.files is None:
         raise TypeError("Missing target property files")

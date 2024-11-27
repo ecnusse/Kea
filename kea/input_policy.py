@@ -130,8 +130,6 @@ class InputPolicy(object):
                 if event is not None:
                     self.from_state = self.device.save_screenshot_for_report(event=event)
                     input_manager.add_event(event)
-                    if isinstance(event, RotateDevice) or isinstance(event, IntentEvent):
-                        time.sleep(1)
                     self.to_state = self.device.get_current_state()
                     self.last_event = event
                     if self.generate_utg:

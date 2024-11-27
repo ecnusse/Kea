@@ -460,6 +460,7 @@ class RotateDeviceRightEvent(RotateDevice):
     
     def send(self, device):
         device.rotate_device_right()
+        time.sleep(1)
         return True
     
     def get_event_name(self):
@@ -474,6 +475,7 @@ class RotateDeviceNeutralEvent(RotateDevice):
     
     def send(self, device):
         device.rotate_device_neutral()
+        time.sleep(1)
         return True
     
     def get_event_name(self):
@@ -996,6 +998,7 @@ class IntentEvent(InputEvent):
 
     def send(self, device):
         device.send_intent(intent=self.intent)
+        time.sleep(1)
         return True
 
     def get_event_str(self, state):

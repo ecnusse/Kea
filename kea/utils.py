@@ -103,7 +103,7 @@ def safe_get_dict(view_dict, key, default=None):
     return view_dict[key] if (key in view_dict) else default
 
 
-def generate_report(img_path, html_path, bug_information=None):
+def generate_report(img_path, html_path, bug_information=None, precondition_information=None, total_count = 0, total_time = 0):
     '''Generate report for the test based on the executed events'''
     line_list = []
     
@@ -116,18 +116,17 @@ def generate_report(img_path, html_path, bug_information=None):
     if bug_information is not None:
         for bug in bug_information:
             property_name = "<p>" + bug[2] + "</p>"
-            interaction_end = str(bug[0]) + ".1"
             for report_screen in report_screens:
                 if str(bug[0]) + "." in report_screen['event_index']:
                     interaction_end = report_screen['event_index']
             bug_link = ("<tr><td>" + property_name + "</td>" +
-                        "<td><a href=\"#"+str(bug[0])+"\">"+str(bug[0])+"</a></td>" +
-                        "<td><a href=\"#"+str(bug[0]) + ".1" + "\">"+str(bug[0])+ ".1 ~ " + interaction_end + "</a></td>" +
-                        "<td><a href=\"#"+str(bug[0] + 1) + "\">"+str(bug[0] + 1)+"</a></td></tr>")
+                        "<td><a href=\"#"+str(bug[0][0] + 1)+"\">"+str(bug[0][0] + 1)+"</a></td>" +
+                        "<td><a href=\"#"+str(bug[0][1]) + "\">"+str(bug[0][0] + 1)+ " ~ " + str(bug[0][1]) + "</a></td>" +
+                        "<td><a href=\"#"+str(bug[0][1] + 1) + "\">"+str(bug[0][1] + 1)+"</a></td></tr>")
             bug_link_list.append(bug_link)
-            bug_set.add(str(bug[0]))
-            bug_set.add(str(bug[0] + 0.1))
-            bug_set.add(str(bug[0] + 1))
+            bug_set.add(str(bug[0][0] + 1))
+            bug_set.add(str(bug[0][1]))
+            bug_set.add(str(bug[0][1] + 1))
     f_html = open(
         os.path.join(html_path,  "bug_report.html"), 'w', encoding='utf-8'
     )
@@ -170,15 +169,50 @@ def generate_report(img_path, html_path, bug_information=None):
         new_str = new_str + item
     for item in bug_link_list:
         new_bug_str = new_bug_str + item
+
+    if len(bug_information) > 0:
+        first_bug_infor = ("<div style=\"color:red;\">Time needed to trigger the first bug(seconds): " + str(bug_information[0][1]) + "</div><br>")
+    else:
+        first_bug_infor = ("<div style=\"color:green;\">No bug has been triggered.</div><br>")
+    if len(precondition_information) > 0:
+        first_pre_infor = ("<div>Time needed to satisfy the first precondition(seconds): " + str(precondition_information[0]) + "</div><br>")
+    else:
+        first_pre_infor = ("<div style=\"color:red;\">No precondition has been satisfied.</div><br>")
+
+    total_time_str = "<div>Total time(seconds): " + str(total_time) + "</div>"
+
     new_str = new_str + "   </ul>"
     old_str = "<ul id=\"menu\"></ul>"
     old_bug_str = "<tr><td>bug_link</td><td>bug_link</td><td>bug_link</td><td>bug_link</td></tr>"
+    old_first_str="<div>Time</div>"
+    old_num_str="<div>Num</div>"
+    if bug_information is None or len(bug_information) == 0:
+        new_num_str = "<div style=\"color:green;\">Triggered 0 bugs.</div><br>"
+    else:
+        new_num_str = "<div style=\"color:red;\">Triggered " + str(len(bug_information)) + " bugs.</div><br>"
+
+    if precondition_information is not None:
+        new_num_str = new_num_str + "<div> Satisfied: "+ str(len(precondition_information)) + " preconditions</div><br>" + "<div>Total Events: " + str(total_count) + " </div>"
+    else:
+        new_num_str = new_num_str + "<div>Satisfied 0 preconditions.</div>"
     for line in f_style:
         if bug_information is not None and old_bug_str in line:
             f_html.write(line.replace(old_bug_str, new_bug_str))
             continue
-        f_html.write(line.replace(old_str, new_str))
-        
+        if old_str in line:
+            f_html.write(line.replace(old_str, new_str))
+            continue
+        if old_first_str in line:
+            f_html.write(line.replace(old_first_str, first_bug_infor + first_pre_infor + total_time_str))
+            continue
+        if old_num_str in line:
+            f_html.write(line.replace(old_num_str, new_num_str))
+            continue
+        f_html.write(line)
+
+
+
+
 def get_yml_config()->dict[str,str]:
     if not any(os.path.exists(ymal_path := os.path.join(os.getcwd(), _)) for _ in ["config.yml", "config.yaml"]):
         raise FileNotFoundError("config.yml not found")

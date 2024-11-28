@@ -25,6 +25,7 @@ class Test(Kea):
                   )
     @rule()
     def rule_remove_tag_from_note_shouldnot_affect_content(self):
+        import random
         # get the text from the note's content
         origin_content = d(resourceId="it.feio.android.omninotes.alpha:id/detail_content").info["text"]
         # click to open the tag list

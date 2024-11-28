@@ -9,6 +9,7 @@ from uiautomator2 import Device as Driver
 from typing import Any, Union, TYPE_CHECKING
 if TYPE_CHECKING:
     from kea.droidbot import DroidBot
+import time
 
 class PDL(Driver):
     droidbot = None    
@@ -31,6 +32,7 @@ class PDL(Driver):
     def rotate(self, mode: str):
         self.droidbot.device.save_screenshot_for_report(event_name="rotate", event = self)
         super().set_orientation(mode)
+        time.sleep(1)
 
     def press(self, key: Union[int, str], meta=None):
         self.droidbot.device.save_screenshot_for_report(event_name="press", event = key)
@@ -58,7 +60,7 @@ class Ui(UiObject):
         super().set_text(text)
         
     def child(self, **kwargs):
-        return Ui(self.session, self.selector.clone().child(**kwargs))
+        return Ui(self.session, self.selector.clone().child(**kwargs), self.droidbot)
     
     def sibling(self, **kwargs):
-        return Ui(self.session, self.selector.clone().sibling(**kwargs))
+        return Ui(self.session, self.selector.clone().sibling(**kwargs), self.droidbot)

@@ -5,7 +5,6 @@ import random
 import time
 from typing import Dict, List, TYPE_CHECKING, Optional, Union
 from .testcase import TestCase
-
 from kea.Bundle import Bundle
 from uiautomator2.exceptions import UiObjectNotFoundError
 

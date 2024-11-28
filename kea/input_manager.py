@@ -41,7 +41,8 @@ class InputManager(object):
         master=None,
         replay_output=None,
         kea=None,
-        number_of_events_that_restart_app=100
+        number_of_events_that_restart_app=100,
+        generate_utg=False
     ):
         """
         manage input event sent to the target device
@@ -77,6 +78,7 @@ class InputManager(object):
         
         self.profiling_method = profiling_method
         self.number_of_events_that_restart_app = number_of_events_that_restart_app
+        self.generate_utg = generate_utg
         self.policy = self.get_input_policy(device, app, master)
 
     def get_input_policy(self, device, app, master):
@@ -87,10 +89,11 @@ class InputManager(object):
                 device,
                 app,
                 self.random_input,
-                self.kea
+                self.kea,
+                self.generate_utg
             )
         elif self.policy_name == POLICY_RANDOM:
-            input_policy = RandomPolicy(device, app, random_input=self.random_input, kea=self.kea, number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True)
+            input_policy = RandomPolicy(device, app, random_input=self.random_input, kea=self.kea, number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True, generate_utg = self.generate_utg)
         else:
             self.logger.warning(
                 "No valid input policy specified. Using policy \"none\"."

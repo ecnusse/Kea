@@ -10,5 +10,5 @@ app_path: example/omninotes.apk
 policy: random
 count: 100
 properties: 
-  - example/example.py
-  - example/example_mainpath.py
+  - example/example_property.py
+  - example/example_mainpath_property.py

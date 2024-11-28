@@ -60,7 +60,7 @@ class Ui(UiObject):
         super().set_text(text)
         
     def child(self, **kwargs):
-        return Ui(self.session, self.selector.clone().child(**kwargs))
+        return Ui(self.session, self.selector.clone().child(**kwargs), self.droidbot)
     
     def sibling(self, **kwargs):
-        return Ui(self.session, self.selector.clone().sibling(**kwargs))
+        return Ui(self.session, self.selector.clone().sibling(**kwargs), self.droidbot)

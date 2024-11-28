@@ -7,7 +7,7 @@ setup(
     name="kea",
     packages=find_packages(include=["kea"]),
     # this must be the same as the name above
-    version="1.0.0",
+    version="1.2.0",
     description="A property-based testing tool for mobile apps.",
     author="Yiheng Xiong, XiangChen Shen, Xixiang Liang, Ting Su",
     license="MIT",

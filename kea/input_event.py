@@ -343,28 +343,6 @@ class ManualEvent(InputEvent):
     def get_event_str(self, state):
         return "%s(time=%s)" % (self.__class__.__name__, self.time)
 
-class U2StartEvent(InputEvent):
-    def __init__(self, name=None, event_dict=None):
-        super().__init__()
-        self.event_type = KEY_KeyEvent
-        self.name = name
-        if event_dict is not None:
-            self.__dict__.update(event_dict)
-
-    @staticmethod
-    def get_random_instance(device, app):
-        return None
-
-    def send(self, device):
-        # do nothing
-        pass
-
-    def get_event_str(self, state):
-        return "%s()" % self.__class__.__name__
-
-    def get_event_name(self):
-        return self.name
-
 
 class ExitEvent(InputEvent):
     """
@@ -482,6 +460,7 @@ class RotateDeviceRightEvent(RotateDevice):
     
     def send(self, device):
         device.rotate_device_right()
+        time.sleep(1)
         return True
     
     def get_event_name(self):
@@ -496,6 +475,7 @@ class RotateDeviceNeutralEvent(RotateDevice):
     
     def send(self, device):
         device.rotate_device_neutral()
+        time.sleep(1)
         return True
     
     def get_event_name(self):
@@ -1018,6 +998,7 @@ class IntentEvent(InputEvent):
 
     def send(self, device):
         device.send_intent(intent=self.intent)
+        time.sleep(2)
         return True
 
     def get_event_str(self, state):

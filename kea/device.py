@@ -5,6 +5,7 @@ import re
 import subprocess
 import sys
 import time
+
 import uiautomator2
 import pkg_resources
 from .adapter.uiautomator2_helper import Uiautomator2_Helper
@@ -20,7 +21,7 @@ from .adapter.user_input_monitor import UserInputMonitor
 from .app import App
 from .intent import Intent
 
-from .input_event import SearchEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent
+from .input_event import InputEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent
 
 DEFAULT_NUM = '1234567890'
 DEFAULT_CONTENT = 'Hello world!'
@@ -51,6 +52,7 @@ class Device(object):
         :param is_emulator: boolean, type of device, True for emulator, False for real device
         :return:
         """
+
         self.logger = logging.getLogger(self.__class__.__name__)
         self.app_package_name = app_package_name
         if device_serial is None:
@@ -78,6 +80,9 @@ class Device(object):
         self.humanoid = humanoid
         self.ignore_ad = ignore_ad
         self.is_harmonyos = is_harmonyos
+        self.count = 0
+        self.screenshot_path = None
+        self.current_state = None
 
         self.u2 = uiautomator2.connect(self.serial)
         # disable keyboard
@@ -855,23 +860,48 @@ class Device(object):
         """
         save screenshot for report, save to "all_states" dir
         """
-        local_image_path = self.take_screenshot()
-        self.save_to_all_states_dir(local_image_path, event_name, event)
+
+        self.count += 1
+        self.current_state = self.get_current_state(self.count)
+        self.save_to_all_states_dir(self.screenshot_path, event_name = event_name, event = event)
+        from_state = self.current_state
+        return from_state
+
+    def get_count(self):
+        return self.count
 
     def draw_event(self, event, event_name, screenshot_path):
         import cv2
         image = cv2.imread(screenshot_path)
         if event is not None and screenshot_path is not None:
-            if event_name == "click":
-                cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (0, 0, 255), 5)
-            elif event_name == "long_click":
-                cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (0, 255, 0), 5)
-            elif event_name == "set_text":
-                cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (255, 0, 0), 5)
-            elif event_name == "press":
-                cv2.putText(image,event, (100,300), cv2.FONT_HERSHEY_SIMPLEX, 5,(0, 255, 0), 3, cv2.LINE_AA)
+            if isinstance(event, InputEvent):
+                if isinstance(event, TouchEvent):
+                    cv2.rectangle(image, (int(event.view['bounds'][0][0]), int(event.view['bounds'][0][1])),
+                                  (int(event.view['bounds'][1][0]), int(event.view['bounds'][1][1])), (0, 0, 255), 5)
+                elif isinstance(event, LongTouchEvent):
+                    cv2.rectangle(image, (int(event.view['bounds'][0][0]), int(event.view['bounds'][0][1])),
+                                  (int(event.view['bounds'][1][0]), int(event.view['bounds'][1][1])), (0, 255, 0), 5)
+                elif isinstance(event, SetTextEvent):
+                    cv2.rectangle(image, (int(event.view['bounds'][0][0]), int(event.view['bounds'][0][1])),
+                                  (int(event.view['bounds'][1][0]), int(event.view['bounds'][1][1])), (255, 0, 0), 5)
+                elif isinstance(event, ScrollEvent):
+                    cv2.rectangle(image, (int(event.view['bounds'][0][0]), int(event.view['bounds'][0][1])),
+                                  (int(event.view['bounds'][1][0]), int(event.view['bounds'][1][1])), (255, 255, 0), 5)
+                elif isinstance(event, KeyEvent):
+                    cv2.putText(image, event.name, (100, 300), cv2.FONT_HERSHEY_SIMPLEX, 5, (0, 255, 0), 3, cv2.LINE_AA)
+                else:
+                    return
             else:
-                return
+                if event_name == "click":
+                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (0, 0, 255), 5)
+                elif event_name == "long_click":
+                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (0, 255, 0), 5)
+                elif event_name == "set_text":
+                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (255, 0, 0), 5)
+                elif event_name == "press":
+                    cv2.putText(image,event, (100,300), cv2.FONT_HERSHEY_SIMPLEX, 5,(0, 255, 0), 3, cv2.LINE_AA)
+                else:
+                    return
             try:
                 cv2.imwrite(screenshot_path, image)
             except Exception as e:
@@ -904,60 +934,57 @@ class Device(object):
 
         return local_image_path
 
-    def save_to_all_states_dir(self,local_image_path, event_name, event):
-        # First, iterate through the 'all_states' folder to get the name of the latest PNG file.
-        # Then, move the current screenshot to this folder and rename it to the name of the latest PNG file.
+    def save_to_all_states_dir(self, local_image_path, event, event_name = None):
         import shutil
         all_states_dir = os.path.join(self.output_dir, "all_states")
         if not os.path.exists(all_states_dir):
             os.makedirs(all_states_dir)
-        # Get the latest PNG file in the all_states folder.
-        files = os.listdir(all_states_dir)
-        png_files = [f for f in files if f.endswith(".png")]
-        png_files.sort(key=lambda x: os.path.getmtime(os.path.join(all_states_dir,x)))
-        if len(png_files) > 0:
-            json_dir = os.path.join(self.output_dir, "report_screenshot.json")
+
+        json_dir = os.path.join(self.output_dir, "report_screenshot.json")
+        if not self.is_harmonyos:
+            if self.adapters[self.minicap]:
+                dest_screenshot_path = "%s/screen_%s.jpg" % (all_states_dir, self.count)
+            else:
+                dest_screenshot_path = "%s/screen_%s.png" % (all_states_dir, self.count)
+        else:
+            dest_screenshot_path = "%s/screen_%s.jpeg" % (all_states_dir, self.count)
+
+        if self.current_state is not None:
+            dest_state_json_path = "%s/state_%s.json" % (all_states_dir, self.count)
+            state_json_file = open(dest_state_json_path, "w")
+            state_json_file.write(self.current_state.to_json())
+            state_json_file.close()
+
+        try:
             with open(json_dir, 'r') as json_file:
                 report_screens = json.load(json_file)
-            latest_file = report_screens[-1]
-            event_index = latest_file["event_index"]
-            if "." in event_index:
-                suffix = str(event_index.split(".")[1])
-                event_index = event_index.split(".")[0] + "." + str(int(suffix) + 1)
-            else:
-                event_index = str(event_index+ ".1")
-
-            try:
-                with open(json_dir, 'r') as json_file:
-                    report_screens = json.load(json_file)
-            except FileNotFoundError:
-                report_screens = []
-            report_screen = {
-                "event" : event_name,
-                "event_index" : event_index,
-                "screen_shoot": "screen_" + event_index + ".png"
-            }
-            report_screens.append(report_screen)
-
-            with open(json_dir, 'w') as json_file:
-                json.dump(report_screens, json_file, indent=4)
-            dest_file = "%s/%s" % (all_states_dir, "screen_%s.png" % event_index)
-            shutil.move(local_image_path, dest_file)
-        else:
+        except FileNotFoundError:
             report_screens = []
-            report_screen ={
-                "event" : event_name,
-                "event_index": "1",
-                "screen_shoot": "screen_1.png"
+        if event_name is None:
+            event_name = event.get_event_name()
+
+        if not self.is_harmonyos and self.adapters[self.minicap]:
+            report_screen = {
+                "event": event_name,
+                "event_index": str(self.count),
+                "screen_shoot": "screen_" + str(self.count) + ".jpg"
             }
-            report_screens.append(report_screen)
-            json_dir = os.path.join(self.output_dir, "report_screenshot.json")
-            with open(json_dir, 'w') as json_file:
-                json.dump(report_screens, json_file, indent=4)
-            dest_file = "%s/%s" % (all_states_dir, "screen_1.png")
-            shutil.move(local_image_path, dest_file)
-        self.draw_event(event, event_name, dest_file)
-        
+        else:
+            report_screen = {
+                "event": event_name,
+                "event_index": str(self.count),
+                "screen_shoot": "screen_" + str(self.count) + ".png"
+            }
+
+        report_screens.append(report_screen)
+        with open(json_dir, 'w') as json_file:
+            json.dump(report_screens, json_file, indent=4)
+        if self.current_state is not None and local_image_path != dest_screenshot_path:
+            self.current_state.screenshot_path = dest_screenshot_path
+            shutil.move(local_image_path, dest_screenshot_path)
+
+        self.draw_event(event, event_name, dest_screenshot_path)
+
 
     def get_current_state(self, action_count=None):
         self.logger.debug("getting current device state...")
@@ -968,6 +995,7 @@ class Device(object):
             activity_stack = self.get_current_activity_stack()
             background_services = self.get_service_names()
             screenshot_path = self.take_screenshot()
+            self.screenshot_path = screenshot_path
             self.logger.debug("finish getting current device state...")
             from .device_state import DeviceState
 
@@ -978,7 +1006,7 @@ class Device(object):
                 activity_stack=activity_stack,
                 background_services=background_services,
                 screenshot_path=screenshot_path,
-                tag=action_count,
+                tag=action_count
             )
         except Exception as e:
             self.logger.warning("exception in get_current_state: %s" % e)

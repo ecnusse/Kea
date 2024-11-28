@@ -48,7 +48,8 @@ class DroidBot(object):
         kea=None,
         number_of_events_that_restart_app=100,
         run_initial_rules_after_every_mutation=True,
-        is_harmonyos=False
+        is_harmonyos=False,
+        generate_utg=False
     ):
         """
         initiate droidbot with configurations
@@ -115,7 +116,7 @@ class DroidBot(object):
         self.master = master
         self.number_of_events_that_restart_app = number_of_events_that_restart_app
         self.run_initial_rules_after_every_mutation = run_initial_rules_after_every_mutation
-
+        self.generate_utg = generate_utg
         try:
             self.init_droidbot(is_harmonyos)
         except Exception:
@@ -161,7 +162,8 @@ class DroidBot(object):
                 master=self.master,
                 replay_output=self.replay_output,
                 kea=self.kea,
-                number_of_events_that_restart_app=self.number_of_events_that_restart_app
+                number_of_events_that_restart_app=self.number_of_events_that_restart_app,
+                generate_utg=self.generate_utg
             )
             # self.send_documents()
         # initializer for HarmonyOS system

@@ -151,7 +151,9 @@ class Kea:
         return mainPath.function, mainPath.path
 
     def exec_mainPath(self, executable_script):
-        exec("self."+executable_script)
+        # d for DSL object. Set the d as a local var to make it available in exectuable_scripts
+        d = self.d
+        exec(executable_script)
 
     def get_rules_that_pass_the_preconditions(self) -> List:
         '''Check all rules and return the list of rules that meet the preconditions.'''

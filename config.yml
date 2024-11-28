@@ -6,10 +6,11 @@ system: android
 # system: harmonyOS
 
 device: emulator-5554
-app_path: example/omninotes-5.5.3.apk
+#app_path: example/omninotes-5.5.3.apk
+app_path: example/omninotes.apk
 policy: guided
 count: 100
 properties: 
-#  - example/example_property.py
-#  - example/example_mainpath_property.py
-  - example/advanced_example.py
+  - example/example_property.py
+  - example/example_mainpath_property.py
+#  - example/advanced_example_property.py

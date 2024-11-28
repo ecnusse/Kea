@@ -37,12 +37,20 @@ class Test(Kea):
         d(scrollable=True).scroll.to(text="OK")
         d(text="OK").click()
         d.press("back")
-        d.press("back")
+        d(description="drawer open").click()
+        d(resourceId="it.feio.android.omninotes:id/settings").click()
+        d(resourceId="android:id/title", text="Data").click()
+        d(resourceId="android:id/title", text="Password").click()
+        d(resourceId="it.feio.android.omninotes:id/password_remove").click()
 
     @precondition(lambda self: d(text="Insert password").exists() and d(text="PASSWORD FORGOTTEN").exists())
     @rule()
     def remove_password_in_setting_should_effect(self):
-        
+
+        d(resourceId="it.feio.android.omninotes:id/customViewFrame").click()
+
+        d.send_keys("1", clear=True)
+
         d(text="OK").click()
         
         if d(text="Insert password").exists():

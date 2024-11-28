@@ -3,7 +3,7 @@ import traceback
 import logging
 import random
 import time
-from typing import Dict, List, TYPE_CHECKING
+from typing import Dict, List, TYPE_CHECKING, Optional, Union
 from .testcase import TestCase
 
 from kea.Bundle import Bundle
@@ -11,6 +11,8 @@ from uiautomator2.exceptions import UiObjectNotFoundError
 
 if TYPE_CHECKING:
     from .testcase import Rule, MainPath
+    from .pdl import PDL as Android_PDL
+    from .pdl_hm import PDL as HarmonyOS_PDL
 
 from .utils import INITIALIZER_MARKER, RULE_MARKER, MAINPATH_MARKER
 
@@ -24,6 +26,7 @@ class CHECK_RESULT:
 class Kea:
     _all_testCases: Dict[type, "TestCase"] = {}
     _bundles_: Dict[str, "Bundle"] = {}
+    d: Optional[Union["Android_PDL", "HarmonyOS_PDL"]]
 
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -148,7 +151,7 @@ class Kea:
         return mainPath.function, mainPath.path
 
     def exec_mainPath(self, executable_script):
-        exec(executable_script)
+        exec("self."+executable_script)
 
     def get_rules_that_pass_the_preconditions(self) -> List:
         '''Check all rules and return the list of rules that meet the preconditions.'''

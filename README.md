@@ -4,7 +4,7 @@
 <a href='https://dl.acm.org/doi/10.1145/3691620.3694986'><img src='https://img.shields.io/badge/acm-10.1145-blue.svg'></a> &nbsp;&nbsp;&nbsp;
  <a href='LICENSE'><img src='https://img.shields.io/badge/License-MIT-orange'></a> &nbsp;&nbsp;&nbsp;
  <a><img src='https://img.shields.io/badge/python-3.9, 3.10, 3.11, 3.12, 3.13-blue'></a> &nbsp;&nbsp;&nbsp;
- <a href='https://kea-doc.readthedocs.io/en/latest/'><img src='https://img.shields.io/badge/doc-0.1.0-blue'></a>
+ <a href='https://kea-doc.readthedocs.io/en/latest/'><img src='https://img.shields.io/badge/doc-1.0.0-blue'></a>
 </div>
 
 <div align="center">

@@ -3,7 +3,7 @@
 
 <a href='https://dl.acm.org/doi/10.1145/3691620.3694986'><img src='https://img.shields.io/badge/acm-10.1145-blue.svg'></a> &nbsp;&nbsp;&nbsp;
  <a href='LICENSE'><img src='https://img.shields.io/badge/License-MIT-orange'></a> &nbsp;&nbsp;&nbsp;
- <a href='LICENSE'><img src='https://img.shields.io/badge/python-3.9,3.10,3.11,3.12,3.13-blue'></a>
+ <a href='LICENSE'><img src='https://img.shields.io/badge/python-3.9, 3.10, 3.11, 3.12, 3.13-blue'></a>
 </div>
 
 <div align="center">

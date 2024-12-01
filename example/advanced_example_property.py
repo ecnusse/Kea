@@ -69,6 +69,3 @@ class Test(Kea):
         d.press("back")
 
         assert not d(resourceId="it.feio.android.omninotes:id/lockedIcon").exists()
-
-
-

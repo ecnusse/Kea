@@ -2,6 +2,24 @@
 # set up basic requirements for droidbot
 from setuptools import setup, find_packages, findall
 import os
+import sys
+
+
+install_requires = ["networkx",
+        "Pillow",
+        "uiautomator2==3.2.2",
+        "androguard==4.0.0",
+        "attrs",
+        "opencv-python",
+        "coloredlogs",
+        "hypothesis",
+        "hmdriver2",
+        "pyyaml",
+    ]
+
+if sys.version_info >= (3, 12):
+    install_requires.append("setuptools")
+
 
 setup(
     name="kea",
@@ -40,16 +58,5 @@ setup(
         "kea": [os.path.relpath(x, "kea") for x in findall("kea/resources/")]
     },
     # androidviewclient doesnot support pip install, thus you should install it with easy_install
-    install_requires=[
-        "networkx",
-        "Pillow",
-        "uiautomator2==3.2.2",
-        "androguard==4.0.0",
-        "attrs",
-        "opencv-python",
-        "coloredlogs",
-        "hypothesis",
-        "hmdriver2",
-        "pyyaml"
-    ],
+    install_requires=install_requires
 )

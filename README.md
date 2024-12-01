@@ -1,8 +1,10 @@
 <div align="center">
 <h1>Kea</h1>
 
-<a href='https://dl.acm.org/doi/10.1145/3691620.3694986'><img src='https://img.shields.io/badge/acm-10.1145-blue.svg'></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- <a href='LICENSE'><img src='https://img.shields.io/badge/License-MIT-blue'></a>
+<a href='https://dl.acm.org/doi/10.1145/3691620.3694986'><img src='https://img.shields.io/badge/acm-10.1145-blue.svg'></a> &nbsp;&nbsp;&nbsp;
+ <a href='LICENSE'><img src='https://img.shields.io/badge/License-MIT-orange'></a> &nbsp;&nbsp;&nbsp;
+ <a><img src='https://img.shields.io/badge/python-3.9, 3.10, 3.11, 3.12, 3.13-blue'></a> &nbsp;&nbsp;&nbsp;
+ <a href='https://kea-doc.readthedocs.io/en/latest/'><img src='https://img.shields.io/badge/doc-1.0.0-blue'></a>
 </div>
 
 <div align="center">
@@ -14,9 +16,9 @@
 </p>
 
 Kea is a general and practical testing tool based on the idea of [property-based testing](https://en.wikipedia.org/wiki/Software_testing#Property_testing) for finding functional bugs in mobile (GUI) apps.
-Kea currently supports Android and is planned to support HarmonyOS soon.
+Kea currently supports Android and HarmonyOS.
 
-📘 [Kea's Paper@ASE 2024](https://xyiheng.github.io//files/Property_Based_Testing_for_Android_Apps.pdf)
+📘 **[Kea's Paper@ASE 2024](https://xyiheng.github.io//files/Property_Based_Testing_for_Android_Apps.pdf)**
 
 > "General and Practical Property-based Testing for Android Apps". 
 > Yiheng Xiong, Ting Su, Jue Wang, Jingling Sun, Geguang Pu, Zhendong Su.
@@ -24,7 +26,7 @@ Kea currently supports Android and is planned to support HarmonyOS soon.
 
 You can find more about our work on testing/analyzing mobile apps at this [website](https://mobile-app-analysis.github.io).
 
-📘 [User manual & Documentation](https://kea-doc.readthedocs.io/en/latest/)
+📘 **[User manual & Documentation](https://kea-doc.readthedocs.io/en/latest/)**
 
 
 The apk file used in our evaluation can be downloaded from [here](https://drive.google.com/drive/folders/19Ysgnnwr1HDvrXBW7t1uYB_T7QdwkZKC?usp=sharing)

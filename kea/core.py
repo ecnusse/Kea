@@ -45,7 +45,7 @@ class Setting:
     generate_utg:bool=False
 
 OUTPUT_DIR = "output"
-d:Optional[Union["Android_PDL", "HarmonyOS_PDL"]] | None = None
+d:Union["Android_PDL", "HarmonyOS_PDL", None] = None
 
 def start_kea(kea:"Kea", settings:"Setting" = None):
     # if settings is None:

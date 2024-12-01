@@ -35,8 +35,10 @@ The apk file used in our evaluation can be downloaded from [here](https://drive.
 
 Requirements:
 
-- Python 3.11+
-- Android SDK
+- Python 3.9+
+- `adb` cmd avaliable (Android SDK)
+- An emulator or devices connected to your PC
+
 
 You can input following commands to grep and install the required packages.
 
@@ -45,22 +47,6 @@ git clone https://github.com/ecnusse/Kea.git
 cd Kea
 pip install -e .
 ```
-
->**Tips:**   
-> Before you run the commands to create an emulator, you should pay attention to the hardware virtualization:  
-> - For `Windows`  
->   You can run our Kea on Windows directly.  
->   You should make sure `Intel VT-x` or `AMD-V` is enabled in `BIOS/UEFI`.  
->   If your Windows supports `Hyper-V` and you have enabled this feature before, you may need to disable `Hyper-V` because `Hyper-V` will conflict with other virtualization software.
-> - For `Mac OS`  
->   The hardware virtualization function is already built-in and enabled, so no additional configuration is required by users.
-> - For `Linux`  
->   You should make sure `Intel VT-x` or `AMD-V` is enabled in `BIOS/UEFI`.  
-> 
-> If you are willing to use virtual machine to run our Kea, This still works. You just need to enable your vm can use hardware virtualization.  
-> Take `Windows` as an example, if you like to use Linux system for developing instead of using windows directly. we recommend you to use [WSL2](https://ubuntu.com/desktop/wsl) to run Kea. This may can help you run Kea more fluently than [Vmware](https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion) and [VirtualBox](https://www.virtualbox.org/).  
->> Using [WSL2](https://ubuntu.com/desktop/wsl) to run emulator need you to enable `Hyper-V`, here we recommend you to use Windows 11.  
-
 
 You can create an emulator before running Kea. See [this link](https://stackoverflow.com/questions/43275238/how-to-set-system-images-path-when-creating-an-android-avd) for how to create avd using [avdmanager](https://developer.android.com/studio/command-line/avdmanager).
 The following sample command will help you create an emulator, which will help you start using Kea quickly：

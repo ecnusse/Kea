@@ -171,15 +171,15 @@ def generate_report(img_path, html_path, bug_information=None, precondition_info
         new_bug_str = new_bug_str + item
 
     if len(bug_information) > 0:
-        first_bug_infor = ("<div style=\"color:red;\">Time needed to trigger the first bug(seconds): " + str(bug_information[0][1]) + "</div><br>")
+        first_bug_infor = ("<div style=\"color:red;\">Time needed to trigger the first bug: " + str(bug_information[0][1]) + " seconds</div><br>")
     else:
         first_bug_infor = ("<div style=\"color:green;\">No bug has been triggered.</div><br>")
     if len(precondition_information) > 0:
-        first_pre_infor = ("<div>Time needed to satisfy the first precondition(seconds): " + str(precondition_information[0]) + "</div><br>")
+        first_pre_infor = ("<div>Time needed to satisfy the first precondition: " + str(precondition_information[0]) + " seconds</div><br>")
     else:
         first_pre_infor = ("<div style=\"color:red;\">No precondition has been satisfied.</div><br>")
 
-    total_time_str = "<div>Total time(seconds): " + str(total_time) + "</div>"
+    total_time_str = "<div>Total time: " + str(total_time) + " seconds</div>"
 
     new_str = new_str + "   </ul>"
     old_str = "<ul id=\"menu\"></ul>"

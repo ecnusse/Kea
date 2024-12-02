@@ -2,15 +2,20 @@
 env: Linux
 
 # system: the target harmonyOS
-system: android
-# system: harmonyOS
+# system: android
+system: harmonyOS
 
-device: emulator-5554
-#app_path: example/omninotes-5.5.3.apk
-app_path: example/omninotes.apk
-policy: guided
+# device: emulator-5554
+# app_path: example/omninotes.apk
+# policy: random
+# count: 100
+# properties: 
+#   - example/example.py
+#   - example/example_mainpath.py
+
+device: 127.0.0.1:5555
+app_path: example/orangeMall.hap
+policy: random
 count: 100
 properties: 
-  - example/example_property.py
-  - example/example_mainpath_property.py
-#  - example/advanced_example_property.py
+  - example/example_hm_property.py

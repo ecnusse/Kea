@@ -40,7 +40,7 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/amaze/amaze-3.4.2.apk",
         device_serial="emulator-5554",
-        output_dir="../output/amaze/1834/mutate/1",
+        output_dir="../output/amaze/1834/guided/1",
         policy_name="random"
     )
     start_kea(t,setting)

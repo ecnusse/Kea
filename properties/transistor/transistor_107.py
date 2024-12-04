@@ -41,8 +41,8 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/transistor/2.1.5.apk",
         device_serial="emulator-5554",
-        output_dir="../output/transistor/107/mutate",
-        policy_name="mutate",
+        output_dir="../output/transistor/107/guided",
+        policy_name="guided",
         
         number_of_events_that_restart_app = 100
     )

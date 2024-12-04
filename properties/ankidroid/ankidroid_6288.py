@@ -54,8 +54,8 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/ankidroid/2.11alpha7.apk",
         device_serial="emulator-5554",
-        output_dir="../output/ankidroid/6288/mutate",
-        policy_name="mutate",
+        output_dir="../output/ankidroid/6288/guided",
+        policy_name="guided",
         
         number_of_events_that_restart_app = 100
     )

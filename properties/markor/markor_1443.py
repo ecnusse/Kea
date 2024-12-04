@@ -47,8 +47,8 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/markor/2.8.0.apk",
         device_serial="emulator-5554",
-        output_dir="../output/markor/1443/mutate",
-        policy_name="mutate"
+        output_dir="../output/markor/1443/guided",
+        policy_name="guided"
     )
     start_kea(t,setting)
     

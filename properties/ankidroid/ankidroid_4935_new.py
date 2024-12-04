@@ -35,7 +35,7 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/ankidroid/2.18alpha6.apk",
         device_serial="emulator-5554",
-        output_dir="output/ankidroid/4935/mutate_new/1",
+        output_dir="output/ankidroid/4935/guided_new/1",
         policy_name="random"
     )
     start_kea(t,setting)

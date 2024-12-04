@@ -31,8 +31,8 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/simpletask/8.2.0.apk",
         device_serial="emulator-5554",
-        output_dir="../output/simpletask/538/mutate",
-        policy_name="mutate"
+        output_dir="../output/simpletask/538/guided",
+        policy_name="guided"
     )
     start_kea(t,setting)
     

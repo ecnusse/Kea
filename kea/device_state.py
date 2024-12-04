@@ -805,3 +805,6 @@ class DeviceState(object):
             ):
                 return view
         return None
+
+    def get_state_screen(self): 
+        return self.screenshot_path

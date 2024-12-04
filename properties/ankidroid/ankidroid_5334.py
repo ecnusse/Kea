@@ -27,7 +27,7 @@ class Test(Kea):
     )
     @rule()
     def text_should_display_after_type_answer(self):
-        typed_text = st.text(alphabet=string.ascii_letters,min_size=1, max_size=6).example()
+        typed_text = st.text(alphabet=string.printable,min_size=1, max_size=6).example()
         d(resourceId="com.ichi2.anki:id/answer_field").set_text(typed_text)
         print("typed_text: " + typed_text)
         d(resourceId="com.ichi2.anki:id/answer_options_layout").click()

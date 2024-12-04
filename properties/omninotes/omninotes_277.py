@@ -71,8 +71,8 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/omninotes/5.2.10.apk",
         device_serial="emulator-5554",
-        output_dir="../output/omninotes/277/mutate",
-        policy_name="mutate",
+        output_dir="../output/omninotes/277/guided",
+        policy_name="guided",
         
         number_of_events_that_restart_app = 100
     )

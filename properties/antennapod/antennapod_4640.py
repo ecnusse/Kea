@@ -43,8 +43,8 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/antennapod/1.7.1.apk",
         device_serial="emulator-5554",
-        output_dir="../output/antennapod/4640/mutate",
-        policy_name="mutate",
+        output_dir="../output/antennapod/4640/guided",
+        policy_name="guided",
         
         number_of_events_that_restart_app = 100
     )

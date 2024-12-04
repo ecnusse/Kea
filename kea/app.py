@@ -1,15 +1,19 @@
 import logging
 import os
 import hashlib
+import subprocess
 from .intent import Intent
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .core import Setting
 
 class App(object):
     """
     this class describes an app
     """
 
-    def __init__(self, app_path, output_dir=None):
+    def __init__(self, app_path, output_dir=None, settings:"Setting" = None):
         """
         create an App instance
         :param app_path: local file path of app
@@ -18,12 +22,21 @@ class App(object):
         assert app_path is not None
         self.logger = logging.getLogger(self.__class__.__name__)
 
-        self.app_path = app_path
-
         self.output_dir = output_dir
         if output_dir is not None:
             if not os.path.isdir(output_dir):
                 os.makedirs(output_dir)
+
+        self.settings = settings
+
+        if not self.settings.is_package:
+            self._apk_init(app_path)
+        else:    
+            self._package_init(package_name=app_path, settings=self.settings)
+
+    def _apk_init(self, app_path):
+        self.app_path = app_path
+
         from loguru import logger
 
         # Disable the logging of the androguard module.
@@ -38,8 +51,21 @@ class App(object):
         #Get the list of activities from the self.apk object.
         self.activities = self.apk.get_activities()
         self.possible_broadcasts = self.get_possible_broadcasts()
-        self.dumpsys_main_activity = None
-        self.hashes = self.get_hashes()
+        self.hashes = self.get_hashes()    
+
+    def _package_init(self, package_name, settings:"Setting"):
+        self.app_path = None
+        self.apk = None
+        self.package_name = package_name
+        #Used to get the main activity of the APK (i.e., the first activity that launches when the application starts).
+        self.main_activity = self.dumpsys_main_activity
+        #Get the list of permissions for the application from the self.apk object.
+        # self.permissions = self.apk.get_permissions()
+        #Get the list of activities from the self.apk object.
+        # self.activities = self.apk.get_activities()
+        # self.possible_broadcasts = self.get_possible_broadcasts()
+        # self.dumpsys_main_activity = None
+        # self.hashes = self.get_hashes()    
 
     def get_package_name(self):
         """
@@ -58,6 +84,23 @@ class App(object):
         else:
             self.logger.warning("Cannot get main activity from manifest. Using dumpsys result instead.")
             return self.dumpsys_main_activity
+    
+    @property
+    def dumpsys_main_activity(self):
+        cmd = ["adb", "-s", self.settings.device_serial, "shell", "dumpsys", "package", self.package_name]
+
+        import re
+        try:
+            output = subprocess.check_output(cmd, text=True)
+            
+            match = re.search(r'android.intent.action.MAIN:\s+.*?/(.*?)\s+filter', output, re.DOTALL)
+            if match:
+                return match.group(1)
+            else:
+                return None
+        except subprocess.CalledProcessError as e:
+            return f"Error when dumpsys_main_activity: {e.output}"
+
 
     def get_start_intent(self):
         """

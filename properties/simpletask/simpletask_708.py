@@ -40,8 +40,8 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/simpletask/8.2.0.apk",
         device_serial="emulator-5554",
-        output_dir="../output/simpletask/708/mutate",
-        policy_name="mutate",
+        output_dir="../output/simpletask/708/guided",
+        policy_name="guided",
         
         number_of_events_that_restart_app = 100
     )

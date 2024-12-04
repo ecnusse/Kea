@@ -5,6 +5,7 @@ import os
 import logging
 import random
 import copy
+import re
 import time
 
 
@@ -20,7 +21,8 @@ from .input_event import (
     RotateDeviceNeutralEvent,
     RotateDeviceRightEvent,
     KillAppEvent,
-    KillAndRestartAppEvent
+    KillAndRestartAppEvent,
+    SetTextEvent
 )
 from .utg import UTG
 from kea import utils
@@ -41,6 +43,8 @@ MAX_NUM_STEPS_OUTSIDE_KILL = 10
 # Max number of replay tries
 MAX_REPLY_TRIES = 5
 ACTION_COUNT_TO_START = 2
+# Max number of query llm
+MAX_NUM_QUERY_LLM = 10
 
 # Some input event flags
 EVENT_FLAG_STARTED = "+started"
@@ -54,6 +58,7 @@ EVENT_FLAG_TOUCH = "+touch"
 POLICY_GUIDED = "guided"
 POLICY_RANDOM = "random"
 POLICY_NONE = "none"
+POLICY_LLM = "llm"
 
 @dataclass
 class RULE_STATE:
@@ -805,3 +810,270 @@ class RandomPolicy(KeaInputPolicy):
 
         self.__event_trace += EVENT_FLAG_EXPLORE
         return random.choice(possible_events)
+    
+class LLMPolicy(RandomPolicy):
+    '''
+    use LLM to generate input when detected ui tarpit
+    '''
+    def __init__(self, device, app, random_input=True, kea=None, restart_app_after_check_property=False,
+                 number_of_events_that_restart_app=100, clear_and_restart_app_data_after_100_events=False, generate_utg=False):
+        super(LLMPolicy, self).__init__(
+            device, app, random_input, kea
+        )
+        self.logger = logging.getLogger(self.__class__.__name__)
+        self.__action_history=[]
+        self.__all_action_history=set()
+        self.__activity_history = set()
+
+    def start(self, input_manager:"InputManager"):
+        """
+        start producing events
+        :param input_manager: instance of InputManager
+        """
+        self.action_count = 0
+        self.input_manager = input_manager
+        while (
+                input_manager.enabled
+                and self.action_count
+                < input_manager.event_count
+        ):
+            try:
+                if hasattr(self.device, "u2"):
+                    self.device.u2.set_fastinput_ime(True)
+
+                self.logger.info("Exploration action count: %d" % self.action_count)
+
+                if self.action_count == 0 and self.master is None:
+                    #If the application is running, close the application.
+                    event = KillAppEvent(app=self.app)
+                elif self.action_count == 1 and self.master is None:
+                    event = IntentEvent(self.app.get_start_intent())
+                else:
+                    if input_manager.sim_calculator.detected_ui_tarpit(input_manager):
+                        # If detected a ui tarpit
+                        if input_manager.sim_calculator.sim_count > MAX_NUM_QUERY_LLM:
+                            # If query LLM too much
+                            self.logger.info(f'query too much. go back!')
+                            event = KeyEvent(name="BACK")
+                            self.clear_action_history()
+                            input_manager.sim_calculator.sim_count = 0 
+                        else:
+                            # stop random policy, start query LLM
+                            event = self.generate_LLM_event()
+                    else:
+                        event = self.generate_event()
+
+                if event is not None:
+                    self.from_state = self.device.save_screenshot_for_report(event=event)
+                    input_manager.add_event(event)
+                    self.to_state = self.device.get_current_state()
+                    self.last_event = event
+                    if self.generate_utg:
+                        self.update_utg()
+
+                bug_report_path = os.path.join(self.device.output_dir, "all_states")
+                utils.generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.get_count(), self.time_recoder.get_time_duration())
+            except KeyboardInterrupt:
+                break
+            except InputInterruptedException as e:
+                self.logger.info("stop sending events: %s" % e)
+                self.logger.info("action count: %d" % self.action_count)
+                break
+
+            except RuntimeError as e:
+                self.logger.info("RuntimeError: %s, stop sending events" % e)
+                break
+            except Exception as e:
+                self.logger.warning("exception during sending events: %s" % e)
+                import traceback
+
+                traceback.print_exc()
+            self.action_count += 1
+        self.tear_down()
+
+    def generate_LLM_event(self):
+        """
+        generate an LLM event
+        @return:
+        """
+
+        if self.action_count == ACTION_COUNT_TO_START or isinstance(self.last_event, ReInstallAppEvent):
+            self.run_initial_rules()
+        current_state = self.device.get_current_state()
+        if current_state is None:
+            import time
+            time.sleep(5)
+            return KeyEvent(name="BACK")
+
+
+        if self.action_count % self.number_of_events_that_restart_app == 0 and self.clear_and_restart_app_data_after_100_events:
+            self.logger.info("clear and restart app after %s events" % self.number_of_events_that_restart_app)
+            return ReInstallAppEvent(self.app)
+        rules_to_check = self.kea.get_rules_that_pass_the_preconditions()
+
+        if len(rules_to_check) > 0:
+            t = self.time_recoder.get_time_duration()
+            self.time_needed_to_satisfy_precondition.append(t)
+            self.logger.debug("has rule that matches the precondition and the time duration is " + self.time_recoder.get_time_duration())
+            if random.random() < 0.5:
+                self.time_to_check_rule.append(t)
+                self.logger.info("Check property")
+                self.check_rule_with_precondition()
+                if self.restart_app_after_check_property:
+                    self.logger.debug("restart app after check property")
+                    return KillAppEvent(app=self.app)
+                return None
+            else:
+                self.logger.info("Found exectuable property in current state. No property will be checked now according to the random checking policy.")
+        event = None
+
+        if event is None:
+            event = self.generate_event_based_on_utg()
+
+        if isinstance(event, RotateDevice):
+            if self.last_rotate_events == KEY_RotateDeviceNeutralEvent:
+                self.last_rotate_events = KEY_RotateDeviceRightEvent
+                event = RotateDeviceRightEvent()
+            else:
+                self.last_rotate_events = KEY_RotateDeviceNeutralEvent
+                event = RotateDeviceNeutralEvent()
+
+        return event
+
+    def generate_event_based_on_utg(self):
+        """
+        generate an event based on current UTG
+        @return: InputEvent
+        """
+        current_state = self.device.get_current_state()
+        self.logger.info("Current state: %s" % current_state.state_str)
+        if current_state.state_str in self.__missed_states:
+            self.__missed_states.remove(current_state.state_str)
+
+        if current_state.get_app_activity_depth(self.app) < 0:
+            # If the app is not in the activity stack
+            start_app_intent = self.app.get_start_intent()
+
+            # It seems the app stucks at some state, has been
+            # 1) force stopped (START, STOP)
+            #    just start the app again by increasing self.__num_restarts
+            # 2) started at least once and cannot be started (START)
+            #    pass to let viewclient deal with this case
+            # 3) nothing
+            #    a normal start. clear self.__num_restarts.
+
+            if self.__event_trace.endswith(EVENT_FLAG_START_APP + EVENT_FLAG_STOP_APP) \
+                    or self.__event_trace.endswith(EVENT_FLAG_START_APP):
+                self.__num_restarts += 1
+                self.logger.info("The app had been restarted %d times.", self.__num_restarts)
+            else:
+                self.__num_restarts = 0
+
+            # pass (START) through
+            if not self.__event_trace.endswith(EVENT_FLAG_START_APP):
+                if self.__num_restarts > MAX_NUM_RESTARTS:
+                    # If the app had been restarted too many times, enter random mode
+                    msg = "The app had been restarted too many times. Entering random mode."
+                    self.logger.info(msg)
+                    self.__random_explore = True
+                else:
+                    # Start the app
+                    self.__event_trace += EVENT_FLAG_START_APP
+                    self.logger.info("Trying to start the app...")
+                    self.__action_history = [f'- start the app {self.app.app_name}']
+                    return IntentEvent(intent=start_app_intent)
+
+        elif current_state.get_app_activity_depth(self.app) > 0:
+            # If the app is in activity stack but is not in foreground
+            self.__num_steps_outside += 1
+
+            if self.__num_steps_outside > MAX_NUM_STEPS_OUTSIDE:
+                # If the app has not been in foreground for too long, try to go back
+                if self.__num_steps_outside > MAX_NUM_STEPS_OUTSIDE_KILL:
+                    stop_app_intent = self.app.get_stop_intent()
+                    go_back_event = IntentEvent(stop_app_intent)
+                else:
+                    go_back_event = KeyEvent(name="BACK")
+                self.__event_trace += EVENT_FLAG_NAVIGATE
+                self.logger.info("Going back to the app...")
+                self.__action_history.append('- go back')
+                return go_back_event
+        else:
+            # If the app is in foreground
+            self.__num_steps_outside = 0
+
+        action, candidate_actions = self._get_action_with_LLM(current_state, self.__action_history,self.__activity_history,)
+        if action is not None:
+            self.__action_history.append(current_state.get_action_desc(action))
+            self.__all_action_history.add(current_state.get_action_desc(action))
+            return action
+
+        if self.__random_explore:
+            self.logger.info("Trying random event...")
+            action = random.choice(candidate_actions)
+            self.__action_history.append(current_state.get_action_desc(action))
+            self.__all_action_history.add(current_state.get_action_desc(action))
+            return action
+
+        # If couldn't find a exploration target, stop the app
+        stop_app_intent = self.app.get_stop_intent()
+        self.logger.info("Cannot find an exploration target. Trying to restart app...")
+        self.__action_history.append('- stop the app')
+        self.__all_action_history.add('- stop the app')
+        self.__event_trace += EVENT_FLAG_STOP_APP
+        return IntentEvent(intent=stop_app_intent)
+        
+    def _query_llm(self, prompt, model_name='gpt-3.5-turbo'):
+        # TODO: replace with your own LLM
+        from openai import OpenAI
+        gpt_url = 'https://api.chatanywhere.tech/v1' 
+        gpt_key = 'sk-G3dXD5UnEjiv1OVxwc5ZnRSFNccp2WiGOp2tJDjLM7WeDW8D' 
+        client = OpenAI(
+            base_url=gpt_url,
+            api_key=gpt_key
+        )
+
+        messages=[{"role": "user", "content": prompt}]
+        completion = client.chat.completions.create(
+            messages=messages,
+            model=model_name,
+            timeout=30
+        )
+        res = completion.choices[0].message.content
+        return res
+
+    def _get_action_with_LLM(self, current_state, action_history,activity_history):
+        activity = current_state.foreground_activity
+        task_prompt = self.task +f"Currently, the App is stuck on the {activity} page, unable to explore more features. You task is to select an action based on the current GUI Infomation to perform next and help the app escape the UI tarpit."
+        visisted_page_prompt = f'I have already visited the following activities: \n' + '\n'.join(activity_history)
+        # all_history_prompt = f'I have already completed the following actions to explore the app: \n' + '\n'.join(all_action_history)
+        history_prompt = f'I have already completed the following steps to leave {activity} page but failed: \n ' + ';\n '.join(action_history)
+        state_prompt, candidate_actions = current_state.get_described_actions()
+        question = 'Which action should I choose next? Just return the action id and nothing else.\nIf no more action is needed, return -1.'
+        prompt = f'{task_prompt}\n{state_prompt}\n{visisted_page_prompt}\n{history_prompt}\n{question}'
+        print(prompt)
+        response = self._query_llm(prompt)
+        print(f'response: {response}')
+
+        match = re.search(r'\d+', response)
+        if not match:
+            return None, candidate_actions
+        idx = int(match.group(0))
+        selected_action = candidate_actions[idx]
+        if isinstance(selected_action, SetTextEvent):
+            view_text = current_state.get_view_desc(selected_action.view)
+            question = f'What text should I enter to the {view_text}? Just return the text and nothing else.'
+            prompt = f'{task_prompt}\n{state_prompt}\n{question}'
+            print(prompt)
+            response = self._query_llm(prompt)
+            print(f'response: {response}')
+            selected_action.text = response.replace('"', '')
+            if len(selected_action.text) > 30:  # heuristically disable long text input
+                selected_action.text = ''
+        return selected_action, candidate_actions
+
+    def get_last_state(self):
+        return self.from_state
+
+    def clear_action_history(self):
+        self.__action_history = []

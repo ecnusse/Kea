@@ -731,9 +731,9 @@ class Device(object):
             package_info_file = open(package_info_file_name, "w")
             package_info_file.writelines(dumpsys_lines)
             package_info_file.close()
-        app.dumpsys_main_activity = self.__parse_main_activity_from_dumpsys_lines(
-            dumpsys_lines
-        )
+        # app.dumpsys_main_activity = self.__parse_main_activity_from_dumpsys_lines(
+        #     dumpsys_lines
+        # )
 
         self.logger.info("App installed: %s" % package_name)
         self.logger.info("Main activity: %s" % app.get_main_activity())
@@ -797,6 +797,9 @@ class Device(object):
         """
         if isinstance(app, App):
             package_name = app.get_package_name()
+            # Don't uninstall the app if launch with package name
+            if app.settings.is_package:
+                return
         else:
             package_name = app
         if package_name in self.adb.get_installed_apps():

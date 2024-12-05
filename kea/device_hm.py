@@ -7,7 +7,7 @@ import sys
 import time
 from typing import IO
 import typing
-from hmdriver2.driver import Driver
+
 # if typing.TYPE_CHECKING:
 # from .input_event import InputEvent
 from .input_event import InputEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent
@@ -74,6 +74,7 @@ class DeviceHM(Device):
         self.hdc = HDC(device=self)
         self.hilog = Hilog(device=self)
         # self.u2 = Driver(serial=self.serial)
+
 
         self.logger.info("You're runing droidbot on HarmonyOS")
         self.adapters = {

@@ -33,7 +33,7 @@ class App(object):
         if not self.settings.is_package:
             self._apk_init(app_path)
         else:    
-            self._package_init(package_name=app_path, settings=self.settings)
+            self._package_init(package_name=app_path)
 
     def _apk_init(self, app_path):
         self.app_path = app_path
@@ -54,7 +54,7 @@ class App(object):
         self.possible_broadcasts = self.get_possible_broadcasts()
         self.hashes = self.get_hashes()    
 
-    def _package_init(self, package_name, settings:"Setting"):
+    def _package_init(self, package_name):
         self.app_path = None
         self.apk = None
         self.package_name = package_name

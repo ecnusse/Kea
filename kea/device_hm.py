@@ -8,8 +8,8 @@ import time
 from typing import IO
 import typing
 
-# if typing.TYPE_CHECKING:
-# from .input_event import InputEvent
+if typing.TYPE_CHECKING:
+    from .core import Setting
 from .input_event import InputEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent
 
 from .device import Device
@@ -29,7 +29,8 @@ class DeviceHM(Device):
 
     def __init__(self, device_serial=None, is_emulator=False, output_dir=None,
                  cv_mode=False, grant_perm=False, telnet_auth_token=None,
-                 enable_accessibility_hard=False, humanoid=None, ignore_ad=False, is_harmonyos=True, save_log=False):
+                 enable_accessibility_hard=False, humanoid=None, ignore_ad=False, 
+                 is_harmonyos=True, save_log=False, settings:"Setting"=None):
         """
         initialize a device connection
         :param device_serial: serial number of target device
@@ -56,7 +57,7 @@ class DeviceHM(Device):
         self.ignore_ad = ignore_ad
 
         # basic device information
-        self.settings = {}
+        self.settings = settings
         self.display_info = None
         self._model_number = None
         self._device_name = None
@@ -464,6 +465,8 @@ class DeviceHM(Device):
         """
         if isinstance(app, AppHM):
             package_name = app.get_package_name()
+            if self.settings.is_package:
+                return
         else:
             package_name = app
         if package_name in self.hdc.get_installed_apps():

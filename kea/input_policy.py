@@ -824,6 +824,9 @@ class LLMPolicy(RandomPolicy):
         self.__action_history=[]
         self.__all_action_history=set()
         self.__activity_history = set()
+        self.from_state = None
+        self.__missed_states = set()
+        self.task = "You are an expert in App GUI testing. Please guide the testing tool to enhance the coverage of functional scenarios in testing the App based on your extensive App testing experience. "
 
     def start(self, input_manager:"InputManager"):
         """
@@ -859,7 +862,7 @@ class LLMPolicy(RandomPolicy):
                             input_manager.sim_calculator.sim_count = 0 
                         else:
                             # stop random policy, start query LLM
-                            event = self.generate_LLM_event()
+                            event = self.generate_llm_event()
                     else:
                         event = self.generate_event()
 
@@ -891,7 +894,7 @@ class LLMPolicy(RandomPolicy):
             self.action_count += 1
         self.tear_down()
 
-    def generate_LLM_event(self):
+    def generate_llm_event(self):
         """
         generate an LLM event
         @return:
@@ -928,7 +931,7 @@ class LLMPolicy(RandomPolicy):
         event = None
 
         if event is None:
-            event = self.generate_event_based_on_utg()
+            event = self.generate_llm_event_based_on_utg()
 
         if isinstance(event, RotateDevice):
             if self.last_rotate_events == KEY_RotateDeviceNeutralEvent:
@@ -940,7 +943,7 @@ class LLMPolicy(RandomPolicy):
 
         return event
 
-    def generate_event_based_on_utg(self):
+    def generate_llm_event_based_on_utg(self):
         """
         generate an event based on current UTG
         @return: InputEvent
@@ -1026,8 +1029,8 @@ class LLMPolicy(RandomPolicy):
     def _query_llm(self, prompt, model_name='gpt-3.5-turbo'):
         # TODO: replace with your own LLM
         from openai import OpenAI
-        gpt_url = 'https://api.chatanywhere.tech/v1' 
-        gpt_key = 'sk-G3dXD5UnEjiv1OVxwc5ZnRSFNccp2WiGOp2tJDjLM7WeDW8D' 
+        gpt_url = '' 
+        gpt_key = '' 
         client = OpenAI(
             base_url=gpt_url,
             api_key=gpt_key

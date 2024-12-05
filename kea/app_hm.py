@@ -6,6 +6,10 @@ import zipfile
 import json
 import shutil
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .core import Setting
+
 if __name__ != "__main__":
     from .intent import Intent
 
@@ -17,7 +21,7 @@ class AppHM(object):
     this class describes an app
     """
 
-    def __init__(self, app_path, output_dir=None):
+    def __init__(self, app_path, output_dir=None, settings:"Setting"=None):
         """
         create an App instance
         :param app_path: local file path of app
@@ -32,9 +36,28 @@ class AppHM(object):
         if output_dir is not None:
             if not os.path.isdir(output_dir):
                 os.makedirs(output_dir)
+        
+        self.settings = settings
 
-        self.parse_hap()
+        if not self.settings.is_package:
+            self._hap_init()
+        else:
+            self._package_init(package_name=app_path)
     
+    def _package_init(self, package_name):
+        self.package_name = package_name
+        self.main_activity = self._dumpsys_package_info
+
+    @property
+    def _dumpsys_package_info(self):
+        from .adapter.hdc import HDC_EXEC
+        cmd = [HDC_EXEC, "shell", "bm", "dump", "-n", self.package_name]
+        r = subprocess.check_output(cmd, text=True)
+        package_info_str = r.split("\n", maxsplit=1)[-1]
+        import json
+        package_info = json.loads(package_info_str)
+        return package_info["hapModuleInfos"][0]["mainAbility"]
+
     def __str__(self) -> str:
         app_info = ", ".join([
             f"bundleName:{self.package_name}",
@@ -43,7 +66,7 @@ class AppHM(object):
         ])
         return f"App({app_info})"
 
-    def parse_hap(self):
+    def _hap_init(self):
         self.logger.info(f"Extracting info from {self.app_path}")
         self.logger.info(f"Hapfile is {os.path.basename(self.app_path)}")
         # make temp dir
@@ -62,11 +85,11 @@ class AppHM(object):
         with open(temp_dir + "/pack.info") as f:
             pack_info = json.load(f)
 
-        self.read_hap_info(moudle_json, pack_info)
+        self.load_hap_info(moudle_json, pack_info)
 
         shutil.rmtree(temp_dir)
 
-    def read_hap_info(self, module_json, pack_info):
+    def load_hap_info(self, module_json, pack_info):
         self.package_name = pack_info["summary"]["app"]["bundleName"]
         self.api_version = pack_info["summary"]["modules"][0]["apiVersion"]["target"]
         self.main_activity = pack_info["summary"]["modules"][0]["mainAbility"]

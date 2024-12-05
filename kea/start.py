@@ -119,7 +119,7 @@ def checkconfig(options):
         COLOR_YELLOW = "\033[93m"
         COLOR_RESET = "\033[0m"
         print(f"{COLOR_YELLOW}Warning: {options.apk_path} is not a package file, trying to start with a package name{COLOR_RESET}")
-        check_package_existance(options.device_serial, options.apk_path)
+        check_package_existance(options)
         options.is_package = True
     else:
         options.is_package = False
@@ -128,12 +128,21 @@ def checkconfig(options):
     if not options.output_dir:
         raise AttributeError("No output directory. Use -o to specify the output directory.")
 
-def check_package_existance(serial, package_name):
-    cmd = ["adb", "-s", serial, "shell", "pm", "list", "package"] if serial else ["adb", "shell", "pm", "list", "package"] 
-    dump_packages = subprocess.check_output(cmd, text=True)
-    package_list = [_.split(":")[-1] for _ in dump_packages.split()]
-    if not package_name in package_list:
-        raise AttributeError(f"No pacakge named {package_name} installed on device.")    
+def check_package_existance(options):
+    if not options.is_harmonyos:
+        cmd = ["adb", "-s", options.serial, "shell", "pm", "list", "package"] if options.serial else ["adb", "shell", "pm", "list", "package"] 
+        dump_packages = subprocess.check_output(cmd, text=True)
+        package_list = [_.split(":")[-1] for _ in dump_packages.split()]
+        if not options.package_name in package_list:
+            raise AttributeError(f"No pacakge named {options.package_name} installed on device.")    
+    else:
+        from .adapter.hdc import HDC_EXEC
+        cmd = [HDC_EXEC, "-t", options.device_serial, "shell", "bm", "dump", "-a"] if options.device_serial else [HDC_EXEC, "shell", "bm", "dump", "-a"] 
+        dump_packages = subprocess.check_output(cmd, text=True)
+        package_list = dump_packages.split()
+        if not (package_name := options.apk_path) in package_list:
+            raise AttributeError(f"No pacakge named {package_name} installed on device.")  
+        
     
 
 def main():

@@ -187,7 +187,8 @@ class DroidBot(object):
                     humanoid=self.humanoid,
                     ignore_ad=self.ignore_ad,
                     is_harmonyos=is_harmonyos,
-                    save_log=False)
+                    save_log=False,
+                    settings=self.settings)
             self.app = AppHM(self.app_path, output_dir=self.output_dir, settings=self.settings)
 
             self.env_manager = AppEnvManager(

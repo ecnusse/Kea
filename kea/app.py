@@ -1,10 +1,11 @@
 import logging
+import re  
 import os
 import hashlib
 import subprocess
 from .intent import Intent
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from .core import Setting
 
@@ -57,15 +58,10 @@ class App(object):
         self.app_path = None
         self.apk = None
         self.package_name = package_name
-        #Used to get the main activity of the APK (i.e., the first activity that launches when the application starts).
         self.main_activity = self.dumpsys_main_activity
-        #Get the list of permissions for the application from the self.apk object.
-        # self.permissions = self.apk.get_permissions()
-        #Get the list of activities from the self.apk object.
-        # self.activities = self.apk.get_activities()
-        # self.possible_broadcasts = self.get_possible_broadcasts()
-        # self.dumpsys_main_activity = None
-        # self.hashes = self.get_hashes()    
+        # TODO figure out how to get all activities from package name
+        self.activities = []
+        # TODO parse self.permissions from dumpsys_package_info 
 
     def get_package_name(self):
         """
@@ -86,21 +82,25 @@ class App(object):
             return self.dumpsys_main_activity
     
     @property
-    def dumpsys_main_activity(self):
+    def dumpsys_package_info(self):
         cmd = ["adb", "-s", self.settings.device_serial, "shell", "dumpsys", "package", self.package_name]
-
-        import re
-        try:
-            output = subprocess.check_output(cmd, text=True)
-            
-            match = re.search(r'android.intent.action.MAIN:\s+.*?/(.*?)\s+filter', output, re.DOTALL)
-            if match:
-                return match.group(1)
-            else:
-                return None
-        except subprocess.CalledProcessError as e:
-            return f"Error when dumpsys_main_activity: {e.output}"
-
+        output = subprocess.check_output(cmd, text=True)
+        return output
+    
+    def dumpsys_activities(self) -> List: 
+        match = re.search(r'android.intent.action.MAIN:\s+.*?/(.*?)\s+filter', self.dumpsys_package_info, re.DOTALL)
+        if match:
+            return match.group(1)
+        else:
+            return None
+    
+    @property
+    def dumpsys_main_activity(self):
+        match = re.search(r'android.intent.action.MAIN:\s+.*?/(.*?)\s+filter', self.dumpsys_package_info, re.DOTALL)
+        if match:
+            return match.group(1)
+        else:
+            return None 
 
     def get_start_intent(self):
         """

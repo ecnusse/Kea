@@ -66,8 +66,8 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/omninotes/OmniNotes-5.4.0.apk",
         device_serial="emulator-5554",
-        output_dir="../output/omninotes/401/mutate",
-        policy_name="mutate",
+        output_dir="../output/omninotes/401/guided",
+        policy_name="guided",
         # run_initial_rules_after_every_mutation=False
     )
     

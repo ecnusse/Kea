@@ -52,7 +52,7 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/amaze/3.10.apk",
         device_serial="emulator-5554",
-        output_dir="../output/amaze/1872/mutate_new",
+        output_dir="../output/amaze/1872/guided_new",
         policy_name="random"
     
     )

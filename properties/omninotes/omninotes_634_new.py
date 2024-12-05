@@ -91,8 +91,8 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/omninotes/OmniNotes-6.2.8.apk",
         device_serial="emulator-5554",
-        output_dir="../output/omninotes/786/mutate_new",
-        policy_name="mutate"
+        output_dir="../output/omninotes/786/guided_new",
+        policy_name="guided"
     )
     start_kea(t,setting)
     

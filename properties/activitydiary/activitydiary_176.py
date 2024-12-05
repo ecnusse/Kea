@@ -28,7 +28,7 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/activitydiary/1.2.5.apk",
         device_serial="emulator-5554",
-        output_dir="output/activitydiary/176/mutate/1",
+        output_dir="output/activitydiary/176/guided/1",
         policy_name="random"
     )
     start_kea(t,setting)

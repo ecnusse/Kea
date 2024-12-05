@@ -48,8 +48,8 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/antennapod/2.2.0-beta1.apk",
         device_serial="emulator-5554",
-        output_dir="../output/antennapod/5003/mutate",
-        policy_name="mutate"
+        output_dir="../output/antennapod/5003/guided",
+        policy_name="guided"
     )
     start_kea(t,setting)
     

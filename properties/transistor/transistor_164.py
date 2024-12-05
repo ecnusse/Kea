@@ -45,8 +45,8 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/transistor/3.0.2.apk",
         device_serial="emulator-5554",
-        output_dir="../output/transistor/164/mutate",
-        policy_name="mutate"
+        output_dir="../output/transistor/164/guided",
+        policy_name="guided"
     )
     start_kea(t,setting)
     

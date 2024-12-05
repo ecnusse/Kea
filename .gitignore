@@ -71,4 +71,12 @@ documents
 temp
 venv
 
+# pyenv
+.python-version
+
+# config file
+config.yml
+config.ymal
+
+# virtual envirnment
 kea_venv/

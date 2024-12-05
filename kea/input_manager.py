@@ -2,6 +2,8 @@ import json
 import logging
 import time
 
+from .similarity import Similarity
+
 from .input_event import EventLog
 from .input_policy import (
     GuidedPolicy,
@@ -10,6 +12,8 @@ from .input_policy import (
     KeaInputPolicy,
     RandomPolicy,
     POLICY_NONE,
+    POLICY_LLM,
+    LLMPolicy
 )
 
 DEFAULT_POLICY = POLICY_RANDOM
@@ -18,6 +22,7 @@ DEFAULT_EVENT_INTERVAL = 1
 DEFAULT_EVENT_COUNT = 100000000
 DEFAULT_TIMEOUT = 3600
 DEFAULT_DEVICE_SERIAL = "emulator-5554"
+DEFAULT_UI_TARPIT_NUM = 2
 
 class UnknownInputException(Exception):
     pass
@@ -80,6 +85,7 @@ class InputManager(object):
         self.number_of_events_that_restart_app = number_of_events_that_restart_app
         self.generate_utg = generate_utg
         self.policy = self.get_input_policy(device, app, master)
+        self.sim_calculator = Similarity(DEFAULT_UI_TARPIT_NUM)
 
     def get_input_policy(self, device, app, master):
         if self.policy_name == POLICY_NONE:
@@ -94,6 +100,8 @@ class InputManager(object):
             )
         elif self.policy_name == POLICY_RANDOM:
             input_policy = RandomPolicy(device, app, random_input=self.random_input, kea=self.kea, number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True, generate_utg = self.generate_utg)
+        elif self.policy_name == POLICY_LLM:
+            input_policy = LLMPolicy(device, app, random_input=self.random_input, kea=self.kea, number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True, generate_utg = self.generate_utg)
         else:
             self.logger.warning(
                 "No valid input policy specified. Using policy \"none\"."

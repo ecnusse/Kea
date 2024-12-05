@@ -567,7 +567,7 @@ class Device(object):
         """
         r = self.adb.shell("dumpsys activity activities")
         activity_line_re = re.compile(
-            r'\* Hist[ ]+#\d+: ActivityRecord{[^ ]+ [^ ]+ ([^ ]+) t(\d+)}'
+            r'\* Hist[ ]+#\d+: ActivityRecord{[^ ]+ [^ ]+ ([^ ]+) t(\d+).*}'
         )
         m = activity_line_re.search(r)
         if m:

@@ -47,7 +47,7 @@ def parse_ymal_args(opts):
     for key, value in config_dict.items():
         if key.lower() == "system" and value:
             opts.is_harmonyos = value.lower() == "harmonyos"
-        elif key.lower() == "app_path" and value:
+        elif key.lower() in ["app_path", "package", "package_name"] and value:
             opts.apk_path = value
         elif key.lower() == "policy" and value:
             opts.policy = value

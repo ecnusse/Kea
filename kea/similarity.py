@@ -3,7 +3,7 @@ import logging
 import os
 import cv2
 
-THREGHOLD = 0.95
+THREGHOLD = 0.85
 
 class Similarity(object):
     def __init__(self, sim_k) -> None:

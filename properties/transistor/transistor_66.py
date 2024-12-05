@@ -60,8 +60,8 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/transistor/1.2.4.apk",
         device_serial="emulator-5554",
-        output_dir="../output/transistor/66/mutate",
-        policy_name="mutate",
+        output_dir="../output/transistor/66/guided",
+        policy_name="guided",
         number_of_events_that_restart_app = 100
     )
     start_kea(t,setting)

@@ -27,7 +27,7 @@ class Test(Kea):
     )
     @rule()
     def text_should_display_after_type_answer(self):
-        typed_text = st.text(alphabet=string.ascii_letters,min_size=1, max_size=6).example()
+        typed_text = st.text(alphabet=string.printable,min_size=1, max_size=6).example()
         d(resourceId="com.ichi2.anki:id/answer_field").set_text(typed_text)
         print("typed_text: " + typed_text)
         d(resourceId="com.ichi2.anki:id/answer_options_layout").click()
@@ -46,8 +46,8 @@ if __name__ == "__main__":
     setting = Setting(
         apk_path="./apk/ankidroid/2.8.4.apk",
         device_serial="emulator-5554",
-        output_dir="../output/ankidroid/5334/mutate",
-        policy_name="mutate",
+        output_dir="../output/ankidroid/5334/guided",
+        policy_name="guided",
         
         number_of_events_that_restart_app = 100
     )

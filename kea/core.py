@@ -18,7 +18,7 @@ coloredlogs.install()
 @dataclass
 class Setting:
     apk_path: str
-    device_serial: str ="emulator-5554"
+    device_serial: str = None
     output_dir:str ="output"
     is_emulator: bool =True     #True for emulator, false for real device.
     policy_name: str =input_manager.DEFAULT_POLICY

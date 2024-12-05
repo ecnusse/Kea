@@ -51,7 +51,7 @@ class AppHM(object):
     @property
     def _dumpsys_package_info(self):
         from .adapter.hdc import HDC_EXEC
-        cmd = [HDC_EXEC, "shell", "bm", "dump", "-n", self.package_name]
+        cmd = [HDC_EXEC, "-t", self.settings.device_serial, "shell", "bm", "dump", "-n", self.package_name]
         r = subprocess.check_output(cmd, text=True)
         package_info_str = r.split("\n", maxsplit=1)[-1]
         import json

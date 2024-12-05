@@ -1,6 +1,6 @@
-from .input_manager import DEFAULT_DEVICE_SERIAL, DEFAULT_POLICY, DEFAULT_TIMEOUT
+from .input_manager import DEFAULT_POLICY, DEFAULT_TIMEOUT
 from .core import Kea, Setting, start_kea
-from .utils import get_yml_config
+from .utils import get_yml_config, checkconfig, automatic_set_device_serial
 
 import importlib
 import os
@@ -13,7 +13,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Start kea to test app.",
                                      formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("-f",nargs="+", action="store",dest="files", help="The python files to be tested.")
-    parser.add_argument("-d", "--device_serial", action="store", dest="device_serial", default=DEFAULT_DEVICE_SERIAL,
+    parser.add_argument("-d", "--device_serial", action="store", dest="device_serial", default=None,
                         help="The serial number of target device (use `adb devices` to find)")
     parser.add_argument("-a","--apk", action="store", dest="apk_path",
                         help="The file path to target APK")
@@ -112,43 +112,14 @@ def get_mobile_driver(settings:"Setting"):
         from kea.pdl_hm import PDL
         return PDL(serial=settings.device_serial)
 
-def checkconfig(options):
-    if not options.apk_path:
-        raise AttributeError("No target app. Use -a to specify the app")
-    if not str(options.apk_path).endswith((".apk", ".hap")):
-        COLOR_YELLOW = "\033[93m"
-        COLOR_RESET = "\033[0m"
-        print(f"{COLOR_YELLOW}Warning: {options.apk_path} is not a package file, trying to start with a package name{COLOR_RESET}")
-        check_package_existance(options)
-        options.is_package = True
-    else:
-        options.is_package = False
-    if not options.files:
-        raise AttributeError("No property. Use -f to specify the proeprty")
-    if not options.output_dir:
-        raise AttributeError("No output directory. Use -o to specify the output directory.")
 
-def check_package_existance(options):
-    if not options.is_harmonyos:
-        cmd = ["adb", "-s", options.serial, "shell", "pm", "list", "package"] if options.serial else ["adb", "shell", "pm", "list", "package"] 
-        dump_packages = subprocess.check_output(cmd, text=True)
-        package_list = [_.split(":")[-1] for _ in dump_packages.split()]
-        if not options.package_name in package_list:
-            raise AttributeError(f"No pacakge named {options.package_name} installed on device.")    
-    else:
-        from .adapter.hdc import HDC_EXEC
-        cmd = [HDC_EXEC, "-t", options.device_serial, "shell", "bm", "dump", "-a"] if options.device_serial else [HDC_EXEC, "shell", "bm", "dump", "-a"] 
-        dump_packages = subprocess.check_output(cmd, text=True)
-        package_list = dump_packages.split()
-        if not (package_name := options.apk_path) in package_list:
-            raise AttributeError(f"No pacakge named {package_name} installed on device.")  
-        
     
 
 def main():
     options = parse_args()
     if options.load_config:
         options = parse_ymal_args(options)
+    automatic_set_device_serial(options=options)
     checkconfig(options)
     settings =  Setting(apk_path=options.apk_path,
                        device_serial=options.device_serial,

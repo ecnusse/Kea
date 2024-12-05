@@ -43,6 +43,7 @@ class Setting:
     run_initial_rules_after_every_mutation=True
     is_harmonyos:bool=False
     generate_utg:bool=False
+    is_package:bool=False
 
 OUTPUT_DIR = "output"
 d:Union["Android_PDL", "HarmonyOS_PDL", None] = None
@@ -79,6 +80,8 @@ def start_kea(kea:"Kea", settings:"Setting" = None):
         number_of_events_that_restart_app=settings.number_of_events_that_restart_app,
         run_initial_rules_after_every_mutation=settings.run_initial_rules_after_every_mutation,
         is_harmonyos=settings.is_harmonyos,
+        is_package=settings.is_package,
+        settings=settings,
         generate_utg=settings.generate_utg
     )
     global d

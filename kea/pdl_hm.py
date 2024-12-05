@@ -18,6 +18,8 @@ from typing import Any, Union, TYPE_CHECKING
 if TYPE_CHECKING:
     from kea.droidbot import DroidBot
 
+import time
+
 class PDL(Driver):
     
     def __init__(self, delay=1, serial=None) -> None:
@@ -39,11 +41,12 @@ class PDL(Driver):
         self.droidbot = droidbot
 
     def rotate(self, mode: str):
-        self.droidbot.device.save_screenshot_for_report(event_name="rotate")
+        self.droidbot.device.save_screenshot_for_report(event_name="rotate", event = self)
         super().set_orientation(mode)
+        time.sleep(1)
 
     def press(self, key: Union[int, str], meta=None):
-        self.droidbot.device.save_screenshot_for_report(event_name="press")
+        self.droidbot.device.save_screenshot_for_report(event_name="press", event = key)
         super().press(key, meta)
 
 
@@ -55,14 +58,14 @@ class Ui(UiObject):
         super().__init__(client, **kwargs)
 
     def click(self, offset=None):
-        self.droidbot.device.save_screenshot_for_report(event_name="click")
+        self.droidbot.device.save_screenshot_for_report(event_name="click", event = self)
         super().click()
 
     def long_click(self, duration: float = 0.5):
-        self.droidbot.device.save_screenshot_for_report(event_name="long_click")
+        self.droidbot.device.save_screenshot_for_report(event_name="long_click", event = self)
         super().long_click()
     
     def input_text(self, text):
-        self.droidbot.device.save_screenshot_for_report(event_name="input_text " + text)
+        self.droidbot.device.save_screenshot_for_report(event_name="input_text " + text, event = self)
         super().input_text(text)
         

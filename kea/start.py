@@ -7,6 +7,7 @@ import os
 import argparse
 import sys
 import inspect
+import subprocess
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Start kea to test app.",
@@ -112,12 +113,28 @@ def get_mobile_driver(settings:"Setting"):
         return PDL(serial=settings.device_serial)
 
 def checkconfig(options):
-    if not options.apk_path or not str(options.apk_path).endswith((".apk", ".hap")):
+    if not options.apk_path:
         raise AttributeError("No target app. Use -a to specify the app")
+    if not str(options.apk_path).endswith((".apk", ".hap")):
+        COLOR_YELLOW = "\033[93m"
+        COLOR_RESET = "\033[0m"
+        print(f"{COLOR_YELLOW}Warning: {options.apk_path} is not a package file, trying to start with a package name{COLOR_RESET}")
+        check_package_existance(options.device_serial, options.apk_path)
+        options.is_package = True
+    else:
+        options.is_package = False
     if not options.files:
         raise AttributeError("No property. Use -f to specify the proeprty")
     if not options.output_dir:
         raise AttributeError("No output directory. Use -o to specify the output directory.")
+
+def check_package_existance(serial, package_name):
+    cmd = ["adb", "-s", serial, "shell", "pm", "list", "package"] if serial else ["adb", "shell", "pm", "list", "package"] 
+    dump_packages = subprocess.check_output(cmd, text=True)
+    package_list = [_.split(":")[-1] for _ in dump_packages.split()]
+    if not package_name in package_list:
+        raise AttributeError(f"No pacakge named {package_name} installed on device.")    
+    
 
 def main():
     options = parse_args()
@@ -135,7 +152,8 @@ def main():
                        is_harmonyos=options.is_harmonyos,
                        grant_perm=options.grant_perm,
                        is_emulator=options.is_emulator,
-                       generate_utg=options.generate_utg
+                       generate_utg=options.generate_utg,
+                       is_package = options.is_package
                        )
     if options.files is None:
         raise TypeError("Missing target property files")

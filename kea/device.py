@@ -80,7 +80,7 @@ class Device(object):
         self.humanoid = humanoid
         self.ignore_ad = ignore_ad
         self.is_harmonyos = is_harmonyos
-        self.count = 0
+        self.cur_event_count = 0
         self.screenshot_path = None
         self.current_state = None
 
@@ -567,7 +567,7 @@ class Device(object):
         """
         r = self.adb.shell("dumpsys activity activities")
         activity_line_re = re.compile(
-            r'\* Hist[ ]+#\d+: ActivityRecord{[^ ]+ [^ ]+ ([^ ]+) t(\d+)}'
+            r'\* Hist[ ]+#\d+: ActivityRecord{[^ ]+ [^ ]+ ([^ ]+) t(\d+).*}'
         )
         m = activity_line_re.search(r)
         if m:
@@ -731,9 +731,9 @@ class Device(object):
             package_info_file = open(package_info_file_name, "w")
             package_info_file.writelines(dumpsys_lines)
             package_info_file.close()
-        app.dumpsys_main_activity = self.__parse_main_activity_from_dumpsys_lines(
-            dumpsys_lines
-        )
+        # app.dumpsys_main_activity = self.__parse_main_activity_from_dumpsys_lines(
+        #     dumpsys_lines
+        # )
 
         self.logger.info("App installed: %s" % package_name)
         self.logger.info("Main activity: %s" % app.get_main_activity())
@@ -797,6 +797,9 @@ class Device(object):
         """
         if isinstance(app, App):
             package_name = app.get_package_name()
+            # Don't uninstall the app if launch with package name
+            if app.settings.is_package:
+                return
         else:
             package_name = app
         if package_name in self.adb.get_installed_apps():
@@ -861,14 +864,14 @@ class Device(object):
         save screenshot for report, save to "all_states" dir
         """
 
-        self.count += 1
-        self.current_state = self.get_current_state(self.count)
+        self.cur_event_count += 1
+        self.current_state = self.get_current_state(self.cur_event_count)
         self.save_to_all_states_dir(self.screenshot_path, event_name = event_name, event = event)
         from_state = self.current_state
         return from_state
 
     def get_count(self):
-        return self.count
+        return self.cur_event_count
 
     def draw_event(self, event, event_name, screenshot_path):
         import cv2
@@ -943,14 +946,14 @@ class Device(object):
         json_dir = os.path.join(self.output_dir, "report_screenshot.json")
         if not self.is_harmonyos:
             if self.adapters[self.minicap]:
-                dest_screenshot_path = "%s/screen_%s.jpg" % (all_states_dir, self.count)
+                dest_screenshot_path = "%s/screen_%s.jpg" % (all_states_dir, self.cur_event_count)
             else:
-                dest_screenshot_path = "%s/screen_%s.png" % (all_states_dir, self.count)
+                dest_screenshot_path = "%s/screen_%s.png" % (all_states_dir, self.cur_event_count)
         else:
-            dest_screenshot_path = "%s/screen_%s.jpeg" % (all_states_dir, self.count)
+            dest_screenshot_path = "%s/screen_%s.jpeg" % (all_states_dir, self.cur_event_count)
 
         if self.current_state is not None:
-            dest_state_json_path = "%s/state_%s.json" % (all_states_dir, self.count)
+            dest_state_json_path = "%s/state_%s.json" % (all_states_dir, self.cur_event_count)
             state_json_file = open(dest_state_json_path, "w")
             state_json_file.write(self.current_state.to_json())
             state_json_file.close()
@@ -963,18 +966,14 @@ class Device(object):
         if event_name is None:
             event_name = event.get_event_name()
 
-        if not self.is_harmonyos and self.adapters[self.minicap]:
-            report_screen = {
-                "event": event_name,
-                "event_index": str(self.count),
-                "screen_shoot": "screen_" + str(self.count) + ".jpg"
-            }
-        else:
-            report_screen = {
-                "event": event_name,
-                "event_index": str(self.count),
-                "screen_shoot": "screen_" + str(self.count) + ".png"
-            }
+        
+        img_file_name = os.path.basename(dest_screenshot_path)
+
+        report_screen = {
+            "event": event_name,
+            "event_index": str(self.cur_event_count),
+            "screen_shoot": img_file_name
+        }
 
         report_screens.append(report_screen)
         with open(json_dir, 'w') as json_file:

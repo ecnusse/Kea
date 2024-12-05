@@ -12,6 +12,10 @@ from threading import Timer
 from .env_manager import AppEnvManager
 from .input_manager import InputManager
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .core import Setting
+
 class DroidBot(object):
     """
     The main class of droidbot
@@ -49,7 +53,9 @@ class DroidBot(object):
         number_of_events_that_restart_app=100,
         run_initial_rules_after_every_mutation=True,
         is_harmonyos=False,
-        generate_utg=False
+        is_package=False,
+        generate_utg=False,
+        settings:"Setting"=None
     ):
         """
         initiate droidbot with configurations
@@ -116,7 +122,9 @@ class DroidBot(object):
         self.master = master
         self.number_of_events_that_restart_app = number_of_events_that_restart_app
         self.run_initial_rules_after_every_mutation = run_initial_rules_after_every_mutation
+        self.is_package = is_package
         self.generate_utg = generate_utg
+        self.settings = settings
         try:
             self.init_droidbot(is_harmonyos)
         except Exception:
@@ -131,7 +139,7 @@ class DroidBot(object):
         if not is_harmonyos:
             from .app import App
             from .device import Device
-            self.app = App(self.app_path, output_dir=self.output_dir)
+            self.app = App(self.app_path, output_dir=self.output_dir, settings=self.settings)
             self.device = Device(
                 device_serial=self.device_serial,
                 is_emulator=self.is_emulator,
@@ -145,7 +153,6 @@ class DroidBot(object):
                 app_package_name=self.app.package_name,
                 is_harmonyos=is_harmonyos
             )
-            self.app = App(self.app_path, output_dir=self.output_dir)
 
             self.env_manager = AppEnvManager(
                 device=self.device, app=self.app, env_policy=self.env_policy

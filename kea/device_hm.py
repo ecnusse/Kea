@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import re
@@ -7,8 +8,9 @@ import time
 from typing import IO
 import typing
 from hmdriver2.driver import Driver
-if typing.TYPE_CHECKING:
-    from .input_event import InputEvent
+# if typing.TYPE_CHECKING:
+# from .input_event import InputEvent
+from .input_event import InputEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent
 
 from .device import Device
 from .adapter.hdc import HDC, HDC_EXEC
@@ -35,6 +37,9 @@ class DeviceHM(Device):
         :return:
         """
         self.logger = logging.getLogger(self.__class__.__name__)
+        self.cur_event_count = 0
+        self.screenshot_path = None
+        self.current_state = None
 
         if "emulator" in device_serial and not is_emulator:
             self.logger.warning("Seems like you are using an emulator. If so, please add is_emulator option.")
@@ -500,6 +505,103 @@ class DeviceHM(Device):
 
         return local_path
 
+    def save_screenshot_for_report(self, event_name = None, event = None):
+        """
+        save screenshot for report, save to "all_states" dir
+        """
+
+        self.cur_event_count += 1
+        self.current_state = self.get_current_state(self.cur_event_count)
+        self.save_to_all_states_dir(self.screenshot_path, event_name = event_name, event = event)
+        from_state = self.current_state
+        return from_state
+
+    def get_count(self):
+        return self.cur_event_count
+    
+    def draw_event(self, event, event_name, screenshot_path):
+        import cv2
+        image = cv2.imread(screenshot_path)
+        if event is not None and screenshot_path is not None:
+            if isinstance(event, InputEvent):
+                if isinstance(event, TouchEvent):
+                    cv2.rectangle(image, (int(event.view['bounds'][0][0]), int(event.view['bounds'][0][1])),
+                                  (int(event.view['bounds'][1][0]), int(event.view['bounds'][1][1])), (0, 0, 255), 5)
+                elif isinstance(event, LongTouchEvent):
+                    cv2.rectangle(image, (int(event.view['bounds'][0][0]), int(event.view['bounds'][0][1])),
+                                  (int(event.view['bounds'][1][0]), int(event.view['bounds'][1][1])), (0, 255, 0), 5)
+                elif isinstance(event, SetTextEvent):
+                    cv2.rectangle(image, (int(event.view['bounds'][0][0]), int(event.view['bounds'][0][1])),
+                                  (int(event.view['bounds'][1][0]), int(event.view['bounds'][1][1])), (255, 0, 0), 5)
+                elif isinstance(event, ScrollEvent):
+                    cv2.rectangle(image, (int(event.view['bounds'][0][0]), int(event.view['bounds'][0][1])),
+                                  (int(event.view['bounds'][1][0]), int(event.view['bounds'][1][1])), (255, 255, 0), 5)
+                elif isinstance(event, KeyEvent):
+                    cv2.putText(image, event.name, (100, 300), cv2.FONT_HERSHEY_SIMPLEX, 5, (0, 255, 0), 3, cv2.LINE_AA)
+                else:
+                    return
+            else:
+                if event_name == "click":
+                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (0, 0, 255), 5)
+                elif event_name == "long_click":
+                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (0, 255, 0), 5)
+                elif event_name == "set_text":
+                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (255, 0, 0), 5)
+                elif event_name == "press":
+                    cv2.putText(image,event, (100,300), cv2.FONT_HERSHEY_SIMPLEX, 5,(0, 255, 0), 3, cv2.LINE_AA)
+                else:
+                    return
+            try:
+                cv2.imwrite(screenshot_path, image)
+            except Exception as e:
+                self.logger.warning(e)
+
+    def save_to_all_states_dir(self, local_image_path, event, event_name = None):
+        import shutil
+        all_states_dir = os.path.join(self.output_dir, "all_states")
+        if not os.path.exists(all_states_dir):
+            os.makedirs(all_states_dir)
+
+        json_dir = os.path.join(self.output_dir, "report_screenshot.json")
+        if not self.is_harmonyos:
+            if self.adapters[self.minicap]:
+                dest_screenshot_path = "%s/screen_%s.jpg" % (all_states_dir, self.cur_event_count)
+            else:
+                dest_screenshot_path = "%s/screen_%s.png" % (all_states_dir, self.cur_event_count)
+        else:
+            dest_screenshot_path = "%s/screen_%s.jpeg" % (all_states_dir, self.cur_event_count)
+
+        if self.current_state is not None:
+            dest_state_json_path = "%s/state_%s.json" % (all_states_dir, self.cur_event_count)
+            state_json_file = open(dest_state_json_path, "w")
+            state_json_file.write(self.current_state.to_json())
+            state_json_file.close()
+
+        try:
+            with open(json_dir, 'r') as json_file:
+                report_screens = json.load(json_file)
+        except FileNotFoundError:
+            report_screens = []
+        if event_name is None:
+            event_name = event.get_event_name()
+
+        img_file_name = os.path.basename(dest_screenshot_path)
+
+        report_screen = {
+            "event": event_name,
+            "event_index": str(self.cur_event_count),
+            "screen_shoot": img_file_name
+        }
+
+        report_screens.append(report_screen)
+        with open(json_dir, 'w') as json_file:
+            json.dump(report_screens, json_file, indent=4)
+        if self.current_state is not None and local_image_path != dest_screenshot_path:
+            self.current_state.screenshot_path = dest_screenshot_path
+            shutil.move(local_image_path, dest_screenshot_path)
+
+        self.draw_event(event, event_name, dest_screenshot_path)
+
     def get_current_state(self, action_count=None):
         self.logger.debug("getting current device state...")
         current_state = None
@@ -509,6 +611,7 @@ class DeviceHM(Device):
             activity_stack = [foreground_activity]      # TODO Need to get the stack
             # background_services = self.get_service_names()
             screenshot_path = self.take_screenshot()
+            self.screenshot_path = screenshot_path
             self.logger.debug("finish getting current device state...")
             # if there's no foreground activities (In home or lock screen)
             views = self.get_views() if foreground_activity is not None else []

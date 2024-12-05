@@ -1,0 +1,19 @@
+# env: the system of your PC (e.g. windows, macOS, Linux)
+env: Linux
+
+# system: the target harmonyOS
+system: android
+device: emulator-5554
+app_path: example/omninotes.apk
+policy: random
+count: 100
+properties: 
+  - example/example_property.py
+
+# system: harmonyOS
+# device: 127.0.0.1:5555
+# app_path: example/orangeMall.hap
+# policy: random
+# count: 100
+# properties: 
+#   - example/example_hm_property.py

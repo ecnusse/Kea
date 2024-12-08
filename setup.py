@@ -1,5 +1,5 @@
 # This file is a script to build and distribute Python packages
-# set up basic requirements for droidbot
+# set up basic requirements for Kea
 from setuptools import setup, find_packages, findall
 import os
 import sys
@@ -58,6 +58,6 @@ setup(
     package_data={
         "kea": [os.path.relpath(x, "kea") for x in findall("kea/resources/")]
     },
-    # androidviewclient doesnot support pip install, thus you should install it with easy_install
+    # androidviewclient does not support pip install, thus you should install it with easy_install
     install_requires=install_requires
 )

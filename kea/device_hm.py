@@ -465,8 +465,8 @@ class DeviceHM(Device):
         """
         if isinstance(app, AppHM):
             package_name = app.get_package_name()
-            if self.settings.is_package:
-                return
+            # if self.settings.is_package:
+            #     return
         else:
             package_name = app
         if package_name in self.hdc.get_installed_apps():

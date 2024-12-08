@@ -19,7 +19,7 @@ class MainPath:
     path = attr.ib()
 
 
-class TestCase: 
+class KeaPBTest: 
     rule_list:List["Rule"]
     initializer_list:List["Rule"]
     mainPath_list:List["MainPath"]

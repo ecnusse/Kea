@@ -1,17 +1,20 @@
 """
-This is the PDL (Property Desciption Language) for Android app testing, which is 
-kind of DSL(Domain Sepcific Language).
-Please checkout our doc and paper for details.
+This is the PDL (Property Desciption Language) for Android, which is one 
+kind of DSL (Domain Sepcific Language). 
+Please checkout Kea's doc and its paper for the details.
 """
 
 from uiautomator2._selector import Selector, UiObject
-from uiautomator2 import Device as Driver
+from uiautomator2 import Device as Android_Driver
 from typing import Any, Union, TYPE_CHECKING
 if TYPE_CHECKING:
     from kea.droidbot import DroidBot
 import time
 
-class PDL(Driver):
+class PDL(Android_Driver):  #TODO rename `PDL` to `AndroidDriver` `HarmonyDriver`??
+    """The pdl driver for Android
+    """
+
     droidbot = None    
 
     def __init__(self, delay=1) -> None:
@@ -19,7 +22,7 @@ class PDL(Driver):
 
     def set_device_serial(self, serial):
         super().__init__(serial=serial)
-        # setting operation delay
+        # set the delay between sending events
         self.settings['operation_delay'] = (0, self.delay)
         self.settings['wait_timeout'] = 5.0 # 默认控件等待时间
 
@@ -29,17 +32,27 @@ class PDL(Driver):
     def set_droidbot(self, droidbot:"DroidBot"):
         self.droidbot = droidbot
 
-    def rotate(self, mode: str):
+    def rotate(self, mode: str):  # TODO: what does mode mean? why "rotate"/"press" not included in the Ui class
+        """
+
+        """
         self.droidbot.device.save_screenshot_for_report(event_name="rotate", event = self)
         super().set_orientation(mode)
         time.sleep(1)
 
-    def press(self, key: Union[int, str], meta=None):
+    def press(self, key: Union[int, str], meta=None): # TODO: what does meta mean?
+        """
+            key: home, back, menu, search, recent
+            meta: 
+        """
         self.droidbot.device.save_screenshot_for_report(event_name="press", event = key)
         super().press(key, meta)
 
 
 class Ui(UiObject):
+    """
+    TODO extend more UI operations, e.g., random selecting one tag
+    """
     def __init__(self, session:"PDL", selector: Selector, droidbot:"DroidBot"):
         super().__init__(session, selector)
         self.droidbot=droidbot

@@ -17,10 +17,14 @@ coloredlogs.install()
 
 @dataclass
 class Setting:
+    """`Setting` is a Python DataClass
+
+    TODO: it seems the Setting class is redudant? why not just using options?
+    """
     apk_path: str
     device_serial: str = None
     output_dir:str ="output"
-    is_emulator: bool =True     #True for emulator, false for real device.
+    is_emulator: bool =True     #True for emulators, False for real devices.
     policy_name: str =input_manager.DEFAULT_POLICY
     random_input: bool =True
     script_path: str=None
@@ -45,14 +49,29 @@ class Setting:
     generate_utg:bool=False
     is_package:bool=False
 
+def load_pdl_driver(settings: "Setting"):
+    """Load the pdl (property description language) driver according to the target mobile platform
+        (e.g., Android, HarmonyOS).
+
+    TODO could we put this function in `start.py`? and set it as one setting option
+    Because this funciton is only related to Setting
+    """
+    if settings.is_harmonyos:
+        from kea.pdl_hm import PDL
+        return PDL(serial=settings.device_serial)
+    else:
+        from kea.pdl import PDL
+        return PDL(serial=settings.device_serial)
+
 OUTPUT_DIR = "output"
-d:Union["Android_PDL", "HarmonyOS_PDL", None] = None
 
-def start_kea(kea:"Kea", settings:"Setting" = None):
-    # if settings is None:
-    #     settings = kea.TestCase.settings
+# `d` is the pdl driver for Android or HarmonyOS
+d:Union["Android_PDL", "HarmonyOS_PDL", None] = None  # TODO move `d` to `kea.py`?
 
-    droidbot = DroidBot(    # tingsu: why not naming "droid" as "droidbot"?
+def start_kea(kea:"Kea", settings:"Setting" = None):   #TODO  move `start_kea` to `start.py`?
+
+    # TODO rename `droidbot` as `data_generator`` (fuzzer)?
+    droidbot = DroidBot(    
         app_path=settings.apk_path,
         device_serial=settings.device_serial,
         is_emulator=settings.is_emulator,
@@ -85,8 +104,8 @@ def start_kea(kea:"Kea", settings:"Setting" = None):
         generate_utg=settings.generate_utg
     )
     global d
-    d = settings.d
-    kea.d = d
-    d.set_device_serial(settings.device_serial)
-    d.set_droidbot(droidbot)
+
+    d = load_pdl_driver(settings)  
+    kea.d = d   # set kea.d in `start.py`?
+    d.set_droidbot(droidbot)  # TODO rename `set_droidbot` as `set_data_generator`
     droidbot.start()

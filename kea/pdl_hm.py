@@ -1,26 +1,23 @@
 """
-This is the PDL (Property Desciption Language) for HarmonyOS app testing, which is 
-kind of DSL(Domain Sepcific Language).
-Please checkout our doc and paper for details.
+This is the PDL (Property Desciption Language) for HarmonyOS, which is one
+kind of DSL (Domain Sepcific Language).
+Please checkout Kea's doc and its paper for the details.
 """
 
 from hmdriver2._client import HmClient
-from hmdriver2.driver import Driver
+from hmdriver2.driver import Driver as HarmonyOS_Driver
 from hmdriver2._uiobject import UiObject
 from typing import TYPE_CHECKING, Type
 if TYPE_CHECKING:
     pass
 
-
-# from uiautomator2._selector import Selector, UiObject
-# from uiautomator2 import Device as Driver
 from typing import Any, Union, TYPE_CHECKING
 if TYPE_CHECKING:
     from kea.droidbot import DroidBot
 
 import time
 
-class PDL(Driver):
+class PDL(HarmonyOS_Driver):
     
     def __init__(self, delay=1, serial=None) -> None:
         self.delay = delay

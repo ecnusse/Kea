@@ -1,10 +1,16 @@
 from dataclasses import dataclass
+
 import traceback
 import logging
 import random
 import time
+import os
+import sys
+import importlib
+import inspect
+
 from typing import Dict, List, TYPE_CHECKING, Optional, Union
-from .testcase import TestCase
+from .testcase import KeaPBTest
 from kea.Bundle import Bundle
 from uiautomator2.exceptions import UiObjectNotFoundError
 
@@ -23,7 +29,13 @@ class CHECK_RESULT:
     PRECON_INVALID = 3
 
 class Kea:
-    _all_testCases: Dict[type, "TestCase"] = {}
+    """
+    Kea class
+    In Kea, one test case stands for one property file, which includes the elements
+    of a property (e.g., the property, the main path, the initializer).
+    """
+    # the set of all test cases (i.e., all the properties to be tested)
+    _all_testCases: Dict[type, "KeaPBTest"] = {}  
     _bundles_: Dict[str, "Bundle"] = {}
     d: Optional[Union["Android_PDL", "HarmonyOS_PDL"]]
 
@@ -31,12 +43,6 @@ class Kea:
         self.logger = logging.getLogger(self.__class__.__name__)
         self.current_rule = None
         self.execute_event = None
-
-    def start(self):
-        try:
-            self.droidbot.start()
-        except Exception:
-            traceback.print_exc()
 
     @property
     def all_rules(self) -> List["Rule"]:
@@ -50,6 +56,9 @@ class Kea:
     
     @property
     def initializer(self):
+        """
+        TODO by default, one app only has one initializer
+        """
         for testCaseName, testCase in self._all_testCases.items():
             r = testCase.get_list(INITIALIZER_MARKER, kea=self)
             if len(r) > 0:
@@ -67,30 +76,80 @@ class Kea:
         return all_mainPaths
     
     @classmethod
-    def load_testCase(cls, test_case:"Kea"):
-        test_case.load_initializer_list()
-        test_case.load_mainPath_list()
-        test_case.load_rule_list()
+    def load_properties(property_files):
+        """load the app properties to be tested
 
-        if not test_case.load_rule_list():
-            raise Exception(f"Type {type(test_case).__name__} defines no rules")
+        load each property file and instantiate the corresponding test case
+        """
+
+        workspace_path = os.path.abspath(os.getcwd())
+
+        for file in property_files:
+            
+            file_abspath = os.path.join(workspace_path, file) if not os.path.isabs(file) else file
+            
+            module_dir = os.path.dirname(file_abspath)
+            
+            # load the module dir into the system path
+            if module_dir not in sys.path:
+                sys.path.insert(0, module_dir)
+            
+            if not os.path.exists(file_abspath):
+                raise FileNotFoundError(f"{file} not exists.") 
+            
+            os.chdir(os.path.dirname(file_abspath))
+
+            module_name, extension_name = [str(_) for _ in os.path.splitext(os.path.basename(file_abspath))]
+            if not extension_name == ".py":
+                print(f"{file} is not a property file... skipping this file")
+                continue
+            
+            try:
+                # print(f"Importting module {module_name}")
+                module = importlib.import_module(module_name)
+
+                # module.d = d  # TODO really need this?? (need double check!)
+
+                # Find all classes in the module and attempt to instantiate them.
+                for _, obj in inspect.getmembers(module):
+                    if inspect.isclass(obj) and issubclass(obj, Kea) and obj is not Kea:
+                        print(f"Loading property {obj.__name__} from {file}")
+                        Kea.load_testCase(obj)
+            except ModuleNotFoundError as e:
+                print(f"Error importing module {module_name}: {e}")
+            
+        os.chdir(workspace_path)
+    
+    @classmethod
+    def load_testCase(cls, kea_test_class:"Kea"):
+
+        kea_test_class.load_initializer_list()
+        kea_test_class.load_mainPath_list()
+        kea_test_class.load_rule_list()
+
+        if not kea_test_class.load_rule_list():
+            raise Exception(f"Type {type(kea_test_class).__name__} defines no rules")
     
     @classmethod
     def load_initializer_list(cls):
-        current_TestCase = cls._all_testCases[cls] = cls._all_testCases.get(cls, TestCase())
+        """
+        TODO what does this method do?
+        """
+        cls._all_testCases[cls] = cls._all_testCases.get(cls, KeaPBTest())
+        current_TestCase = cls._all_testCases[cls]
         initializer_list = current_TestCase.get_list(INITIALIZER_MARKER, kea=cls)
         if len(initializer_list) > 0:
             return initializer_list
 
     @classmethod
     def load_rule_list(cls):
-        current_TestCase = cls._all_testCases[cls] = cls._all_testCases.get(cls, TestCase())
+        current_TestCase = cls._all_testCases[cls] = cls._all_testCases.get(cls, KeaPBTest())
         rule_list = current_TestCase.get_list(RULE_MARKER, kea=cls)
         return rule_list
 
     @classmethod
     def load_mainPath_list(cls):
-        current_TestCase = cls._all_testCases[cls] = cls._all_testCases.get(cls, TestCase())
+        current_TestCase = cls._all_testCases[cls] = cls._all_testCases.get(cls, KeaPBTest())
         mainPath_list = current_TestCase.get_list(MAINPATH_MARKER, kea=cls)
         return mainPath_list
 
@@ -121,9 +180,11 @@ class Kea:
         result = CHECK_RESULT.PASS
         try:
             time.sleep(1)
+            # execute the interaction scenario I
             result = rule.function(self)
             time.sleep(1)
         except UiObjectNotFoundError as e:
+
             self.logger.info("Could not find the UI object.")
             import traceback
             tb = traceback.extract_tb(e.__traceback__)
@@ -139,6 +200,7 @@ class Kea:
             self.logger.warning(f"Code causing the error: {code_context}")
             return CHECK_RESULT.UI_NOT_FOUND
         except AssertionError as e:
+            # the postcondition Q is violated 
             self.logger.error("Assertion error. "+str(e))
             return CHECK_RESULT.ASSERTION_ERROR
         finally:
@@ -154,7 +216,7 @@ class Kea:
         d = self.d
         exec(executable_script)
 
-    def get_rules_that_pass_the_preconditions(self) -> List:
+    def get_rules_whose_preconditions_are_satisfied(self) -> List:
         '''Check all rules and return the list of rules that meet the preconditions.'''
         rules_passed_precondition = []
         for target_rule in self.all_rules:

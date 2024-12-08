@@ -798,8 +798,8 @@ class Device(object):
         if isinstance(app, App):
             package_name = app.get_package_name()
             # Don't uninstall the app if launch with package name
-            if app.settings.is_package:
-                return
+            # if app.settings.is_package:
+            #     return
         else:
             package_name = app
         if package_name in self.adb.get_installed_apps():

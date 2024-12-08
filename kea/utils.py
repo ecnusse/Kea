@@ -5,7 +5,7 @@ import functools
 from datetime import datetime
 import time
 import warnings
-import pkg_resources
+import pkg_resources  # TODO: warning pkg_resources has been depreciated
 import yaml
 
 from typing import TYPE_CHECKING
@@ -215,9 +215,6 @@ def generate_report(img_path, html_path, bug_information=None, precondition_info
             continue
         f_html.write(line)
 
-
-
-
 def get_yml_config()->dict[str,str]:
     if not any(os.path.exists(ymal_path := os.path.join(os.getcwd(), _)) for _ in ["config.yml", "config.yaml"]):
         raise FileNotFoundError("config.yml not found")
@@ -262,42 +259,63 @@ class SingletonMeta(type):
             cls._instances[cls] = instance
         return cls._instances[cls]
 
-def check_package_existance(options):
+def sanitize_app_package_name(options):
+    """validate whether the app with the package name has been installed on the device
+    """
     import subprocess
+
+    if options.device_serial is None:
+        raise AttributeError(f"device serial is None") 
+
+    package_list = []
     if not options.is_harmonyos:
         cmd = ["adb", "-s", options.device_serial, "shell", "pm", "list", "package"] 
         dump_packages = subprocess.check_output(cmd, text=True)
         package_list = [_.split(":")[-1] for _ in dump_packages.split()]
-        if not options.package_name in package_list:
-            raise AttributeError(f"No pacakge named {options.package_name} installed on device.")    
     else:
         from .adapter.hdc import HDC_EXEC
         cmd = [HDC_EXEC, "-t", options.device_serial, "shell", "bm", "dump", "-a"]
         dump_packages = subprocess.check_output(cmd, text=True)
         package_list = dump_packages.split()
-        if not (package_name := options.apk_path) in package_list:
-            raise AttributeError(f"No pacakge named {package_name} installed on device.")  
 
-def checkconfig(options):
-    if not options.apk_path:
-        raise AttributeError("No target app. Use -a to specify the app")
+    if not (package_name := options.apk_path) in package_list:
+        raise AttributeError(f"No pacakge named {package_name} installed on device.") 
+    else:
+        print(f"pacakge named {package_name} is valid and already installed on device.")
+        
+def sanitize_args(options):
+    """sanitize of the args
+    
+    If the device serial has not been specified, the serial of the connected device will be automatically identified.
+    Note that this identification only works when *only* one device is connected.
+
+    The args `apk_path` and `property_files` are required.
+
+    If `apk_path` is not an apk file or a hap file, `apk_path` will be checked to see whether it denotes a valid app package name.
+    It allows us to test any existing app which has already been installed on the device.
+    """
+    if options.device_serial is None:   
+        identify_device_serial(options=options) 
+
+    if options.apk_path is None:
+        raise AttributeError("No target app. Use -a to specify the app to be tested")
+    
+    if options.property_files is None:
+        raise AttributeError("No properties. Use -f to specify the properties to be tested.")
+    
     if not str(options.apk_path).endswith((".apk", ".hap")):
         COLOR_YELLOW = "\033[93m"
         COLOR_RESET = "\033[0m"
-        print(f"{COLOR_YELLOW}Warning: {options.apk_path} is not a package file, trying to start with a package name{COLOR_RESET}")
-        check_package_existance(options)
-        options.is_package = True
-    else:
-        options.is_package = False
-    if not options.files:
-        raise AttributeError("No property. Use -f to specify the proeprty")
-    if not options.output_dir:
-        raise AttributeError("No output directory. Use -o to specify the output directory.")
+        print(f"{COLOR_YELLOW}Warning: {options.apk_path} is not a valid apk or hap file ... may be an app package name, trying to validate this app package ...{COLOR_RESET}")
+        sanitize_app_package_name(options)
 
-def automatic_set_device_serial(options):
-    if options.device_serial is not None:
-        return    
-    
+def identify_device_serial(options):
+    """
+    automatically identify the device serial
+    When no devices or more than one device is connected, an exception will be thrown.
+    When only one device is connected, the current device's serial is used. 
+    """
+
     import subprocess
     if not options.is_harmonyos:
         cmd = ["adb", "devices"]
@@ -309,7 +327,7 @@ def automatic_set_device_serial(options):
         if len(device_list) == 0:
             raise AttributeError("No connected device")
         if len(device_list) > 1:
-            raise AttributeError("Too many attached device, please target it with a device serial")
+            raise AttributeError("More than one attached devices, please specify one device serial")
         options.device_serial = device_list[0].strip()
     else:
         from .adapter.hdc import HDC_EXEC
@@ -319,5 +337,5 @@ def automatic_set_device_serial(options):
         if len(device_list) == 0:
             raise AttributeError("No connected device")
         if len(device_list) > 1:
-            raise AttributeError("Too many attached device, please target it with a device serial")
+            raise AttributeError("More than one attached devices, please specify one device serial")
         options.device_serial = device_list[0].strip()

@@ -17,14 +17,14 @@ class PDL(Android_Driver):  #TODO rename `PDL` to `AndroidDriver` `HarmonyDriver
 
     droidbot = None    
 
-    def __init__(self, delay=1) -> None:
-        self.delay = delay
-
-    def set_device_serial(self, serial):
+    def __init__(self, serial, delay=1) -> None:
         super().__init__(serial=serial)
+        self.delay = delay
         # set the delay between sending events
         self.settings['operation_delay'] = (0, self.delay)
         self.settings['wait_timeout'] = 5.0 # 默认控件等待时间
+
+    # def set_device_serial(self, serial):
 
     def __call__(self, **kwargs: Any) -> "Ui":
         return Ui(self, Selector(**kwargs), droidbot=self.droidbot)

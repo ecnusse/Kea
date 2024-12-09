@@ -14,10 +14,12 @@ from .testcase import KeaPBTest
 from kea.Bundle import Bundle
 from uiautomator2.exceptions import UiObjectNotFoundError
 
+from .utils import DEFAULT_POLICY, DEFAULT_EVENT_INTERVAL, DEFAULT_TIMEOUT, DEFAULT_EVENT_COUNT 
+
 if TYPE_CHECKING:
     from .testcase import Rule, MainPath
-    from .pdl import PDL as Android_PDL
     from .pdl_hm import PDL as HarmonyOS_PDL
+from .pdl import PDL as Android_PDL
 
 from .utils import INITIALIZER_MARKER, RULE_MARKER, MAINPATH_MARKER
 
@@ -40,12 +42,12 @@ class Setting:
     device_serial: str = None
     output_dir:str ="output"
     is_emulator: bool =True     #True for emulators, False for real devices.
-    policy_name: str =input_manager.DEFAULT_POLICY
+    policy_name: str = DEFAULT_POLICY
     random_input: bool =True
     script_path: str=None
-    event_interval: int=input_manager.DEFAULT_EVENT_INTERVAL
-    timeout: int =input_manager.DEFAULT_TIMEOUT
-    event_count: int=input_manager.DEFAULT_EVENT_COUNT
+    event_interval: int= DEFAULT_EVENT_INTERVAL
+    timeout: int = DEFAULT_TIMEOUT
+    event_count: int= DEFAULT_EVENT_COUNT
     cv_mode=None
     debug_mode: bool=False
     keep_app:bool=None
@@ -67,7 +69,8 @@ class Setting:
 OUTPUT_DIR = "output"
 
 # `d` is the pdl driver for Android or HarmonyOS
-d:Union["Android_PDL", "HarmonyOS_PDL", None] = None  # TODO move `d` to `kea.py`?
+d:Union["Android_PDL", "HarmonyOS_PDL", None] = None # TODO move `d` to `kea.py`?
+print("module d addr:%#x" % id(d))
 
 class Kea:
     """
@@ -78,14 +81,30 @@ class Kea:
     # the set of all test cases (i.e., all the properties to be tested)
     _all_testCases: Dict[type, "KeaPBTest"] = {}  
     _bundles_: Dict[str, "Bundle"] = {}
-    # d: Optional[Union["Android_PDL", "HarmonyOS_PDL"]]
+    d: Optional[Union["Android_PDL", "HarmonyOS_PDL"]]
 
-    def __init__(self, driver):
+    @classmethod
+    def set_driver(cls, driver:Optional[Union["Android_PDL", "HarmonyOS_PDL"]]):
+        cls.d = driver
+
+    def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.current_rule = None
         self.execute_event = None
-        global d 
-        d = driver
+        # global d 
+        # d = driver
+        # d.set_droidbot(droidbot)
+        # self.droidbot = droidbot
+        pass
+    # def __init__(self, driver:Union["Android_PDL", "HarmonyOS_PDL"], droidbot):
+    #     self.logger = logging.getLogger(self.__class__.__name__)
+    #     self.current_rule = None
+    #     self.execute_event = None
+    #     global d 
+    #     d = driver
+    #     d.set_droidbot(droidbot)
+    #     self.droidbot = droidbot
+    #     pass
 
     @property
     def all_rules(self) -> List["Rule"]:
@@ -255,7 +274,7 @@ class Kea:
 
     def exec_mainPath(self, executable_script):
         # d for DSL object. Set the d as a local var to make it available in exectuable_scripts
-        global d
+        d = self.d
         exec(executable_script)
 
     def get_rules_whose_preconditions_are_satisfied(self) -> List:

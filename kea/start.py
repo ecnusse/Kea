@@ -1,5 +1,7 @@
 from .input_manager import DEFAULT_POLICY, DEFAULT_TIMEOUT
 from .kea import Kea, Setting
+# print("start d addr:%#x" % id(d))
+
 from .utils import get_yml_config, sanitize_args
 from .droidbot import DroidBot
 
@@ -12,6 +14,7 @@ warnings.filterwarnings("ignore", category=NonInteractiveExampleWarning)
 import coloredlogs
 coloredlogs.install()
 
+print()
 
 def parse_args():
     """Parse, load and sanitize the args from the command line and the config file `config.yml`.
@@ -107,7 +110,7 @@ def start_kea(kea:"Kea", settings:"Setting" = None):   #TODO  move `start_kea` t
         device_serial=settings.device_serial,
         is_emulator=settings.is_emulator,
         output_dir=settings.output_dir,
-        env_policy=env_manager.POLICY_NONE,
+        env_policy = None,
         policy_name=settings.policy_name,
         random_input=settings.random_input,
         script_path=settings.script_path,
@@ -134,9 +137,11 @@ def start_kea(kea:"Kea", settings:"Setting" = None):   #TODO  move `start_kea` t
         settings=settings,
         generate_utg=settings.generate_utg
     )
-
+    # global d
+    # print("global d addr:%#x" % id(d))
     kea.d.set_droidbot(droidbot)  # TODO rename `set_droidbot` as `set_data_generator`
     droidbot.start()
+    
 
 def main():
     """the main entry of Kea.
@@ -156,15 +161,19 @@ def main():
                        is_harmonyos=options.is_harmonyos,
                        grant_perm=options.grant_perm,
                        is_emulator=options.is_emulator,
-                       generate_utg=options.generate_utg,
-                       is_package = options.is_package
+                       generate_utg=options.generate_utg
                        )
 
     # load the properties to be tested
-    driver = load_pdl_driver(settings)
+    # global d
+    # print("global d addr: %#x" % id(d))
+    
 
-    kea = Kea(driver)
-    kea.load_properties(options.property_files)
+    d = load_pdl_driver(settings)
+    # print("obj d addr:%#x" % id(d))
+    Kea.set_driver(d)
+    Kea.load_properties(options.property_files)
+    kea = Kea()
     print(f"Test cases: {kea._all_testCases}") 
     
     # start Kea

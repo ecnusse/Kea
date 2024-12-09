@@ -21,12 +21,53 @@ if TYPE_CHECKING:
 
 from .utils import INITIALIZER_MARKER, RULE_MARKER, MAINPATH_MARKER
 
+from .property_decorator import rule, precondition, initializer, mainPath
+
 @dataclass
 class CHECK_RESULT:
     ASSERTION_ERROR = 0
     PASS = 1
     UI_NOT_FOUND = 2
     PRECON_INVALID = 3
+
+@dataclass
+class Setting:
+    """`Setting` is a Python DataClass
+
+    TODO: it seems the Setting class is redudant? why not just using options?
+    """
+    apk_path: str
+    device_serial: str = None
+    output_dir:str ="output"
+    is_emulator: bool =True     #True for emulators, False for real devices.
+    policy_name: str =input_manager.DEFAULT_POLICY
+    random_input: bool =True
+    script_path: str=None
+    event_interval: int=input_manager.DEFAULT_EVENT_INTERVAL
+    timeout: int =input_manager.DEFAULT_TIMEOUT
+    event_count: int=input_manager.DEFAULT_EVENT_COUNT
+    cv_mode=None
+    debug_mode: bool=False
+    keep_app:bool=None
+    keep_env=None
+    profiling_method=None
+    grant_perm: bool=True
+    send_document: bool=True
+    enable_accessibility_hard=None
+    master=None
+    humanoid=None
+    ignore_ad=None
+    replay_output=None
+    number_of_events_that_restart_app:int =100
+    run_initial_rules_after_every_mutation=True
+    is_harmonyos:bool=False
+    generate_utg:bool=False
+    is_package:bool=False
+
+OUTPUT_DIR = "output"
+
+# `d` is the pdl driver for Android or HarmonyOS
+d:Union["Android_PDL", "HarmonyOS_PDL", None] = None  # TODO move `d` to `kea.py`?
 
 class Kea:
     """
@@ -37,12 +78,14 @@ class Kea:
     # the set of all test cases (i.e., all the properties to be tested)
     _all_testCases: Dict[type, "KeaPBTest"] = {}  
     _bundles_: Dict[str, "Bundle"] = {}
-    d: Optional[Union["Android_PDL", "HarmonyOS_PDL"]]
+    # d: Optional[Union["Android_PDL", "HarmonyOS_PDL"]]
 
-    def __init__(self):
+    def __init__(self, driver):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.current_rule = None
         self.execute_event = None
+        global d 
+        d = driver
 
     @property
     def all_rules(self) -> List["Rule"]:
@@ -76,12 +119,11 @@ class Kea:
         return all_mainPaths
     
     @classmethod
-    def load_properties(property_files):
+    def load_properties(cls, property_files):
         """load the app properties to be tested
 
         load each property file and instantiate the corresponding test case
         """
-
         workspace_path = os.path.abspath(os.getcwd())
 
         for file in property_files:
@@ -108,7 +150,7 @@ class Kea:
                 # print(f"Importting module {module_name}")
                 module = importlib.import_module(module_name)
 
-                # module.d = d  # TODO really need this?? (need double check!)
+                module.d = cls.d  # TODO really need this?? (need double check!)
 
                 # Find all classes in the module and attempt to instantiate them.
                 for _, obj in inspect.getmembers(module):
@@ -213,7 +255,7 @@ class Kea:
 
     def exec_mainPath(self, executable_script):
         # d for DSL object. Set the d as a local var to make it available in exectuable_scripts
-        d = self.d
+        global d
         exec(executable_script)
 
     def get_rules_whose_preconditions_are_satisfied(self) -> List:

@@ -9,7 +9,7 @@ import re
 import time
 
 
-from .utils import Time
+from .utils import Time, generate_report
 from abc import abstractmethod
 from .input_event import (
     KEY_RotateDeviceNeutralEvent,
@@ -25,13 +25,13 @@ from .input_event import (
     SetTextEvent
 )
 from .utg import UTG
-from kea import utils
-from kea.kea import CHECK_RESULT
+# from .kea import utils
+from .kea import CHECK_RESULT
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .input_manager import InputManager
-    from .core import Kea
+    from .kea import Kea
     from .app import App
     from .device import Device
 
@@ -140,7 +140,7 @@ class InputPolicy(object):
                         self.update_utg()
 
                 bug_report_path = os.path.join(self.device.output_dir, "all_states")
-                utils.generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.get_count(), self.time_recoder.get_time_duration())
+                generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.get_count(), self.time_recoder.get_time_duration())
             except KeyboardInterrupt:
                 break
             except InputInterruptedException as e:
@@ -304,7 +304,7 @@ class KeaInputPolicy(InputPolicy):
         """
         # mark the bug information on the bug report html
         bug_report_path = os.path.join(self.device.output_dir, "all_states")
-        utils.generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.get_count(), self.time_recoder.get_time_duration())
+        generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.get_count(), self.time_recoder.get_time_duration())
         # self.logger.info("----------------------------------------")
         #
         # if len(self.triggered_bug_information) > 0:

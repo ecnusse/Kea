@@ -24,6 +24,12 @@ PRECONDITIONS_MARKER = "tool_preconditions"
 INVARIANT_MARKER = "tool_invariant"
 MAINPATH_MARKER = "tool_mainPath"
 
+DEFAULT_POLICY = "random"
+RANDOM_POLICY = "random"
+DEFAULT_EVENT_INTERVAL = 1
+DEFAULT_EVENT_COUNT = 100000000
+DEFAULT_TIMEOUT = 3600
+
 def lazy_property(func):
     attribute = '_lazy_' + func.__name__
 

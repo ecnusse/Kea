@@ -1,8 +1,17 @@
 from .input_manager import DEFAULT_POLICY, DEFAULT_TIMEOUT
-from .core import Kea, Setting, start_kea
+from .kea import Kea, Setting
 from .utils import get_yml_config, sanitize_args
+from .droidbot import DroidBot
+
+from hypothesis.errors import NonInteractiveExampleWarning
 
 import argparse
+import warnings
+
+warnings.filterwarnings("ignore", category=NonInteractiveExampleWarning)
+import coloredlogs
+coloredlogs.install()
+
 
 def parse_args():
     """Parse, load and sanitize the args from the command line and the config file `config.yml`.
@@ -76,16 +85,64 @@ def load_ymal_args(opts):
     
     return opts
 
+def load_pdl_driver(settings: "Setting"):
+    """Load the pdl (property description language) driver according to the target mobile platform
+        (e.g., Android, HarmonyOS).
+
+    TODO could we put this function in `start.py`? and set it as one setting option
+    Because this funciton is only related to Setting
+    """
+    if settings.is_harmonyos:
+        from kea.pdl_hm import PDL
+        return PDL(serial=settings.device_serial)
+    else:
+        from kea.pdl import PDL
+        return PDL(serial=settings.device_serial)
+    
+def start_kea(kea:"Kea", settings:"Setting" = None):   #TODO  move `start_kea` to `start.py`?
+
+    # TODO rename `droidbot` as `data_generator`` (fuzzer)?
+    droidbot = DroidBot(    
+        app_path=settings.apk_path,
+        device_serial=settings.device_serial,
+        is_emulator=settings.is_emulator,
+        output_dir=settings.output_dir,
+        env_policy=env_manager.POLICY_NONE,
+        policy_name=settings.policy_name,
+        random_input=settings.random_input,
+        script_path=settings.script_path,
+        event_interval=settings.event_interval,
+        timeout=settings.timeout,
+        event_count=settings.event_count,
+        cv_mode=settings.cv_mode,
+        debug_mode=settings.debug_mode,
+        keep_app=settings.keep_app,
+        keep_env=settings.keep_env,
+        profiling_method=settings.profiling_method,
+        grant_perm=settings.grant_perm,
+        send_document=settings.send_document,
+        enable_accessibility_hard=settings.enable_accessibility_hard,
+        master=settings.master,
+        humanoid=settings.humanoid,
+        ignore_ad=settings.ignore_ad,
+        replay_output=settings.replay_output,
+        kea=kea,
+        number_of_events_that_restart_app=settings.number_of_events_that_restart_app,
+        run_initial_rules_after_every_mutation=settings.run_initial_rules_after_every_mutation,
+        is_harmonyos=settings.is_harmonyos,
+        is_package=settings.is_package,
+        settings=settings,
+        generate_utg=settings.generate_utg
+    )
+
+    kea.d.set_droidbot(droidbot)  # TODO rename `set_droidbot` as `set_data_generator`
+    droidbot.start()
 
 def main():
     """the main entry of Kea.
     """
     # parse the args
     options = parse_args()
-    # load the properties to be tested
-    Kea.load_properties(options.property_files)
-    kea = Kea()
-    print(f"Test cases: {kea._all_testCases}")
 
     # setup the setting
     settings =  Setting(apk_path=options.apk_path,
@@ -102,6 +159,13 @@ def main():
                        generate_utg=options.generate_utg,
                        is_package = options.is_package
                        )
+
+    # load the properties to be tested
+    driver = load_pdl_driver(settings)
+
+    kea = Kea(driver)
+    kea.load_properties(options.property_files)
+    print(f"Test cases: {kea._all_testCases}") 
     
     # start Kea
     start_kea(kea, settings) 

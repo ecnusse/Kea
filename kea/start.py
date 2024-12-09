@@ -1,6 +1,5 @@
 from .input_manager import DEFAULT_POLICY, DEFAULT_TIMEOUT
 from .kea import Kea, Setting
-# print("start d addr:%#x" % id(d))
 
 from .utils import get_yml_config, sanitize_args
 from .droidbot import DroidBot
@@ -102,7 +101,7 @@ def load_pdl_driver(settings: "Setting"):
         from kea.pdl import PDL
         return PDL(serial=settings.device_serial)
     
-def start_kea(kea:"Kea", settings:"Setting" = None):   #TODO  move `start_kea` to `start.py`?
+def start_kea(kea:"Kea", settings:"Setting" = None):
 
     # TODO rename `droidbot` as `data_generator`` (fuzzer)?
     droidbot = DroidBot(    
@@ -137,9 +136,8 @@ def start_kea(kea:"Kea", settings:"Setting" = None):   #TODO  move `start_kea` t
         settings=settings,
         generate_utg=settings.generate_utg
     )
-    # global d
-    # print("global d addr:%#x" % id(d))
-    kea.d.set_droidbot(droidbot)  # TODO rename `set_droidbot` as `set_data_generator`
+
+    kea.pdl_driver.set_droidbot(droidbot)  # TODO rename `set_droidbot` as `set_data_generator`
     droidbot.start()
     
 
@@ -164,18 +162,13 @@ def main():
                        generate_utg=options.generate_utg
                        )
 
-    # load the properties to be tested
-    # global d
-    # print("global d addr: %#x" % id(d))
-    
-
     d = load_pdl_driver(settings)
-    # print("obj d addr:%#x" % id(d))
-    Kea.set_driver(d)
+
+    Kea.set_pdl_driver(d)
     Kea.load_properties(options.property_files)
     kea = Kea()
-    print(f"Test cases: {kea._all_testCases}") 
-    
+
+    print(f"INFO: All Test cases: {kea._all_Kea_PBTests}") 
     # start Kea
     start_kea(kea, settings) 
 

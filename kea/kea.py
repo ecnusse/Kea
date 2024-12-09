@@ -10,14 +10,14 @@ import importlib
 import inspect
 
 from typing import Dict, List, TYPE_CHECKING, Optional, Union
-from .testcase import KeaPBTest
+from .kea_pbtest import KeaPBTest
 from kea.Bundle import Bundle
 from uiautomator2.exceptions import UiObjectNotFoundError
 
 from .utils import DEFAULT_POLICY, DEFAULT_EVENT_INTERVAL, DEFAULT_TIMEOUT, DEFAULT_EVENT_COUNT 
 
 if TYPE_CHECKING:
-    from .testcase import Rule, MainPath
+    from .kea_pbtest import Rule, MainPath
     from .pdl_hm import PDL as HarmonyOS_PDL
 from .pdl import PDL as Android_PDL
 
@@ -70,7 +70,6 @@ OUTPUT_DIR = "output"
 
 # `d` is the pdl driver for Android or HarmonyOS
 d:Union["Android_PDL", "HarmonyOS_PDL", None] = None # TODO move `d` to `kea.py`?
-print("module d addr:%#x" % id(d))
 
 class Kea:
     """
@@ -79,41 +78,27 @@ class Kea:
     of a property (e.g., the property, the main path, the initializer).
     """
     # the set of all test cases (i.e., all the properties to be tested)
-    _all_testCases: Dict[type, "KeaPBTest"] = {}  
+    _all_Kea_PBTests: Dict[type, "KeaPBTest"] = {}   
     _bundles_: Dict[str, "Bundle"] = {}
-    d: Optional[Union["Android_PDL", "HarmonyOS_PDL"]]
+    pdl_driver: Optional[Union["Android_PDL", "HarmonyOS_PDL"]]
 
     @classmethod
-    def set_driver(cls, driver:Optional[Union["Android_PDL", "HarmonyOS_PDL"]]):
-        cls.d = driver
+    def set_pdl_driver(cls, driver:Optional[Union["Android_PDL", "HarmonyOS_PDL"]]):
+        cls.pdl_driver = driver
 
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.current_rule = None
         self.execute_event = None
-        # global d 
-        # d = driver
-        # d.set_droidbot(droidbot)
-        # self.droidbot = droidbot
-        pass
-    # def __init__(self, driver:Union["Android_PDL", "HarmonyOS_PDL"], droidbot):
-    #     self.logger = logging.getLogger(self.__class__.__name__)
-    #     self.current_rule = None
-    #     self.execute_event = None
-    #     global d 
-    #     d = driver
-    #     d.set_droidbot(droidbot)
-    #     self.droidbot = droidbot
-    #     pass
 
     @property
     def all_rules(self) -> List["Rule"]:
         """
-        :return: load rules from all the provided testCases 
+        :return: load rules from all Kea_PBTests
         """
         all_rules = []
-        for testCase in self._all_testCases.values():
-            all_rules.extend(testCase.rule_list)
+        for Kea_PBTest in self._all_Kea_PBTests.values():
+            all_rules.extend(Kea_PBTest.rule_list)
         return all_rules
     
     @property
@@ -121,10 +106,10 @@ class Kea:
         """
         TODO by default, one app only has one initializer
         """
-        for testCaseName, testCase in self._all_testCases.items():
-            r = testCase.get_list(INITIALIZER_MARKER, kea=self)
+        for kea_test_class_name, Kea_PBTest in self._all_Kea_PBTests.items():
+            r = Kea_PBTest.get_list(INITIALIZER_MARKER, kea_test_class=self)
             if len(r) > 0:
-                self.logger.info(f"Successfully found an initializer in {testCaseName}")
+                self.logger.info(f"Successfully found an initializer in {kea_test_class_name}")
                 return r
 
         self.logger.warning("No initializer found for current apps.")
@@ -133,8 +118,8 @@ class Kea:
     @property
     def all_mainPaths(self):
         all_mainPaths = []
-        for testCase in self._all_testCases.values():
-            all_mainPaths.extend(testCase.mainPath_list)
+        for Kea_PBTest in self._all_Kea_PBTests.values():
+            all_mainPaths.extend(Kea_PBTest.mainPath_list)
         return all_mainPaths
     
     @classmethod
@@ -144,6 +129,9 @@ class Kea:
         load each property file and instantiate the corresponding test case
         """
         workspace_path = os.path.abspath(os.getcwd())
+
+        # remove duplicates files
+        property_files = list(set(property_files))
 
         for file in property_files:
             
@@ -158,6 +146,8 @@ class Kea:
             if not os.path.exists(file_abspath):
                 raise FileNotFoundError(f"{file} not exists.") 
             
+            # dynamically change the workspace to make sure 
+            # the import of the user properties work correctly
             os.chdir(os.path.dirname(file_abspath))
 
             module_name, extension_name = [str(_) for _ in os.path.splitext(os.path.basename(file_abspath))]
@@ -169,49 +159,85 @@ class Kea:
                 # print(f"Importting module {module_name}")
                 module = importlib.import_module(module_name)
 
-                module.d = cls.d  # TODO really need this?? (need double check!)
+                #! IMPORTANT: set the pdl driver in the modules (the user written properties)
+                module.d = cls.pdl_driver
 
-                # Find all classes in the module and attempt to instantiate them.
+                # Find all kea_test_class in the module and attempt to instantiate them.
                 for _, obj in inspect.getmembers(module):
                     if inspect.isclass(obj) and issubclass(obj, Kea) and obj is not Kea:
                         print(f"Loading property {obj.__name__} from {file}")
-                        Kea.load_testCase(obj)
+                        Kea.load_Kea_PBTest(obj)
+
             except ModuleNotFoundError as e:
                 print(f"Error importing module {module_name}: {e}")
             
         os.chdir(workspace_path)
     
     @classmethod
-    def load_testCase(cls, kea_test_class:"Kea"):
+    def load_Kea_PBTest(cls, kea_test_class:"Kea"):
+        """load Kea_PBTest from kea_test_class and save it to the class var _all_Kea_PBTests
 
-        kea_test_class.load_initializer_list()
-        kea_test_class.load_mainPath_list()
-        kea_test_class.load_rule_list()
+        ### :input:
+        kea_test_class: the usr defined test class when writing properties. this should be a child class of class Kea
+        """
 
-        if not kea_test_class.load_rule_list():
-            raise Exception(f"Type {type(kea_test_class).__name__} defines no rules")
+        current_keaPBTest = cls.init_KeaPBTest(kea_test_class)
+
+        cls.load_initializer_list(current_keaPBTest, kea_test_class)
+        cls.load_mainPath_list(current_keaPBTest, kea_test_class)
+        cls.load_rule_list(current_keaPBTest, kea_test_class)        
     
     @classmethod
-    def load_initializer_list(cls):
+    def init_KeaPBTest(cls, kea_test_class:"Kea") -> "KeaPBTest":
         """
-        TODO what does this method do?
+        Init the KeaPBTest for current kea_test_class. 
+        If the KeaPBTest for current kea_test_class has already been initialized. Find it and return it.
+
+        :return: KeaPBTest
         """
-        cls._all_testCases[cls] = cls._all_testCases.get(cls, KeaPBTest())
-        current_TestCase = cls._all_testCases[cls]
-        initializer_list = current_TestCase.get_list(INITIALIZER_MARKER, kea=cls)
+        # use a dict to store the KeaPBTest obj and make sure every 
+        # KeaPBTest obj can only be instantiate once.
+        current_Kea_PBTest = cls._all_Kea_PBTests.get(kea_test_class, KeaPBTest())
+        cls._all_Kea_PBTests[kea_test_class] = current_Kea_PBTest
+        return current_Kea_PBTest
+    
+    @classmethod
+    def load_initializer_list(cls, current_Kea_PBTest:KeaPBTest, kea_test_class:"Kea"):
+        """
+        load initializer list from kea_test_class and save it to current_PBTest
+
+        ### :input:
+        current_Kea_PBTest: the Kea_PBTest for the current kea_test_class
+        kea_test_class: the usr defined test class when writing properties. this should be a child class of class Kea
+        """
+        initializer_list = current_Kea_PBTest.get_list(INITIALIZER_MARKER, kea_test_class=kea_test_class)
         if len(initializer_list) > 0:
-            return initializer_list
+            current_Kea_PBTest.initializer_list = initializer_list
 
     @classmethod
-    def load_rule_list(cls):
-        current_TestCase = cls._all_testCases[cls] = cls._all_testCases.get(cls, KeaPBTest())
-        rule_list = current_TestCase.get_list(RULE_MARKER, kea=cls)
+    def load_rule_list(cls, current_PBTest:KeaPBTest, kea_test_class:"Kea"):
+        """
+        load rule list from kea_test_class and save it to current_PBTest
+
+        ### :input:
+        current_Kea_PBTest: the Kea_PBTest for the current kea_test_class
+        kea_test_class: the usr defined test class when writing properties. this should be a child class of class Kea
+        """
+        rule_list = current_PBTest.get_list(RULE_MARKER, kea_test_class=kea_test_class)
+        if len(rule_list) == 0:
+            raise Exception(f"Type {type(current_PBTest).__name__} defines no rules")
         return rule_list
 
     @classmethod
-    def load_mainPath_list(cls):
-        current_TestCase = cls._all_testCases[cls] = cls._all_testCases.get(cls, KeaPBTest())
-        mainPath_list = current_TestCase.get_list(MAINPATH_MARKER, kea=cls)
+    def load_mainPath_list(cls, current_PBTest:KeaPBTest, kea_test_class:"Kea"):
+        """
+        load mainPath list from kea_test_class and save it to current_PBTest
+
+        ### :input:
+        current_Kea_PBTest: the Kea_PBTest for the current kea_test_class
+        kea_test_class: the usr defined test class when writing properties. this should be a child class of class Kea
+        """
+        mainPath_list = current_PBTest.get_list(MAINPATH_MARKER, kea_test_class=kea_test_class)
         return mainPath_list
 
     @classmethod
@@ -233,6 +259,9 @@ class Kea:
         return self.execute_rule(rule_to_check)
 
     def execute_rule(self, rule:"Rule"):
+        """
+        execute a rule and return the execution result
+        """
         self.logger.info(f"executing rule:\n{rule}")
         if len(rule.preconditions) > 0:
             if not all(precond(self) for precond in rule.preconditions):
@@ -273,8 +302,8 @@ class Kea:
         return mainPath.function, mainPath.path
 
     def exec_mainPath(self, executable_script):
-        # d for DSL object. Set the d as a local var to make it available in exectuable_scripts
-        d = self.d
+        # d for PDL driver. Set the d as a local var to make it available in exectuable_scripts
+        d = self.pdl_driver
         exec(executable_script)
 
     def get_rules_whose_preconditions_are_satisfied(self) -> List:

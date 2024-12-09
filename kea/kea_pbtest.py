@@ -24,7 +24,7 @@ class KeaPBTest:
     initializer_list:List["Rule"]
     mainPath_list:List["MainPath"]
 
-    def get_list(self, MARKER:str, kea:"Kea"):
+    def get_list(self, MARKER:str, kea_test_class:"Kea"):
         """
         Dynamically get the rule/initializer/mainPath list from the testCase.
         """
@@ -41,7 +41,7 @@ class KeaPBTest:
         # Else, initialize the list 
         # (TestCase is singleton so the other initialized lists won't be covered)
         setattr(self, TARGET_LIST_NAME, [])
-        for _, v in inspect.getmembers(kea):
+        for _, v in inspect.getmembers(kea_test_class):
             r = getattr(v, MARKER, None)
             if r is not None:
                 getattr(self, TARGET_LIST_NAME).append(r)

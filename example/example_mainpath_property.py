@@ -1,7 +1,5 @@
 import random
 from kea import *
-print("son's addr:%#x" % id(d))
-
 
 class Test(Kea):
 

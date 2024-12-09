@@ -1,7 +1,7 @@
 import inspect
 import attr
 from typing import Callable, Any
-from .testcase import Rule, MainPath
+from .kea_pbtest import Rule, MainPath
 from .utils import PRECONDITIONS_MARKER, RULE_MARKER, INITIALIZER_MARKER, MAINPATH_MARKER
 
 def rule() -> Callable:

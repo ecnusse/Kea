@@ -174,7 +174,7 @@ def start_kea(kea:"Kea", settings:"Setting" = None):
         generate_utg=settings.generate_utg
     )
 
-    kea.pdl_driver.set_droidbot(droidbot)  # TODO rename `set_droidbot` as `set_data_generator`
+    kea._pdl_driver.set_droidbot(droidbot)  # TODO rename `set_droidbot` as `set_data_generator`
     droidbot.start()
     
 
@@ -205,7 +205,7 @@ def main():
     Kea.load_properties(options.property_files)
     kea = Kea()
 
-    print(f"INFO: All Test cases: {kea._all_Kea_PBTests}") 
+    print(f"INFO: All Test cases: {kea._KeaTest_DB}") 
     # start Kea
     start_kea(kea, settings) 
 

@@ -1,7 +1,8 @@
 from kea import *
 
-class Test2(Kea):
-    _files = Kea.set_bundle("files")
+class Test2(KeaTest):
+    _files = Bundle("files")
+    KeaTest.set_bundle(_files)
 
     @initializer()
     def set_up(self):
@@ -12,7 +13,8 @@ class Test2(Kea):
         if d(text="ALLOW").exists():
             d(text="ALLOW").click()
 
-    @precondition(lambda self: d(resourceId="com.amaze.filemanager:id/sd_main_fab").exists())
+
+    @precondition(lambda: KeaTest._bundles_["files"] and d(resourceId="com.amaze.filemanager:id/sd_main_fab").exists())
     @rule()
     def create_file_should_exist(self):
         d(resourceId="com.amaze.filemanager:id/pathbar").click()

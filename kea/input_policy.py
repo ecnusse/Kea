@@ -209,9 +209,9 @@ class KeaInputPolicy(InputPolicy):
             self.humanoid_events = []
         
         # retrive all the rules from the provided properties
-        self.rules = {}
+        self.statistics_of_rules = {}
         for rule in self.kea.all_rules:
-            self.rules[rule.function.__name__] = {RULE_STATE.PRECONDITION_SATISFIED: 0, RULE_STATE.PROPERTY_CHECKED: 0, RULE_STATE.BUG_TRIGGERED: 0}
+            self.statistics_of_rules[rule.function.__name__] = {RULE_STATE.PRECONDITION_SATISFIED: 0, RULE_STATE.PROPERTY_CHECKED: 0, RULE_STATE.BUG_TRIGGERED: 0}
         # record the action count, time and property name when the bug is triggered
         self.triggered_bug_information = []
 
@@ -219,28 +219,29 @@ class KeaInputPolicy(InputPolicy):
         """
         TODO should split the function
         """
-        rules_list_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
-        if len(rules_list_to_check) == 0:
+        rules_dict_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
+        if len(rules_dict_to_check) == 0:
             self.logger.debug("No rules match the precondition")
             if hasattr(self, "not_reach_precondition_path_number"):
                 self.not_reach_precondition_path_number.append(self.path_index)
             return
             # continue
 
-        for rule in rules_list_to_check:
-            self.rules[rule.function.__name__][RULE_STATE.PRECONDITION_SATISFIED] += 1
-        rule_to_check = random.choice(rules_list_to_check)
+        candidate_rules_list = rules_dict_to_check.keys()
+        for candidate_rule in candidate_rules_list:
+            self.statistics_of_rules[candidate_rule.function.__name__][RULE_STATE.PRECONDITION_SATISFIED] += 1
+        rule_to_check = random.choice(candidate_rules_list)
 
         if rule_to_check is not None:
             self.logger.info(f"-------Check Property : {rule_to_check}------")
-            self.rules[rule_to_check.function.__name__][RULE_STATE.PROPERTY_CHECKED] += 1
+            self.statistics_of_rules[rule_to_check.function.__name__][RULE_STATE.PROPERTY_CHECKED] += 1
             pre_id = self.device.get_count()
             # check rule, record relavant info and output log
-            result = self.kea.execute_rule(rule_to_check)
-            if result == CHECK_RESULT.ASSERTION_ERROR:
+            result = self.kea.execute_rule(rule=rule_to_check, keaTest=rules_dict_to_check[rule_to_check])
+            if result == CHECK_RESULT.ASSERTION_FAILURE:
                 self.logger.error(f"-------Postcondition failed. Assertion error, Property:{rule_to_check}------")
                 self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))
-                self.rules[rule_to_check.function.__name__][RULE_STATE.BUG_TRIGGERED] += 1
+                self.statistics_of_rules[rule_to_check.function.__name__][RULE_STATE.BUG_TRIGGERED] += 1
                 post_id = self.device.get_count()
                 self.triggered_bug_information.append(
                     ((pre_id, post_id), self.time_recoder.get_time_duration(), rule_to_check.function.__name__))
@@ -365,7 +366,8 @@ class GuidedPolicy(KeaInputPolicy):
             self.logger.error("No mainPath")
             return
         self.main_path = random.choice(self.kea.all_mainPaths)
-        self.path_func, self.main_path =  self.kea.parse_mainPath(self.main_path)
+        # self.path_func, self.main_path =  self.kea.parse_mainPath(self.main_path)
+        self.path_func, self.main_path =  self.main_path.function, self.main_path.path
         self.logger.info(f"Select the {len(self.main_path)} steps mainPath function: {self.path_func}")
         self.main_path_list = copy.deepcopy(self.main_path)
         self.max_number_of_events_that_try_to_find_event_on_main_path = min(10, len(self.main_path))

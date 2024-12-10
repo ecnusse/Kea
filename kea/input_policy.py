@@ -211,7 +211,7 @@ class KeaInputPolicy(InputPolicy):
         # retrive all the rules from the provided properties
         self.statistics_of_rules = {}
         for rule in self.kea.all_rules:
-            self.statistics_of_rules[rule.function.__name__] = {RULE_STATE.PRECONDITION_SATISFIED: 0, RULE_STATE.PROPERTY_CHECKED: 0, RULE_STATE.BUG_TRIGGERED: 0}
+            self.statistics_of_rules[str(rule)] = {RULE_STATE.PRECONDITION_SATISFIED: 0, RULE_STATE.PROPERTY_CHECKED: 0, RULE_STATE.BUG_TRIGGERED: 0}
         # record the action count, time and property name when the bug is triggered
         self.triggered_bug_information = []
 
@@ -227,9 +227,9 @@ class KeaInputPolicy(InputPolicy):
             return
             # continue
 
-        candidate_rules_list = rules_dict_to_check.keys()
+        candidate_rules_list = list(rules_dict_to_check.keys())
         for candidate_rule in candidate_rules_list:
-            self.statistics_of_rules[candidate_rule.function.__name__][RULE_STATE.PRECONDITION_SATISFIED] += 1
+            self.statistics_of_rules[str(candidate_rule)][RULE_STATE.PRECONDITION_SATISFIED] += 1
         rule_to_check = random.choice(candidate_rules_list)
 
         if rule_to_check is not None:

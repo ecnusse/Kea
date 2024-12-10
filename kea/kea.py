@@ -41,20 +41,18 @@ class Rule:    # tingsu: what does these mean, including Rule, MainPath, initial
     # TODO we may need to rename `function` to `method`?
     function = attr.ib()
 
+    def evolve(self, **changes) -> "Rule":
+        return Rule(**{**self.__dict__, **changes})
+
     def __str__(self) -> str:
-        return f"Rule(function: {self.function.__module__}.{self.function.__qualname__})"
-    
-    def __hash__(self):
-        # TODO xixian - Since we need a Dict[Rule, KeaTest] 
-        # TODO the rule must be hashable, is it save to use the addr of its component?
-        # ! hint: By default, this is not hashable because @attr.s() is a dynamic obj
-        # ! Rule obj needs to be dynamic to load multiple precond in @precondition()
-        # ! or we can use function.__module__ + function.__qualname__ to hash?
-        # ! e.g example_property.Test1.search_bar_should_exist_after_rotation
-        hash_value = hash(id(self.function))
-        for precond in self.preconditions:
-            hash_value = hash_value | hash(id(precond))
-        return hash_value
+        r = f"{self.function.__module__}.{self.function.__qualname__.split('.')[0]}.Rule(function: {self.function.__name__})"
+        return r
+
+@attr.s()
+class Initializer:
+    # TODO - xixian add this class to decorator and modify the typing
+    # `function` denotes the function of `@mainPath.
+    function = attr.ib()
 
 @attr.s()
 class MainPath:

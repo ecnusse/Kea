@@ -8,6 +8,7 @@ from .utils import PRECONDITIONS_MARKER, RULE_MARKER, INITIALIZER_MARKER, MAINPA
 if TYPE_CHECKING:
     from .pdl import PDL as Android_PDL
     from .pdl_hm import PDL as HarmonyOS_PDL
+    from .kea import Rule, MainPath
 
 class KeaTest:
     _bundles_: Dict[str, "Bundle"] = {}
@@ -42,9 +43,10 @@ def precondition(precond: Callable[[Any], bool]) -> Callable:
         def precondition_wrapper(*args, **kwargs):
             return f(*args, **kwargs)
 
-        rule = getattr(f, RULE_MARKER, None)
+        rule:"Rule" = getattr(f, RULE_MARKER, None)
         if rule is not None:
-            new_rule = attr.evolve(rule, preconditions=rule.preconditions + (precond,))
+            new_rule = rule.evolve(preconditions=rule.preconditions + (precond,))
+            # new_rule = attr.evolve(rule, preconditions=rule.preconditions + (precond,))
             setattr(precondition_wrapper, RULE_MARKER, new_rule)
         else:
             setattr(

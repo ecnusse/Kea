@@ -1,8 +1,8 @@
 import sys
 sys.path.append("..")
-from kea.core import *
+from kea import *
 
-class Test(Kea):
+class Test(KeaTest):
 
     @mainPath()
     def Fail_to_send_feedback_mainpath(self):

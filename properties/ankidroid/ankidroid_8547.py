@@ -1,8 +1,8 @@
 import sys
 sys.path.append("..")
-from kea.core import *
+from kea import *
 
-class Test(Kea):
+class Test(KeaTest):
 
     @mainPath()
     def card_count_should_be_the_same_as_selectall_mainpath(self):

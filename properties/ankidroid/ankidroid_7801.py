@@ -1,8 +1,8 @@
 import sys
 sys.path.append("..")
-from kea.core import *
+from kea import *
 
-class Test(Kea):
+class Test(KeaTest):
 
     @mainPath()
     def edit_card_in_preview_shouldnot_switch_to_other_mainpath(self):

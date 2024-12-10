@@ -1,8 +1,8 @@
 import sys
 sys.path.append("..")
-from kea.core import *
+from kea import *
 
-class Test(Kea):
+class Test(KeaTest):
 
     @mainPath()
     def play_video_should_not_play_as_audio_mainpath(self):

@@ -1,8 +1,8 @@
 import sys
 sys.path.append("..")
-from kea.core import *
+from kea import *
 
-class Test(Kea):
+class Test(KeaTest):
 
     @mainPath()
     def rotate_device_should_keep_review_card_mainpath(self):

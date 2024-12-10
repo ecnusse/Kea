@@ -3,7 +3,7 @@ import inspect
 from typing import TYPE_CHECKING, List
 from .utils import INITIALIZER_MARKER, MAINPATH_MARKER, RULE_MARKER
 if TYPE_CHECKING:
-    from kea.kea import Kea
+    from kea.kea import KeaTest
 
 @attr.s()
 class Rule:    # tingsu: what does these mean, including Rule, MainPath, initializer, precondition?
@@ -38,12 +38,12 @@ class Initializer:
     function = attr.ib()
 
 
-class KeaPBTest: 
+class KeaTestElements: 
     rule_list:List["Rule"] = list()
     initializer_list:List["Rule"] = list() # TODO why  "Rule"?
     mainPath_list:List["MainPath"] = list()
 
-    def load_rule_list(self, kea_test_class:"Kea"):
+    def load_rule_list(self, kea_test_class:"KeaTest"):
         """
         Load the rule from the kea_test_class (user written property).
         """
@@ -53,7 +53,7 @@ class KeaPBTest:
                 self.rule_list.append(rule)
         return self.rule_list
 
-    def load_initializer_list(self, kea_test_class:"Kea"):
+    def load_initializer_list(self, kea_test_class:"KeaTest"):
         """
         Load the rule from the kea_test_class (user written property).
         """
@@ -63,7 +63,7 @@ class KeaPBTest:
                 self.initializer_list.append(initializer)
         return self.initializer_list
 
-    def load_mainPath_list(self, kea_test_class:"Kea"):
+    def load_mainPath_list(self, kea_test_class:"KeaTest"):
         """
         Load the rule from the kea_test_class (user written property).
         """

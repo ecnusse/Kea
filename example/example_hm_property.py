@@ -1,6 +1,6 @@
 from kea import *
 
-class HarmonyOS_example(Kea):
+class HarmonyOS_example(KeaTest):
 
     @precondition(lambda self: d(text="家具厨具").exists())
     @rule()

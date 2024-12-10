@@ -1,9 +1,9 @@
 import sys
 import string
 sys.path.append("..")
-from kea.core import *
+from kea import *
 
-class Test(Kea):
+class Test(KeaTest):
     
     @mainPath()
     def text_should_display_after_type_answer_mainpath(self):

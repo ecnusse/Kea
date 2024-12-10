@@ -1,8 +1,8 @@
 import sys
 sys.path.append("..")
-from kea.core import *
+from kea import *
 
-class Test(Kea):
+class Test(KeaTest):
     
     @mainPath()
     def only_new_card_can_be_reposition_mainpath(self):

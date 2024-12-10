@@ -10,7 +10,7 @@ import importlib
 import inspect
 
 from typing import Dict, List, TYPE_CHECKING, Optional, Union
-from .kea_pbtest import KeaPBTest
+from .kea_pbtest import KeaTestElements
 from kea.Bundle import Bundle
 from uiautomator2.exceptions import UiObjectNotFoundError
 
@@ -71,14 +71,14 @@ OUTPUT_DIR = "output"
 # `d` is the pdl driver for Android or HarmonyOS
 d:Union["Android_PDL", "HarmonyOS_PDL", None] = None # TODO move `d` to `kea.py`?
 
-class Kea:
+class KeaTest:
     """Kea class
 
     In Kea, one test case stands for one property file, which includes the elements
     of a property (e.g., the property, the main path, the initializer).
     """
     # the set of all test cases (i.e., all the properties to be tested)
-    _all_Kea_PBTests: Dict["Kea", "KeaPBTest"] = {}   # TODO what does "type" mean?
+    _all_Kea_PBTests: Dict["KeaTest", "KeaTestElements"] = {}   # TODO what does "type" mean?
     _bundles_: Dict[str, "Bundle"] = {}
     pdl_driver: Optional[Union["Android_PDL", "HarmonyOS_PDL"]]
 
@@ -161,9 +161,9 @@ class Kea:
 
                 # Find all kea_test_class in the module and attempt to instantiate them.
                 for _, obj in inspect.getmembers(module):
-                    if inspect.isclass(obj) and issubclass(obj, Kea) and obj is not Kea:
+                    if inspect.isclass(obj) and issubclass(obj, KeaTest) and obj is not KeaTest:
                         print(f"Loading property {obj.__name__} from {file}")
-                        Kea.load_Kea_PBTest(obj)
+                        KeaTest.load_Kea_PBTest(obj)
 
             except ModuleNotFoundError as e:
                 print(f"Error importing module {module_name}: {e}")
@@ -171,7 +171,7 @@ class Kea:
         os.chdir(workspace_path)
     
     @classmethod
-    def load_Kea_PBTest(cls, kea_test_class:"Kea"):
+    def load_Kea_PBTest(cls, kea_test_class:"KeaTest"):
         """load Kea_PBTest from kea_test_class and save it to the class var _all_Kea_PBTests
 
         ### :input:
@@ -188,7 +188,7 @@ class Kea:
             raise Exception(f"No rule defined in {cls.__name__}")
     
     @classmethod
-    def init_KeaPBTest(cls, kea_test_class:"Kea") -> "KeaPBTest":
+    def init_KeaPBTest(cls, kea_test_class:"KeaTest") -> "KeaTestElements":
         """
         Init the KeaPBTest for current kea_test_class. 
         If the KeaPBTest for current kea_test_class has already been initialized. Find it and return it.
@@ -197,7 +197,7 @@ class Kea:
         """
         # use a dict to store the KeaPBTest obj and make sure every 
         # KeaPBTest obj can only be instantiate once.
-        current_Kea_PBTest = cls._all_Kea_PBTests.get(kea_test_class, KeaPBTest())
+        current_Kea_PBTest = cls._all_Kea_PBTests.get(kea_test_class, KeaTestElements())
         cls._all_Kea_PBTests[kea_test_class] = current_Kea_PBTest
         return current_Kea_PBTest
   

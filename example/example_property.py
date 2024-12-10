@@ -1,6 +1,6 @@
 from kea import *
 
-class Test1(Kea):
+class Test1(KeaTest):
 
     @initializer()
     def pass_welcome_pages(self):

@@ -2,9 +2,9 @@ import string
 import sys
 import time
 sys.path.append("..")
-from kea.core import *
+from kea import *
 
-class Test(Kea):
+class Test(KeaTest):
     
 
     @initializer()

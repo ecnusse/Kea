@@ -1,5 +1,5 @@
 from .input_manager import DEFAULT_POLICY, DEFAULT_TIMEOUT
-from .kea import Kea, Setting
+from .kea import KeaTest, Setting
 
 from .utils import get_yml_config, sanitize_args
 from .droidbot import DroidBot
@@ -98,7 +98,7 @@ def load_pdl_driver(settings: "Setting"):
         from kea.pdl import PDL
         return PDL(serial=settings.device_serial)
     
-def start_kea(kea:"Kea", settings:"Setting" = None):
+def start_kea(kea:"KeaTest", settings:"Setting" = None):
 
     # TODO rename `droidbot` as `data_generator`` (fuzzer)?
     droidbot = DroidBot(    
@@ -161,9 +161,9 @@ def main():
 
     driver = load_pdl_driver(settings)
 
-    Kea.set_pdl_driver(driver)
-    Kea.load_properties(options.property_files)
-    kea = Kea()
+    KeaTest.set_pdl_driver(driver)
+    KeaTest.load_properties(options.property_files)
+    kea = KeaTest()
 
     print(f"INFO: All Test cases: {kea._all_Kea_PBTests}") 
     # start Kea

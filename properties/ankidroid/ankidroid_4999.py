@@ -1,8 +1,8 @@
 import sys
 sys.path.append("..")
-from kea.core import *
+from kea import *
 
-class Test(Kea):
+class Test(KeaTest):
 
     @precondition(
         lambda self: d(resourceId="com.ichi2.anki:id/deckpicker_name").exists() and 

@@ -1,8 +1,18 @@
 import inspect
 import attr
-from typing import Callable, Any
-from .kea_pbtest import Rule, MainPath
+from typing import Callable, Any, Union, TYPE_CHECKING
+from .kea import Rule, MainPath
 from .utils import PRECONDITIONS_MARKER, RULE_MARKER, INITIALIZER_MARKER, MAINPATH_MARKER
+
+if TYPE_CHECKING:
+    from .pdl import PDL as Android_PDL
+    from .pdl_hm import PDL as HarmonyOS_PDL
+
+class KeaTest:
+    pass
+
+# `d` is the pdl driver for Android or HarmonyOS
+d:Union["Android_PDL", "HarmonyOS_PDL", None] = None
 
 def rule() -> Callable:
     def accept(f):
@@ -36,7 +46,6 @@ def precondition(precond: Callable[[Any], bool]) -> Callable:
         return precondition_wrapper
 
     return accept
-
 
 def initializer():
     '''

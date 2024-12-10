@@ -1,5 +1,6 @@
+from dataclasses import dataclass
 from .input_manager import DEFAULT_POLICY, DEFAULT_TIMEOUT
-from .kea import KeaTest, Setting
+from .kea_test import KeaTest
 
 from .utils import get_yml_config, sanitize_args
 from .droidbot import DroidBot
@@ -9,11 +10,50 @@ from hypothesis.errors import NonInteractiveExampleWarning
 import argparse
 import warnings
 
+from .utils import DEFAULT_POLICY, DEFAULT_EVENT_INTERVAL, DEFAULT_TIMEOUT, DEFAULT_EVENT_COUNT
+
+from typing import TYPE_CHECKING
+
+from .kea import KeaTest
+
+
 warnings.filterwarnings("ignore", category=NonInteractiveExampleWarning)
 import coloredlogs
 coloredlogs.install()
 
-print()
+@dataclass
+class Setting:
+    """`Setting` is a Python DataClass
+
+    TODO: it seems the Setting class is redudant? why not just using options?
+    """
+    apk_path: str
+    device_serial: str = None
+    output_dir:str ="output"
+    is_emulator: bool =True     #True for emulators, False for real devices.
+    policy_name: str = DEFAULT_POLICY
+    random_input: bool =True
+    script_path: str=None
+    event_interval: int= DEFAULT_EVENT_INTERVAL
+    timeout: int = DEFAULT_TIMEOUT
+    event_count: int= DEFAULT_EVENT_COUNT
+    cv_mode=None
+    debug_mode: bool=False
+    keep_app:bool=None
+    keep_env=None
+    profiling_method=None
+    grant_perm: bool=True
+    send_document: bool=True
+    enable_accessibility_hard=None
+    master=None
+    humanoid=None
+    ignore_ad=None
+    replay_output=None
+    number_of_events_that_restart_app:int =100
+    run_initial_rules_after_every_mutation=True
+    is_harmonyos:bool=False
+    generate_utg:bool=False
+    is_package:bool=False
 
 def parse_args():
     """Parse, load and sanitize the args from the command line and the config file `config.yml`.
@@ -171,6 +211,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
-
-    

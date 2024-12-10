@@ -1,6 +1,3 @@
-from dataclasses import dataclass
-
-import traceback
 import logging
 import random
 import time
@@ -8,22 +5,18 @@ import os
 import sys
 import importlib
 import inspect
+import attr
+from .utils import INITIALIZER_MARKER, MAINPATH_MARKER, RULE_MARKER
 
+from dataclasses import dataclass
 from typing import Dict, List, TYPE_CHECKING, Optional, Union
-from .kea_pbtest import KeaTestElements
 from kea.Bundle import Bundle
 from uiautomator2.exceptions import UiObjectNotFoundError
 
-from .utils import DEFAULT_POLICY, DEFAULT_EVENT_INTERVAL, DEFAULT_TIMEOUT, DEFAULT_EVENT_COUNT 
-
 if TYPE_CHECKING:
-    from .kea_pbtest import Rule, MainPath
+    from .kea_test import Rule, MainPath
+    from .pdl import PDL as Android_PDL
     from .pdl_hm import PDL as HarmonyOS_PDL
-from .pdl import PDL as Android_PDL
-
-from .utils import INITIALIZER_MARKER, RULE_MARKER, MAINPATH_MARKER
-
-from .property_decorator import rule, precondition, initializer, mainPath
 
 @dataclass
 class CHECK_RESULT:
@@ -32,44 +25,78 @@ class CHECK_RESULT:
     UI_NOT_FOUND = 2
     PRECON_INVALID = 3
 
-@dataclass
-class Setting:
-    """`Setting` is a Python DataClass
-
-    TODO: it seems the Setting class is redudant? why not just using options?
-    """
-    apk_path: str
-    device_serial: str = None
-    output_dir:str ="output"
-    is_emulator: bool =True     #True for emulators, False for real devices.
-    policy_name: str = DEFAULT_POLICY
-    random_input: bool =True
-    script_path: str=None
-    event_interval: int= DEFAULT_EVENT_INTERVAL
-    timeout: int = DEFAULT_TIMEOUT
-    event_count: int= DEFAULT_EVENT_COUNT
-    cv_mode=None
-    debug_mode: bool=False
-    keep_app:bool=None
-    keep_env=None
-    profiling_method=None
-    grant_perm: bool=True
-    send_document: bool=True
-    enable_accessibility_hard=None
-    master=None
-    humanoid=None
-    ignore_ad=None
-    replay_output=None
-    number_of_events_that_restart_app:int =100
-    run_initial_rules_after_every_mutation=True
-    is_harmonyos:bool=False
-    generate_utg:bool=False
-    is_package:bool=False
-
 OUTPUT_DIR = "output"
 
-# `d` is the pdl driver for Android or HarmonyOS
-d:Union["Android_PDL", "HarmonyOS_PDL", None] = None # TODO move `d` to `kea.py`?
+@attr.s()
+class Rule:    # tingsu: what does these mean, including Rule, MainPath, initializer, precondition?
+    """
+    A rule corresponds to a property (including precondition, interaction scenario, postconditions)
+    """
+    
+    # `preconditions` denotes the preconditions annotated with `@precondition`
+    preconditions = attr.ib()  # TODO rename `preconditions` to `precondition`?
+
+    # `function` denotes the function of @Rule. This function includes the interaction scenario and the assertions (i.e., the postconditions) therein
+    # TODO we may need to rename `function` to `method`?
+    function = attr.ib()
+
+    def __str__(self) -> str:
+        return f"Rule(function: {self.function.__qualname__})"
+
+@attr.s()
+class MainPath:
+    
+    # `function` denotes the function of `@mainPath.
+    function = attr.ib()
+
+    # the interaction steps in the main path
+    path: List[str] = attr.ib()  # TODO rename `path` to a more suitable name?
+
+
+@attr.s()
+class Initializer:
+    
+    # `function` denotes the function of `@initializer.
+    function = attr.ib()
+
+
+class KeaTestElements: 
+    """
+    
+    """
+    rule_list:List["Rule"] = list()
+    initializer_list:List["Rule"] = list() # TODO why  "Rule"?
+    mainPath_list:List["MainPath"] = list()
+
+    def load_rule_list(self, kea_test_class:"KeaTest"):
+        """
+        Load the rule from the kea_test_class (user written property).
+        """
+        for _, v in inspect.getmembers(kea_test_class):
+            rule = getattr(v, RULE_MARKER, None)
+            if rule is not None:
+                self.rule_list.append(rule)
+        return self.rule_list
+
+    def load_initializer_list(self, kea_test_class:"KeaTest"):
+        """
+        Load the rule from the kea_test_class (user written property).
+        """
+        for _, v in inspect.getmembers(kea_test_class):
+            initializer = getattr(v, INITIALIZER_MARKER, None)
+            if initializer is not None:
+                self.initializer_list.append(initializer)
+        return self.initializer_list
+
+    def load_mainPath_list(self, kea_test_class:"KeaTest"):
+        """
+        Load the rule from the kea_test_class (user written property).
+        """
+        for _, v in inspect.getmembers(kea_test_class):
+            mainPath = getattr(v, MAINPATH_MARKER, None)
+            if mainPath is not None:
+                self.mainPath_list.append(mainPath)
+        return self.mainPath_list 
 
 class KeaTest:
     """Kea class
@@ -78,7 +105,7 @@ class KeaTest:
     of a property (e.g., the property, the main path, the initializer).
     """
     # the set of all test cases (i.e., all the properties to be tested)
-    _all_Kea_PBTests: Dict["KeaTest", "KeaTestElements"] = {}   # TODO what does "type" mean?
+    _all_Kea_PBTests: Dict["KeaTest", "KeaTestElements"] = {}
     _bundles_: Dict[str, "Bundle"] = {}
     pdl_driver: Optional[Union["Android_PDL", "HarmonyOS_PDL"]]
 
@@ -105,6 +132,7 @@ class KeaTest:
         TODO by default, one app only has one initializer
         """
         for kea_test_class_name, Kea_PBTest in self._all_Kea_PBTests.items():
+            kea_test_class_name.__class__
             if len(Kea_PBTest.initializer_list) > 0:
                 self.logger.info(f"Successfully found an initializer in {kea_test_class_name}")
                 return Kea_PBTest.initializer_list
@@ -159,11 +187,13 @@ class KeaTest:
                 #! IMPORTANT: set the pdl driver in the modules (the user written properties)
                 module.d = cls.pdl_driver
 
+                from .kea_test import KeaTest
+
                 # Find all kea_test_class in the module and attempt to instantiate them.
                 for _, obj in inspect.getmembers(module):
                     if inspect.isclass(obj) and issubclass(obj, KeaTest) and obj is not KeaTest:
                         print(f"Loading property {obj.__name__} from {file}")
-                        KeaTest.load_Kea_PBTest(obj)
+                        cls.load_Kea_PBTest(obj)
 
             except ModuleNotFoundError as e:
                 print(f"Error importing module {module_name}: {e}")

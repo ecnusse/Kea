@@ -7,21 +7,40 @@ if TYPE_CHECKING:
 
 @attr.s()
 class Rule:    # tingsu: what does these mean, including Rule, MainPath, initializer, precondition?
+    """
+    A rule corresponds to a property (including precondition, interaction scenario, postconditions)
+    """
+    
+    # `preconditions` denotes the preconditions annotated with `@precondition`
+    preconditions = attr.ib()  # TODO rename `preconditions` to `precondition`?
+
+    # `function` denotes the function of @Rule. This function includes the interaction scenario and the assertions (i.e., the postconditions) therein
+    # TODO we may need to rename `function` to `method`?
     function = attr.ib()
-    preconditions = attr.ib()
 
     def __str__(self) -> str:
         return f"Rule(function: {self.function.__qualname__})"
 
 @attr.s()
 class MainPath:
+    
+    # `function` denotes the function of `@mainPath.
     function = attr.ib()
-    path = attr.ib()
+
+    # the interaction steps in the main path
+    path: List[str] = attr.ib()  # TODO rename `path` to a more suitable name?
+
+
+@attr.s()
+class Initializer:
+    
+    # `function` denotes the function of `@initializer.
+    function = attr.ib()
 
 
 class KeaPBTest: 
     rule_list:List["Rule"] = list()
-    initializer_list:List["Rule"] = list()
+    initializer_list:List["Rule"] = list() # TODO why  "Rule"?
     mainPath_list:List["MainPath"] = list()
 
     def load_rule_list(self, kea_test_class:"Kea"):

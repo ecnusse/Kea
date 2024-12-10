@@ -1,7 +1,8 @@
 import inspect
 import attr
-from typing import Callable, Any, Union, TYPE_CHECKING
+from typing import Callable, Any, Union, TYPE_CHECKING, Dict
 from .kea import Rule, MainPath
+from .Bundle import Bundle
 from .utils import PRECONDITIONS_MARKER, RULE_MARKER, INITIALIZER_MARKER, MAINPATH_MARKER
 
 if TYPE_CHECKING:
@@ -9,7 +10,15 @@ if TYPE_CHECKING:
     from .pdl_hm import PDL as HarmonyOS_PDL
 
 class KeaTest:
-    pass
+    _bundles_: Dict[str, "Bundle"] = {}
+    
+    @classmethod
+    def set_bundle(cls, bundle:Bundle):
+        """
+        Allow sharing the bundle across different kea tests.
+        """
+        cls._bundles_[bundle.data_name] = bundle
+
 
 # `d` is the pdl driver for Android or HarmonyOS
 d:Union["Android_PDL", "HarmonyOS_PDL", None] = None

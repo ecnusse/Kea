@@ -20,14 +20,15 @@ if TYPE_CHECKING:
 
 @dataclass
 class CHECK_RESULT:
-    ASSERTION_ERROR = 0
+    ASSERTION_FAILURE = 0
     PASS = 1
     UI_NOT_FOUND = 2
     PRECON_INVALID = 3
+    UNKNOWN_EXECPTION = 4
 
 OUTPUT_DIR = "output"
 
-@attr.s()
+@attr.s(frozen=True)
 class Rule:    # tingsu: what does these mean, including Rule, MainPath, initializer, precondition?
     """
     A rule corresponds to a property (including precondition, interaction scenario, postconditions)
@@ -41,7 +42,19 @@ class Rule:    # tingsu: what does these mean, including Rule, MainPath, initial
     function = attr.ib()
 
     def __str__(self) -> str:
-        return f"Rule(function: {self.function.__qualname__})"
+        return f"Rule(function: {self.function.__module__}.{self.function.__qualname__})"
+    
+    def __hash__(self):
+        # TODO xixian - Since we need a Dict[Rule, KeaTest] 
+        # TODO the rule must be hashable, is it save to use the addr of its component?
+        # ! hint: By default, this is not hashable because @attr.s() is a dynamic obj
+        # ! Rule obj needs to be dynamic to load multiple precond in @precondition()
+        # ! or we can use function.__module__ + function.__qualname__ to hash?
+        # ! e.g example_property.Test1.search_bar_should_exist_after_rotation
+        hash_value = hash(id(self.function))
+        for precond in self.preconditions:
+            hash_value = hash_value | hash(id(precond))
+        return hash_value
 
 @attr.s()
 class MainPath:
@@ -60,12 +73,12 @@ class Initializer:
     function = attr.ib()
 
 
-class KeaTestElements:   # @xixian - KeaTestStorage ? KeaTestExtractor ?
+class KeaTestElements:
     """
     
     """
-    def __init__(self, kea_test_name):
-        self.kea_test_name = kea_test_name
+    def __init__(self, keaTest_name):
+        self.keaTest_name = keaTest_name
         self.rule_list:List["Rule"] = list()
         self.initializer_list:List["Rule"] = list() # TODO why  "Rule"?
         self.mainPath_list:List["MainPath"] = list()
@@ -106,13 +119,14 @@ class Kea:
     of a property (e.g., the property, the main path, the initializer).
     """
     # the set of all test cases (i.e., all the properties to be tested)
-    _all_Kea_PBTests: Dict["KeaTest", "KeaTestElements"] = {}
-    _bundles_: Dict[str, "Bundle"] = {}
-    pdl_driver: Optional[Union["Android_PDL", "HarmonyOS_PDL"]]
+
+    _KeaTest_DB: Dict["KeaTest", "KeaTestElements"] = {}
+    _pdl_driver: Optional[Union["Android_PDL", "HarmonyOS_PDL"]]
+    _all_rules_list = None
 
     @classmethod
     def set_pdl_driver(cls, driver:Optional[Union["Android_PDL", "HarmonyOS_PDL"]]):
-        cls.pdl_driver = driver
+        cls._pdl_driver = driver
 
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -122,21 +136,21 @@ class Kea:
         """
         :return: load rules from all Kea_PBTests
         """
-        all_rules = []
-        for Kea_PBTest in self._all_Kea_PBTests.values():
-            all_rules.extend(Kea_PBTest.rule_list)
-        return all_rules
+        if self._all_rules_list is None:
+            self._all_rules_list = list()
+            for keaTestElements in self._KeaTest_DB.values():
+                self._all_rules_list.extend(keaTestElements.rule_list)
+        return self._all_rules_list
     
     @property
     def initializer(self):
         """
         TODO by default, one app only has one initializer
         """
-        for kea_test_class_name, Kea_PBTest in self._all_Kea_PBTests.items():
-            kea_test_class_name.__class__
-            if len(Kea_PBTest.initializer_list) > 0:
-                self.logger.info(f"Successfully found an initializer in {kea_test_class_name}")
-                return Kea_PBTest.initializer_list
+        for keaTest, keaTestElements in self._KeaTest_DB.items():
+            if len(keaTestElements.initializer_list) > 0:
+                self.logger.info(f"Successfully found an initializer in {keaTest}")
+                return keaTestElements.initializer_list
 
         self.logger.warning("No initializer found for current apps.")
         return []
@@ -144,8 +158,8 @@ class Kea:
     @property
     def all_mainPaths(self):
         all_mainPaths = []
-        for Kea_PBTest in self._all_Kea_PBTests.values():
-            all_mainPaths.extend(Kea_PBTest.mainPath_list)
+        for keaTestElements in self._KeaTest_DB.values():
+            all_mainPaths.extend(keaTestElements.mainPath_list)
         return all_mainPaths
     
     @classmethod
@@ -186,7 +200,7 @@ class Kea:
                 module = importlib.import_module(module_name)
 
                 #! IMPORTANT: set the pdl driver in the modules (the user written properties)
-                module.d = cls.pdl_driver
+                module.d = cls._pdl_driver
 
                 from .kea_test import KeaTest
 
@@ -194,7 +208,7 @@ class Kea:
                 for _, obj in inspect.getmembers(module):
                     if inspect.isclass(obj) and issubclass(obj, KeaTest) and obj is not KeaTest:
                         print(f"Loading property {obj.__name__} from {file}")
-                        cls.load_Kea_PBTest(obj)
+                        cls.load_KeaTest(obj)
 
             except ModuleNotFoundError as e:
                 print(f"Error importing module {module_name}: {e}")
@@ -202,24 +216,24 @@ class Kea:
         os.chdir(workspace_path)
     
     @classmethod
-    def load_Kea_PBTest(cls, kea_test_class:"KeaTest"):
+    def load_KeaTest(cls, keaTest:"KeaTest"):
         """load Kea_PBTest from kea_test_class and save it to the class var _all_Kea_PBTests
 
         ### :input:
         kea_test_class: the usr defined test class when writing properties. this should be a child class of class Kea
         """
 
-        current_keaPBTest = cls.init_KeaPBTest(kea_test_class)
+        current_keaTestElements = cls.init_KeaTestElements(keaTest)
 
-        current_keaPBTest.load_initializer_list(kea_test_class)        
-        current_keaPBTest.load_rule_list(kea_test_class)
-        current_keaPBTest.load_mainPath_list(kea_test_class)
+        current_keaTestElements.load_initializer_list(keaTest)        
+        current_keaTestElements.load_rule_list(keaTest)
+        current_keaTestElements.load_mainPath_list(keaTest)
 
-        if len(current_keaPBTest.rule_list) == 0:
+        if len(current_keaTestElements.rule_list) == 0:
             raise Exception(f"No rule defined in {cls.__name__}")
     
     @classmethod
-    def init_KeaPBTest(cls, kea_test_class:"KeaTest") -> "KeaTestElements":
+    def init_KeaTestElements(cls, keaTest:"KeaTest") -> "KeaTestElements":
         """
         Init the KeaPBTest for current kea_test_class. 
         If the KeaPBTest for current kea_test_class has already been initialized. Find it and return it.
@@ -228,16 +242,10 @@ class Kea:
         """
         # use a dict to store the KeaPBTest obj and make sure every 
         # KeaPBTest obj can only be instantiate once.
-        kea_test_class_name = kea_test_class.__module__ + '.' + kea_test_class.__name__
-        current_Kea_PBTest = cls._all_Kea_PBTests.get(kea_test_class, KeaTestElements(kea_test_class_name))
-        cls._all_Kea_PBTests[kea_test_class] = current_Kea_PBTest
-        return current_Kea_PBTest
-  
-    @classmethod
-    def set_bundle(cls, type_name):
-        bundle = Bundle(type_name)
-        cls._bundles_[type_name] = bundle
-        return bundle
+        keaTest_name = keaTest.__module__ + '.' + keaTest.__name__
+        current_keaTestElements = cls._KeaTest_DB.get(keaTest, KeaTestElements(keaTest_name))
+        cls._KeaTest_DB[keaTest] = current_keaTestElements
+        return current_keaTestElements 
 
     def execute_rules(self, rules):
         '''
@@ -248,22 +256,21 @@ class Kea:
         if len(rules) == 0:
             return CHECK_RESULT.PRECON_INVALID
         rule_to_check = random.choice(rules)
-        return self.execute_rule(rule_to_check)
+        return self.execute_rule(rule_to_check, keaTest=None)
 
-    def execute_rule(self, rule:"Rule"):
+    def execute_rule(self, rule:"Rule", keaTest:"KeaTest"):
         """
         execute a rule and return the execution result
         """
         self.logger.info(f"executing rule:\n{rule}")
         if len(rule.preconditions) > 0:
-            if not all(precond(self) for precond in rule.preconditions):
+            if not all(precond() for precond in rule.preconditions):
                 return CHECK_RESULT.PRECON_INVALID
         # try to execute the rule and catch the exception if assertion error throws
-        result = CHECK_RESULT.PASS
         try:
             time.sleep(1)
             # execute the interaction scenario I
-            result = rule.function(self)
+            rule.function(self)
             time.sleep(1)
         except UiObjectNotFoundError as e:
 
@@ -283,28 +290,34 @@ class Kea:
             return CHECK_RESULT.UI_NOT_FOUND
         except AssertionError as e:
             # the postcondition Q is violated 
-            self.logger.error("Assertion error. "+str(e))
-            return CHECK_RESULT.ASSERTION_ERROR
-        finally:
-            result = CHECK_RESULT.PASS
+            self.logger.error("Assertion failed: " + str(e))
+            return CHECK_RESULT.ASSERTION_FAILURE
+        except Exception as e:
+            self.logger.error("Unexpected exeception during executing rule: "+str(e))
+            return CHECK_RESULT.UNKNOWN_EXECPTION
 
         return CHECK_RESULT.PASS
 
-    def parse_mainPath(self, mainPath:"MainPath") :
-        return mainPath.function, mainPath.path
-
     def exec_mainPath(self, executable_script):
         # d for PDL driver. Set the d as a local var to make it available in exectuable_scripts
-        d = self.pdl_driver
+        d = self._pdl_driver
         exec(executable_script)
 
-    def get_rules_whose_preconditions_are_satisfied(self) -> List:
+    def get_rules_whose_preconditions_are_satisfied(self) -> Dict["Rule", "KeaTest"]:
         '''Check all rules and return the list of rules that meet the preconditions.'''
-        rules_passed_precondition = []
-        for target_rule in self.all_rules:
-            if len(target_rule.preconditions) > 0:
-                if all(precond(self) for precond in target_rule.preconditions):
-                    rules_passed_precondition.append(target_rule)
+        # rules_passed_precondition = []
+        rules_passed_precondition:Dict["Rule", "KeaTest"] = {}
+        
+        for keaTest, keaTestElements in self._KeaTest_DB.items():
+            for target_rule in keaTestElements.rule_list:
+                if len(target_rule.preconditions) > 0:
+                    if all(precond(keaTest) for precond in target_rule.preconditions):
+                        rules_passed_precondition[target_rule] = keaTest
+
+        # for target_rule in self.all_rules:
+        #     if len(target_rule.preconditions) > 0:
+        #         if all(precond() for precond in target_rule.preconditions):
+        #             rules_passed_precondition.append(target_rule)
 
         return rules_passed_precondition
 
@@ -322,3 +335,4 @@ class Kea:
         Does nothing by default.
         """
         ...
+

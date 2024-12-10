@@ -90,9 +90,6 @@ def load_ymal_args(opts):
 def load_pdl_driver(settings: "Setting"):
     """Load the pdl (property description language) driver according to the target mobile platform
         (e.g., Android, HarmonyOS).
-
-    TODO could we put this function in `start.py`? and set it as one setting option
-    Because this funciton is only related to Setting
     """
     if settings.is_harmonyos:
         from kea.pdl_hm import PDL
@@ -162,9 +159,9 @@ def main():
                        generate_utg=options.generate_utg
                        )
 
-    d = load_pdl_driver(settings)
+    driver = load_pdl_driver(settings)
 
-    Kea.set_pdl_driver(d)
+    Kea.set_pdl_driver(driver)
     Kea.load_properties(options.property_files)
     kea = Kea()
 

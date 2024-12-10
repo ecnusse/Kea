@@ -72,14 +72,13 @@ OUTPUT_DIR = "output"
 d:Union["Android_PDL", "HarmonyOS_PDL", None] = None # TODO move `d` to `kea.py`?
 
 class Kea:
-    """
-    Kea class
+    """Kea class
+
     In Kea, one test case stands for one property file, which includes the elements
     of a property (e.g., the property, the main path, the initializer).
     """
     # the set of all test cases (i.e., all the properties to be tested)
-    _all_Kea_PBTests: Dict["Kea", "KeaPBTest"] = {}   
-    
+    _all_Kea_PBTests: Dict["Kea", "KeaPBTest"] = {}   # TODO what does "type" mean?
     _bundles_: Dict[str, "Bundle"] = {}
     pdl_driver: Optional[Union["Android_PDL", "HarmonyOS_PDL"]]
 
@@ -89,8 +88,6 @@ class Kea:
 
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.current_rule = None
-        self.execute_event = None
 
     @property
     def all_rules(self) -> List["Rule"]:
@@ -219,7 +216,6 @@ class Kea:
         if len(rules) == 0:
             return CHECK_RESULT.PRECON_INVALID
         rule_to_check = random.choice(rules)
-        self.current_rule = rule_to_check
         return self.execute_rule(rule_to_check)
 
     def execute_rule(self, rule:"Rule"):

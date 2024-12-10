@@ -64,9 +64,11 @@ class KeaTestElements:   # @xixian - KeaTestStorage ? KeaTestExtractor ?
     """
     
     """
-    rule_list:List["Rule"] = list()
-    initializer_list:List["Rule"] = list() # TODO why  "Rule"?
-    mainPath_list:List["MainPath"] = list()
+    def __init__(self, kea_test_name):
+        self.kea_test_name = kea_test_name
+        self.rule_list:List["Rule"] = list()
+        self.initializer_list:List["Rule"] = list() # TODO why  "Rule"?
+        self.mainPath_list:List["MainPath"] = list()
 
     def load_rule_list(self, kea_test_class:"KeaTest"):
         """
@@ -96,7 +98,7 @@ class KeaTestElements:   # @xixian - KeaTestStorage ? KeaTestExtractor ?
                 self.mainPath_list.append(mainPath)
 
 class Kea:
-    """Kea class
+    """## Kea class
 
     Kea class is a manager of all the user defined properties. Which store all the properties
     in runtime and provide a set of methods for reading and executing these properties.
@@ -226,7 +228,8 @@ class Kea:
         """
         # use a dict to store the KeaPBTest obj and make sure every 
         # KeaPBTest obj can only be instantiate once.
-        current_Kea_PBTest = cls._all_Kea_PBTests.get(kea_test_class, KeaTestElements())
+        kea_test_class_name = kea_test_class.__module__ + '.' + kea_test_class.__name__
+        current_Kea_PBTest = cls._all_Kea_PBTests.get(kea_test_class, KeaTestElements(kea_test_class_name))
         cls._all_Kea_PBTests[kea_test_class] = current_Kea_PBTest
         return current_Kea_PBTest
   

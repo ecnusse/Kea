@@ -1,9 +1,9 @@
 import string
 import sys
 sys.path.append("..")
-from kea.core import *
+from kea import *
 from hypothesis import strategies as st
-class Test(Kea):
+class Test(KeaTest):
     
 
     @initializer()

@@ -31,7 +31,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .input_manager import InputManager
-    from .kea import Kea
+    from .kea import KeaTest
     from .app import App
     from .device import Device
 
@@ -75,7 +75,7 @@ class InputPolicy(object):
     It should call AppEventManager.send_event method continuously
     """
 
-    def __init__(self, device:"Device", app:"App", kea:"Kea"=None): #TODO why we need kea here?
+    def __init__(self, device:"Device", app:"App", kea:"KeaTest"=None): #TODO why we need kea here?
         self.logger = logging.getLogger(self.__class__.__name__)
         self.time_recoder = Time()
 

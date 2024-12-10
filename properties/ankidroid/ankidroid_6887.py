@@ -1,9 +1,9 @@
 import string
 import sys
 sys.path.append("..")
-from kea.core import *
+from kea import *
 
-class Test(Kea):
+class Test(KeaTest):
 
     @mainPath()
     def add_new_card_should_update_new_card_count_mainpath(self):

@@ -2,9 +2,9 @@ import sys
 from socket import send_fds
 
 sys.path.append("..")
-from kea.core import *
+from kea import *
 
-class Test(Kea):
+class Test(KeaTest):
     
 
     @initializer()

@@ -39,12 +39,9 @@ class Initializer:
 
 
 class KeaPBTest: 
-    """
-    Correspond to one property file
-    """
-    rule_list:List["Rule"]
-    initializer_list:List["Rule"]  # TODO why  "Rule"?
-    mainPath_list:List["MainPath"]
+    rule_list:List["Rule"] = list()
+    initializer_list:List["Rule"] = list() # TODO why  "Rule"?
+    mainPath_list:List["MainPath"] = list()
 
     def get_list(self, MARKER:str, kea_test_class:"Kea"):
         """
@@ -55,10 +52,6 @@ class KeaPBTest:
                    MAINPATH_MARKER:"mainPath_list",
                    RULE_MARKER:"rule_list"}
         TARGET_LIST_NAME = mapping[MARKER]
-
-        # return the list if it has already been initialized
-        if hasattr(self, TARGET_LIST_NAME):
-            return getattr(self, TARGET_LIST_NAME)
 
         # Else, initialize the list 
         # (TestCase is singleton so the other initialized lists won't be covered)

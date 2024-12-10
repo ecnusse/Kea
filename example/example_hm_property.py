@@ -1,4 +1,4 @@
-from kea.core import *
+from kea import *
 
 class HarmonyOS_example(Kea):
 

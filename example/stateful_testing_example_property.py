@@ -1,7 +1,7 @@
 from kea import *
 
-class Test2(KeaTest):
-    _files = KeaTest.set_bundle("files")
+class Test2(Kea):
+    _files = Kea.set_bundle("files")
 
     @initializer()
     def set_up(self):

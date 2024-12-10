@@ -14,7 +14,7 @@ from kea.Bundle import Bundle
 from uiautomator2.exceptions import UiObjectNotFoundError
 
 if TYPE_CHECKING:
-    from .kea_test import Rule, MainPath
+    from .kea_test import Rule, MainPath, KeaTest
     from .pdl import PDL as Android_PDL
     from .pdl_hm import PDL as HarmonyOS_PDL
 
@@ -98,7 +98,7 @@ class KeaTestElements:
                 self.mainPath_list.append(mainPath)
         return self.mainPath_list 
 
-class KeaTest:
+class Kea:
     """Kea class
 
     In Kea, one test case stands for one property file, which includes the elements

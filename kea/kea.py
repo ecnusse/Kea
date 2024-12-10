@@ -60,7 +60,7 @@ class Initializer:
     function = attr.ib()
 
 
-class KeaTestElements: 
+class KeaTestElements:   # @xixian - KeaTestStorage ? KeaTestExtractor ?
     """
     
     """
@@ -76,7 +76,6 @@ class KeaTestElements:
             rule = getattr(v, RULE_MARKER, None)
             if rule is not None:
                 self.rule_list.append(rule)
-        return self.rule_list
 
     def load_initializer_list(self, kea_test_class:"KeaTest"):
         """
@@ -86,7 +85,6 @@ class KeaTestElements:
             initializer = getattr(v, INITIALIZER_MARKER, None)
             if initializer is not None:
                 self.initializer_list.append(initializer)
-        return self.initializer_list
 
     def load_mainPath_list(self, kea_test_class:"KeaTest"):
         """
@@ -96,11 +94,12 @@ class KeaTestElements:
             mainPath = getattr(v, MAINPATH_MARKER, None)
             if mainPath is not None:
                 self.mainPath_list.append(mainPath)
-        return self.mainPath_list 
 
 class Kea:
     """Kea class
 
+    Kea class is a manager of all the user defined properties. Which store all the properties
+    in runtime and provide a set of methods for reading and executing these properties.
     In Kea, one test case stands for one property file, which includes the elements
     of a property (e.g., the property, the main path, the initializer).
     """

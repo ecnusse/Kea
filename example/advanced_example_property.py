@@ -4,7 +4,7 @@ sys.path.append("..")
 from kea import *
 
 
-class Test(Kea):
+class Test(KeaTest):
 
     @initializer()
     def set_up(self):

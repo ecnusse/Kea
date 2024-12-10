@@ -105,10 +105,9 @@ class Kea:
         TODO by default, one app only has one initializer
         """
         for kea_test_class_name, Kea_PBTest in self._all_Kea_PBTests.items():
-            r = Kea_PBTest.get_list(INITIALIZER_MARKER, kea_test_class=self)
-            if len(r) > 0:
+            if len(Kea_PBTest.initializer_list) > 0:
                 self.logger.info(f"Successfully found an initializer in {kea_test_class_name}")
-                return r
+                return Kea_PBTest.initializer_list
 
         self.logger.warning("No initializer found for current apps.")
         return []

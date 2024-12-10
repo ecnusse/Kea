@@ -24,21 +24,32 @@ class KeaPBTest:
     initializer_list:List["Rule"] = list()
     mainPath_list:List["MainPath"] = list()
 
-    def get_list(self, MARKER:str, kea_test_class:"Kea"):
+    def load_rule_list(self, kea_test_class:"Kea"):
         """
-        Dynamically get the rule/initializer/mainPath list from the testCase.
+        Load the rule from the kea_test_class (user written property).
         """
-
-        mapping = {INITIALIZER_MARKER:"initializer_list",
-                   MAINPATH_MARKER:"mainPath_list",
-                   RULE_MARKER:"rule_list"}
-        TARGET_LIST_NAME = mapping[MARKER]
-
-        # Else, initialize the list 
-        # (TestCase is singleton so the other initialized lists won't be covered)
-        setattr(self, TARGET_LIST_NAME, [])
         for _, v in inspect.getmembers(kea_test_class):
-            r = getattr(v, MARKER, None)
-            if r is not None:
-                getattr(self, TARGET_LIST_NAME).append(r)
-        return getattr(self, TARGET_LIST_NAME)
+            rule = getattr(v, RULE_MARKER, None)
+            if rule is not None:
+                self.rule_list.append(rule)
+        return self.rule_list
+
+    def load_initializer_list(self, kea_test_class:"Kea"):
+        """
+        Load the rule from the kea_test_class (user written property).
+        """
+        for _, v in inspect.getmembers(kea_test_class):
+            initializer = getattr(v, INITIALIZER_MARKER, None)
+            if initializer is not None:
+                self.initializer_list.append(initializer)
+        return self.initializer_list
+
+    def load_mainPath_list(self, kea_test_class:"Kea"):
+        """
+        Load the rule from the kea_test_class (user written property).
+        """
+        for _, v in inspect.getmembers(kea_test_class):
+            mainPath = getattr(v, MAINPATH_MARKER, None)
+            if mainPath is not None:
+                self.mainPath_list.append(mainPath)
+        return self.mainPath_list 

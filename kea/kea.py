@@ -78,7 +78,7 @@ class Kea:
     of a property (e.g., the property, the main path, the initializer).
     """
     # the set of all test cases (i.e., all the properties to be tested)
-    _all_Kea_PBTests: Dict[type, "KeaPBTest"] = {}   
+    _all_Kea_PBTests: Dict["Kea", "KeaPBTest"] = {}   
     
     _bundles_: Dict[str, "Bundle"] = {}
     pdl_driver: Optional[Union["Android_PDL", "HarmonyOS_PDL"]]
@@ -183,9 +183,12 @@ class Kea:
 
         current_keaPBTest = cls.init_KeaPBTest(kea_test_class)
 
-        cls.load_initializer_list(current_keaPBTest, kea_test_class)
-        cls.load_mainPath_list(current_keaPBTest, kea_test_class)
-        cls.load_rule_list(current_keaPBTest, kea_test_class)        
+        current_keaPBTest.load_initializer_list(kea_test_class)        
+        current_keaPBTest.load_rule_list(kea_test_class)
+        current_keaPBTest.load_mainPath_list(kea_test_class)
+
+        if len(current_keaPBTest.rule_list) == 0:
+            raise Exception(f"No rule defined in {cls.__name__}")
     
     @classmethod
     def init_KeaPBTest(cls, kea_test_class:"Kea") -> "KeaPBTest":
@@ -200,46 +203,7 @@ class Kea:
         current_Kea_PBTest = cls._all_Kea_PBTests.get(kea_test_class, KeaPBTest())
         cls._all_Kea_PBTests[kea_test_class] = current_Kea_PBTest
         return current_Kea_PBTest
-    
-    @classmethod
-    def load_initializer_list(cls, current_Kea_PBTest:KeaPBTest, kea_test_class:"Kea"):
-        """
-        load initializer list from kea_test_class and save it to current_PBTest
-
-        ### :input:
-        current_Kea_PBTest: the Kea_PBTest for the current kea_test_class
-        kea_test_class: the usr defined test class when writing properties. this should be a child class of class Kea
-        """
-        initializer_list = current_Kea_PBTest.get_list(INITIALIZER_MARKER, kea_test_class=kea_test_class)
-        if len(initializer_list) > 0:
-            current_Kea_PBTest.initializer_list = initializer_list
-
-    @classmethod
-    def load_rule_list(cls, current_PBTest:KeaPBTest, kea_test_class:"Kea"):
-        """
-        load rule list from kea_test_class and save it to current_PBTest
-
-        ### :input:
-        current_Kea_PBTest: the Kea_PBTest for the current kea_test_class
-        kea_test_class: the usr defined test class when writing properties. this should be a child class of class Kea
-        """
-        rule_list = current_PBTest.get_list(RULE_MARKER, kea_test_class=kea_test_class)
-        if len(rule_list) == 0:
-            raise Exception(f"Type {type(current_PBTest).__name__} defines no rules")
-        return rule_list
-
-    @classmethod
-    def load_mainPath_list(cls, current_PBTest:KeaPBTest, kea_test_class:"Kea"):
-        """
-        load mainPath list from kea_test_class and save it to current_PBTest
-
-        ### :input:
-        current_Kea_PBTest: the Kea_PBTest for the current kea_test_class
-        kea_test_class: the usr defined test class when writing properties. this should be a child class of class Kea
-        """
-        mainPath_list = current_PBTest.get_list(MAINPATH_MARKER, kea_test_class=kea_test_class)
-        return mainPath_list
-
+  
     @classmethod
     def set_bundle(cls, type_name):
         bundle = Bundle(type_name)

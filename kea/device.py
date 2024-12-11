@@ -870,9 +870,6 @@ class Device(object):
         from_state = self.current_state
         return from_state
 
-    def get_count(self):
-        return self.cur_event_count
-
     def draw_event(self, event, event_name, screenshot_path):
         import cv2
         image = cv2.imread(screenshot_path)

@@ -664,7 +664,7 @@ class LLMPolicy(RandomPolicy):
                 < input_manager.event_count
         ):
             try:
-                if hasattr(self.device, "u2"):
+                if self.device.is_harmonyos == False and hasattr(self.device, "u2"):
                     self.device.u2.set_fastinput_ime(True)
 
                 self.logger.info("Exploration action count: %d" % self.action_count)

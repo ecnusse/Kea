@@ -14,7 +14,7 @@ class Test2(KeaTest):
             d(text="ALLOW").click()
 
 
-    @precondition(lambda: KeaTest._bundles_["files"] and d(resourceId="com.amaze.filemanager:id/sd_main_fab").exists())
+    @precondition(lambda self: d(resourceId="com.amaze.filemanager:id/sd_main_fab").exists())
     @rule()
     def create_file_should_exist(self):
         d(resourceId="com.amaze.filemanager:id/pathbar").click()

@@ -312,11 +312,6 @@ class Kea:
                     if all(precond(keaTest) for precond in target_rule.preconditions):
                         rules_passed_precondition[target_rule] = keaTest
 
-        # for target_rule in self.all_rules:
-        #     if len(target_rule.preconditions) > 0:
-        #         if all(precond() for precond in target_rule.preconditions):
-        #             rules_passed_precondition.append(target_rule)
-
         return rules_passed_precondition
 
     def get_rules_without_preconditions(self):

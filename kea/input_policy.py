@@ -234,14 +234,14 @@ class KeaInputPolicy(InputPolicy):
 
         if rule_to_check is not None:
             self.logger.info(f"-------Check Property : {rule_to_check}------")
-            self.statistics_of_rules[rule_to_check.function.__name__][RULE_STATE.PROPERTY_CHECKED] += 1
+            self.statistics_of_rules[str(rule_to_check)][RULE_STATE.PROPERTY_CHECKED] += 1
             pre_id = self.device.get_count()
             # check rule, record relavant info and output log
             result = self.kea.execute_rule(rule=rule_to_check, keaTest=rules_dict_to_check[rule_to_check])
             if result == CHECK_RESULT.ASSERTION_FAILURE:
                 self.logger.error(f"-------Postcondition failed. Assertion error, Property:{rule_to_check}------")
                 self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))
-                self.statistics_of_rules[rule_to_check.function.__name__][RULE_STATE.BUG_TRIGGERED] += 1
+                self.statistics_of_rules[str(rule_to_check)][RULE_STATE.BUG_TRIGGERED] += 1
                 post_id = self.device.get_count()
                 self.triggered_bug_information.append(
                     ((pre_id, post_id), self.time_recoder.get_time_duration(), rule_to_check.function.__name__))

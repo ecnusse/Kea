@@ -153,7 +153,7 @@ class InputPolicy(object):
     def update_utg(self):
         self.utg.add_transition(self.last_event, self.from_state, self.to_state)
 
-    def move_the_app_on_foreground_if_needed(self, current_state):
+    def move_the_app_to_foreground_if_needed(self, current_state):
         '''
             if the app is not running on the foreground of the device, then try to bring it back
         '''
@@ -225,7 +225,7 @@ class InputPolicy(object):
         pass
 
     @abstractmethod
-    def generate_explore_event(self):
+    def generate_random_event_based_on_current_state(self):
         """
         generate an event
         @return:
@@ -390,7 +390,7 @@ class RandomPolicy(KeaInputPolicy):
                 self.logger.info("clear and reinstall app after %s events" % self.number_of_events_that_restart_app)
                 return ReInstallAppEvent(self.app)
             self.logger.info("restart app after %s events" % self.number_of_events_that_restart_app)    
-            return KillAppEvent(app=self.app)
+            return KillAndRestartAppEvent(app=self.app)
         
         rules_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
 
@@ -418,7 +418,7 @@ class RandomPolicy(KeaInputPolicy):
         """
         current_state = self.device.get_current_state()
         self.logger.debug("Current state: %s" % current_state.state_str)
-        event = self.move_the_app_on_foreground_if_needed(current_state)
+        event = self.move_the_app_to_foreground_if_needed(current_state)
         if event is not None:
             return event
 
@@ -486,12 +486,10 @@ class GuidedPolicy(KeaInputPolicy):
         """
         
         """
-
         current_state = self.device.get_current_state()
-
         #Return relevant events based on whether the application is in the foreground.
 
-        event = self.move_the_app_on_foreground_if_needed(current_state)
+        event = self.move_the_app_to_foreground_if_needed(current_state)
         if event is not None:
             return event
 
@@ -523,23 +521,6 @@ class GuidedPolicy(KeaInputPolicy):
         self.logger.info("reach the max number of mutate steps on single node, restart the app")
         return KillAndRestartAppEvent(app=self.app)
 
-    def check_property_with_probability(self, p=0.5):
-        """
-        try to check property with probability (default 50%)
-        return 1 if the property has been checked.
-        """
-        rules_list_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
-
-        if len(rules_list_to_check) > 0:
-            self.time_needed_to_satisfy_precondition.append(t)
-            self.logger.info(f"Found {len(rules_list_to_check)} rules satisfied the precondition. Current execution time {self.time_recoder.get_time_duration()}")
-            if random.random() < p:
-                self.logger.info(" check rule")
-                self.check_rule_whose_precondition_are_satisfied()
-                return 1
-            else:
-                self.logger.info("Found exectuable property in current state. No property will be checked now according to the random checking policy.")
-
     def mutate_the_main_path(self):
         event = None
         self.current_number_of_mutate_steps_on_single_node += 1
@@ -549,7 +530,7 @@ class GuidedPolicy(KeaInputPolicy):
             if self.number_of_events_that_try_to_find_event_on_main_path <= self.max_number_of_events_that_try_to_find_event_on_main_path:
                 self.number_of_events_that_try_to_find_event_on_main_path += 1
                 if self.index_on_main_path_after_mutation == len(self.main_path_list):
-                    self.logger.info("reach the end of the main path")
+                    self.logger.info("reach the end of the main path that could satisfy the precondition")
                     rules_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
                     if len(rules_to_check) > 0:
                         t = self.time_recoder.get_time_duration()
@@ -557,7 +538,7 @@ class GuidedPolicy(KeaInputPolicy):
                         self.check_rule_whose_precondition_are_satisfied()
                     return self.end_mutation()
 
-
+                # find if there is any event in the main path that could be executed on currenty state
                 event_str = self.get_event_from_main_path()
                 try:
                     self.kea.exec_mainPath(event_str)
@@ -571,11 +552,12 @@ class GuidedPolicy(KeaInputPolicy):
 
         self.index_on_main_path_after_mutation = -1
 
-        if self.check_property_with_probability() == 1:
+        if  len(self.kea.get_rules_whose_preconditions_are_satisfied()) > 0:
             # if the property has been checked, don't return any event
+            self.check_rule_whose_precondition_are_satisfied()
             return None
 
-        event = self.generate_explore_event()
+        event = self.generate_random_event_based_on_current_state()
         return event
 
     def get_main_path_event(self):
@@ -619,14 +601,14 @@ class GuidedPolicy(KeaInputPolicy):
         return None
 
 
-    def generate_explore_event(self):
+    def generate_random_event_based_on_current_state(self):
         """
         generate an event based on current UTG to explore the app
         @return: InputEvent
         """
         current_state = self.device.get_current_state()
         self.logger.info("Current state: %s" % current_state.state_str)
-        event = self.move_the_app_on_foreground_if_needed(current_state)
+        event = self.move_the_app_to_foreground_if_needed(current_state)
         if event is not None:
             return event
 
@@ -650,9 +632,6 @@ class GuidedPolicy(KeaInputPolicy):
                 event = RotateDeviceNeutralEvent()
 
         return event
-
-    
-
 
 class LLMPolicy(RandomPolicy):
     '''

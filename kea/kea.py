@@ -312,7 +312,7 @@ class Kea:
             return CHECK_RESULT.UNKNOWN_EXECPTION
         return CHECK_RESULT.PASS
 
-    def exec_mainPath(self, executable_script):
+    def execute_event_from_main_path(self, executable_script):
         # d for PDL driver. Set the d as a local var to make it available in exectuable_scripts
         d = self._pdl_driver
         exec(executable_script)
@@ -329,13 +329,18 @@ class Kea:
 
         return rules_passed_precondition
 
-    def get_rules_without_preconditions(self):
-        '''Return the list of rules that do not have preconditions.'''
-        rules_without_preconditions = []
-        for target_rule in self.all_rules:
-            if len(target_rule.preconditions) == 0:
-                rules_without_preconditions.append(target_rule)
-        return rules_without_preconditions
+    def get_rules_without_preconditions(self) -> Dict["Rule", "KeaTest"]:
+        '''Return the list of rules that do not have preconditions.
+        
+           When a rule does not have preconditions, its preconditions are always true
+        '''
+        rules_without_precondition:Dict["Rule", "KeaTest"] = {}
+        
+        for keaTest, keaTestElements in self._KeaTest_DB.items():
+            for target_rule in keaTestElements.rule_list:
+                if len(target_rule.preconditions) == 0:
+                    rules_without_precondition[target_rule] = keaTest
+        return rules_without_precondition
 
     def teardown(self):
         """Called after a run has finished executing to clean up any necessary

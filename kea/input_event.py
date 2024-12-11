@@ -80,8 +80,8 @@ KEY_SetTextEvent = "set_text"
 KEY_IntentEvent = "intent"
 KEY_SpawnEvent = "spawn"
 KEY_KillAppEvent = "kill_app"
-KEY_RotateDeviceRightEvent = "rotate_device_right"
-KEY_RotateDeviceNeutralEvent = "rotate_device_neutral"
+KEY_RotateDeviceToLandscapeEvent = "rotate_device_right"
+KEY_RotateDeviceToPortraitEvent = "rotate_device_neutral"
 
 class InvalidEventException(Exception):
     pass
@@ -451,7 +451,7 @@ class RotateDevice(InputEvent):
     def get_event_name(self):
         return "Rotate"
 
-class RotateDeviceToRightEvent(RotateDevice):
+class RotateDeviceToLandscapeEvent(RotateDevice):
     """
     an event to rotate device
     """
@@ -466,7 +466,7 @@ class RotateDeviceToRightEvent(RotateDevice):
     def get_event_name(self):
         return "RotateRight"
 
-class RotateDeviceNeutralEvent(RotateDevice):
+class RotateDeviceToPortraitEvent(RotateDevice):
     """
     an event to rotate device
     """

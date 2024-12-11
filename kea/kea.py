@@ -319,7 +319,6 @@ class Kea:
 
     def get_rules_whose_preconditions_are_satisfied(self) -> Dict["Rule", "KeaTest"]:
         '''Check all rules and return the list of rules that meet the preconditions.'''
-        # rules_passed_precondition = []
         rules_passed_precondition:Dict["Rule", "KeaTest"] = {}
         
         for keaTest, keaTestElements in self._KeaTest_DB.items():

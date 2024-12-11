@@ -1,14 +1,10 @@
-from asyncio import sleep
 from dataclasses import dataclass
 import os
-
 import logging
 import random
 import copy
 import re
 import time
-
-
 from .utils import Time, generate_report
 from abc import abstractmethod
 from .input_event import (
@@ -19,7 +15,7 @@ from .input_event import (
     ReInstallAppEvent,
     RotateDevice,
     RotateDeviceNeutralEvent,
-    RotateDeviceRightEvent,
+    RotateDeviceToRightEvent,
     KillAppEvent,
     KillAndRestartAppEvent,
     SetTextEvent
@@ -42,7 +38,7 @@ MAX_NUM_STEPS_OUTSIDE = 10
 MAX_NUM_STEPS_OUTSIDE_KILL = 10
 # Max number of replay tries
 MAX_REPLY_TRIES = 5
-ACTION_COUNT_TO_START = 2   # TODO what does it mean？
+EVENT_COUNT_START_TO_GENERATE_EVENT_IN_POLICY = 2   # TODO what does it mean？
 # Max number of query llm
 MAX_NUM_QUERY_LLM = 10
 
@@ -75,25 +71,26 @@ class InputPolicy(object):
     It should call AppEventManager.send_event method continuously
     """
 
-    def __init__(self, device:"Device", app:"App", kea:"Kea"=None): #TODO why we need kea here?
+    def __init__(self, device:"Device", app:"App", generate_utg = False): #TODO why we need kea here?
         self.logger = logging.getLogger(self.__class__.__name__)
         self.time_recoder = Time()
-
+        self.utg = UTG(
+            device=device, app=app
+        )
         self.device = device
         self.app = app
         self.event_count = 0
-        self.master = None
-        self.kea = kea
         self.input_manager = None
         self.time_needed_to_satisfy_precondition = []
-
-        self.time_to_check_rule = []
-
         self.last_event = None
         self.from_state = None
         self.to_state = None
-        self.generate_utg = False   # TODO `generate_utg` is self-explained?
+        self.generate_utg = generate_utg   # TODO `generate_utg` is self-explained?
         self.triggered_bug_information = []
+
+        self._num_restarts = 0
+        self._num_steps_outside = 0
+        self._event_trace = ""
 
     def start(self, input_manager:"InputManager"):
         """
@@ -112,12 +109,12 @@ class InputPolicy(object):
                 if hasattr(self.device, "u2"): 
                     self.device.u2.set_fastinput_ime(True)
 
-                self.logger.info("Exploration action count: %d" % self.event_count)
+                self.logger.info("Exploration action count: %d", self.event_count)
 
-                if self.event_count == 0 and self.master is None:
+                if self.event_count == 0:
                     # If the application is running, close the application.
                     event = KillAppEvent(app=self.app)
-                elif self.event_count == 1 and self.master is None:
+                elif self.event_count == 1:
                     # start the application
                     event = IntentEvent(self.app.get_start_intent())
                 else:
@@ -156,6 +153,59 @@ class InputPolicy(object):
     def update_utg(self):
         self.utg.add_transition(self.last_event, self.from_state, self.to_state)
 
+    def check_the_app_on_foreground(self, current_state):
+        if current_state.get_app_activity_depth(self.app) < 0:
+            # If the app is not in the activity stack
+            start_app_intent = self.app.get_start_intent()
+
+            # It seems the app stucks at some state, has been
+            # 1) force stopped (START, STOP)
+            #    just start the app again by increasing self.__num_restarts
+            # 2) started at least once and cannot be started (START)
+            #    pass to let viewclient deal with this case
+            # 3) nothing
+            #    a normal start. clear self.__num_restarts.
+
+            if self._event_trace.endswith(
+                    EVENT_FLAG_START_APP + EVENT_FLAG_STOP_APP
+            ) or self._event_trace.endswith(EVENT_FLAG_START_APP):
+                self._num_restarts += 1
+                self.logger.info(
+                    "The app had been restarted %d times.", self._num_restarts
+                )
+            else:
+                self._num_restarts = 0
+
+            # pass (START) through
+            if not self._event_trace.endswith(EVENT_FLAG_START_APP):
+                if self._num_restarts > MAX_NUM_RESTARTS:
+                    # If the app had been restarted too many times, enter random mode
+                    msg = "The app had been restarted too many times. Entering random mode."
+                    self.logger.info(msg)
+                else:
+                    # Start the app
+                    self._event_trace += EVENT_FLAG_START_APP
+                    self.logger.info("Trying to start the app...")
+                    return IntentEvent(intent=start_app_intent)
+
+        elif current_state.get_app_activity_depth(self.app) > 0:
+            # If the app is in activity stack but is not in foreground
+            self._num_steps_outside += 1
+
+            if self._num_steps_outside > MAX_NUM_STEPS_OUTSIDE:
+                # If the app has not been in foreground for too long, try to go back
+                if self._num_steps_outside > MAX_NUM_STEPS_OUTSIDE_KILL:
+                    stop_app_intent = self.app.get_stop_intent()
+                    go_back_event = IntentEvent(stop_app_intent)
+                else:
+                    go_back_event = KeyEvent(name="BACK")
+                self._event_trace += EVENT_FLAG_NAVIGATE
+                self.logger.info("Going back to the app...")
+                return go_back_event
+        else:
+            # If the app is in foreground
+            self._num_steps_outside = 0
+
     @abstractmethod
     def tear_down(self):
         """
@@ -185,22 +235,12 @@ class KeaInputPolicy(InputPolicy):
     state-based input policy
     """
 
-    def __init__(self, device, app, random_input, kea=None):
-        super(KeaInputPolicy, self).__init__(device, app, kea)
-        self.random_input = random_input
-        self.script = None
-        self.master = None
-        self.script_events = []
+    def __init__(self, device, app, kea=None, generate_utg=False):
+        super(KeaInputPolicy, self).__init__(device, app, generate_utg)
+        self.kea = kea
         self.last_event = None
         self.from_state = None
         self.to_state = None
-        self.utg = UTG(
-            device=device, app=app, random_input=random_input
-        )
-        self.script_event_idx = 0
-        if self.device.humanoid is not None:
-            self.humanoid_view_trees = []
-            self.humanoid_events = []
         
         # retrive all the rules from the provided properties
         self.statistics_of_rules = {}
@@ -213,27 +253,25 @@ class KeaInputPolicy(InputPolicy):
             self.logger.warning("No initializer")
             return
     
-        result = self.kea.execute_initializer(self.kea.initializer)  # TODO why giving initializer but the function name is execute_rules
+        result = self.kea.execute_initializer(self.kea.initializer) 
         if result == CHECK_RESULT.PASS :  # why only check `result`, `result` could have different values.
             self.logger.info("-------initialize successfully-----------")
         else:
             self.logger.error("-------initialize failed-----------")
 
-    def check_rule_with_precondition(self):
+    def check_rule_whose_precondition_are_satisfied(self):
         """
         TODO should split the function
         """
-        rules_dict_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
-        if len(rules_dict_to_check) == 0:
+        rules_ready_to_be_checked = self.kea.get_rules_whose_preconditions_are_satisfied()
+        if len(rules_ready_to_be_checked) == 0:
             self.logger.debug("No rules match the precondition")
-            if hasattr(self, "not_reach_precondition_path_number"): #TODO what does it mean?
-                self.not_reach_precondition_path_number.append(self.path_index)
             return
-            # continue
 
-        candidate_rules_list = list(rules_dict_to_check.keys())
+        candidate_rules_list = list(rules_ready_to_be_checked.keys())
         for candidate_rule in candidate_rules_list:
             self.statistics_of_rules[str(candidate_rule)][RULE_STATE.PRECONDITION_SATISFIED] += 1
+        # randomly select a rule to check
         rule_to_check = random.choice(candidate_rules_list)
 
         if rule_to_check is not None:
@@ -241,7 +279,7 @@ class KeaInputPolicy(InputPolicy):
             self.statistics_of_rules[str(rule_to_check)][RULE_STATE.PROPERTY_CHECKED] += 1
             pre_id = self.device.get_count()  # TODO what does pre_id mean?
             # check rule, record relavant info and output log
-            result = self.kea.execute_rule(rule=rule_to_check, keaTest=rules_dict_to_check[rule_to_check])
+            result = self.kea.execute_rule(rule=rule_to_check, keaTest=rules_ready_to_be_checked[rule_to_check])
             if result == CHECK_RESULT.ASSERTION_FAILURE:
                 self.logger.error(f"-------Postcondition failed. Assertion error, Property:{rule_to_check}------")
                 self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))
@@ -249,40 +287,30 @@ class KeaInputPolicy(InputPolicy):
                 post_id = self.device.get_count()  # TODO what does post_id mean?
                 self.triggered_bug_information.append(
                     ((pre_id, post_id), self.time_recoder.get_time_duration(), rule_to_check.function.__name__))
-
-
             elif result == CHECK_RESULT.PASS:
                 self.logger.info(f"-------Post condition satisfied. Property:{rule_to_check} pass------")
                 self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))
 
             elif result == CHECK_RESULT.UI_NOT_FOUND:
                 self.logger.error(f"-------Execution failed: UiObjectNotFound during exectution. Property:{rule_to_check}-----------")
-
             elif result == CHECK_RESULT.PRECON_NOT_SATISFIED:
                 self.logger.info("-------Precondition not satisfied-----------")
-            
             else:
                 raise AttributeError(f"Invalid property checking result {result}")
 
-    def check_rule_without_precondition(self):
-        rules_to_check = self.kea.get_rules_without_preconditions()
-        if len(rules_to_check) > 0:
-            result = self.kea.execute_rules(
-                self.kea.get_rules_without_preconditions()
-            )
-            if result:
-                self.logger.info("-------rule_without_precondition execute success-----------")
-            else:
-                self.logger.error("-------rule_without_precondition execute failed-----------")
-        else:
-            self.logger.info("-------no rule_without_precondition to execute-----------")
+    # def check_rule_without_precondition(self):
+    #     rules_to_check = self.kea.get_rules_without_preconditions()
+    #     if len(rules_to_check) > 0:
+    #         result = self.kea.execute_rules(
+    #             self.kea.get_rules_without_preconditions()
+    #         )
+    #         if result:
+    #             self.logger.info("-------rule_without_precondition execute success-----------")
+    #         else:
+    #             self.logger.error("-------rule_without_precondition execute failed-----------")
+    #     else:
+    #         self.logger.info("-------no rule_without_precondition to execute-----------")
 
-    def stop_app_events(self):
-        # self.logger.info("reach the target state, restart the app")
-        stop_app_intent = self.app.get_stop_intent()
-        stop_event = IntentEvent(stop_app_intent)
-        self.logger.info("stop the app and go back to the main activity")
-        return stop_event
 
     def generate_event(self):
         """
@@ -294,14 +322,6 @@ class KeaInputPolicy(InputPolicy):
     def update_utg(self):
         self.utg.add_transition(self.last_event, self.from_state, self.to_state)
 
-
-    @abstractmethod
-    def generate_event_based_on_utg(self):
-        """
-        generate an event based on UTG
-        :return: InputEvent
-        """
-        pass
 
     def tear_down(self):
         """
@@ -333,15 +353,97 @@ class KeaInputPolicy(InputPolicy):
         # else:
         #     self.logger.info("No bug has been triggered.")
 
+class RandomPolicy(KeaInputPolicy):
+    """
+    generate random event based on current app state
+    """
+
+    def __init__(self, device, app, kea=None, restart_app_after_check_property=False,
+                 number_of_events_that_restart_app=100, clear_and_reinstall_app=False, generate_utg=False):
+        super(RandomPolicy, self).__init__(
+            device, app, kea, generate_utg
+        )
+        self.restart_app_after_check_property = restart_app_after_check_property
+        self.number_of_events_that_restart_app = number_of_events_that_restart_app
+        self.clear_and_reinstall_app = clear_and_reinstall_app
+        self.logger = logging.getLogger(self.__class__.__name__)
+        self.last_rotate_events = KEY_RotateDeviceNeutralEvent
+
+    def generate_event(self):
+        """
+        generate an event
+        @return:
+        """
+
+        if self.event_count == EVENT_COUNT_START_TO_GENERATE_EVENT_IN_POLICY or isinstance(self.last_event, ReInstallAppEvent):
+            self.run_initializer()
+        current_state = self.device.get_current_state()
+        if current_state is None:
+            time.sleep(5)
+            return KeyEvent(name="BACK")
+
+        if self.event_count % self.number_of_events_that_restart_app == 0:
+            if self.clear_and_reinstall_app:
+                self.logger.info("clear and reinstall app after %s events" % self.number_of_events_that_restart_app)
+                return ReInstallAppEvent(self.app)
+            self.logger.info("restart app after %s events" % self.number_of_events_that_restart_app)    
+            return KillAppEvent(app=self.app)
+        
+        rules_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
+
+        if len(rules_to_check) > 0:
+            self.time_needed_to_satisfy_precondition.append(self.time_recoder.get_time_duration())
+            self.logger.debug("has rule that matches the precondition and the time duration is " + self.time_recoder.get_time_duration())
+            if random.random() < 0.5:
+                self.logger.info("Check property")
+                self.check_rule_whose_precondition_are_satisfied()
+                if self.restart_app_after_check_property:
+                    self.logger.debug("restart app after check property")
+                    return KillAppEvent(app=self.app)
+                return None
+            else:
+                self.logger.info("Don't check the property due to the randomness")
+        event = None
+
+        event = self.generate_event_based_on_current_state()
+
+        if isinstance(event, RotateDevice):
+            if self.last_rotate_events == KEY_RotateDeviceNeutralEvent:
+                self.last_rotate_events = KEY_RotateDeviceRightEvent
+                event = RotateDeviceToRightEvent() # TODO wierd naming?
+            else:
+                self.last_rotate_events = KEY_RotateDeviceNeutralEvent
+                event = RotateDeviceNeutralEvent()
+
+        return event
+
+    def generate_event_based_on_current_state(self):
+        """
+        generate an event based on current UTG
+        @return: InputEvent
+        """
+        current_state = self.device.get_current_state()
+        self.logger.debug("Current state: %s" % current_state.state_str)
+        event = self.check_the_app_on_foreground(current_state)
+        if event is not None:
+            return event
+
+        possible_events = current_state.get_possible_input()
+        possible_events.append(KeyEvent(name="BACK"))
+        possible_events.append(RotateDevice())
+
+        self._event_trace += EVENT_FLAG_EXPLORE
+        return random.choice(possible_events)
+    
 # TODO switch the code of Guided and Random, put Random before Guided
 class GuidedPolicy(KeaInputPolicy):
     """
     
     """
 
-    def __init__(self, device, app, random_input, kea=None, generate_utg = False):
+    def __init__(self, device, app, kea=None, generate_utg = False):
         super(GuidedPolicy, self).__init__(
-            device, app, random_input, kea
+            device, app, kea,generate_utg
         )
         self.logger = logging.getLogger(self.__class__.__name__)
         
@@ -350,11 +452,7 @@ class GuidedPolicy(KeaInputPolicy):
         else:
             self.logger.error("No mainPath found")
 
-        self.__num_restarts = 0
-        self.__num_steps_outside = 0
-        self.__event_trace = ""
-        self.__missed_states = set()
-
+        self.main_path = None
         self.execute_main_path = True
 
         self.current_index_on_main_path = 0
@@ -362,11 +460,10 @@ class GuidedPolicy(KeaInputPolicy):
         self.current_number_of_mutate_steps_on_single_node = 0
         self.number_of_events_that_try_to_find_event_on_main_path = 0
         self.index_on_main_path_after_mutation = -1
+        self.mutate_node_index_on_main_path = 0
 
         self.last_random_text = None
         self.last_rotate_events = KEY_RotateDeviceNeutralEvent
-
-        self.generate_utg = generate_utg
 
     def select_main_path(self):
         if len(self.kea.all_mainPaths) == 0:
@@ -395,7 +492,7 @@ class GuidedPolicy(KeaInputPolicy):
             return event
 
 
-        if (self.event_count == ACTION_COUNT_TO_START and self.current_index_on_main_path == 0) or isinstance(self.last_event, ReInstallAppEvent):
+        if (self.event_count == EVENT_COUNT_START_TO_GENERATE_EVENT_IN_POLICY and self.current_index_on_main_path == 0) or isinstance(self.last_event, ReInstallAppEvent):
             self.select_main_path()
             self.run_initializer()
             time.sleep(2)
@@ -431,13 +528,11 @@ class GuidedPolicy(KeaInputPolicy):
         rules_list_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
 
         if len(rules_list_to_check) > 0:
-            t = self.time_recoder.get_time_duration()
             self.time_needed_to_satisfy_precondition.append(t)
             self.logger.info(f"Found {len(rules_list_to_check)} rules satisfied the precondition. Current execution time {self.time_recoder.get_time_duration()}")
             if random.random() < p:
-                self.time_to_check_rule.append(t)
                 self.logger.info(" check rule")
-                self.check_rule_with_precondition()
+                self.check_rule_whose_precondition_are_satisfied()
                 return 1
             else:
                 self.logger.info("Found exectuable property in current state. No property will be checked now according to the random checking policy.")
@@ -456,7 +551,7 @@ class GuidedPolicy(KeaInputPolicy):
                     if len(rules_to_check) > 0:
                         t = self.time_recoder.get_time_duration()
                         self.time_needed_to_satisfy_precondition.append(t)
-                        self.check_rule_with_precondition()
+                        self.check_rule_whose_precondition_are_satisfied()
                     return self.end_mutation()
 
 
@@ -528,314 +623,48 @@ class GuidedPolicy(KeaInputPolicy):
         """
         current_state = self.device.get_current_state()
         self.logger.info("Current state: %s" % current_state.state_str)
-        if current_state.state_str in self.__missed_states:
-            self.__missed_states.remove(current_state.state_str)
-
-        if current_state.get_app_activity_depth(self.app) < 0:
-            # If the app is not in the activity stack
-            start_app_intent = self.app.get_start_intent()
-
-            # It seems the app stucks at some state, has been
-            # 1) force stopped (START, STOP)
-            #    just start the app again by increasing self.__num_restarts
-            # 2) started at least once and cannot be started (START)
-            #    pass to let viewclient deal with this case
-            # 3) nothing
-            #    a normal start. clear self.__num_restarts.
-
-            if self.__event_trace.endswith(
-                    EVENT_FLAG_START_APP + EVENT_FLAG_STOP_APP
-            ) or self.__event_trace.endswith(EVENT_FLAG_START_APP):
-                self.__num_restarts += 1
-                self.logger.info(
-                    "The app had been restarted %d times.", self.__num_restarts
-                )
-            else:
-                self.__num_restarts = 0
-
-            # pass (START) through
-            if not self.__event_trace.endswith(EVENT_FLAG_START_APP):
-                if self.__num_restarts > MAX_NUM_RESTARTS:
-                    # If the app had been restarted too many times, enter random mode
-                    msg = "The app had been restarted too many times. Entering random mode."
-                    self.logger.info(msg)
-                    self.__random_explore = True
-                else:
-                    # Start the app
-                    self.__event_trace += EVENT_FLAG_START_APP
-                    self.logger.info("Trying to start the app...")
-                    return IntentEvent(intent=start_app_intent)
-
-        elif current_state.get_app_activity_depth(self.app) > 0:
-            # If the app is in activity stack but is not in foreground
-            self.__num_steps_outside += 1
-
-            if self.__num_steps_outside > MAX_NUM_STEPS_OUTSIDE:
-                # If the app has not been in foreground for too long, try to go back
-                if self.__num_steps_outside > MAX_NUM_STEPS_OUTSIDE_KILL:
-                    stop_app_intent = self.app.get_stop_intent()
-                    go_back_event = IntentEvent(stop_app_intent)
-                else:
-                    go_back_event = KeyEvent(name="BACK")
-                self.__event_trace += EVENT_FLAG_NAVIGATE
-                self.logger.info("Going back to the app...")
-                return go_back_event
-        else:
-            # If the app is in foreground
-            self.__num_steps_outside = 0
+        event = self.check_the_app_on_foreground(current_state)
+        if event is not None:
+            return event
 
         # Get all possible input events
         possible_events = current_state.get_possible_input()
 
-        if self.random_input:
-            random.shuffle(possible_events)
+        # if self.random_input:
+        #     random.shuffle(possible_events)
         possible_events.append(KeyEvent(name="BACK"))
         possible_events.append(RotateDevice())
 
-        self.__event_trace += EVENT_FLAG_EXPLORE
+        self._event_trace += EVENT_FLAG_EXPLORE
 
         event = random.choice(possible_events)
         if isinstance(event, RotateDevice):
             if self.last_rotate_events == KEY_RotateDeviceNeutralEvent:
                 self.last_rotate_events = KEY_RotateDeviceRightEvent
-                event = RotateDeviceRightEvent()
+                event = RotateDeviceToRightEvent()
             else:
                 self.last_rotate_events = KEY_RotateDeviceNeutralEvent
                 event = RotateDeviceNeutralEvent()
 
         return event
 
-    def check_the_app_on_foreground(self, current_state):
-        if current_state.get_app_activity_depth(self.app) < 0:
-            # If the app is not in the activity stack
-            start_app_intent = self.app.get_start_intent()
-
-            # It seems the app stucks at some state, has been
-            # 1) force stopped (START, STOP)
-            #    just start the app again by increasing self.__num_restarts
-            # 2) started at least once and cannot be started (START)
-            #    pass to let viewclient deal with this case
-            # 3) nothing
-            #    a normal start. clear self.__num_restarts.
-
-            if self.__event_trace.endswith(
-                    EVENT_FLAG_START_APP + EVENT_FLAG_STOP_APP
-            ) or self.__event_trace.endswith(EVENT_FLAG_START_APP):
-                self.__num_restarts += 1
-                self.logger.info(
-                    "The app had been restarted %d times.", self.__num_restarts
-                )
-            else:
-                self.__num_restarts = 0
-
-            # pass (START) through
-            if not self.__event_trace.endswith(EVENT_FLAG_START_APP):
-                if self.__num_restarts > MAX_NUM_RESTARTS:
-                    # If the app had been restarted too many times, enter random mode
-                    msg = "The app had been restarted too many times. Entering random mode."
-                    self.logger.info(msg)
-                    self.__random_explore = True
-                else:
-                    # Start the app
-                    self.__event_trace += EVENT_FLAG_START_APP
-                    self.logger.info("Trying to start the app...")
-                    return IntentEvent(intent=start_app_intent)
-
-        elif current_state.get_app_activity_depth(self.app) > 0:
-            # If the app is in activity stack but is not in foreground
-            self.__num_steps_outside += 1
-
-            if self.__num_steps_outside > MAX_NUM_STEPS_OUTSIDE:
-                # If the app has not been in foreground for too long, try to go back
-                if self.__num_steps_outside > MAX_NUM_STEPS_OUTSIDE_KILL:
-                    stop_app_intent = self.app.get_stop_intent()
-                    go_back_event = IntentEvent(stop_app_intent)
-                else:
-                    go_back_event = KeyEvent(name="BACK")
-                self.__event_trace += EVENT_FLAG_NAVIGATE
-                self.logger.info("Going back to the app...")
-                return go_back_event
-        else:
-            # If the app is in foreground
-            self.__num_steps_outside = 0
-
-class RandomPolicy(KeaInputPolicy):
-    """
-    random input policy based on UTG
-    """
-
-    def __init__(self, device, app, random_input=True, kea=None, restart_app_after_check_property=False,
-                 number_of_events_that_restart_app=100, clear_and_restart_app_data_after_100_events=False, generate_utg=False):
-        super(RandomPolicy, self).__init__(
-            device, app, random_input, kea
-        )
-        self.restart_app_after_check_property = restart_app_after_check_property
-        self.number_of_events_that_restart_app = number_of_events_that_restart_app
-        self.clear_and_restart_app_data_after_100_events = clear_and_restart_app_data_after_100_events
-        self.logger = logging.getLogger(self.__class__.__name__)
-
-        self.preferred_buttons = [
-            "yes",
-            "ok",
-            "activate",
-            "detail",
-            "more",
-            "access",
-            "allow",
-            "check",
-            "agree",
-            "try",
-            "go",
-            "next",
-        ]
-        self.__num_restarts = 0
-        self.__num_steps_outside = 0
-        self.__event_trace = ""
-        self.__missed_states = set()
-        self.number_of_steps_outside_the_shortest_path = 0
-        self.reached_state_on_the_shortest_path = []
-
-        self.last_rotate_events = KEY_RotateDeviceNeutralEvent
-
-        self.generate_utg = generate_utg
-
-    def generate_event(self):
-        """
-        generate an event
-        @return:
-        """
-
-        if self.event_count == ACTION_COUNT_TO_START or isinstance(self.last_event, ReInstallAppEvent):
-            self.run_initializer()
-        current_state = self.device.get_current_state()
-        if current_state is None:
-            import time
-            time.sleep(5)
-            return KeyEvent(name="BACK")
-
-        if self.event_count % self.number_of_events_that_restart_app == 0 and self.clear_and_restart_app_data_after_100_events: #TODO wierd names
-            self.logger.info("clear and restart app after %s events" % self.number_of_events_that_restart_app)
-            return ReInstallAppEvent(self.app)
-        rules_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
-
-        if len(rules_to_check) > 0:
-            t = self.time_recoder.get_time_duration()
-            self.time_needed_to_satisfy_precondition.append(t)
-            self.logger.debug("has rule that matches the precondition and the time duration is " + self.time_recoder.get_time_duration())
-            if random.random() < 0.5:
-                self.time_to_check_rule.append(t)
-                self.logger.info("Check property")
-                self.check_rule_with_precondition()
-                if self.restart_app_after_check_property:
-                    self.logger.debug("restart app after check property")
-                    return KillAppEvent(app=self.app)
-                return None
-            else:
-                self.logger.info("Found exectuable property in current state. No property will be checked now according to the random checking policy.")
-        event = None
-
-        if event is None:
-            event = self.generate_event_based_on_utg()
-
-        if isinstance(event, RotateDevice):
-            if self.last_rotate_events == KEY_RotateDeviceNeutralEvent:
-                self.last_rotate_events = KEY_RotateDeviceRightEvent
-                event = RotateDeviceRightEvent() # TODO wierd naming?
-            else:
-                self.last_rotate_events = KEY_RotateDeviceNeutralEvent
-                event = RotateDeviceNeutralEvent()
-
-        return event
-
-    def generate_event_based_on_utg(self):
-        """
-        generate an event based on current UTG
-        @return: InputEvent
-        """
-        current_state = self.device.get_current_state()
-        self.logger.debug("Current state: %s" % current_state.state_str)
-        if current_state.state_str in self.__missed_states:
-            self.__missed_states.remove(current_state.state_str)
-
-        #Get the depth of the app's activity in the activity stack
-        if current_state.get_app_activity_depth(self.app) < 0:
-            # If the app is not in the activity stack
-            start_app_intent = self.app.get_start_intent()
-
-            # It seems the app stucks at some state, has been
-            # 1) force stopped (START, STOP)
-            #    just start the app again by increasing self.__num_restarts
-            # 2) started at least once and cannot be started (START)
-            #    pass to let viewclient deal with this case
-            # 3) nothing
-            #    a normal start. clear self.__num_restarts.
-
-            if self.__event_trace.endswith(
-                    EVENT_FLAG_START_APP + EVENT_FLAG_STOP_APP
-            ) or self.__event_trace.endswith(EVENT_FLAG_START_APP):
-                self.__num_restarts += 1
-                self.logger.debug(
-                    "The app had been restarted %d times.", self.__num_restarts
-                )
-            else:
-                self.__num_restarts = 0
-
-            # pass (START) through
-            if not self.__event_trace.endswith(EVENT_FLAG_START_APP):
-                if self.__num_restarts > MAX_NUM_RESTARTS:
-                    # If the app had been restarted too many times, enter random mode
-                    msg = "The app had been restarted too many times. Entering random mode."
-                    self.logger.debug(msg)
-                    self.__random_explore = True
-                else:
-                    # Start the app
-                    self.__event_trace += EVENT_FLAG_START_APP
-                    self.logger.debug("Trying to start the app...")
-                    return IntentEvent(intent=start_app_intent)
-
-        elif current_state.get_app_activity_depth(self.app) > 0:
-            # If the app is in activity stack but is not in foreground
-            self.__num_steps_outside += 1
-
-            if self.__num_steps_outside > MAX_NUM_STEPS_OUTSIDE:
-                # If the app has not been in foreground for too long, try to go back
-                if self.__num_steps_outside > MAX_NUM_STEPS_OUTSIDE_KILL:
-                    stop_app_intent = self.app.get_stop_intent()
-                    go_back_event = IntentEvent(stop_app_intent)
-                else:
-                    go_back_event = KeyEvent(name="BACK")
-                self.__event_trace += EVENT_FLAG_NAVIGATE
-                self.logger.debug("Going back to the app...")
-                return go_back_event
-        else:
-            # If the app is in foreground
-            self.__num_steps_outside = 0
-
-        possible_events = current_state.get_possible_input()
-
-        if self.random_input: #TODO here is the random strategy?
-            random.shuffle(possible_events)
-        possible_events.append(KeyEvent(name="BACK"))
-        possible_events.append(RotateDevice())
-
-        self.__event_trace += EVENT_FLAG_EXPLORE
-        return random.choice(possible_events)
     
+
+
 class LLMPolicy(RandomPolicy):
     '''
     use LLM to generate input when detected ui tarpit
     '''
-    def __init__(self, device, app, random_input=True, kea=None, restart_app_after_check_property=False,
+    def __init__(self, device, app, kea=None, restart_app_after_check_property=False,
                  number_of_events_that_restart_app=100, clear_and_restart_app_data_after_100_events=False, generate_utg=False):
         super(LLMPolicy, self).__init__(
-            device, app, random_input, kea
+            device, app, kea
         )
         self.logger = logging.getLogger(self.__class__.__name__)
         self.__action_history=[]
         self.__all_action_history=set()
         self.__activity_history = set()
         self.from_state = None
-        self.__missed_states = set()
         self.task = "You are an expert in App GUI testing. Please guide the testing tool to enhance the coverage of functional scenarios in testing the App based on your extensive App testing experience. "
 
     def start(self, input_manager:"InputManager"):  # TODO do not need to write start here?
@@ -856,10 +685,10 @@ class LLMPolicy(RandomPolicy):
 
                 self.logger.info("Exploration action count: %d" % self.action_count)
 
-                if self.action_count == 0 and self.master is None:
+                if self.action_count == 0:
                     #If the application is running, close the application.
                     event = KillAppEvent(app=self.app)
-                elif self.action_count == 1 and self.master is None:
+                elif self.action_count == 1:
                     event = IntentEvent(self.app.get_start_intent())
                 else:
                     if input_manager.sim_calculator.detected_ui_tarpit(input_manager):
@@ -910,7 +739,7 @@ class LLMPolicy(RandomPolicy):
         @return:
         """
 
-        if self.action_count == ACTION_COUNT_TO_START or isinstance(self.last_event, ReInstallAppEvent):
+        if self.action_count == EVENT_COUNT_START_TO_GENERATE_EVENT_IN_POLICY or isinstance(self.last_event, ReInstallAppEvent):
             self.run_initializer()
         current_state = self.device.get_current_state()
         if current_state is None:
@@ -919,7 +748,7 @@ class LLMPolicy(RandomPolicy):
             return KeyEvent(name="BACK")
 
 
-        if self.action_count % self.number_of_events_that_restart_app == 0 and self.clear_and_restart_app_data_after_100_events:
+        if self.action_count % self.number_of_events_that_restart_app == 0 and self.clear_and_reinstall_app:
             self.logger.info("clear and restart app after %s events" % self.number_of_events_that_restart_app)
             return ReInstallAppEvent(self.app)
         rules_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
@@ -929,9 +758,8 @@ class LLMPolicy(RandomPolicy):
             self.time_needed_to_satisfy_precondition.append(t)
             self.logger.debug("has rule that matches the precondition and the time duration is " + self.time_recoder.get_time_duration())
             if random.random() < 0.5:
-                self.time_to_check_rule.append(t)
                 self.logger.info("Check property")
-                self.check_rule_with_precondition()
+                self.check_rule_whose_precondition_are_satisfied()
                 if self.restart_app_after_check_property:
                     self.logger.debug("restart app after check property")
                     return KillAppEvent(app=self.app)
@@ -946,7 +774,7 @@ class LLMPolicy(RandomPolicy):
         if isinstance(event, RotateDevice):
             if self.last_rotate_events == KEY_RotateDeviceNeutralEvent:
                 self.last_rotate_events = KEY_RotateDeviceRightEvent
-                event = RotateDeviceRightEvent()
+                event = RotateDeviceToRightEvent()
             else:
                 self.last_rotate_events = KEY_RotateDeviceNeutralEvent
                 event = RotateDeviceNeutralEvent()
@@ -960,8 +788,6 @@ class LLMPolicy(RandomPolicy):
         """
         current_state = self.device.get_current_state()
         self.logger.info("Current state: %s" % current_state.state_str)
-        if current_state.state_str in self.__missed_states:
-            self.__missed_states.remove(current_state.state_str)
 
         if current_state.get_app_activity_depth(self.app) < 0:
             # If the app is not in the activity stack
@@ -975,23 +801,23 @@ class LLMPolicy(RandomPolicy):
             # 3) nothing
             #    a normal start. clear self.__num_restarts.
 
-            if self.__event_trace.endswith(EVENT_FLAG_START_APP + EVENT_FLAG_STOP_APP) \
-                    or self.__event_trace.endswith(EVENT_FLAG_START_APP):
-                self.__num_restarts += 1
-                self.logger.info("The app had been restarted %d times.", self.__num_restarts)
+            if self._event_trace.endswith(EVENT_FLAG_START_APP + EVENT_FLAG_STOP_APP) \
+                    or self._event_trace.endswith(EVENT_FLAG_START_APP):
+                self._num_restarts += 1
+                self.logger.info("The app had been restarted %d times.", self._num_restarts)
             else:
-                self.__num_restarts = 0
+                self._num_restarts = 0
 
             # pass (START) through
-            if not self.__event_trace.endswith(EVENT_FLAG_START_APP):
-                if self.__num_restarts > MAX_NUM_RESTARTS:
+            if not self._event_trace.endswith(EVENT_FLAG_START_APP):
+                if self._num_restarts > MAX_NUM_RESTARTS:
                     # If the app had been restarted too many times, enter random mode
                     msg = "The app had been restarted too many times. Entering random mode."
                     self.logger.info(msg)
                     self.__random_explore = True
                 else:
                     # Start the app
-                    self.__event_trace += EVENT_FLAG_START_APP
+                    self._event_trace += EVENT_FLAG_START_APP
                     self.logger.info("Trying to start the app...")
                     self.__action_history = [f'- start the app {self.app.app_name}']
                     return IntentEvent(intent=start_app_intent)
@@ -1007,7 +833,7 @@ class LLMPolicy(RandomPolicy):
                     go_back_event = IntentEvent(stop_app_intent)
                 else:
                     go_back_event = KeyEvent(name="BACK")
-                self.__event_trace += EVENT_FLAG_NAVIGATE
+                self._event_trace += EVENT_FLAG_NAVIGATE
                 self.logger.info("Going back to the app...")
                 self.__action_history.append('- go back')
                 return go_back_event
@@ -1033,7 +859,7 @@ class LLMPolicy(RandomPolicy):
         self.logger.info("Cannot find an exploration target. Trying to restart app...")
         self.__action_history.append('- stop the app')
         self.__all_action_history.add('- stop the app')
-        self.__event_trace += EVENT_FLAG_STOP_APP
+        self._event_trace += EVENT_FLAG_STOP_APP
         return IntentEvent(intent=stop_app_intent)
         
     def _query_llm(self, prompt, model_name='gpt-3.5-turbo'):

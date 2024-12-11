@@ -94,14 +94,13 @@ class InputManager(object):
             input_policy = GuidedPolicy(
                 device,
                 app,
-                self.random_input,
                 self.kea,
                 self.generate_utg
             )
         elif self.policy_name == POLICY_RANDOM:
-            input_policy = RandomPolicy(device, app, random_input=self.random_input, kea=self.kea, number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True, generate_utg = self.generate_utg)
+            input_policy = RandomPolicy(device, app, kea=self.kea, number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_reinstall_app=True, generate_utg = self.generate_utg)
         elif self.policy_name == POLICY_LLM:
-            input_policy = LLMPolicy(device, app, random_input=self.random_input, kea=self.kea, number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True, generate_utg = self.generate_utg)
+            input_policy = LLMPolicy(device, app, kea=self.kea, number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True, generate_utg = self.generate_utg)
         else:
             self.logger.warning(
                 "No valid input policy specified. Using policy \"none\"."

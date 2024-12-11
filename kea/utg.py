@@ -20,7 +20,7 @@ class UTG(object):
     UI transition graph
     """
 
-    def __init__(self, device:Union["Device", "DeviceHM"], app:Union["App", "AppHM"], random_input):
+    def __init__(self, device:Union["Device", "DeviceHM"], app:Union["App", "AppHM"], random_input=True):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.device = device
         self.app = app

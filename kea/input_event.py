@@ -451,7 +451,7 @@ class RotateDevice(InputEvent):
     def get_event_name(self):
         return "Rotate"
 
-class RotateDeviceRightEvent(RotateDevice):
+class RotateDeviceToRightEvent(RotateDevice):
     """
     an event to rotate device
     """

@@ -81,7 +81,7 @@ class InputPolicy(object):
 
         self.device = device
         self.app = app
-        self.action_count = 0
+        self.event_count = 0
         self.master = None
         self.kea = kea
         self.input_manager = None
@@ -95,39 +95,30 @@ class InputPolicy(object):
         self.generate_utg = False   # TODO `generate_utg` is self-explained?
         self.triggered_bug_information = []
 
-    def run_initializer(self):  #TODO why we should initialize kea's rules here? It should be put into the KeaInputPolicy. Because InputPolicy is the top-level class.
-        if len(self.kea.initializer) == 0:
-            self.logger.warning("No initializer")
-            return
-    
-        result = self.kea.execute_rules(self.kea.initializer)  # TODO why giving initializer but the function name is execute_rules
-        if result:  # why only check `result`, `result` could have different values.
-            self.logger.info("-------initialize successfully-----------")
-        else:
-            self.logger.error("-------initialize failed-----------")
-
     def start(self, input_manager:"InputManager"):
         """
         start producing events
         :param input_manager: instance of InputManager
         """
-        self.action_count = 0  # TODO the name of `action_count` is not self-explained
+        self.event_count = 0  # TODO the name of `action_count` is not self-explained
         self.input_manager = input_manager
         while (
                 input_manager.enabled
-                and self.action_count
+                and self.event_count
                 < input_manager.event_count
         ):
             try:
-                if hasattr(self.device, "u2"):  # TODO what does this line of code mean?
+                # close the keyboard on the device
+                if hasattr(self.device, "u2"): 
                     self.device.u2.set_fastinput_ime(True)
 
-                self.logger.info("Exploration action count: %d" % self.action_count)
+                self.logger.info("Exploration action count: %d" % self.event_count)
 
-                if self.action_count == 0 and self.master is None:
-                    #If the application is running, close the application.
+                if self.event_count == 0 and self.master is None:
+                    # If the application is running, close the application.
                     event = KillAppEvent(app=self.app)
-                elif self.action_count == 1 and self.master is None:
+                elif self.event_count == 1 and self.master is None:
+                    # start the application
                     event = IntentEvent(self.app.get_start_intent())
                 else:
                     event = self.generate_event()
@@ -148,7 +139,7 @@ class InputPolicy(object):
                 break
             except InputInterruptedException as e:
                 self.logger.info("stop sending events: %s" % e)
-                self.logger.info("action count: %d" % self.action_count)
+                self.logger.info("action count: %d" % self.event_count)
                 break
 
             except RuntimeError as e:
@@ -159,7 +150,7 @@ class InputPolicy(object):
                 import traceback
 
                 traceback.print_exc()
-            self.action_count += 1
+            self.event_count += 1
         self.tear_down()
 
     def update_utg(self):
@@ -215,8 +206,18 @@ class KeaInputPolicy(InputPolicy):
         self.statistics_of_rules = {}
         for rule in self.kea.all_rules:
             self.statistics_of_rules[str(rule)] = {RULE_STATE.PRECONDITION_SATISFIED: 0, RULE_STATE.PROPERTY_CHECKED: 0, RULE_STATE.BUG_TRIGGERED: 0}
-        # record the action count, time and property name when the bug is triggered
-        self.triggered_bug_information = []  # TODO already defined in the parent class, why we need this?
+        
+
+    def run_initializer(self):  
+        if len(self.kea.initializer) == 0:
+            self.logger.warning("No initializer")
+            return
+    
+        result = self.kea.execute_initializer(self.kea.initializer[0])  # TODO why giving initializer but the function name is execute_rules
+        if result == CHECK_RESULT.PASS :  # why only check `result`, `result` could have different values.
+            self.logger.info("-------initialize successfully-----------")
+        else:
+            self.logger.error("-------initialize failed-----------")
 
     def check_rule_with_precondition(self):
         """
@@ -394,7 +395,7 @@ class GuidedPolicy(KeaInputPolicy):
             return event
 
 
-        if (self.action_count == ACTION_COUNT_TO_START and self.current_index_on_main_path == 0) or isinstance(self.last_event, ReInstallAppEvent):
+        if (self.event_count == ACTION_COUNT_TO_START and self.current_index_on_main_path == 0) or isinstance(self.last_event, ReInstallAppEvent):
             self.select_main_path()
             self.run_initializer()
             time.sleep(2)
@@ -704,7 +705,7 @@ class RandomPolicy(KeaInputPolicy):
         @return:
         """
 
-        if self.action_count == ACTION_COUNT_TO_START or isinstance(self.last_event, ReInstallAppEvent):
+        if self.event_count == ACTION_COUNT_TO_START or isinstance(self.last_event, ReInstallAppEvent):
             self.run_initializer()
         current_state = self.device.get_current_state()
         if current_state is None:
@@ -712,7 +713,7 @@ class RandomPolicy(KeaInputPolicy):
             time.sleep(5)
             return KeyEvent(name="BACK")
 
-        if self.action_count % self.number_of_events_that_restart_app == 0 and self.clear_and_restart_app_data_after_100_events: #TODO wierd names
+        if self.event_count % self.number_of_events_that_restart_app == 0 and self.clear_and_restart_app_data_after_100_events: #TODO wierd names
             self.logger.info("clear and restart app after %s events" % self.number_of_events_that_restart_app)
             return ReInstallAppEvent(self.app)
         rules_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()

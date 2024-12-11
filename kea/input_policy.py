@@ -105,11 +105,11 @@ class InputPolicy(object):
                 < input_manager.event_count
         ):
             try:
-                # close the keyboard on the device
-                if hasattr(self.device, "u2"): 
+                # Enable u2 fastIME. close the keyboard on the device.
+                if self.device.is_harmonyos == False and hasattr(self.device, "u2"): 
                     self.device.u2.set_fastinput_ime(True)
 
-                self.logger.info("Exploration action count: %d", self.event_count)
+                self.logger.info("Exploration event count: %d", self.event_count)
 
                 if self.event_count == 0:
                     # If the application is running, close the application.
@@ -130,7 +130,7 @@ class InputPolicy(object):
 
                 bug_report_path = os.path.join(self.device.output_dir, "all_states")
                 # TODO this function signature is too long?
-                generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.get_count(), self.time_recoder.get_time_duration())
+                generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.cur_event_count, self.time_recoder.get_time_duration())
 
             except KeyboardInterrupt:
                 break
@@ -238,7 +238,7 @@ class KeaInputPolicy(InputPolicy):
     state-based input policy
     """
 
-    def __init__(self, device, app, kea=None, generate_utg=False):
+    def __init__(self, device, app, kea:"Kea"=None, generate_utg=False):
         super(KeaInputPolicy, self).__init__(device, app, generate_utg)
         self.kea = kea
         self.last_event = None
@@ -265,7 +265,9 @@ class KeaInputPolicy(InputPolicy):
     def check_rule_whose_precondition_are_satisfied(self):
         """
         TODO should split the function
+        #! xixian - agree to split the function
         """
+        #! TODO - xixian - should we emphasize the following data structure is a dict?
         rules_ready_to_be_checked = self.kea.get_rules_whose_preconditions_are_satisfied()
         if len(rules_ready_to_be_checked) == 0:
             self.logger.debug("No rules match the precondition")
@@ -280,14 +282,14 @@ class KeaInputPolicy(InputPolicy):
         if rule_to_check is not None:
             self.logger.info(f"-------Check Property : {rule_to_check}------")
             self.statistics_of_rules[str(rule_to_check)][RULE_STATE.PROPERTY_CHECKED] += 1
-            pre_id = self.device.get_count()  # TODO what does pre_id mean?
+            pre_id = self.device.cur_event_count  # TODO what does pre_id mean?
             # check rule, record relavant info and output log
             result = self.kea.execute_rule(rule=rule_to_check, keaTest=rules_ready_to_be_checked[rule_to_check])
             if result == CHECK_RESULT.ASSERTION_FAILURE:
                 self.logger.error(f"-------Postcondition failed. Assertion error, Property:{rule_to_check}------")
                 self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))
                 self.statistics_of_rules[str(rule_to_check)][RULE_STATE.POSTCONDITION_VIOLATED] += 1
-                post_id = self.device.get_count()  # TODO what does post_id mean?
+                post_id = self.device.cur_event_count  # TODO what does post_id mean?
                 self.triggered_bug_information.append(
                     ((pre_id, post_id), self.time_recoder.get_time_duration(), rule_to_check.function.__name__))
             elif result == CHECK_RESULT.PASS:
@@ -332,7 +334,7 @@ class KeaInputPolicy(InputPolicy):
         """
         # mark the bug information on the bug report html
         bug_report_path = os.path.join(self.device.output_dir, "all_states")  # TODO why generate bug reports here??
-        generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.get_count(), self.time_recoder.get_time_duration())
+        generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.cur_event_count, self.time_recoder.get_time_duration())
 
         # TODO delete the code below?
 
@@ -696,7 +698,7 @@ class LLMPolicy(RandomPolicy):
                         self.update_utg()
 
                 bug_report_path = os.path.join(self.device.output_dir, "all_states")
-                utils.generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.get_count(), self.time_recoder.get_time_duration())
+                generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.cur_event_count, self.time_recoder.get_time_duration())
             except KeyboardInterrupt:
                 break
             except InputInterruptedException as e:

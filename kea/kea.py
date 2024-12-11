@@ -262,7 +262,7 @@ class Kea:
         """
         self.logger.info(f"executing rule:\n{rule}")
         if len(rule.preconditions) > 0:
-            if not all(precond() for precond in rule.preconditions):
+            if not all(precond(keaTest) for precond in rule.preconditions):
                 return CHECK_RESULT.PRECON_INVALID
         # try to execute the rule and catch the exception if assertion error throws
         try:

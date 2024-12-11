@@ -9,8 +9,7 @@ import attr
 from .utils import INITIALIZER_MARKER, MAINPATH_MARKER, RULE_MARKER
 
 from dataclasses import dataclass
-from typing import Dict, List, TYPE_CHECKING, Optional, Union
-from kea.Bundle import Bundle
+from typing import Dict, List, TYPE_CHECKING, Optional, Union, Callable
 from uiautomator2.exceptions import UiObjectNotFoundError
 
 if TYPE_CHECKING:
@@ -134,17 +133,17 @@ class Kea:
         return self._all_rules_list
     
     @property
-    def initializer(self): #TODO if users accidently use different initializers in different propert files, what should we do ?
+    def initializer(self) -> Initializer:
         """
         TODO by default, one app only has one initializer 
         """
         for keaTest, keaTestElements in self._KeaTest_DB.items():
             if len(keaTestElements.initializer_list) > 0:
                 self.logger.info(f"Successfully found an initializer in {keaTest}")
-                return keaTestElements.initializer_list
+                return keaTestElements.initializer_list[0]
 
         self.logger.warning("No initializer found for current apps.")
-        return []
+        return None
     
     @property
     def all_mainPaths(self):
@@ -249,19 +248,21 @@ class Kea:
         rule_to_check = random.choice(rules)
         return self.execute_rule(rule_to_check, keaTest=None)
 
-    def execute_rule(self, rule:"Rule", keaTest:"KeaTest"):
+    def execute_rule(self, target:Union["Rule", "Initializer"], keaTest:"KeaTest", is_initializer=False):
         """
         execute a rule and return the execution result
         """
-        self.logger.info(f"executing rule:\n{rule}")
-        if len(rule.preconditions) > 0:
-            if not all(precond(keaTest) for precond in rule.preconditions):
-                return CHECK_RESULT.PRECON_INVALID
+        self.logger.info(f"executing rule:\n{target}")
+        # check the precond if the target is a rule
+        if not is_initializer:
+            if len(target.preconditions) > 0:
+                if not all(precond(keaTest) for precond in target.preconditions):
+                    return CHECK_RESULT.PRECON_INVALID
         # try to execute the rule and catch the exception if assertion error throws
         try:
             time.sleep(1)
             # execute the interaction scenario I
-            rule.function(self)
+            target.function(keaTest)
             time.sleep(1)
         except UiObjectNotFoundError as e:
 

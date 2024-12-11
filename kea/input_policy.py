@@ -241,7 +241,7 @@ class KeaInputPolicy(InputPolicy):
             self.statistics_of_rules[str(rule_to_check)][RULE_STATE.PROPERTY_CHECKED] += 1
             pre_id = self.device.get_count()  # TODO what does pre_id mean?
             # check rule, record relavant info and output log
-            result = self.kea.execute_rule(rule=rule_to_check, keaTest=rules_dict_to_check[rule_to_check])
+            result = self.kea.execute_rule(target=rule_to_check, keaTest=rules_dict_to_check[rule_to_check])
             if result == CHECK_RESULT.ASSERTION_FAILURE:
                 self.logger.error(f"-------Postcondition failed. Assertion error, Property:{rule_to_check}------")
                 self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))

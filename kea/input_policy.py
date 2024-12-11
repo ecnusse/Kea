@@ -38,7 +38,7 @@ MAX_NUM_STEPS_OUTSIDE = 10
 MAX_NUM_STEPS_OUTSIDE_KILL = 10
 # Max number of replay tries
 MAX_REPLY_TRIES = 5
-EVENT_COUNT_START_TO_GENERATE_EVENT_IN_POLICY = 2   # TODO what does it mean？
+START_TO_GENERATE_EVENT_IN_POLICY = 2   # TODO what does it mean？
 # Max number of query llm
 MAX_NUM_QUERY_LLM = 10
 
@@ -60,7 +60,7 @@ POLICY_LLM = "llm"
 class RULE_STATE:
     PRECONDITION_SATISFIED = "#satisfy pre"
     PROPERTY_CHECKED = "#check property"
-    BUG_TRIGGERED = "#trigger the bug"
+    POSTCONDITION_VIOLATED = "#postcondition has been violated"
 
 class InputInterruptedException(Exception):
     pass
@@ -80,13 +80,13 @@ class InputPolicy(object):
         self.device = device
         self.app = app
         self.event_count = 0
-        self.input_manager = None
-        self.time_needed_to_satisfy_precondition = []
+        
         self.last_event = None
         self.from_state = None
         self.to_state = None
         self.generate_utg = generate_utg   # TODO `generate_utg` is self-explained?
         self.triggered_bug_information = []
+        self.time_needed_to_satisfy_precondition = []
 
         self._num_restarts = 0
         self._num_steps_outside = 0
@@ -98,7 +98,7 @@ class InputPolicy(object):
         :param input_manager: instance of InputManager
         """
         self.event_count = 0  # TODO the name of `action_count` is not self-explained
-        self.input_manager = input_manager
+        # self.input_manager = input_manager
         while (
                 input_manager.enabled
                 and self.event_count
@@ -153,7 +153,10 @@ class InputPolicy(object):
     def update_utg(self):
         self.utg.add_transition(self.last_event, self.from_state, self.to_state)
 
-    def check_the_app_on_foreground(self, current_state):
+    def move_the_app_on_foreground_if_needed(self, current_state):
+        '''
+            if the app is not running on the foreground of the device, then try to bring it back
+        '''
         if current_state.get_app_activity_depth(self.app) < 0:
             # If the app is not in the activity stack
             start_app_intent = self.app.get_start_intent()
@@ -245,7 +248,7 @@ class KeaInputPolicy(InputPolicy):
         # retrive all the rules from the provided properties
         self.statistics_of_rules = {}
         for rule in self.kea.all_rules:
-            self.statistics_of_rules[str(rule)] = {RULE_STATE.PRECONDITION_SATISFIED: 0, RULE_STATE.PROPERTY_CHECKED: 0, RULE_STATE.BUG_TRIGGERED: 0}
+            self.statistics_of_rules[str(rule)] = {RULE_STATE.PRECONDITION_SATISFIED: 0, RULE_STATE.PROPERTY_CHECKED: 0, RULE_STATE.POSTCONDITION_VIOLATED: 0}
         
 
     def run_initializer(self):  
@@ -283,7 +286,7 @@ class KeaInputPolicy(InputPolicy):
             if result == CHECK_RESULT.ASSERTION_FAILURE:
                 self.logger.error(f"-------Postcondition failed. Assertion error, Property:{rule_to_check}------")
                 self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))
-                self.statistics_of_rules[str(rule_to_check)][RULE_STATE.BUG_TRIGGERED] += 1
+                self.statistics_of_rules[str(rule_to_check)][RULE_STATE.POSTCONDITION_VIOLATED] += 1
                 post_id = self.device.get_count()  # TODO what does post_id mean?
                 self.triggered_bug_information.append(
                     ((pre_id, post_id), self.time_recoder.get_time_duration(), rule_to_check.function.__name__))
@@ -375,7 +378,7 @@ class RandomPolicy(KeaInputPolicy):
         @return:
         """
 
-        if self.event_count == EVENT_COUNT_START_TO_GENERATE_EVENT_IN_POLICY or isinstance(self.last_event, ReInstallAppEvent):
+        if self.event_count == START_TO_GENERATE_EVENT_IN_POLICY or isinstance(self.last_event, ReInstallAppEvent):
             self.run_initializer()
         current_state = self.device.get_current_state()
         if current_state is None:
@@ -403,28 +406,19 @@ class RandomPolicy(KeaInputPolicy):
                 return None
             else:
                 self.logger.info("Don't check the property due to the randomness")
-        event = None
 
-        event = self.generate_event_based_on_current_state()
-
-        if isinstance(event, RotateDevice):
-            if self.last_rotate_events == KEY_RotateDeviceNeutralEvent:
-                self.last_rotate_events = KEY_RotateDeviceRightEvent
-                event = RotateDeviceToRightEvent() # TODO wierd naming?
-            else:
-                self.last_rotate_events = KEY_RotateDeviceNeutralEvent
-                event = RotateDeviceNeutralEvent()
+        event = self.generate_random_event_based_on_current_state()
 
         return event
 
-    def generate_event_based_on_current_state(self):
+    def generate_random_event_based_on_current_state(self):
         """
         generate an event based on current UTG
         @return: InputEvent
         """
         current_state = self.device.get_current_state()
         self.logger.debug("Current state: %s" % current_state.state_str)
-        event = self.check_the_app_on_foreground(current_state)
+        event = self.move_the_app_on_foreground_if_needed(current_state)
         if event is not None:
             return event
 
@@ -433,7 +427,17 @@ class RandomPolicy(KeaInputPolicy):
         possible_events.append(RotateDevice())
 
         self._event_trace += EVENT_FLAG_EXPLORE
-        return random.choice(possible_events)
+
+        event = random.choice(possible_events)
+        if isinstance(event, RotateDevice):
+            # select a rotate event with different direction than last time
+            if self.last_rotate_events == KEY_RotateDeviceNeutralEvent:
+                self.last_rotate_events = KEY_RotateDeviceRightEvent
+                event = RotateDeviceToRightEvent() # TODO wierd naming?
+            else:
+                self.last_rotate_events = KEY_RotateDeviceNeutralEvent
+                event = RotateDeviceNeutralEvent()
+        return event
     
 # TODO switch the code of Guided and Random, put Random before Guided
 class GuidedPolicy(KeaInputPolicy):
@@ -487,12 +491,11 @@ class GuidedPolicy(KeaInputPolicy):
 
         #Return relevant events based on whether the application is in the foreground.
 
-        event = self.check_the_app_on_foreground(current_state)
+        event = self.move_the_app_on_foreground_if_needed(current_state)
         if event is not None:
             return event
 
-
-        if (self.event_count == EVENT_COUNT_START_TO_GENERATE_EVENT_IN_POLICY and self.current_index_on_main_path == 0) or isinstance(self.last_event, ReInstallAppEvent):
+        if (self.event_count == START_TO_GENERATE_EVENT_IN_POLICY and self.current_index_on_main_path == 0) or isinstance(self.last_event, ReInstallAppEvent):
             self.select_main_path()
             self.run_initializer()
             time.sleep(2)
@@ -623,7 +626,7 @@ class GuidedPolicy(KeaInputPolicy):
         """
         current_state = self.device.get_current_state()
         self.logger.info("Current state: %s" % current_state.state_str)
-        event = self.check_the_app_on_foreground(current_state)
+        event = self.move_the_app_on_foreground_if_needed(current_state)
         if event is not None:
             return event
 
@@ -739,7 +742,7 @@ class LLMPolicy(RandomPolicy):
         @return:
         """
 
-        if self.action_count == EVENT_COUNT_START_TO_GENERATE_EVENT_IN_POLICY or isinstance(self.last_event, ReInstallAppEvent):
+        if self.action_count == START_TO_GENERATE_EVENT_IN_POLICY or isinstance(self.last_event, ReInstallAppEvent):
             self.run_initializer()
         current_state = self.device.get_current_state()
         if current_state is None:

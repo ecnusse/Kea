@@ -1039,19 +1039,19 @@ class Device(object):
         self.adb.drag(start_xy, end_xy, duration)
 
     def view_append_text(self, text):
-        if self.droidbot_ime.connected:
-            self.droidbot_ime.input_text(text=text, mode=1)
-        else:
+        try:
+            self.u2.send_keys(text=text, clear=False)
+        except:
             self.adb.type(text)
 
     def view_set_text(self, text):
-        # if self.droidbot_ime.connected:
-        #     self.droidbot_ime.input_text(text=text, mode=0)
-        # else:
-        self.logger.warning(
-            "`adb shell input text` doesn't support setting text, appending instead."
-        )
-        self.adb.type(text)
+        try:
+            self.u2.send_keys(text=text, clear=True)
+        except:
+            self.logger.warning(
+                "`adb shell input text` doesn't support setting text, appending instead."
+            )
+            self.adb.type(text)
 
     def key_press(self, key_code):
         self.adb.press(key_code)

@@ -22,7 +22,7 @@ class CHECK_RESULT:
     ASSERTION_FAILURE = 0
     PASS = 1
     UI_NOT_FOUND = 2
-    PRECON_INVALID = 3
+    PRECON_NOT_SATISFIED = 3
     UNKNOWN_EXECPTION = 4
 
 OUTPUT_DIR = "output"
@@ -244,7 +244,7 @@ class Kea:
         '''
         
         if len(rules) == 0:
-            return CHECK_RESULT.PRECON_INVALID
+            return CHECK_RESULT.PRECON_NOT_SATISFIED
         rule_to_check = random.choice(rules)
         return self.execute_rule(rule_to_check, keaTest=None)
 
@@ -255,7 +255,7 @@ class Kea:
         self.logger.info(f"executing rule:\n{rule}")
         if len(rule.preconditions) > 0:
             if not all(precond(keaTest) for precond in rule.preconditions):
-                return CHECK_RESULT.PRECON_INVALID
+                return CHECK_RESULT.PRECON_NOT_SATISFIED
         # try to execute the rule and catch the exception if assertion error throws
         try:
             time.sleep(1)

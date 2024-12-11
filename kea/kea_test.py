@@ -1,7 +1,7 @@
 import inspect
 import attr
 from typing import Callable, Any, Union, TYPE_CHECKING, Dict
-from .kea import Rule, MainPath
+from .kea import Rule, MainPath, Initializer
 from .Bundle import Bundle
 from .utils import PRECONDITIONS_MARKER, RULE_MARKER, INITIALIZER_MARKER, MAINPATH_MARKER
 
@@ -70,8 +70,8 @@ def initializer():
         def initialize_wrapper(*args, **kwargs):
             return f(*args, **kwargs)
 
-        rule = Rule(function=f, preconditions=())
-        setattr(initialize_wrapper, INITIALIZER_MARKER, rule)
+        initializer = Initializer(function=f)
+        setattr(initialize_wrapper, INITIALIZER_MARKER, initializer)
         return initialize_wrapper
 
     return accept

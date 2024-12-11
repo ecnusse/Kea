@@ -8,14 +8,14 @@ import time
 from .utils import Time, generate_report
 from abc import abstractmethod
 from .input_event import (
-    KEY_RotateDeviceNeutralEvent,
-    KEY_RotateDeviceRightEvent,
+    KEY_RotateDeviceToPortraitEvent,
+    KEY_RotateDeviceToLandscapeEvent,
     KeyEvent,
     IntentEvent,
     ReInstallAppEvent,
     RotateDevice,
-    RotateDeviceNeutralEvent,
-    RotateDeviceToRightEvent,
+    RotateDeviceToPortraitEvent,
+    RotateDeviceToLandscapeEvent,
     KillAppEvent,
     KillAndRestartAppEvent,
     SetTextEvent
@@ -60,7 +60,7 @@ POLICY_LLM = "llm"
 class RULE_STATE:
     PRECONDITION_SATISFIED = "#satisfy pre"
     PROPERTY_CHECKED = "#check property"
-    POSTCONDITION_VIOLATED = "#postcondition has been violated"
+    POSTCONDITION_VIOLATED = "#postcondition is violated"
 
 class InputInterruptedException(Exception):
     pass
@@ -71,7 +71,7 @@ class InputPolicy(object):
     It should call AppEventManager.send_event method continuously
     """
 
-    def __init__(self, device:"Device", app:"App", generate_utg = False): #TODO why we need kea here?
+    def __init__(self, device:"Device", app:"App", allow_to_generate_utg = False):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.time_recoder = Time()
         self.utg = UTG(
@@ -84,7 +84,7 @@ class InputPolicy(object):
         self.last_event = None
         self.from_state = None
         self.to_state = None
-        self.generate_utg = generate_utg   # TODO `generate_utg` is self-explained?
+        self.allow_to_generate_utg = allow_to_generate_utg 
         self.triggered_bug_information = []
         self.time_needed_to_satisfy_precondition = []
 
@@ -97,7 +97,8 @@ class InputPolicy(object):
         start producing events
         :param input_manager: instance of InputManager
         """
-        self.event_count = 0  # TODO the name of `action_count` is not self-explained
+        # number of events that have been executed
+        self.event_count = 0
         # self.input_manager = input_manager
         while (
                 input_manager.enabled
@@ -105,9 +106,9 @@ class InputPolicy(object):
                 < input_manager.event_count
         ):
             try:
-                # Enable u2 fastIME. close the keyboard on the device.
-                if self.device.is_harmonyos == False and hasattr(self.device, "u2"): 
-                    self.device.u2.set_fastinput_ime(True)
+                # always try to close the keyboard on the device.
+                # if self.device.is_harmonyos is False and hasattr(self.device, "u2"):
+                #     self.device.u2.set_fastinput_ime(True)
 
                 self.logger.info("Exploration event count: %d", self.event_count)
 
@@ -125,7 +126,7 @@ class InputPolicy(object):
                     input_manager.add_event(event)
                     self.to_state = self.device.get_current_state()
                     self.last_event = event
-                    if self.generate_utg:
+                    if self.allow_to_generate_utg:
                         self.update_utg()
 
                 bug_report_path = os.path.join(self.device.output_dir, "all_states")
@@ -232,18 +233,17 @@ class InputPolicy(object):
         """
         pass
 
-
 class KeaInputPolicy(InputPolicy):
     """
     state-based input policy
     """
 
-    def __init__(self, device, app, kea:"Kea"=None, generate_utg=False):
-        super(KeaInputPolicy, self).__init__(device, app, generate_utg)
+    def __init__(self, device, app, kea:"Kea"=None, allow_to_generate_utg=False):
+        super(KeaInputPolicy, self).__init__(device, app, allow_to_generate_utg)
         self.kea = kea
-        self.last_event = None
-        self.from_state = None
-        self.to_state = None
+        # self.last_event = None
+        # self.from_state = None
+        # self.to_state = None
         
         # retrive all the rules from the provided properties
         self.statistics_of_rules = {}
@@ -269,6 +269,7 @@ class KeaInputPolicy(InputPolicy):
         """
         #! TODO - xixian - should we emphasize the following data structure is a dict?
         rules_ready_to_be_checked = self.kea.get_rules_whose_preconditions_are_satisfied()
+        rules_ready_to_be_checked.update(self.kea.get_rules_without_preconditions())
         if len(rules_ready_to_be_checked) == 0:
             self.logger.debug("No rules match the precondition")
             return
@@ -303,19 +304,6 @@ class KeaInputPolicy(InputPolicy):
             else:
                 raise AttributeError(f"Invalid property checking result {result}")
 
-    # def check_rule_without_precondition(self):
-    #     rules_to_check = self.kea.get_rules_without_preconditions()
-    #     if len(rules_to_check) > 0:
-    #         result = self.kea.execute_rules(
-    #             self.kea.get_rules_without_preconditions()
-    #         )
-    #         if result:
-    #             self.logger.info("-------rule_without_precondition execute success-----------")
-    #         else:
-    #             self.logger.error("-------rule_without_precondition execute failed-----------")
-    #     else:
-    #         self.logger.info("-------no rule_without_precondition to execute-----------")
-
 
     def generate_event(self):
         """
@@ -327,52 +315,21 @@ class KeaInputPolicy(InputPolicy):
     def update_utg(self):
         self.utg.add_transition(self.last_event, self.from_state, self.to_state)
 
-
-    def tear_down(self):
-        """
-        
-        """
-        # mark the bug information on the bug report html
-        bug_report_path = os.path.join(self.device.output_dir, "all_states")  # TODO why generate bug reports here??
-        generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.cur_event_count, self.time_recoder.get_time_duration())
-
-        # TODO delete the code below?
-
-        # self.logger.info("----------------------------------------")
-        #
-        # if len(self.triggered_bug_information) > 0:
-        #     self.logger.info("Time needed to trigger the first bug: %s" % self.triggered_bug_information[0][1])
-        #
-        # if len(self.time_needed_to_satisfy_precondition) > 0:
-        #     self.logger.info(
-        #         "Time needed to satisfy the first precondition: %s" % self.time_needed_to_satisfy_precondition[0])
-        #     self.logger.info(
-        #         "The precondition(s) is/are satisfied %s times" % len(self.time_needed_to_satisfy_precondition))
-        #     if len(self.triggered_bug_information) > 0:
-        #         self.logger.info("Triggered %s bug:" % len(self.triggered_bug_information))
-        # else:
-        #     self.logger.info("No precondition has been satisfied.")
-        #
-        # if len(self.triggered_bug_information) > 0:
-        #     self.logger.info("the action count, time needed to trigger the bug, and the property name: %s" % self.triggered_bug_information)
-        # else:
-        #     self.logger.info("No bug has been triggered.")
-
 class RandomPolicy(KeaInputPolicy):
     """
     generate random event based on current app state
     """
 
     def __init__(self, device, app, kea=None, restart_app_after_check_property=False,
-                 number_of_events_that_restart_app=100, clear_and_reinstall_app=False, generate_utg=False):
+                 number_of_events_that_restart_app=100, clear_and_reinstall_app=False, allow_to_generate_utg=False):
         super(RandomPolicy, self).__init__(
-            device, app, kea, generate_utg
+            device, app, kea, allow_to_generate_utg
         )
         self.restart_app_after_check_property = restart_app_after_check_property
         self.number_of_events_that_restart_app = number_of_events_that_restart_app
         self.clear_and_reinstall_app = clear_and_reinstall_app
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.last_rotate_events = KEY_RotateDeviceNeutralEvent
+        self.last_rotate_events = KEY_RotateDeviceToPortraitEvent
 
     def generate_event(self):
         """
@@ -433,23 +390,22 @@ class RandomPolicy(KeaInputPolicy):
         event = random.choice(possible_events)
         if isinstance(event, RotateDevice):
             # select a rotate event with different direction than last time
-            if self.last_rotate_events == KEY_RotateDeviceNeutralEvent:
-                self.last_rotate_events = KEY_RotateDeviceRightEvent
-                event = RotateDeviceToRightEvent() # TODO wierd naming?
+            if self.last_rotate_events == KEY_RotateDeviceToPortraitEvent:
+                self.last_rotate_events = KEY_RotateDeviceToLandscapeEvent
+                event = RotateDeviceToLandscapeEvent() # TODO wierd naming? landscape or portrait?
             else:
-                self.last_rotate_events = KEY_RotateDeviceNeutralEvent
-                event = RotateDeviceNeutralEvent()
+                self.last_rotate_events = KEY_RotateDeviceToPortraitEvent
+                event = RotateDeviceToPortraitEvent()
         return event
     
-# TODO switch the code of Guided and Random, put Random before Guided
 class GuidedPolicy(KeaInputPolicy):
     """
     
     """
 
-    def __init__(self, device, app, kea=None, generate_utg = False):
+    def __init__(self, device, app, kea=None, allow_to_generate_utg = False):
         super(GuidedPolicy, self).__init__(
-            device, app, kea,generate_utg
+            device, app, kea,allow_to_generate_utg
         )
         self.logger = logging.getLogger(self.__class__.__name__)
         
@@ -469,7 +425,7 @@ class GuidedPolicy(KeaInputPolicy):
         self.mutate_node_index_on_main_path = 0
 
         self.last_random_text = None
-        self.last_rotate_events = KEY_RotateDeviceNeutralEvent
+        self.last_rotate_events = KEY_RotateDeviceToPortraitEvent
 
     def select_main_path(self):
         if len(self.kea.all_mainPaths) == 0:
@@ -500,17 +456,17 @@ class GuidedPolicy(KeaInputPolicy):
             self.run_initializer()
             time.sleep(2)
         if self.execute_main_path:
-            event_str = self.get_main_path_event()
+            event_str = self.get_next_event_from_main_path()
             if event_str:
                 self.logger.info("*****main path running*****")
-                self.kea.exec_mainPath(event_str)
+                self.kea.execute_event_from_main_path(event_str)
                 return None
         if event is None:
             event = self.mutate_the_main_path()
 
         return event
 
-    def end_mutation(self):
+    def stop_mutation(self):
         self.index_on_main_path_after_mutation = -1
         self.number_of_events_that_try_to_find_event_on_main_path = 0
         self.execute_main_path = True
@@ -538,23 +494,23 @@ class GuidedPolicy(KeaInputPolicy):
                         t = self.time_recoder.get_time_duration()
                         self.time_needed_to_satisfy_precondition.append(t)
                         self.check_rule_whose_precondition_are_satisfied()
-                    return self.end_mutation()
+                    return self.stop_mutation()
 
                 # find if there is any event in the main path that could be executed on currenty state
                 event_str = self.get_event_from_main_path()
                 try:
-                    self.kea.exec_mainPath(event_str)
+                    self.kea.execute_event_from_main_path(event_str)
                     self.logger.info("find the event in the main path")
                     return None
                 except Exception:
                     self.logger.info("can't find the event in the main path")
-                    return self.end_mutation()
+                    return self.stop_mutation()
 
-            return self.end_mutation()
+            return self.stop_mutation()
 
         self.index_on_main_path_after_mutation = -1
 
-        if  len(self.kea.get_rules_whose_preconditions_are_satisfied()) > 0:
+        if len(self.kea.get_rules_whose_preconditions_are_satisfied()) > 0:
             # if the property has been checked, don't return any event
             self.check_rule_whose_precondition_are_satisfied()
             return None
@@ -562,7 +518,7 @@ class GuidedPolicy(KeaInputPolicy):
         event = self.generate_random_event_based_on_current_state()
         return event
 
-    def get_main_path_event(self):
+    def get_next_event_from_main_path(self):
         """
         
         """
@@ -577,7 +533,7 @@ class GuidedPolicy(KeaInputPolicy):
         if u2_event_str is None:
             self.logger.warning("event is None on main path node %d" % self.current_index_on_main_path)
             self.current_index_on_main_path += 1
-            return self.get_main_path_event()
+            return self.get_next_event_from_main_path()
         self.current_index_on_main_path += 1
         return u2_event_str
 
@@ -626,12 +582,12 @@ class GuidedPolicy(KeaInputPolicy):
 
         event = random.choice(possible_events)
         if isinstance(event, RotateDevice):
-            if self.last_rotate_events == KEY_RotateDeviceNeutralEvent:
-                self.last_rotate_events = KEY_RotateDeviceRightEvent
-                event = RotateDeviceToRightEvent()
+            if self.last_rotate_events == KEY_RotateDeviceToPortraitEvent:
+                self.last_rotate_events = KEY_RotateDeviceToLandscapeEvent
+                event = RotateDeviceToLandscapeEvent()
             else:
-                self.last_rotate_events = KEY_RotateDeviceNeutralEvent
-                event = RotateDeviceNeutralEvent()
+                self.last_rotate_events = KEY_RotateDeviceToPortraitEvent
+                event = RotateDeviceToPortraitEvent()
 
         return event
 
@@ -640,7 +596,7 @@ class LLMPolicy(RandomPolicy):
     use LLM to generate input when detected ui tarpit
     '''
     def __init__(self, device, app, kea=None, restart_app_after_check_property=False,
-                 number_of_events_that_restart_app=100, clear_and_restart_app_data_after_100_events=False, generate_utg=False):
+                 number_of_events_that_restart_app=100, clear_and_restart_app_data_after_100_events=False, allow_to_generate_utg=False):
         super(LLMPolicy, self).__init__(
             device, app, kea
         )
@@ -694,7 +650,7 @@ class LLMPolicy(RandomPolicy):
                     input_manager.add_event(event)
                     self.to_state = self.device.get_current_state()
                     self.last_event = event
-                    if self.generate_utg:
+                    if self.allow_to_generate_utg:
                         self.update_utg()
 
                 bug_report_path = os.path.join(self.device.output_dir, "all_states")
@@ -756,12 +712,12 @@ class LLMPolicy(RandomPolicy):
             event = self.generate_llm_event_based_on_utg()
 
         if isinstance(event, RotateDevice):
-            if self.last_rotate_events == KEY_RotateDeviceNeutralEvent:
-                self.last_rotate_events = KEY_RotateDeviceRightEvent
-                event = RotateDeviceToRightEvent()
+            if self.last_rotate_events == KEY_RotateDeviceToPortraitEvent:
+                self.last_rotate_events = KEY_RotateDeviceToLandscapeEvent
+                event = RotateDeviceToLandscapeEvent()
             else:
-                self.last_rotate_events = KEY_RotateDeviceNeutralEvent
-                event = RotateDeviceNeutralEvent()
+                self.last_rotate_events = KEY_RotateDeviceToPortraitEvent
+                event = RotateDeviceToPortraitEvent()
 
         return event
 

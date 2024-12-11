@@ -248,21 +248,19 @@ class Kea:
         rule_to_check = random.choice(rules)
         return self.execute_rule(rule_to_check, keaTest=None)
 
-    def execute_rule(self, target:Union["Rule", "Initializer"], keaTest:"KeaTest", is_initializer=False):
+    def execute_rule(self, rule:"Rule", keaTest:"KeaTest"):
         """
         execute a rule and return the execution result
         """
-        self.logger.info(f"executing rule:\n{target}")
-        # check the precond if the target is a rule
-        if not is_initializer:
-            if len(target.preconditions) > 0:
-                if not all(precond(keaTest) for precond in target.preconditions):
-                    return CHECK_RESULT.PRECON_INVALID
+        self.logger.info(f"executing rule:\n{rule}")
+        if len(rule.preconditions) > 0:
+            if not all(precond(keaTest) for precond in rule.preconditions):
+                return CHECK_RESULT.PRECON_INVALID
         # try to execute the rule and catch the exception if assertion error throws
         try:
             time.sleep(1)
             # execute the interaction scenario I
-            target.function(keaTest)
+            rule.function(keaTest)
             time.sleep(1)
         except UiObjectNotFoundError as e:
 

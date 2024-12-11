@@ -96,11 +96,12 @@ class InputPolicy(object):
         self.triggered_bug_information = []
 
     def run_initializer(self):  #TODO why we should initialize kea's rules here?
-        if len(self.kea.initializer) == 0:
+        if self.kea.initializer is None:
             self.logger.warning("No initializer")
             return
     
-        result = self.kea.execute_rules(self.kea.initializer)
+        # result = self.kea.execute_rules(self.kea.initializer)
+        result = self.kea.execute_rule(self.kea.initializer, keaTest=None, is_initializer=True)
         if result:
             self.logger.info("-------initialize successfully-----------")
         else:
@@ -237,7 +238,7 @@ class KeaInputPolicy(InputPolicy):
             self.statistics_of_rules[str(rule_to_check)][RULE_STATE.PROPERTY_CHECKED] += 1
             pre_id = self.device.get_count()
             # check rule, record relavant info and output log
-            result = self.kea.execute_rule(rule=rule_to_check, keaTest=rules_dict_to_check[rule_to_check])
+            result = self.kea.execute_rule(target=rule_to_check, keaTest=rules_dict_to_check[rule_to_check])
             if result == CHECK_RESULT.ASSERTION_FAILURE:
                 self.logger.error(f"-------Postcondition failed. Assertion error, Property:{rule_to_check}------")
                 self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))

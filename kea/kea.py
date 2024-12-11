@@ -141,9 +141,9 @@ class Kea:
         return self._all_rules_list
     
     @property
-    def initializer(self):
+    def initializer(self): #TODO if users accidently use different initializers in different propert files, what should we do ?
         """
-        TODO by default, one app only has one initializer
+        TODO by default, one app only has one initializer 
         """
         for keaTest, keaTestElements in self._KeaTest_DB.items():
             if len(keaTestElements.initializer_list) > 0:

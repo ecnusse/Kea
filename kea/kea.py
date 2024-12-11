@@ -13,7 +13,7 @@ from typing import Dict, List, TYPE_CHECKING, Optional, Union, Callable
 from uiautomator2.exceptions import UiObjectNotFoundError
 
 if TYPE_CHECKING:
-    #from .kea_test import Rule, MainPath, KeaTest
+    from .kea_test import Rule, MainPath, KeaTest
     from .pdl import PDL as Android_PDL
     from .pdl_hm import PDL as HarmonyOS_PDL
 

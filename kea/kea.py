@@ -14,7 +14,7 @@ from kea.Bundle import Bundle
 from uiautomator2.exceptions import UiObjectNotFoundError
 
 if TYPE_CHECKING:
-    from .kea_test import Rule, MainPath, KeaTest
+    #from .kea_test import Rule, MainPath, KeaTest
     from .pdl import PDL as Android_PDL
     from .pdl_hm import PDL as HarmonyOS_PDL
 
@@ -64,13 +64,6 @@ class MainPath:
     path: List[str] = attr.ib()  # TODO rename `path` to a more suitable name?
 
 
-@attr.s()
-class Initializer:
-    
-    # `function` denotes the function of `@initializer.
-    function = attr.ib()
-
-
 class KeaTestElements:
     """
     
@@ -78,7 +71,7 @@ class KeaTestElements:
     def __init__(self, keaTest_name):
         self.keaTest_name = keaTest_name
         self.rule_list:List["Rule"] = list()
-        self.initializer_list:List["Rule"] = list() # TODO why  "Rule"?
+        self.initializer_list:List["Initializer"] = list() # TODO why  "Rule"?
         self.mainPath_list:List["MainPath"] = list()
 
     def load_rule_list(self, kea_test_class:"KeaTest"):
@@ -294,6 +287,30 @@ class Kea:
             self.logger.error("Unexpected exeception during executing rule: "+str(e))
             return CHECK_RESULT.UNKNOWN_EXECPTION
 
+        return CHECK_RESULT.PASS
+
+    def execute_initializer(self, initializer: "Initializer"):
+        try:
+            initializer.function(self)
+        except UiObjectNotFoundError as e:
+
+            self.logger.info("Could not find the UI object.")
+            import traceback
+            tb = traceback.extract_tb(e.__traceback__)
+    
+            # Find the last traceback information, specifically the error inside rule.function
+            last_call = tb[1]
+            line_number = last_call.lineno
+            file_name = last_call.filename
+            code_context = last_call.line.strip()
+
+            # Print the line number and code content of the error.
+            self.logger.warning(f"Error occurred in file {file_name} on line {line_number}:")
+            self.logger.warning(f"Code causing the error: {code_context}")
+            return CHECK_RESULT.UI_NOT_FOUND
+        except Exception as e:
+            self.logger.error("Unexpected exeception during executing rule: "+str(e))
+            return CHECK_RESULT.UNKNOWN_EXECPTION
         return CHECK_RESULT.PASS
 
     def exec_mainPath(self, executable_script):

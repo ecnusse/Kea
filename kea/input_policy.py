@@ -18,9 +18,10 @@ from .input_event import (
     RotateDeviceToLandscapeEvent,
     KillAppEvent,
     KillAndRestartAppEvent,
-    SetTextEvent
+    SetTextEvent,
 )
 from .utg import UTG
+
 # from .kea import utils
 from .kea import CHECK_RESULT
 from typing import TYPE_CHECKING
@@ -38,7 +39,7 @@ MAX_NUM_STEPS_OUTSIDE = 10
 MAX_NUM_STEPS_OUTSIDE_KILL = 10
 # Max number of replay tries
 MAX_REPLY_TRIES = 5
-START_TO_GENERATE_EVENT_IN_POLICY = 2   # TODO what does it mean？
+START_TO_GENERATE_EVENT_IN_POLICY = 2  # TODO what does it mean？
 # Max number of query llm
 MAX_NUM_QUERY_LLM = 10
 
@@ -56,14 +57,17 @@ POLICY_RANDOM = "random"
 POLICY_NONE = "none"
 POLICY_LLM = "llm"
 
+
 @dataclass
 class RULE_STATE:
     PRECONDITION_SATISFIED = "#satisfy pre"
     PROPERTY_CHECKED = "#check property"
     POSTCONDITION_VIOLATED = "#postcondition is violated"
 
+
 class InputInterruptedException(Exception):
     pass
+
 
 class InputPolicy(object):
     """
@@ -71,20 +75,18 @@ class InputPolicy(object):
     It should call AppEventManager.send_event method continuously
     """
 
-    def __init__(self, device:"Device", app:"App", allow_to_generate_utg = False):
+    def __init__(self, device: "Device", app: "App", allow_to_generate_utg=False):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.time_recoder = Time()
-        self.utg = UTG(
-            device=device, app=app
-        )
+        self.utg = UTG(device=device, app=app)
         self.device = device
         self.app = app
         self.event_count = 0
-        
+
         self.last_event = None
         self.from_state = None
         self.to_state = None
-        self.allow_to_generate_utg = allow_to_generate_utg 
+        self.allow_to_generate_utg = allow_to_generate_utg
         self.triggered_bug_information = []
         self.time_needed_to_satisfy_precondition = []
 
@@ -92,7 +94,7 @@ class InputPolicy(object):
         self._num_steps_outside = 0
         self._event_trace = ""
 
-    def start(self, input_manager:"InputManager"):
+    def start(self, input_manager: "InputManager"):
         """
         start producing events
         :param input_manager: instance of InputManager
@@ -100,11 +102,7 @@ class InputPolicy(object):
         # number of events that have been executed
         self.event_count = 0
         # self.input_manager = input_manager
-        while (
-                input_manager.enabled
-                and self.event_count
-                < input_manager.event_count
-        ):
+        while input_manager.enabled and self.event_count < input_manager.event_count:
             try:
                 # always try to close the keyboard on the device.
                 # if self.device.is_harmonyos is False and hasattr(self.device, "u2"):
@@ -122,7 +120,9 @@ class InputPolicy(object):
                     event = self.generate_event()
 
                 if event is not None:
-                    self.from_state = self.device.save_screenshot_for_report(event=event)
+                    self.from_state = self.device.save_screenshot_for_report(
+                        event=event
+                    )
                     input_manager.add_event(event)
                     self.to_state = self.device.get_current_state()
                     self.last_event = event
@@ -131,7 +131,14 @@ class InputPolicy(object):
 
                 bug_report_path = os.path.join(self.device.output_dir, "all_states")
                 # TODO this function signature is too long?
-                generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.cur_event_count, self.time_recoder.get_time_duration())
+                generate_report(
+                    bug_report_path,
+                    self.device.output_dir,
+                    self.triggered_bug_information,
+                    self.time_needed_to_satisfy_precondition,
+                    self.device.cur_event_count,
+                    self.time_recoder.get_time_duration(),
+                )
 
             except KeyboardInterrupt:
                 break
@@ -155,9 +162,9 @@ class InputPolicy(object):
         self.utg.add_transition(self.last_event, self.from_state, self.to_state)
 
     def move_the_app_to_foreground_if_needed(self, current_state):
-        '''
-            if the app is not running on the foreground of the device, then try to bring it back
-        '''
+        """
+        if the app is not running on the foreground of the device, then try to bring it back
+        """
         if current_state.get_app_activity_depth(self.app) < 0:
             # If the app is not in the activity stack
             start_app_intent = self.app.get_start_intent()
@@ -171,7 +178,7 @@ class InputPolicy(object):
             #    a normal start. clear self.__num_restarts.
 
             if self._event_trace.endswith(
-                    EVENT_FLAG_START_APP + EVENT_FLAG_STOP_APP
+                EVENT_FLAG_START_APP + EVENT_FLAG_STOP_APP
             ) or self._event_trace.endswith(EVENT_FLAG_START_APP):
                 self._num_restarts += 1
                 self.logger.info(
@@ -212,9 +219,7 @@ class InputPolicy(object):
 
     @abstractmethod
     def tear_down(self):
-        """
-        
-        """
+        """ """
         pass
 
     @abstractmethod
@@ -233,31 +238,37 @@ class InputPolicy(object):
         """
         pass
 
+
 class KeaInputPolicy(InputPolicy):
     """
     state-based input policy
     """
 
-    def __init__(self, device, app, kea:"Kea"=None, allow_to_generate_utg=False):
+    def __init__(self, device, app, kea: "Kea" = None, allow_to_generate_utg=False):
         super(KeaInputPolicy, self).__init__(device, app, allow_to_generate_utg)
         self.kea = kea
         # self.last_event = None
         # self.from_state = None
         # self.to_state = None
-        
+
         # retrive all the rules from the provided properties
         self.statistics_of_rules = {}
         for rule in self.kea.all_rules:
-            self.statistics_of_rules[str(rule)] = {RULE_STATE.PRECONDITION_SATISFIED: 0, RULE_STATE.PROPERTY_CHECKED: 0, RULE_STATE.POSTCONDITION_VIOLATED: 0}
-        
+            self.statistics_of_rules[str(rule)] = {
+                RULE_STATE.PRECONDITION_SATISFIED: 0,
+                RULE_STATE.PROPERTY_CHECKED: 0,
+                RULE_STATE.POSTCONDITION_VIOLATED: 0,
+            }
 
-    def run_initializer(self):  
+    def run_initializer(self):
         if self.kea.initializer is None:
             self.logger.warning("No initializer")
             return
-    
-        result = self.kea.execute_initializer(self.kea.initializer) 
-        if result == CHECK_RESULT.PASS :  # why only check `result`, `result` could have different values.
+
+        result = self.kea.execute_initializer(self.kea.initializer)
+        if (
+            result == CHECK_RESULT.PASS
+        ):  # why only check `result`, `result` could have different values.
             self.logger.info("-------initialize successfully-----------")
         else:
             self.logger.error("-------initialize failed-----------")
@@ -268,7 +279,9 @@ class KeaInputPolicy(InputPolicy):
         #! xixian - agree to split the function
         """
         #! TODO - xixian - should we emphasize the following data structure is a dict?
-        rules_ready_to_be_checked = self.kea.get_rules_whose_preconditions_are_satisfied()
+        rules_ready_to_be_checked = (
+            self.kea.get_rules_whose_preconditions_are_satisfied()
+        )
         rules_ready_to_be_checked.update(self.kea.get_rules_without_preconditions())
         if len(rules_ready_to_be_checked) == 0:
             self.logger.debug("No rules match the precondition")
@@ -276,34 +289,58 @@ class KeaInputPolicy(InputPolicy):
 
         candidate_rules_list = list(rules_ready_to_be_checked.keys())
         for candidate_rule in candidate_rules_list:
-            self.statistics_of_rules[str(candidate_rule)][RULE_STATE.PRECONDITION_SATISFIED] += 1
+            self.statistics_of_rules[str(candidate_rule)][
+                RULE_STATE.PRECONDITION_SATISFIED
+            ] += 1
         # randomly select a rule to check
         rule_to_check = random.choice(candidate_rules_list)
 
         if rule_to_check is not None:
             self.logger.info(f"-------Check Property : {rule_to_check}------")
-            self.statistics_of_rules[str(rule_to_check)][RULE_STATE.PROPERTY_CHECKED] += 1
+            self.statistics_of_rules[str(rule_to_check)][
+                RULE_STATE.PROPERTY_CHECKED
+            ] += 1
             pre_id = self.device.cur_event_count  # TODO what does pre_id mean?
             # check rule, record relavant info and output log
-            result = self.kea.execute_rule(rule=rule_to_check, keaTest=rules_ready_to_be_checked[rule_to_check])
+            result = self.kea.execute_rule(
+                rule=rule_to_check, keaTest=rules_ready_to_be_checked[rule_to_check]
+            )
             if result == CHECK_RESULT.ASSERTION_FAILURE:
-                self.logger.error(f"-------Postcondition failed. Assertion error, Property:{rule_to_check}------")
-                self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))
-                self.statistics_of_rules[str(rule_to_check)][RULE_STATE.POSTCONDITION_VIOLATED] += 1
+                self.logger.error(
+                    f"-------Postcondition failed. Assertion error, Property:{rule_to_check}------"
+                )
+                self.logger.debug(
+                    "-------time from start : %s-----------"
+                    % str(self.time_recoder.get_time_duration())
+                )
+                self.statistics_of_rules[str(rule_to_check)][
+                    RULE_STATE.POSTCONDITION_VIOLATED
+                ] += 1
                 post_id = self.device.cur_event_count  # TODO what does post_id mean?
                 self.triggered_bug_information.append(
-                    ((pre_id, post_id), self.time_recoder.get_time_duration(), rule_to_check.function.__name__))
+                    (
+                        (pre_id, post_id),
+                        self.time_recoder.get_time_duration(),
+                        rule_to_check.function.__name__,
+                    )
+                )
             elif result == CHECK_RESULT.PASS:
-                self.logger.info(f"-------Post condition satisfied. Property:{rule_to_check} pass------")
-                self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))
+                self.logger.info(
+                    f"-------Post condition satisfied. Property:{rule_to_check} pass------"
+                )
+                self.logger.debug(
+                    "-------time from start : %s-----------"
+                    % str(self.time_recoder.get_time_duration())
+                )
 
             elif result == CHECK_RESULT.UI_NOT_FOUND:
-                self.logger.error(f"-------Execution failed: UiObjectNotFound during exectution. Property:{rule_to_check}-----------")
+                self.logger.error(
+                    f"-------Execution failed: UiObjectNotFound during exectution. Property:{rule_to_check}-----------"
+                )
             elif result == CHECK_RESULT.PRECON_NOT_SATISFIED:
                 self.logger.info("-------Precondition not satisfied-----------")
             else:
                 raise AttributeError(f"Invalid property checking result {result}")
-
 
     def generate_event(self):
         """
@@ -315,16 +352,23 @@ class KeaInputPolicy(InputPolicy):
     def update_utg(self):
         self.utg.add_transition(self.last_event, self.from_state, self.to_state)
 
+
 class RandomPolicy(KeaInputPolicy):
     """
     generate random event based on current app state
     """
 
-    def __init__(self, device, app, kea=None, restart_app_after_check_property=False,
-                 number_of_events_that_restart_app=100, clear_and_reinstall_app=False, allow_to_generate_utg=False):
-        super(RandomPolicy, self).__init__(
-            device, app, kea, allow_to_generate_utg
-        )
+    def __init__(
+        self,
+        device,
+        app,
+        kea=None,
+        restart_app_after_check_property=False,
+        number_of_events_that_restart_app=100,
+        clear_and_reinstall_app=False,
+        allow_to_generate_utg=False,
+    ):
+        super(RandomPolicy, self).__init__(device, app, kea, allow_to_generate_utg)
         self.restart_app_after_check_property = restart_app_after_check_property
         self.number_of_events_that_restart_app = number_of_events_that_restart_app
         self.clear_and_reinstall_app = clear_and_reinstall_app
@@ -337,7 +381,9 @@ class RandomPolicy(KeaInputPolicy):
         @return:
         """
 
-        if self.event_count == START_TO_GENERATE_EVENT_IN_POLICY or isinstance(self.last_event, ReInstallAppEvent):
+        if self.event_count == START_TO_GENERATE_EVENT_IN_POLICY or isinstance(
+            self.last_event, ReInstallAppEvent
+        ):
             self.run_initializer()
         current_state = self.device.get_current_state()
         if current_state is None:
@@ -346,16 +392,26 @@ class RandomPolicy(KeaInputPolicy):
 
         if self.event_count % self.number_of_events_that_restart_app == 0:
             if self.clear_and_reinstall_app:
-                self.logger.info("clear and reinstall app after %s events" % self.number_of_events_that_restart_app)
+                self.logger.info(
+                    "clear and reinstall app after %s events"
+                    % self.number_of_events_that_restart_app
+                )
                 return ReInstallAppEvent(self.app)
-            self.logger.info("restart app after %s events" % self.number_of_events_that_restart_app)    
+            self.logger.info(
+                "restart app after %s events" % self.number_of_events_that_restart_app
+            )
             return KillAndRestartAppEvent(app=self.app)
-        
+
         rules_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
 
         if len(rules_to_check) > 0:
-            self.time_needed_to_satisfy_precondition.append(self.time_recoder.get_time_duration())
-            self.logger.debug("has rule that matches the precondition and the time duration is " + self.time_recoder.get_time_duration())
+            self.time_needed_to_satisfy_precondition.append(
+                self.time_recoder.get_time_duration()
+            )
+            self.logger.debug(
+                "has rule that matches the precondition and the time duration is "
+                + self.time_recoder.get_time_duration()
+            )
             if random.random() < 0.5:
                 self.logger.info("Check property")
                 self.check_rule_whose_precondition_are_satisfied()
@@ -392,23 +448,24 @@ class RandomPolicy(KeaInputPolicy):
             # select a rotate event with different direction than last time
             if self.last_rotate_events == KEY_RotateDeviceToPortraitEvent:
                 self.last_rotate_events = KEY_RotateDeviceToLandscapeEvent
-                event = RotateDeviceToLandscapeEvent() # TODO wierd naming? landscape or portrait?
+                event = (
+                    RotateDeviceToLandscapeEvent()
+                )  # TODO wierd naming? landscape or portrait?
             else:
                 self.last_rotate_events = KEY_RotateDeviceToPortraitEvent
                 event = RotateDeviceToPortraitEvent()
         return event
-    
+
+
 class GuidedPolicy(KeaInputPolicy):
     """
-    
+    generate events around the main path
     """
 
-    def __init__(self, device, app, kea=None, allow_to_generate_utg = False):
-        super(GuidedPolicy, self).__init__(
-            device, app, kea,allow_to_generate_utg
-        )
+    def __init__(self, device, app, kea=None, allow_to_generate_utg=False):
+        super(GuidedPolicy, self).__init__(device, app, kea, allow_to_generate_utg)
         self.logger = logging.getLogger(self.__class__.__name__)
-        
+
         if len(self.kea.all_mainPaths):
             self.logger.info("Found %d mainPaths" % len(self.kea.all_mainPaths))
         else:
@@ -433,25 +490,29 @@ class GuidedPolicy(KeaInputPolicy):
             return
         self.main_path = random.choice(self.kea.all_mainPaths)
         # self.path_func, self.main_path =  self.kea.parse_mainPath(self.main_path)
-        self.path_func, self.main_path =  self.main_path.function, self.main_path.path
-        self.logger.info(f"Select the {len(self.main_path)} steps mainPath function: {self.path_func}")
+        self.path_func, self.main_path = self.main_path.function, self.main_path.path
+        self.logger.info(
+            f"Select the {len(self.main_path)} steps mainPath function: {self.path_func}"
+        )
         self.main_path_list = copy.deepcopy(self.main_path)
-        self.max_number_of_events_that_try_to_find_event_on_main_path = min(10, len(self.main_path))
+        self.max_number_of_events_that_try_to_find_event_on_main_path = min(
+            10, len(self.main_path)
+        )
         self.mutate_node_index_on_main_path = len(self.main_path)
 
-
     def generate_event(self):
-        """
-        
-        """
+        """ """
         current_state = self.device.get_current_state()
-        #Return relevant events based on whether the application is in the foreground.
 
+        # Return relevant events based on whether the application is in the foreground.
         event = self.move_the_app_to_foreground_if_needed(current_state)
         if event is not None:
             return event
 
-        if (self.event_count == START_TO_GENERATE_EVENT_IN_POLICY and self.current_index_on_main_path == 0) or isinstance(self.last_event, ReInstallAppEvent):
+        if (
+            self.event_count == START_TO_GENERATE_EVENT_IN_POLICY
+            and self.current_index_on_main_path == 0
+        ) or isinstance(self.last_event, ReInstallAppEvent):
             self.select_main_path()
             self.run_initializer()
             time.sleep(2)
@@ -462,6 +523,7 @@ class GuidedPolicy(KeaInputPolicy):
                 self.kea.execute_event_from_main_path(event_str)
                 return None
         if event is None:
+            # generate event aroud the state on the main path
             event = self.mutate_the_main_path()
 
         return event
@@ -476,20 +538,33 @@ class GuidedPolicy(KeaInputPolicy):
         if self.mutate_node_index_on_main_path == -1:
             self.mutate_node_index_on_main_path = len(self.main_path)
             return ReInstallAppEvent(app=self.app)
-        self.logger.info("reach the max number of mutate steps on single node, restart the app")
+        self.logger.info(
+            "reach the max number of mutate steps on single node, restart the app"
+        )
         return KillAndRestartAppEvent(app=self.app)
 
     def mutate_the_main_path(self):
         event = None
         self.current_number_of_mutate_steps_on_single_node += 1
 
-        if self.current_number_of_mutate_steps_on_single_node >= self.max_number_of_mutate_steps_on_single_node:
-
-            if self.number_of_events_that_try_to_find_event_on_main_path <= self.max_number_of_events_that_try_to_find_event_on_main_path:
+        if (
+            self.current_number_of_mutate_steps_on_single_node
+            >= self.max_number_of_mutate_steps_on_single_node
+        ):
+            # try to find an event from the main path that can be executed on current state
+            if (
+                self.number_of_events_that_try_to_find_event_on_main_path
+                <= self.max_number_of_events_that_try_to_find_event_on_main_path
+            ):
                 self.number_of_events_that_try_to_find_event_on_main_path += 1
+                # if reach the state that satsfies the precondition, check the rule and turn to execute the main path.
                 if self.index_on_main_path_after_mutation == len(self.main_path_list):
-                    self.logger.info("reach the end of the main path that could satisfy the precondition")
-                    rules_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
+                    self.logger.info(
+                        "reach the end of the main path that could satisfy the precondition"
+                    )
+                    rules_to_check = (
+                        self.kea.get_rules_whose_preconditions_are_satisfied()
+                    )
                     if len(rules_to_check) > 0:
                         t = self.time_recoder.get_time_duration()
                         self.time_needed_to_satisfy_precondition.append(t)
@@ -519,28 +594,30 @@ class GuidedPolicy(KeaInputPolicy):
         return event
 
     def get_next_event_from_main_path(self):
-        """
-        
-        """
+        """ """
         if self.current_index_on_main_path == self.mutate_node_index_on_main_path:
             self.logger.info(
-                "reach the mutate index, start mutate on the node %d" % self.mutate_node_index_on_main_path)
+                "reach the mutate index, start mutate on the node %d"
+                % self.mutate_node_index_on_main_path
+            )
             self.execute_main_path = False
             return None
 
-        self.logger.info("execute node index on main path: %d" % self.current_index_on_main_path)
+        self.logger.info(
+            "execute node index on main path: %d" % self.current_index_on_main_path
+        )
         u2_event_str = self.main_path_list[self.current_index_on_main_path]
         if u2_event_str is None:
-            self.logger.warning("event is None on main path node %d" % self.current_index_on_main_path)
+            self.logger.warning(
+                "event is None on main path node %d" % self.current_index_on_main_path
+            )
             self.current_index_on_main_path += 1
             return self.get_next_event_from_main_path()
         self.current_index_on_main_path += 1
         return u2_event_str
 
     def get_event_from_main_path(self):
-        """
-        
-        """
+        """ """
         if self.index_on_main_path_after_mutation == -1:
             for i in range(len(self.main_path_list) - 1, -1, -1):
 
@@ -557,7 +634,6 @@ class GuidedPolicy(KeaInputPolicy):
             self.index_on_main_path_after_mutation += 1
             return event_str
         return None
-
 
     def generate_random_event_based_on_current_state(self):
         """
@@ -591,34 +667,40 @@ class GuidedPolicy(KeaInputPolicy):
 
         return event
 
+
 class LLMPolicy(RandomPolicy):
-    '''
+    """
     use LLM to generate input when detected ui tarpit
-    '''
-    def __init__(self, device, app, kea=None, restart_app_after_check_property=False,
-                 number_of_events_that_restart_app=100, clear_and_restart_app_data_after_100_events=False, allow_to_generate_utg=False):
-        super(LLMPolicy, self).__init__(
-            device, app, kea
-        )
+    """
+
+    def __init__(
+        self,
+        device,
+        app,
+        kea=None,
+        restart_app_after_check_property=False,
+        number_of_events_that_restart_app=100,
+        clear_and_restart_app_data_after_100_events=False,
+        allow_to_generate_utg=False,
+    ):
+        super(LLMPolicy, self).__init__(device, app, kea)
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.__action_history=[]
-        self.__all_action_history=set()
+        self.__action_history = []
+        self.__all_action_history = set()
         self.__activity_history = set()
         self.from_state = None
         self.task = "You are an expert in App GUI testing. Please guide the testing tool to enhance the coverage of functional scenarios in testing the App based on your extensive App testing experience. "
 
-    def start(self, input_manager:"InputManager"):  # TODO do not need to write start here?
+    def start(
+        self, input_manager: "InputManager"
+    ):  # TODO do not need to write start here?
         """
         start producing events
         :param input_manager: instance of InputManager
         """
         self.action_count = 0
         self.input_manager = input_manager
-        while (
-                input_manager.enabled
-                and self.action_count
-                < input_manager.event_count
-        ):
+        while input_manager.enabled and self.action_count < input_manager.event_count:
             try:
                 if self.device.is_harmonyos == False and hasattr(self.device, "u2"):
                     self.device.u2.set_fastinput_ime(True)
@@ -626,7 +708,7 @@ class LLMPolicy(RandomPolicy):
                 self.logger.info("Exploration action count: %d" % self.action_count)
 
                 if self.action_count == 0:
-                    #If the application is running, close the application.
+                    # If the application is running, close the application.
                     event = KillAppEvent(app=self.app)
                 elif self.action_count == 1:
                     event = IntentEvent(self.app.get_start_intent())
@@ -635,10 +717,10 @@ class LLMPolicy(RandomPolicy):
                         # If detected a ui tarpit
                         if input_manager.sim_calculator.sim_count > MAX_NUM_QUERY_LLM:
                             # If query LLM too much
-                            self.logger.info(f'query too much. go back!')
+                            self.logger.info(f"query too much. go back!")
                             event = KeyEvent(name="BACK")
                             self.clear_action_history()
-                            input_manager.sim_calculator.sim_count = 0 
+                            input_manager.sim_calculator.sim_count = 0
                         else:
                             # stop random policy, start query LLM
                             event = self.generate_llm_event()
@@ -646,7 +728,9 @@ class LLMPolicy(RandomPolicy):
                         event = self.generate_event()
 
                 if event is not None:
-                    self.from_state = self.device.save_screenshot_for_report(event=event)
+                    self.from_state = self.device.save_screenshot_for_report(
+                        event=event
+                    )
                     input_manager.add_event(event)
                     self.to_state = self.device.get_current_state()
                     self.last_event = event
@@ -654,7 +738,14 @@ class LLMPolicy(RandomPolicy):
                         self.update_utg()
 
                 bug_report_path = os.path.join(self.device.output_dir, "all_states")
-                generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.cur_event_count, self.time_recoder.get_time_duration())
+                generate_report(
+                    bug_report_path,
+                    self.device.output_dir,
+                    self.triggered_bug_information,
+                    self.time_needed_to_satisfy_precondition,
+                    self.device.cur_event_count,
+                    self.time_recoder.get_time_duration(),
+                )
             except KeyboardInterrupt:
                 break
             except InputInterruptedException as e:
@@ -679,24 +770,35 @@ class LLMPolicy(RandomPolicy):
         @return:
         """
 
-        if self.action_count == START_TO_GENERATE_EVENT_IN_POLICY or isinstance(self.last_event, ReInstallAppEvent):
+        if self.action_count == START_TO_GENERATE_EVENT_IN_POLICY or isinstance(
+            self.last_event, ReInstallAppEvent
+        ):
             self.run_initializer()
         current_state = self.device.get_current_state()
         if current_state is None:
             import time
+
             time.sleep(5)
             return KeyEvent(name="BACK")
 
-
-        if self.action_count % self.number_of_events_that_restart_app == 0 and self.clear_and_reinstall_app:
-            self.logger.info("clear and restart app after %s events" % self.number_of_events_that_restart_app)
+        if (
+            self.action_count % self.number_of_events_that_restart_app == 0
+            and self.clear_and_reinstall_app
+        ):
+            self.logger.info(
+                "clear and restart app after %s events"
+                % self.number_of_events_that_restart_app
+            )
             return ReInstallAppEvent(self.app)
         rules_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
 
         if len(rules_to_check) > 0:
             t = self.time_recoder.get_time_duration()
             self.time_needed_to_satisfy_precondition.append(t)
-            self.logger.debug("has rule that matches the precondition and the time duration is " + self.time_recoder.get_time_duration())
+            self.logger.debug(
+                "has rule that matches the precondition and the time duration is "
+                + self.time_recoder.get_time_duration()
+            )
             if random.random() < 0.5:
                 self.logger.info("Check property")
                 self.check_rule_whose_precondition_are_satisfied()
@@ -705,7 +807,9 @@ class LLMPolicy(RandomPolicy):
                     return KillAppEvent(app=self.app)
                 return None
             else:
-                self.logger.info("Found exectuable property in current state. No property will be checked now according to the random checking policy.")
+                self.logger.info(
+                    "Found exectuable property in current state. No property will be checked now according to the random checking policy."
+                )
         event = None
 
         if event is None:
@@ -741,10 +845,13 @@ class LLMPolicy(RandomPolicy):
             # 3) nothing
             #    a normal start. clear self.__num_restarts.
 
-            if self._event_trace.endswith(EVENT_FLAG_START_APP + EVENT_FLAG_STOP_APP) \
-                    or self._event_trace.endswith(EVENT_FLAG_START_APP):
+            if self._event_trace.endswith(
+                EVENT_FLAG_START_APP + EVENT_FLAG_STOP_APP
+            ) or self._event_trace.endswith(EVENT_FLAG_START_APP):
                 self._num_restarts += 1
-                self.logger.info("The app had been restarted %d times.", self._num_restarts)
+                self.logger.info(
+                    "The app had been restarted %d times.", self._num_restarts
+                )
             else:
                 self._num_restarts = 0
 
@@ -759,7 +866,7 @@ class LLMPolicy(RandomPolicy):
                     # Start the app
                     self._event_trace += EVENT_FLAG_START_APP
                     self.logger.info("Trying to start the app...")
-                    self.__action_history = [f'- start the app {self.app.app_name}']
+                    self.__action_history = [f"- start the app {self.app.app_name}"]
                     return IntentEvent(intent=start_app_intent)
 
         elif current_state.get_app_activity_depth(self.app) > 0:
@@ -775,13 +882,17 @@ class LLMPolicy(RandomPolicy):
                     go_back_event = KeyEvent(name="BACK")
                 self._event_trace += EVENT_FLAG_NAVIGATE
                 self.logger.info("Going back to the app...")
-                self.__action_history.append('- go back')
+                self.__action_history.append("- go back")
                 return go_back_event
         else:
             # If the app is in foreground
             self.__num_steps_outside = 0
 
-        action, candidate_actions = self._get_action_with_LLM(current_state, self.__action_history,self.__activity_history,)
+        action, candidate_actions = self._get_action_with_LLM(
+            current_state,
+            self.__action_history,
+            self.__activity_history,
+        )
         if action is not None:
             self.__action_history.append(current_state.get_action_desc(action))
             self.__all_action_history.add(current_state.get_action_desc(action))
@@ -797,58 +908,63 @@ class LLMPolicy(RandomPolicy):
         # If couldn't find a exploration target, stop the app
         stop_app_intent = self.app.get_stop_intent()
         self.logger.info("Cannot find an exploration target. Trying to restart app...")
-        self.__action_history.append('- stop the app')
-        self.__all_action_history.add('- stop the app')
+        self.__action_history.append("- stop the app")
+        self.__all_action_history.add("- stop the app")
         self._event_trace += EVENT_FLAG_STOP_APP
         return IntentEvent(intent=stop_app_intent)
-        
-    def _query_llm(self, prompt, model_name='gpt-3.5-turbo'):
+
+    def _query_llm(self, prompt, model_name="gpt-3.5-turbo"):
         # TODO: replace with your own LLM
         from openai import OpenAI
-        gpt_url = '' 
-        gpt_key = '' 
-        client = OpenAI(
-            base_url=gpt_url,
-            api_key=gpt_key
-        )
 
-        messages=[{"role": "user", "content": prompt}]
+        gpt_url = ""
+        gpt_key = ""
+        client = OpenAI(base_url=gpt_url, api_key=gpt_key)
+
+        messages = [{"role": "user", "content": prompt}]
         completion = client.chat.completions.create(
-            messages=messages,
-            model=model_name,
-            timeout=30
+            messages=messages, model=model_name, timeout=30
         )
         res = completion.choices[0].message.content
         return res
 
-    def _get_action_with_LLM(self, current_state, action_history,activity_history):
+    def _get_action_with_LLM(self, current_state, action_history, activity_history):
         activity = current_state.foreground_activity
-        task_prompt = self.task +f"Currently, the App is stuck on the {activity} page, unable to explore more features. You task is to select an action based on the current GUI Infomation to perform next and help the app escape the UI tarpit."
-        visisted_page_prompt = f'I have already visited the following activities: \n' + '\n'.join(activity_history)
+        task_prompt = (
+            self.task
+            + f"Currently, the App is stuck on the {activity} page, unable to explore more features. You task is to select an action based on the current GUI Infomation to perform next and help the app escape the UI tarpit."
+        )
+        visisted_page_prompt = (
+            f"I have already visited the following activities: \n"
+            + "\n".join(activity_history)
+        )
         # all_history_prompt = f'I have already completed the following actions to explore the app: \n' + '\n'.join(all_action_history)
-        history_prompt = f'I have already completed the following steps to leave {activity} page but failed: \n ' + ';\n '.join(action_history)
+        history_prompt = (
+            f"I have already completed the following steps to leave {activity} page but failed: \n "
+            + ";\n ".join(action_history)
+        )
         state_prompt, candidate_actions = current_state.get_described_actions()
-        question = 'Which action should I choose next? Just return the action id and nothing else.\nIf no more action is needed, return -1.'
-        prompt = f'{task_prompt}\n{state_prompt}\n{visisted_page_prompt}\n{history_prompt}\n{question}'
+        question = "Which action should I choose next? Just return the action id and nothing else.\nIf no more action is needed, return -1."
+        prompt = f"{task_prompt}\n{state_prompt}\n{visisted_page_prompt}\n{history_prompt}\n{question}"
         print(prompt)
         response = self._query_llm(prompt)
-        print(f'response: {response}')
+        print(f"response: {response}")
 
-        match = re.search(r'\d+', response)
+        match = re.search(r"\d+", response)
         if not match:
             return None, candidate_actions
         idx = int(match.group(0))
         selected_action = candidate_actions[idx]
         if isinstance(selected_action, SetTextEvent):
             view_text = current_state.get_view_desc(selected_action.view)
-            question = f'What text should I enter to the {view_text}? Just return the text and nothing else.'
-            prompt = f'{task_prompt}\n{state_prompt}\n{question}'
+            question = f"What text should I enter to the {view_text}? Just return the text and nothing else."
+            prompt = f"{task_prompt}\n{state_prompt}\n{question}"
             print(prompt)
             response = self._query_llm(prompt)
-            print(f'response: {response}')
-            selected_action.text = response.replace('"', '')
+            print(f"response: {response}")
+            selected_action.text = response.replace('"', "")
             if len(selected_action.text) > 30:  # heuristically disable long text input
-                selected_action.text = ''
+                selected_action.text = ""
         return selected_action, candidate_actions
 
     def get_last_state(self):

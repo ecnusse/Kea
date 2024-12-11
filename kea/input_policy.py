@@ -42,7 +42,7 @@ MAX_NUM_STEPS_OUTSIDE = 10
 MAX_NUM_STEPS_OUTSIDE_KILL = 10
 # Max number of replay tries
 MAX_REPLY_TRIES = 5
-ACTION_COUNT_TO_START = 2
+ACTION_COUNT_TO_START = 2   # TODO what does it mean？
 # Max number of query llm
 MAX_NUM_QUERY_LLM = 10
 
@@ -92,7 +92,7 @@ class InputPolicy(object):
         self.last_event = None
         self.from_state = None
         self.to_state = None
-        self.generate_utg = False
+        self.generate_utg = False   # TODO `generate_utg` is self-explained?
         self.triggered_bug_information = []
 
     def run_initializer(self):  #TODO why we should initialize kea's rules here?
@@ -112,7 +112,7 @@ class InputPolicy(object):
         start producing events
         :param input_manager: instance of InputManager
         """
-        self.action_count = 0
+        self.action_count = 0  # TODO the name of `action_count` is not self-explained
         self.input_manager = input_manager
         while (
                 input_manager.enabled
@@ -120,7 +120,7 @@ class InputPolicy(object):
                 < input_manager.event_count
         ):
             try:
-                if hasattr(self.device, "u2"):
+                if hasattr(self.device, "u2"):  # TODO what does this line of code mean?
                     self.device.u2.set_fastinput_ime(True)
 
                 self.logger.info("Exploration action count: %d" % self.action_count)
@@ -132,6 +132,7 @@ class InputPolicy(object):
                     event = IntentEvent(self.app.get_start_intent())
                 else:
                     event = self.generate_event()
+
                 if event is not None:
                     self.from_state = self.device.save_screenshot_for_report(event=event)
                     input_manager.add_event(event)
@@ -141,7 +142,9 @@ class InputPolicy(object):
                         self.update_utg()
 
                 bug_report_path = os.path.join(self.device.output_dir, "all_states")
+                # TODO this function signature is too long?
                 generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.get_count(), self.time_recoder.get_time_duration())
+
             except KeyboardInterrupt:
                 break
             except InputInterruptedException as e:
@@ -214,7 +217,7 @@ class KeaInputPolicy(InputPolicy):
         for rule in self.kea.all_rules:
             self.statistics_of_rules[str(rule)] = {RULE_STATE.PRECONDITION_SATISFIED: 0, RULE_STATE.PROPERTY_CHECKED: 0, RULE_STATE.BUG_TRIGGERED: 0}
         # record the action count, time and property name when the bug is triggered
-        self.triggered_bug_information = []
+        self.triggered_bug_information = []  # TODO already defined in the parent class, why we need this?
 
     def check_rule_with_precondition(self):
         """
@@ -223,7 +226,7 @@ class KeaInputPolicy(InputPolicy):
         rules_dict_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
         if len(rules_dict_to_check) == 0:
             self.logger.debug("No rules match the precondition")
-            if hasattr(self, "not_reach_precondition_path_number"):
+            if hasattr(self, "not_reach_precondition_path_number"): #TODO what does it mean?
                 self.not_reach_precondition_path_number.append(self.path_index)
             return
             # continue
@@ -236,14 +239,14 @@ class KeaInputPolicy(InputPolicy):
         if rule_to_check is not None:
             self.logger.info(f"-------Check Property : {rule_to_check}------")
             self.statistics_of_rules[str(rule_to_check)][RULE_STATE.PROPERTY_CHECKED] += 1
-            pre_id = self.device.get_count()
+            pre_id = self.device.get_count()  # TODO what does pre_id mean?
             # check rule, record relavant info and output log
             result = self.kea.execute_rule(target=rule_to_check, keaTest=rules_dict_to_check[rule_to_check])
             if result == CHECK_RESULT.ASSERTION_FAILURE:
                 self.logger.error(f"-------Postcondition failed. Assertion error, Property:{rule_to_check}------")
                 self.logger.debug("-------time from start : %s-----------" % str(self.time_recoder.get_time_duration()))
                 self.statistics_of_rules[str(rule_to_check)][RULE_STATE.BUG_TRIGGERED] += 1
-                post_id = self.device.get_count()
+                post_id = self.device.get_count()  # TODO what does post_id mean?
                 self.triggered_bug_information.append(
                     ((pre_id, post_id), self.time_recoder.get_time_duration(), rule_to_check.function.__name__))
 
@@ -305,8 +308,11 @@ class KeaInputPolicy(InputPolicy):
         
         """
         # mark the bug information on the bug report html
-        bug_report_path = os.path.join(self.device.output_dir, "all_states")
+        bug_report_path = os.path.join(self.device.output_dir, "all_states")  # TODO why generate bug reports here??
         generate_report(bug_report_path, self.device.output_dir, self.triggered_bug_information, self.time_needed_to_satisfy_precondition, self.device.get_count(), self.time_recoder.get_time_duration())
+
+        # TODO delete the code below?
+
         # self.logger.info("----------------------------------------")
         #
         # if len(self.triggered_bug_information) > 0:
@@ -327,7 +333,7 @@ class KeaInputPolicy(InputPolicy):
         # else:
         #     self.logger.info("No bug has been triggered.")
 
-
+# TODO switch the code of Guided and Random, put Random before Guided
 class GuidedPolicy(KeaInputPolicy):
     """
     
@@ -707,8 +713,7 @@ class RandomPolicy(KeaInputPolicy):
             time.sleep(5)
             return KeyEvent(name="BACK")
 
-
-        if self.action_count % self.number_of_events_that_restart_app == 0 and self.clear_and_restart_app_data_after_100_events:
+        if self.action_count % self.number_of_events_that_restart_app == 0 and self.clear_and_restart_app_data_after_100_events: #TODO wierd names
             self.logger.info("clear and restart app after %s events" % self.number_of_events_that_restart_app)
             return ReInstallAppEvent(self.app)
         rules_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
@@ -735,7 +740,7 @@ class RandomPolicy(KeaInputPolicy):
         if isinstance(event, RotateDevice):
             if self.last_rotate_events == KEY_RotateDeviceNeutralEvent:
                 self.last_rotate_events = KEY_RotateDeviceRightEvent
-                event = RotateDeviceRightEvent()
+                event = RotateDeviceRightEvent() # TODO wierd naming?
             else:
                 self.last_rotate_events = KEY_RotateDeviceNeutralEvent
                 event = RotateDeviceNeutralEvent()
@@ -808,7 +813,7 @@ class RandomPolicy(KeaInputPolicy):
 
         possible_events = current_state.get_possible_input()
 
-        if self.random_input:
+        if self.random_input: #TODO here is the random strategy?
             random.shuffle(possible_events)
         possible_events.append(KeyEvent(name="BACK"))
         possible_events.append(RotateDevice())
@@ -833,7 +838,7 @@ class LLMPolicy(RandomPolicy):
         self.__missed_states = set()
         self.task = "You are an expert in App GUI testing. Please guide the testing tool to enhance the coverage of functional scenarios in testing the App based on your extensive App testing experience. "
 
-    def start(self, input_manager:"InputManager"):
+    def start(self, input_manager:"InputManager"):  # TODO do not need to write start here?
         """
         start producing events
         :param input_manager: instance of InputManager

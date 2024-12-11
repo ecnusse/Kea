@@ -142,7 +142,7 @@ class Kea:
     @property
     def initializer(self) -> Initializer:
         """
-        TODO by default, one app only has one initializer
+        TODO by default, one app only has one initializer 
         """
         for keaTest, keaTestElements in self._KeaTest_DB.items():
             if len(keaTestElements.initializer_list) > 0:

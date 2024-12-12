@@ -7,6 +7,11 @@ from abc import abstractmethod
 from . import utils
 from .intent import Intent
 
+from typing import TYPE_CHECKING, Union
+if TYPE_CHECKING:
+    from .device import Device
+    from .device_hm import DeviceHM
+
 POSSIBLE_KEYS = ["BACK", "MENU", "HOME"]
 
 # Unused currently, but should be useful.
@@ -106,7 +111,7 @@ class InputEvent(object):
         return self.to_dict().__str__()
 
     @abstractmethod
-    def send(self, device):
+    def send(self, device:Union["Device", "DeviceHM"]):
         """
         send this event to device
         :param device: Device
@@ -888,12 +893,29 @@ class SetTextEvent(UIEvent):
         if event_dict is not None:
             self.__dict__.update(event_dict)
 
-    def send(self, device):
+    def send(self, device:Union["Device", "DeviceHM"]):
         x, y = UIEvent.get_xy(x=self.x, y=self.y, view=self.view)
         touch_event = TouchEvent(x=x, y=y)
         touch_event.send(device)
+        if device.is_harmonyos:
+            try:
+                self.clear_text(device)
+            except:
+                print(
+                    "Fail to clear text. Append instead."
+                )
         device.view_set_text(self.text)
         return True
+    
+    def clear_text(self, device:Union["Device", "DeviceHM"]):
+        kwargs = dict()
+        if self.view["resource_id"]:
+            kwargs["id"] = self.view["resource_id"]
+        if self.view["class"]:
+            kwargs["type"] = self.view["class"]
+        if self.view["package"]:
+            kwargs["bundleName"] = self.view["class"]
+        device.hm2(**kwargs).clear_text()
 
     def get_event_str(self, state):
         if self.view is not None:

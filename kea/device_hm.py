@@ -543,11 +543,11 @@ class DeviceHM(Device):
                     return
             else:
                 if event_name == "click":
-                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (0, 0, 255), 5)
+                    cv2.rectangle(image, (int(event.bounds.left), int(event.bounds.top)), (int(event.bounds.right), int(event.bounds.bottom)), (0, 0, 255), 5)
                 elif event_name == "long_click":
-                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (0, 255, 0), 5)
+                    cv2.rectangle(image, (int(event.bounds.left), int(event.bounds.top)), (int(event.bounds.right), int(event.bounds.bottom)), (0, 255, 0), 5)
                 elif event_name == "set_text":
-                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (255, 0, 0), 5)
+                    cv2.rectangle(image, (int(event.bounds.left), int(event.bounds.top)), (int(event.bounds.right), int(event.bounds.bottom)), (255, 0, 0), 5)
                 elif event_name == "press":
                     cv2.putText(image,event, (100,300), cv2.FONT_HERSHEY_SIMPLEX, 5,(0, 255, 0), 3, cv2.LINE_AA)
                 else:

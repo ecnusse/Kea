@@ -1,5 +1,6 @@
 import random
 import string
+from typing import Dict
 
 from hypothesis import strategies as st
 
@@ -10,6 +11,9 @@ class Bundle():
         """
         self.data_name = data_name
         self.data_value = []
+
+    def __new__(cls, data_name: str = None):
+        return super().__new__(cls)
 
     def add(self, value = None):
         if value is None:
@@ -45,3 +49,19 @@ class Bundle():
     def get_random_data(self):
         random_item = random.choice(self.data_value)
         return random_item
+
+class PublicBundle(Bundle):
+    _bundles_: Dict[str, "Bundle"] = {}
+    def __init__(self, data_name: str = None) -> None:
+        """
+        Initialize a PublicBundle.
+        """
+        super().__init__(data_name)
+
+    def __new__(cls, data_name: str = None):
+        if data_name in cls._bundles_:
+            return cls._bundles_[data_name]
+        else:
+            instance = super().__new__(cls)
+            cls._bundles_[data_name] = instance
+            return instance

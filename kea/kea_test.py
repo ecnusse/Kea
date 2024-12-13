@@ -11,14 +11,7 @@ if TYPE_CHECKING:
     from .kea import Rule, MainPath
 
 class KeaTest:
-    _bundles_: Dict[str, "Bundle"] = {}
-    
-    @classmethod
-    def set_bundle(cls, bundle:Bundle):
-        """
-        Allow sharing the bundle across different kea tests.
-        """
-        cls._bundles_[bundle.data_name] = bundle
+    pass
 
 
 # `d` is the pdl driver for Android or HarmonyOS

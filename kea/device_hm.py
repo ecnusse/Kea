@@ -74,7 +74,9 @@ class DeviceHM(Device):
         # adapters
         self.hdc = HDC(device=self)
         self.hilog = Hilog(device=self)
-        # self.u2 = Driver(serial=self.serial)
+
+        from hmdriver2.driver import Driver
+        self.hm2 = Driver(serial=self.serial)
 
 
         self.logger.info("You're runing droidbot on HarmonyOS")
@@ -654,13 +656,19 @@ class DeviceHM(Device):
         self.hdc.drag(start_xy, end_xy, duration)
 
     def view_append_text(self, text):
-        if self.droidbot_ime.connected:
-            self.droidbot_ime.input_text(text=text, mode=1)
-        else:
+        try:
+            self.hm2.input_text()
+        except:
             self.hdc.type(text)
 
     def view_set_text(self, text):
-        self.hdc.type(text)
+        try:
+            self.hm2.input_text(text) 
+        except:
+            self.logger.warning(
+                "Failed to input text with hmdriver2. Use `hdc` to append text instead."
+            )
+            self.hdc.type(text)
 
     def key_press(self, key_code):
         self.hdc.press(key_code)

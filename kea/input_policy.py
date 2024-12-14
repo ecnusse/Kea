@@ -24,7 +24,7 @@ from .utg import UTG
 
 # from .kea import utils
 from .kea import CHECK_RESULT
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict
 
 if TYPE_CHECKING:
     from .input_manager import InputManager
@@ -616,13 +616,32 @@ class GuidedPolicy(KeaInputPolicy):
         self.current_index_on_main_path += 1
         return u2_event_str
 
+    def get_ui_element_dict(self, ui_element_str: str) -> Dict[str, str]:
+        start_index = ui_element_str.find("(") + 1
+        end_index = ui_element_str.find(")", start_index)
+
+        if start_index != -1 and end_index != -1:
+            ui_element_str = ui_element_str[start_index:end_index]
+        ui_elements = ui_element_str.split(",")
+
+        ui_elements_dict = {}
+        for ui_element in ui_elements:
+            attribute_name, attribute_value = ui_element.split("=")
+            attribute_name = attribute_name.strip()
+            attribute_value = attribute_value.strip()
+            attribute_value = attribute_value.strip('"')
+            ui_elements_dict[attribute_name] = attribute_value
+        return ui_elements_dict
+
     def get_event_from_main_path(self):
         """ """
         if self.index_on_main_path_after_mutation == -1:
             for i in range(len(self.main_path_list) - 1, -1, -1):
-
                 event_str = self.main_path_list[i]
-                if event_str is None:
+                ui_elements_dict = self.get_ui_element_dict(event_str)
+                current_state = self.device.get_current_state()
+                view = current_state.get_view_by_attribute(ui_elements_dict)
+                if view is None:
                     continue
                 self.index_on_main_path_after_mutation = i + 1
                 return event_str

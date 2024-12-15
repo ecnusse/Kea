@@ -39,7 +39,7 @@ MAX_NUM_STEPS_OUTSIDE = 10
 MAX_NUM_STEPS_OUTSIDE_KILL = 10
 # Max number of replay tries
 MAX_REPLY_TRIES = 5
-START_TO_GENERATE_EVENT_IN_POLICY = 2  
+START_TO_GENERATE_EVENT_IN_POLICY = 2
 # Max number of query llm
 MAX_NUM_QUERY_LLM = 10
 
@@ -110,6 +110,11 @@ class InputPolicy(object):
 
                 self.logger.info("Exploration event count: %d", self.event_count)
 
+                if self.to_state is not None:
+                    self.from_state = self.to_state
+                else:
+                    self.from_state = self.device.get_current_state()
+
                 if self.event_count == 0:
                     # If the application is running, close the application.
                     event = KillAppEvent(app=self.app)
@@ -120,14 +125,14 @@ class InputPolicy(object):
                     event = self.generate_event()
 
                 if event is not None:
-                    self.from_state = self.device.save_screenshot_for_report(
-                        event=event
+                    self.device.save_screenshot_for_report(
+                        event=event, current_state=self.from_state
                     )
                     input_manager.add_event(event)
-                    self.to_state = self.device.get_current_state()
-                    self.last_event = event
-                    if self.allow_to_generate_utg:
-                        self.update_utg()
+                self.to_state = self.device.get_current_state()
+                self.last_event = event
+                if self.allow_to_generate_utg:
+                    self.update_utg()
 
                 bug_report_path = os.path.join(self.device.output_dir, "all_states")
                 # TODO this function signature is too long?
@@ -178,7 +183,7 @@ class InputPolicy(object):
             #    a normal start. clear self.__num_restarts.
 
             if self._event_trace.endswith(
-                EVENT_FLAG_START_APP + EVENT_FLAG_STOP_APP
+                    EVENT_FLAG_START_APP + EVENT_FLAG_STOP_APP
             ) or self._event_trace.endswith(EVENT_FLAG_START_APP):
                 self._num_restarts += 1
                 self.logger.info(
@@ -267,7 +272,7 @@ class KeaInputPolicy(InputPolicy):
 
         result = self.kea.execute_initializer(self.kea.initializer)
         if (
-            result == CHECK_RESULT.PASS
+                result == CHECK_RESULT.PASS
         ):  # why only check `result`, `result` could have different values.
             self.logger.info("-------initialize successfully-----------")
         else:
@@ -278,7 +283,7 @@ class KeaInputPolicy(InputPolicy):
         TODO should split the function
         #! xixian - agree to split the function
         """
-        #! TODO - xixian - should we emphasize the following data structure is a dict?
+        # ! TODO - xixian - should we emphasize the following data structure is a dict?
         rules_ready_to_be_checked = (
             self.kea.get_rules_whose_preconditions_are_satisfied()
         )
@@ -359,14 +364,14 @@ class RandomPolicy(KeaInputPolicy):
     """
 
     def __init__(
-        self,
-        device,
-        app,
-        kea=None,
-        restart_app_after_check_property=False,
-        number_of_events_that_restart_app=100,
-        clear_and_reinstall_app=False,
-        allow_to_generate_utg=False,
+            self,
+            device,
+            app,
+            kea=None,
+            restart_app_after_check_property=False,
+            number_of_events_that_restart_app=100,
+            clear_and_reinstall_app=False,
+            allow_to_generate_utg=False,
     ):
         super(RandomPolicy, self).__init__(device, app, kea, allow_to_generate_utg)
         self.restart_app_after_check_property = restart_app_after_check_property
@@ -382,10 +387,11 @@ class RandomPolicy(KeaInputPolicy):
         """
 
         if self.event_count == START_TO_GENERATE_EVENT_IN_POLICY or isinstance(
-            self.last_event, ReInstallAppEvent
+                self.last_event, ReInstallAppEvent
         ):
             self.run_initializer()
-        current_state = self.device.get_current_state()
+            self.from_state = self.device.get_current_state()
+        current_state = self.from_state
         if current_state is None:
             time.sleep(5)
             return KeyEvent(name="BACK")
@@ -431,7 +437,7 @@ class RandomPolicy(KeaInputPolicy):
         generate an event based on current UTG
         @return: InputEvent
         """
-        current_state = self.device.get_current_state()
+        current_state = self.from_state
         self.logger.debug("Current state: %s" % current_state.state_str)
         event = self.move_the_app_to_foreground_if_needed(current_state)
         if event is not None:
@@ -502,7 +508,7 @@ class GuidedPolicy(KeaInputPolicy):
 
     def generate_event(self):
         """ """
-        current_state = self.device.get_current_state()
+        current_state = self.from_state
 
         # Return relevant events based on whether the application is in the foreground.
         event = self.move_the_app_to_foreground_if_needed(current_state)
@@ -510,12 +516,13 @@ class GuidedPolicy(KeaInputPolicy):
             return event
 
         if (
-            self.event_count == START_TO_GENERATE_EVENT_IN_POLICY
-            and self.current_index_on_main_path == 0
+                self.event_count == START_TO_GENERATE_EVENT_IN_POLICY
+                and self.current_index_on_main_path == 0
         ) or isinstance(self.last_event, ReInstallAppEvent):
             self.select_main_path()
             self.run_initializer()
             time.sleep(2)
+            self.from_state = self.device.get_current_state()
         if self.execute_main_path:
             event_str = self.get_next_event_from_main_path()
             if event_str:
@@ -548,13 +555,13 @@ class GuidedPolicy(KeaInputPolicy):
         self.current_number_of_mutate_steps_on_single_node += 1
 
         if (
-            self.current_number_of_mutate_steps_on_single_node
-            >= self.max_number_of_mutate_steps_on_single_node
+                self.current_number_of_mutate_steps_on_single_node
+                >= self.max_number_of_mutate_steps_on_single_node
         ):
             # try to find an event from the main path that can be executed on current state
             if (
-                self.number_of_events_that_try_to_find_event_on_main_path
-                <= self.max_number_of_events_that_try_to_find_event_on_main_path
+                    self.number_of_events_that_try_to_find_event_on_main_path
+                    <= self.max_number_of_events_that_try_to_find_event_on_main_path
             ):
                 self.number_of_events_that_try_to_find_event_on_main_path += 1
                 # if reach the state that satsfies the precondition, check the rule and turn to execute the main path.
@@ -639,7 +646,7 @@ class GuidedPolicy(KeaInputPolicy):
             for i in range(len(self.main_path_list) - 1, -1, -1):
                 event_str = self.main_path_list[i]
                 ui_elements_dict = self.get_ui_element_dict(event_str)
-                current_state = self.device.get_current_state()
+                current_state = self.from_state
                 view = current_state.get_view_by_attribute(ui_elements_dict)
                 if view is None:
                     continue
@@ -659,7 +666,7 @@ class GuidedPolicy(KeaInputPolicy):
         generate an event based on current UTG to explore the app
         @return: InputEvent
         """
-        current_state = self.device.get_current_state()
+        current_state = self.from_state
         self.logger.info("Current state: %s" % current_state.state_str)
         event = self.move_the_app_to_foreground_if_needed(current_state)
         if event is not None:
@@ -693,14 +700,14 @@ class LLMPolicy(RandomPolicy):
     """
 
     def __init__(
-        self,
-        device,
-        app,
-        kea=None,
-        restart_app_after_check_property=False,
-        number_of_events_that_restart_app=100,
-        clear_and_restart_app_data_after_100_events=False,
-        allow_to_generate_utg=False,
+            self,
+            device,
+            app,
+            kea=None,
+            restart_app_after_check_property=False,
+            number_of_events_that_restart_app=100,
+            clear_and_restart_app_data_after_100_events=False,
+            allow_to_generate_utg=False,
     ):
         super(LLMPolicy, self).__init__(device, app, kea)
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -711,25 +718,30 @@ class LLMPolicy(RandomPolicy):
         self.task = "You are an expert in App GUI testing. Please guide the testing tool to enhance the coverage of functional scenarios in testing the App based on your extensive App testing experience. "
 
     def start(
-        self, input_manager: "InputManager"
+            self, input_manager: "InputManager"
     ):  # TODO do not need to write start here?
         """
         start producing events
         :param input_manager: instance of InputManager
         """
-        self.action_count = 0
+        self.event_count = 0
         self.input_manager = input_manager
-        while input_manager.enabled and self.action_count < input_manager.event_count:
+        while input_manager.enabled and self.event_count < input_manager.event_count:
             try:
                 if self.device.is_harmonyos == False and hasattr(self.device, "u2"):
                     self.device.u2.set_fastinput_ime(True)
 
-                self.logger.info("Exploration action count: %d" % self.action_count)
+                self.logger.info("Exploration action count: %d" % self.event_count)
 
-                if self.action_count == 0:
+                if self.to_state is not None:
+                    self.from_state = self.to_state
+                else:
+                    self.from_state = self.device.get_current_state()
+
+                if self.event_count == 0:
                     # If the application is running, close the application.
                     event = KillAppEvent(app=self.app)
-                elif self.action_count == 1:
+                elif self.event_count == 1:
                     event = IntentEvent(self.app.get_start_intent())
                 else:
                     if input_manager.sim_calculator.detected_ui_tarpit(input_manager):
@@ -747,14 +759,14 @@ class LLMPolicy(RandomPolicy):
                         event = self.generate_event()
 
                 if event is not None:
-                    self.from_state = self.device.save_screenshot_for_report(
-                        event=event
+                    self.device.save_screenshot_for_report(
+                        event=event, current_state=self.from_state
                     )
                     input_manager.add_event(event)
-                    self.to_state = self.device.get_current_state()
-                    self.last_event = event
-                    if self.allow_to_generate_utg:
-                        self.update_utg()
+                self.to_state = self.device.get_current_state()
+                self.last_event = event
+                if self.allow_to_generate_utg:
+                    self.update_utg()
 
                 bug_report_path = os.path.join(self.device.output_dir, "all_states")
                 generate_report(
@@ -769,7 +781,7 @@ class LLMPolicy(RandomPolicy):
                 break
             except InputInterruptedException as e:
                 self.logger.info("stop sending events: %s" % e)
-                self.logger.info("action count: %d" % self.action_count)
+                self.logger.info("action count: %d" % self.event_count)
                 break
 
             except RuntimeError as e:
@@ -780,7 +792,7 @@ class LLMPolicy(RandomPolicy):
                 import traceback
 
                 traceback.print_exc()
-            self.action_count += 1
+            self.event_count += 1
         self.tear_down()
 
     def generate_llm_event(self):
@@ -789,11 +801,12 @@ class LLMPolicy(RandomPolicy):
         @return:
         """
 
-        if self.action_count == START_TO_GENERATE_EVENT_IN_POLICY or isinstance(
-            self.last_event, ReInstallAppEvent
+        if self.event_count == START_TO_GENERATE_EVENT_IN_POLICY or isinstance(
+                self.last_event, ReInstallAppEvent
         ):
             self.run_initializer()
-        current_state = self.device.get_current_state()
+            self.from_state = self.device.get_current_state()
+        current_state = self.from_state
         if current_state is None:
             import time
 
@@ -801,8 +814,8 @@ class LLMPolicy(RandomPolicy):
             return KeyEvent(name="BACK")
 
         if (
-            self.action_count % self.number_of_events_that_restart_app == 0
-            and self.clear_and_reinstall_app
+                self.event_count % self.number_of_events_that_restart_app == 0
+                and self.clear_and_reinstall_app
         ):
             self.logger.info(
                 "clear and restart app after %s events"
@@ -849,7 +862,7 @@ class LLMPolicy(RandomPolicy):
         generate an event based on current UTG
         @return: InputEvent
         """
-        current_state = self.device.get_current_state()
+        current_state = self.from_state
         self.logger.info("Current state: %s" % current_state.state_str)
 
         if current_state.get_app_activity_depth(self.app) < 0:
@@ -865,7 +878,7 @@ class LLMPolicy(RandomPolicy):
             #    a normal start. clear self.__num_restarts.
 
             if self._event_trace.endswith(
-                EVENT_FLAG_START_APP + EVENT_FLAG_STOP_APP
+                    EVENT_FLAG_START_APP + EVENT_FLAG_STOP_APP
             ) or self._event_trace.endswith(EVENT_FLAG_START_APP):
                 self._num_restarts += 1
                 self.logger.info(
@@ -950,17 +963,17 @@ class LLMPolicy(RandomPolicy):
     def _get_action_with_LLM(self, current_state, action_history, activity_history):
         activity = current_state.foreground_activity
         task_prompt = (
-            self.task
-            + f"Currently, the App is stuck on the {activity} page, unable to explore more features. You task is to select an action based on the current GUI Infomation to perform next and help the app escape the UI tarpit."
+                self.task
+                + f"Currently, the App is stuck on the {activity} page, unable to explore more features. You task is to select an action based on the current GUI Infomation to perform next and help the app escape the UI tarpit."
         )
         visisted_page_prompt = (
-            f"I have already visited the following activities: \n"
-            + "\n".join(activity_history)
+                f"I have already visited the following activities: \n"
+                + "\n".join(activity_history)
         )
         # all_history_prompt = f'I have already completed the following actions to explore the app: \n' + '\n'.join(all_action_history)
         history_prompt = (
-            f"I have already completed the following steps to leave {activity} page but failed: \n "
-            + ";\n ".join(action_history)
+                f"I have already completed the following steps to leave {activity} page but failed: \n "
+                + ";\n ".join(action_history)
         )
         state_prompt, candidate_actions = current_state.get_described_actions()
         question = "Which action should I choose next? Just return the action id and nothing else.\nIf no more action is needed, return -1."

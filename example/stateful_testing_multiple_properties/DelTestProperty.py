@@ -2,7 +2,7 @@ from kea import *
 
 
 class DelTest(KeaTest):
-    _files = PublicBundle("files")
+    _files = Bundle("files")
 
     @initializer()
     def set_up(self):

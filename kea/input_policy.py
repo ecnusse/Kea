@@ -39,7 +39,7 @@ MAX_NUM_STEPS_OUTSIDE = 10
 MAX_NUM_STEPS_OUTSIDE_KILL = 10
 # Max number of replay tries
 MAX_REPLY_TRIES = 5
-START_TO_GENERATE_EVENT_IN_POLICY = 2  # TODO what does it mean？
+START_TO_GENERATE_EVENT_IN_POLICY = 2  
 # Max number of query llm
 MAX_NUM_QUERY_LLM = 10
 

@@ -9,13 +9,13 @@ import attr
 from .utils import INITIALIZER_MARKER, MAINPATH_MARKER, RULE_MARKER
 
 from dataclasses import dataclass
-from typing import Dict, List, TYPE_CHECKING, Optional, Union, Callable
+from typing import Dict, List, TYPE_CHECKING, Optional, Union
 from uiautomator2.exceptions import UiObjectNotFoundError
 
 if TYPE_CHECKING:
     from .kea_test import Rule, MainPath, KeaTest
-    from .pdl import PDL as Android_PDL
-    from .pdl_hm import PDL as HarmonyOS_PDL
+    from .android_pdl_driver import Android_PDL_Driver
+    from .harmonyos_pdl_driver import HarmonyOS_PDL_Driver
 
 @dataclass
 class CHECK_RESULT:
@@ -28,16 +28,17 @@ class CHECK_RESULT:
 OUTPUT_DIR = "output"
 
 @attr.s(frozen=True)
-class Rule:    # tingsu: what does these mean, including Rule, MainPath, initializer, precondition?
+class Rule:    
     """
-    A rule corresponds to a property (including precondition, interaction scenario, postconditions)
+    A rule corresponds to a property, including the preconditions, 
+    the interaction scenario, the postconditions (in the form of assertions).
     """
     
     # `preconditions` denotes the preconditions annotated with `@precondition`
-    preconditions = attr.ib()  # TODO rename `preconditions` to `precondition`?
+    preconditions = attr.ib()  
 
-    # `function` denotes the function of @Rule. This function includes the interaction scenario and the assertions (i.e., the postconditions) therein
-    # TODO we may need to rename `function` to `method`?
+    # `function` denotes the function of @Rule. 
+    # This function includes the interaction scenario and the assertions (i.e., the postconditions)
     function = attr.ib()
 
     def evolve(self, **changes) -> "Rule":
@@ -49,8 +50,8 @@ class Rule:    # tingsu: what does these mean, including Rule, MainPath, initial
 
 @attr.s()
 class Initializer:
-    # TODO - xixian add this class to decorator and modify the typing
-    # `function` denotes the function of `@mainPath.
+  
+    # `function` denotes the function of `@initializer.
     function = attr.ib()
 
 @attr.s()
@@ -59,64 +60,62 @@ class MainPath:
     # `function` denotes the function of `@mainPath.
     function = attr.ib()
 
-    # the interaction steps in the main path
-    path: List[str] = attr.ib()  # TODO rename `path` to a more suitable name?
+    # the interaction steps (events) in the main path
+    path: List[str] = attr.ib()  
 
 
 class KeaTestElements:
     """
     
+    KeaTestElements cannot be accessed by the users to avoid information leakage.
     """
     def __init__(self, keaTest_name):
-        self.keaTest_name = keaTest_name
-        self.rule_list:List["Rule"] = list()
-        self.initializer_list:List["Initializer"] = list() # TODO why  "Rule"?
-        self.mainPath_list:List["MainPath"] = list()
+        self.keaTest_name = keaTest_name 
+        self.rules:List["Rule"] = list()
+        self.initializers:List["Initializer"] = list() # TODO why  "Rule"?
+        self.mainPaths:List["MainPath"] = list()
 
-    def load_rule_list(self, kea_test_class:"KeaTest"):
+    def load_rules(self, keaTest:"KeaTest"):
         """
         Load the rule from the kea_test_class (user written property).
         """
-        for _, v in inspect.getmembers(kea_test_class):
+        for _, v in inspect.getmembers(keaTest):
             rule = getattr(v, RULE_MARKER, None)
             if rule is not None:
-                self.rule_list.append(rule)
+                self.rules.append(rule)
 
-    def load_initializer_list(self, kea_test_class:"KeaTest"):
+    def load_initializers(self, keaTest:"KeaTest"):
         """
         Load the rule from the kea_test_class (user written property).
         """
-        for _, v in inspect.getmembers(kea_test_class):
+        for _, v in inspect.getmembers(keaTest):
             initializer = getattr(v, INITIALIZER_MARKER, None)
             if initializer is not None:
-                self.initializer_list.append(initializer)
+                self.initializers.append(initializer)
 
-    def load_mainPath_list(self, kea_test_class:"KeaTest"):
+    def load_mainPaths(self, keaTest:"KeaTest"):
         """
         Load the rule from the kea_test_class (user written property).
         """
-        for _, v in inspect.getmembers(kea_test_class):
+        for _, v in inspect.getmembers(keaTest):
             mainPath = getattr(v, MAINPATH_MARKER, None)
             if mainPath is not None:
-                self.mainPath_list.append(mainPath)
+                self.mainPaths.append(mainPath)
 
 class Kea:
-    """## Kea class
+    """Kea class
 
-    Kea class is a manager of all the user defined properties. Which store all the properties
-    in runtime and provide a set of methods for reading and executing these properties.
-    In Kea, one test case stands for one property file, which includes the elements
-    of a property (e.g., the property, the main path, the initializer).
+    Kea class is a manager of all the user defined app properties. It manages all the 
+    properties at runtime and provides a set of methods for reading and executing these properties.
+
+    In Kea, one kea tests denotes one app property file, which includes the elements
+    of a property (i.e., the property, the main path, the initializer).
     """
-    # the set of all test cases (i.e., all the properties to be tested)
-
+    # the database storing all kea tests (i.e., all the app properties to be tested)
     _KeaTest_DB: Dict["KeaTest", "KeaTestElements"] = {}
-    _pdl_driver: Optional[Union["Android_PDL", "HarmonyOS_PDL"]]
+    # the driver for executing kea tests
+    _pdl_driver: Optional[Union["Android_PDL_Driver", "HarmonyOS_PDL_Driver"]]
     _all_rules_list = None
-
-    @classmethod
-    def set_pdl_driver(cls, driver:Optional[Union["Android_PDL", "HarmonyOS_PDL"]]):
-        cls._pdl_driver = driver
 
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -129,7 +128,7 @@ class Kea:
         if self._all_rules_list is None:
             self._all_rules_list = list()
             for keaTestElements in self._KeaTest_DB.values():
-                self._all_rules_list.extend(keaTestElements.rule_list)
+                self._all_rules_list.extend(keaTestElements.rules)
         return self._all_rules_list
     
     @property
@@ -138,9 +137,9 @@ class Kea:
         TODO by default, one app only has one initializer 
         """
         for keaTest, keaTestElements in self._KeaTest_DB.items():
-            if len(keaTestElements.initializer_list) > 0:
+            if len(keaTestElements.initializers) > 0:
                 self.logger.info(f"Successfully found an initializer in {keaTest}")
-                return keaTestElements.initializer_list[0]
+                return keaTestElements.initializers[0]
 
         self.logger.warning("No initializer found for current apps.")
         return None
@@ -149,23 +148,32 @@ class Kea:
     def all_mainPaths(self):
         all_mainPaths = []
         for keaTestElements in self._KeaTest_DB.values():
-            all_mainPaths.extend(keaTestElements.mainPath_list)
+            all_mainPaths.extend(keaTestElements.mainPaths)
         return all_mainPaths
     
     @classmethod
-    def load_properties(cls, property_files):
+    def set_pdl_driver(cls, driver:Optional[Union["Android_PDL_Driver", "HarmonyOS_PDL_Driver"]]):
+        """set the driver
+        """
+        cls._pdl_driver = driver
+    
+    @classmethod
+    def load_app_properties(cls, property_files):
         """load the app properties to be tested
 
         load each property file and instantiate the corresponding test case
         """
         workspace_path = os.path.abspath(os.getcwd())
 
-        # remove duplicates files
+        # remove duplicated property files
         property_files = list(set(property_files))
 
         for file in property_files:
             
+            # get the absolute path of the property file
             file_abspath = os.path.join(workspace_path, file) if not os.path.isabs(file) else file
+            if not os.path.exists(file_abspath):
+                raise FileNotFoundError(f"{file} not exists.") 
             
             module_dir = os.path.dirname(file_abspath)
             
@@ -173,13 +181,11 @@ class Kea:
             if module_dir not in sys.path:
                 sys.path.insert(0, module_dir)
             
-            if not os.path.exists(file_abspath):
-                raise FileNotFoundError(f"{file} not exists.") 
-            
             # dynamically change the workspace to make sure 
             # the import of the user properties work correctly
-            os.chdir(os.path.dirname(file_abspath))
+            os.chdir(module_dir)
 
+            # TODO why it is a list [...]
             module_name, extension_name = [str(_) for _ in os.path.splitext(os.path.basename(file_abspath))]
             if not extension_name == ".py":
                 print(f"{file} is not a property file... skipping this file")
@@ -194,7 +200,7 @@ class Kea:
 
                 from .kea_test import KeaTest
 
-                # Find all kea_test_class in the module and attempt to instantiate them.
+                # find all kea tests in the module and attempt to instantiate them.
                 for _, obj in inspect.getmembers(module):
                     if inspect.isclass(obj) and issubclass(obj, KeaTest) and obj is not KeaTest:
                         print(f"Loading property {obj.__name__} from {file}")
@@ -207,19 +213,15 @@ class Kea:
     
     @classmethod
     def load_KeaTest(cls, keaTest:"KeaTest"):
-        """load Kea_PBTest from kea_test_class and save it to the class var _all_Kea_PBTests
+        """load kea tests from the app properties
 
-        ### :input:
-        kea_test_class: the usr defined test class when writing properties. this should be a child class of class Kea
         """
+        keaTestElements = cls.init_KeaTestElements(keaTest)
+        keaTestElements.load_initializers(keaTest)        
+        keaTestElements.load_rules(keaTest)
+        keaTestElements.load_mainPaths(keaTest)
 
-        current_keaTestElements = cls.init_KeaTestElements(keaTest)
-
-        current_keaTestElements.load_initializer_list(keaTest)        
-        current_keaTestElements.load_rule_list(keaTest)
-        current_keaTestElements.load_mainPath_list(keaTest)
-
-        if len(current_keaTestElements.rule_list) == 0:
+        if len(keaTestElements.rules) == 0:
             raise Exception(f"No rule defined in {cls.__name__}")
     
     @classmethod
@@ -233,9 +235,9 @@ class Kea:
         # use a dict to store the KeaPBTest obj and make sure every 
         # KeaPBTest obj can only be instantiate once.
         keaTest_name = keaTest.__module__ + '.' + keaTest.__name__
-        current_keaTestElements = cls._KeaTest_DB.get(keaTest, KeaTestElements(keaTest_name))
-        cls._KeaTest_DB[keaTest] = current_keaTestElements
-        return current_keaTestElements 
+        keaTestElements = cls._KeaTest_DB.get(keaTest, KeaTestElements(keaTest_name))
+        cls._KeaTest_DB[keaTest] = keaTestElements
+        return keaTestElements 
 
     def execute_rules(self, rules):
         '''
@@ -322,7 +324,7 @@ class Kea:
         rules_passed_precondition:Dict["Rule", "KeaTest"] = {}
         
         for keaTest, keaTestElements in self._KeaTest_DB.items():
-            for target_rule in keaTestElements.rule_list:
+            for target_rule in keaTestElements.rules:
                 if len(target_rule.preconditions) > 0:
                     if all(precond(keaTest) for precond in target_rule.preconditions):
                         rules_passed_precondition[target_rule] = keaTest
@@ -337,7 +339,7 @@ class Kea:
         rules_without_precondition:Dict["Rule", "KeaTest"] = {}
         
         for keaTest, keaTestElements in self._KeaTest_DB.items():
-            for target_rule in keaTestElements.rule_list:
+            for target_rule in keaTestElements.rules:
                 if len(target_rule.preconditions) == 0:
                     rules_without_precondition[target_rule] = keaTest
         return rules_without_precondition

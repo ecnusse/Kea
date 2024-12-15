@@ -14,7 +14,7 @@ from .input_manager import InputManager
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .core import Setting
+    from .start import Setting
 
 class DroidBot(object):
     """

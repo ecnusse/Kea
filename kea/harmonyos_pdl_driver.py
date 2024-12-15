@@ -5,7 +5,7 @@ Please checkout Kea's doc and its paper for the details.
 """
 
 from hmdriver2._client import HmClient
-from hmdriver2.driver import Driver as HarmonyOS_Driver
+from hmdriver2.driver import Driver
 from hmdriver2._uiobject import UiObject
 from typing import TYPE_CHECKING, Type
 if TYPE_CHECKING:
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 import time
 
-class PDL(HarmonyOS_Driver):
+class HarmonyOS_PDL_Driver(Driver):
     
     def __init__(self, delay=1, serial=None) -> None:
         self.delay = delay
@@ -48,7 +48,7 @@ class PDL(HarmonyOS_Driver):
 
 
 class Ui(UiObject):
-    def __init__(self, session:"PDL", **kwargs) -> None:
+    def __init__(self, session:"HarmonyOS_PDL_Driver", **kwargs) -> None:
         client = session._client
         droidbot = session.droidbot
         self.droidbot = droidbot

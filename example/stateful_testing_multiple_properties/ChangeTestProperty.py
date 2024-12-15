@@ -1,7 +1,7 @@
 from kea import *
 
 class ChangeTest(KeaTest):
-    _files = PublicBundle("files")
+    _files = Bundle("files")
 
     @initializer()
     def set_up(self):

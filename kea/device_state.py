@@ -767,10 +767,8 @@ class DeviceState(object):
         view_list = self.get_view_list_by_atrribute(ui_element, view_list)
 
         if len(view_list) == 0:
-            self.logger.warning(
-                "No view found for the attribute_dict %s" % attribute_dict
-            )
             return None
+
         if random_select:
             return random.choice(view_list)
         return view_list[0]
@@ -795,7 +793,7 @@ class DeviceState(object):
             if flag:
                 view_list.append(view)
         if len(view_list) == 0:
-            self.logger.info("No view found for %s" % attribute_value)
+            self.logger.info("No view found for %s" % ui_element)
         return view_list
 
     # 

@@ -28,16 +28,17 @@ class CHECK_RESULT:
 OUTPUT_DIR = "output"
 
 @attr.s(frozen=True)
-class Rule:    # tingsu: what does these mean, including Rule, MainPath, initializer, precondition?
+class Rule:    
     """
-    A rule corresponds to a property (including precondition, interaction scenario, postconditions)
+    A rule corresponds to a property, including the preconditions, 
+    the interaction scenario, the postconditions (in the form of assertions).
     """
     
     # `preconditions` denotes the preconditions annotated with `@precondition`
-    preconditions = attr.ib()  # TODO rename `preconditions` to `precondition`?
+    preconditions = attr.ib()  
 
-    # `function` denotes the function of @Rule. This function includes the interaction scenario and the assertions (i.e., the postconditions) therein
-    # TODO we may need to rename `function` to `method`?
+    # `function` denotes the function of @Rule. 
+    # This function includes the interaction scenario and the assertions (i.e., the postconditions)
     function = attr.ib()
 
     def evolve(self, **changes) -> "Rule":
@@ -49,8 +50,8 @@ class Rule:    # tingsu: what does these mean, including Rule, MainPath, initial
 
 @attr.s()
 class Initializer:
-    # TODO - xixian add this class to decorator and modify the typing
-    # `function` denotes the function of `@mainPath.
+  
+    # `function` denotes the function of `@initializer.
     function = attr.ib()
 
 @attr.s()
@@ -59,8 +60,8 @@ class MainPath:
     # `function` denotes the function of `@mainPath.
     function = attr.ib()
 
-    # the interaction steps in the main path
-    path: List[str] = attr.ib()  # TODO rename `path` to a more suitable name?
+    # the interaction steps (events) in the main path
+    path: List[str] = attr.ib()  
 
 
 class KeaTestElements:

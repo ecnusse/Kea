@@ -9,8 +9,8 @@ from typing import IO
 import typing
 
 if typing.TYPE_CHECKING:
-    from .core import Setting
-from .input_event import InputEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent
+    from .start import Setting
+from .input_event import InputEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent
 
 from .device import Device
 from .adapter.hdc import HDC, HDC_EXEC

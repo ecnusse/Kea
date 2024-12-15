@@ -266,7 +266,7 @@ class SingletonMeta(type):
         return cls._instances[cls]
 
 def sanitize_app_package_name(options):
-    """validate whether the app with the package name has been installed on the device
+    """validate whether the app with the package name has been already installed on the device
     """
     import subprocess
 

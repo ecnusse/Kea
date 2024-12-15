@@ -5,13 +5,13 @@ Please checkout Kea's doc and its paper for the details.
 """
 
 from uiautomator2._selector import Selector, UiObject
-from uiautomator2 import Device as Android_Driver
+from uiautomator2 import Device as Driver
 from typing import Any, Union, TYPE_CHECKING
 if TYPE_CHECKING:
     from kea.droidbot import DroidBot
 import time
 
-class PDL(Android_Driver):  #TODO rename `PDL` to `AndroidDriver` `HarmonyDriver`??
+class Android_PDL_Driver(Driver):  #TODO rename `PDL` to `AndroidDriver` `HarmonyDriver`??
     """The pdl driver for Android
     """
 
@@ -53,7 +53,7 @@ class Ui(UiObject):
     """
     TODO extend more UI operations, e.g., random selecting one tag
     """
-    def __init__(self, session:"PDL", selector: Selector, droidbot:"DroidBot"):
+    def __init__(self, session:"Android_PDL_Driver", selector: Selector, droidbot:"DroidBot"):
         super().__init__(session, selector)
         self.droidbot=droidbot
 

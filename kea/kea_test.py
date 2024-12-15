@@ -1,23 +1,26 @@
 import inspect
-import attr
-from typing import Callable, Any, Union, TYPE_CHECKING, Dict
+from typing import Callable, Any, Union, TYPE_CHECKING
 from .kea import Rule, MainPath, Initializer
-from .Bundle import Bundle
 from .utils import PRECONDITIONS_MARKER, RULE_MARKER, INITIALIZER_MARKER, MAINPATH_MARKER
 
 if TYPE_CHECKING:
-    from .pdl import PDL as Android_PDL
-    from .pdl_hm import PDL as HarmonyOS_PDL
+    from .pdl import Android_PDL_Driver
+    from .pdl_hm import HarmonyOS_PDL_Driver
     from .kea import Rule, MainPath
 
 class KeaTest:
+    """
+
+    In the future, we can add app-agnostic properties in KeaTest.
+    """
     pass
 
-
 # `d` is the pdl driver for Android or HarmonyOS
-d:Union["Android_PDL", "HarmonyOS_PDL", None] = None
+d:Union["Android_PDL_Driver", "HarmonyOS_PDL_Driver", None] = None
 
 def rule() -> Callable:
+    """the decorator @rule
+    """
     def accept(f):
         precondition = getattr(f, PRECONDITIONS_MARKER, ())
         rule = Rule(function=f, preconditions=precondition)
@@ -32,6 +35,8 @@ def rule() -> Callable:
 
 
 def precondition(precond: Callable[[Any], bool]) -> Callable:
+    """the precondition @rule
+    """
     def accept(f):
         def precondition_wrapper(*args, **kwargs):
             return f(*args, **kwargs)
@@ -52,7 +57,8 @@ def precondition(precond: Callable[[Any], bool]) -> Callable:
     return accept
 
 def initializer():
-    '''
+    '''the decorator @initializer
+
     An initialize decorator behaves like a rule, but all ``@initialize()`` decorated
     methods will be called before any ``@rule()`` decorated methods, in an arbitrary
     order.  Each ``@initialize()`` method will be called exactly once per run, unless
@@ -70,6 +76,9 @@ def initializer():
     return accept
 
 def mainPath():
+    """the decorator @mainPath
+
+    """
     def accept(f):
         def mainpath_wrapper(*args, **kwargs):
             source_code = inspect.getsource(f)

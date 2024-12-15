@@ -1,25 +1,17 @@
-from dataclasses import dataclass
-from .input_manager import DEFAULT_POLICY, DEFAULT_TIMEOUT
-
-from .kea import Kea
-
-from .utils import get_yml_config, sanitize_args
-from .droidbot import DroidBot
-
-from hypothesis.errors import NonInteractiveExampleWarning
-
 import argparse
 import warnings
+from dataclasses import dataclass
 
-from .utils import DEFAULT_POLICY, DEFAULT_EVENT_INTERVAL, DEFAULT_TIMEOUT, DEFAULT_EVENT_COUNT
-
-from typing import TYPE_CHECKING
-
-
-
+from hypothesis.errors import NonInteractiveExampleWarning
 warnings.filterwarnings("ignore", category=NonInteractiveExampleWarning)
 import coloredlogs
 coloredlogs.install()
+
+from .input_manager import DEFAULT_POLICY, DEFAULT_TIMEOUT
+from .kea import Kea
+from .utils import get_yml_config, sanitize_args
+from .droidbot import DroidBot
+from .utils import DEFAULT_POLICY, DEFAULT_EVENT_INTERVAL, DEFAULT_TIMEOUT, DEFAULT_EVENT_COUNT
 
 @dataclass
 class Setting:
@@ -58,7 +50,7 @@ class Setting:
 def parse_args():
     """Parse, load and sanitize the args from the command line and the config file `config.yml`.
 
-    The args are better to be either specified via the command line or the config file `config.yml`.
+    The args are either specified via the command line or the config file `config.yml`.
     The design purpose of config.yml is to ease specifying the args via a config file.
     """
     parser = argparse.ArgumentParser(description="Start kea to test app.",
@@ -87,7 +79,7 @@ def parse_args():
     parser.add_argument("-is_harmonyos", action="store_true", dest="is_harmonyos", default=False,
                         help="use harmonyos devices")
     parser.add_argument("-load_config", action="store_true", dest="load_config", default=False,
-                        help="load the args from config.yml. The args in config.yml will overwrite the args in the command line.")
+                        help="load the args from config.yml, and the args in the command line will be ignored.")
     parser.add_argument("-utg", action="store_true", dest="generate_utg", default=False,
                         help="Generate UI transition graph")
     options = parser.parse_args()
@@ -102,11 +94,10 @@ def parse_args():
     return options
 
 def load_ymal_args(opts):
-    """Load the args from the config.yml. 
+    """Load the args from the config file `config.yml`. 
 
     The design purpose of config.yml is to ease specifying the args via a config file.
-    Note that the values of the args in config.yml would overwrite those of the same set of 
-    args specified via the command line.
+    Note that the values of the args in config.yml would overwrite those args specified via the command line.
     """
     config_dict = get_yml_config()
     for key, value in config_dict.items():
@@ -132,11 +123,11 @@ def load_pdl_driver(settings: "Setting"):
         (e.g., Android, HarmonyOS).
     """
     if settings.is_harmonyos:
-        from kea.pdl_hm import PDL
-        return PDL(serial=settings.device_serial)
+        from kea.harmonyos_pdl_driver import HarmonyOS_PDL_Driver
+        return HarmonyOS_PDL_Driver(serial=settings.device_serial)
     else:
-        from kea.pdl import PDL
-        return PDL(serial=settings.device_serial)
+        from kea.android_pdl_driver import Android_PDL_Driver
+        return Android_PDL_Driver(serial=settings.device_serial)
     
 def start_kea(kea:"Kea", settings:"Setting" = None):
 
@@ -202,7 +193,7 @@ def main():
     driver = load_pdl_driver(settings)
 
     Kea.set_pdl_driver(driver)
-    Kea.load_properties(options.property_files)
+    Kea.load_app_properties(options.property_files)
     kea = Kea()
 
     print(f"INFO: All Test cases: {kea._KeaTest_DB}") 

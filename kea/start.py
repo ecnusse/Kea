@@ -131,7 +131,7 @@ def load_pdl_driver(settings: "Setting"):
     
 def start_kea(kea:"Kea", settings:"Setting" = None):
 
-    # TODO rename `droidbot` as `data_generator`` (fuzzer)?
+    # droidbot is used as the data generator of Kea
     droidbot = DroidBot(    
         app_path=settings.apk_path,
         device_serial=settings.device_serial,
@@ -165,7 +165,7 @@ def start_kea(kea:"Kea", settings:"Setting" = None):
         generate_utg=settings.generate_utg
     )
 
-    kea._pdl_driver.set_droidbot(droidbot)  # TODO rename `set_droidbot` as `set_data_generator`
+    kea._pdl_driver.set_droidbot(droidbot)  
     droidbot.start()
     
 
@@ -189,13 +189,15 @@ def main():
                        is_emulator=options.is_emulator,
                        generate_utg=options.generate_utg
                        )
-
+    
+    # load the pdl driver for Android/HarmonyOS
     driver = load_pdl_driver(settings)
-
     Kea.set_pdl_driver(driver)
+    # load the app properties to be tested
     Kea.load_app_properties(options.property_files)
-    kea = Kea()
 
+    # create Kea
+    kea = Kea()
     print(f"INFO: All Test cases: {kea._KeaTest_DB}") 
     # start Kea
     start_kea(kea, settings) 

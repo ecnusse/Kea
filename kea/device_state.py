@@ -759,10 +759,12 @@ class DeviceState(object):
                 continue
             if attribute_name == "resourceId":
                 ui_element["resource_id"] = attribute_value
-            elif attribute_name == "text":
-                ui_element["text"] = attribute_value
             elif attribute_name == "description":
                 ui_element["content_description"] = attribute_value
+            elif attribute_name == "class":
+                ui_element["className"] = attribute_value
+            elif attribute_name == "text" or attribute_name == "checked" or attribute_name == "selected":
+                ui_element[attribute_name] = attribute_value
 
         view_list = self.get_view_list_by_atrribute(ui_element, view_list)
 

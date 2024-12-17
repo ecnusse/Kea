@@ -654,9 +654,11 @@ class GuidedPolicy(KeaInputPolicy):
                 return event_str
         else:
             event_str = self.main_path_list[self.index_on_main_path_after_mutation]
-            if event_str is None:
+            ui_elements_dict = self.get_ui_element_dict(event_str)
+            current_state = self.from_state
+            view = current_state.get_view_by_attribute(ui_elements_dict)
+            if view is None:
                 return None
-
             self.index_on_main_path_after_mutation += 1
             return event_str
         return None

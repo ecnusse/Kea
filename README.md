@@ -101,14 +101,14 @@ The original authors of Kea are:
 [Jue Wang](https://cv.juewang.info/),
 [Jingling Sun](https://jinglingsun.github.io/),
 [Geguang Pu](),
-[Zhendong Su](https://people.inf.ethz.ch/suz/)
-
+[Zhendong Su](https://people.inf.ethz.ch/suz/).
 Now we have additional active contributors:
 [Xiangchen Shen](https://xiangchenshen.github.io/), 
 [Xixian Liang](https://xixianliang.github.io/resume/),
 [Mengqian Xu]()
 
-### Relevant References for Kea
+<details>
+  <summary>Relevant References for Kea</summary>
 
 📘 An Empirical Study of Functional Bugs in Android Apps. ISSTA 2023. [pdf](https://dl.acm.org/doi/10.1145/3597926.3598138)
 
@@ -120,11 +120,15 @@ Now we have additional active contributors:
 
 📘 Understanding and Finding System Setting-related Defects in Android Apps. ISSTA 2021. [pdf](https://dl.acm.org/doi/10.1145/3460319.3464806)
 
+</details>
 
-### References for Property-based Testing
+<details>
+  <summary>References for Property-based Testing</summary>
 
 📘 Property-Based Testing in Practice. ICSE 2024. [pdf](https://dl.acm.org/doi/10.1145/3597503.3639581)
 
 📘 QuickCheck: a lightweight tool for random testing of Haskell programs. ICFP 2000. [pdf](https://dl.acm.org/doi/10.1145/357766.351266)
 
 📘 Property-based testing: a new approach to testing for assurance. Software Engineering Notes 1997. [pdf](https://dl.acm.org/doi/pdf/10.1145/263244.263267)
+
+</details>

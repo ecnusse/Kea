@@ -77,7 +77,7 @@ class KeaTestElements:
 
     def load_rules(self, keaTest:"KeaTest"):
         """
-        Load the rule from the kea_test_class (user written property).
+        Load the rule from the KeaTest class (user written property).
         """
         for _, v in inspect.getmembers(keaTest):
             rule = getattr(v, RULE_MARKER, None)
@@ -86,7 +86,7 @@ class KeaTestElements:
 
     def load_initializers(self, keaTest:"KeaTest"):
         """
-        Load the rule from the kea_test_class (user written property).
+        Load the rule from the KeaTest class (user written property).
         """
         for _, v in inspect.getmembers(keaTest):
             initializer = getattr(v, INITIALIZER_MARKER, None)
@@ -95,7 +95,7 @@ class KeaTestElements:
 
     def load_mainPaths(self, keaTest:"KeaTest"):
         """
-        Load the rule from the kea_test_class (user written property).
+        Load the rule from the KeaTest class (user written property).
         """
         for _, v in inspect.getmembers(keaTest):
             mainPath = getattr(v, MAINPATH_MARKER, None)
@@ -108,7 +108,7 @@ class Kea:
     Kea class is a manager of all the user defined app properties. It manages all the 
     properties at runtime and provides a set of methods for reading and executing these properties.
 
-    In Kea, one kea tests denotes one app property file, which includes the elements
+    In Kea, one kea test denotes one app property file, which includes the elements
     of a property (i.e., the property, the main path, the initializer).
     """
     # the database storing all kea tests (i.e., all the app properties to be tested)
@@ -123,7 +123,7 @@ class Kea:
     @property
     def all_rules(self) -> List["Rule"]:
         """
-        :return: load rules from all Kea_PBTests
+        :return: load rules from all Kea_Tests
         """
         if self._all_rules_list is None:
             self._all_rules_list = list()
@@ -227,13 +227,13 @@ class Kea:
     @classmethod
     def init_KeaTestElements(cls, keaTest:"KeaTest") -> "KeaTestElements":
         """
-        Init the KeaPBTest for current kea_test_class. 
-        If the KeaPBTest for current kea_test_class has already been initialized. Find it and return it.
+        Init the KeaTestElements for current KeaTest.
+        If the KeaTestElements for current KeaTest class has already been initialized. Find it and return it.
 
         :return: KeaPBTest
         """
-        # use a dict to store the KeaPBTest obj and make sure every 
-        # KeaPBTest obj can only be instantiate once.
+        # use a dict to store the KeaTestElements obj and make sure every
+        # KeaTestElements obj can only be instantiate once.
         keaTest_name = keaTest.__module__ + '.' + keaTest.__name__
         keaTestElements = cls._KeaTest_DB.get(keaTest, KeaTestElements(keaTest_name))
         cls._KeaTest_DB[keaTest] = keaTestElements

@@ -753,24 +753,30 @@ class DeviceState(object):
 
         """
         view_list = self.views
-
+        ui_element = {}
         for attribute_name, attribute_value in attribute_dict.items():
             if attribute_name == "event_type":
                 continue
-            view_list = self.get_view_list_by_atrribute(
-                attribute_name, attribute_value, view_list
-            )
+            if attribute_name == "resourceId":
+                ui_element["resource_id"] = attribute_value
+            elif attribute_name == "description":
+                ui_element["content_description"] = attribute_value
+            elif attribute_name == "class":
+                ui_element["className"] = attribute_value
+            elif attribute_name == "text" or attribute_name == "checked" or attribute_name == "selected":
+                ui_element[attribute_name] = attribute_value
+
+        view_list = self.get_view_list_by_atrribute(ui_element, view_list)
+
         if len(view_list) == 0:
-            self.logger.warning(
-                "No view found for the attribute_dict %s" % attribute_dict
-            )
             return None
+
         if random_select:
             return random.choice(view_list)
         return view_list[0]
 
     def get_view_list_by_atrribute(
-        self, attribute_key, attribute_value, origin_list=None
+        self, ui_element, origin_list=None
     ):
         """
         Get the view list by atrribute_name
@@ -782,10 +788,14 @@ class DeviceState(object):
             origin_list = self.views
         view_list = []
         for view in origin_list:
-            if view[attribute_key] == attribute_value:
+            flag = True
+            for attribute_key, attribute_value in ui_element.items():
+                if view[attribute_key] != attribute_value:
+                    flag = False
+            if flag:
                 view_list.append(view)
         if len(view_list) == 0:
-            self.logger.info("No view found for %s" % attribute_value)
+            self.logger.info("No view found for %s" % ui_element)
         return view_list
 
     # 

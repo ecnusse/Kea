@@ -511,16 +511,17 @@ class DeviceHM(Device):
 
         return local_path
 
-    def save_screenshot_for_report(self, event_name = None, event = None):
+    def save_screenshot_for_report(self, event_name=None, event=None, current_state=None):
         """
         save screenshot for report, save to "all_states" dir
         """
 
         self.cur_event_count += 1
-        self.current_state = self.get_current_state(self.cur_event_count)
-        self.save_to_all_states_dir(self.screenshot_path, event_name = event_name, event = event)
-        from_state = self.current_state
-        return from_state
+        if current_state is None:
+            self.current_state = self.get_current_state()
+        else:
+            self.current_state = current_state
+        self.save_to_all_states_dir(self.screenshot_path, event_name=event_name, event=event)
     
     def draw_event(self, event, event_name, screenshot_path):
         import cv2

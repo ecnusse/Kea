@@ -66,9 +66,9 @@ def precondition(precond: Callable[[Any], bool]) -> Callable:
 def initializer():
     '''the decorator @initializer
 
-    An initialize decorator behaves like a rule, but all ``@initialize()`` decorated
+    An initialize decorator behaves like a rule, but all ``@initializer()`` decorated
     methods will be called before any ``@rule()`` decorated methods, in an arbitrary
-    order.  Each ``@initialize()`` method will be called exactly once per run, unless
+    order.  Each ``@initializer()`` method will be called exactly once per run, unless
     one raises an exception.
     '''
 

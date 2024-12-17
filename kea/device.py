@@ -21,10 +21,12 @@ from .adapter.user_input_monitor import UserInputMonitor
 from .app import App
 from .intent import Intent
 
-from .input_event import InputEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent
+from .input_event import InputEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, \
+    KeyEvent
 
 DEFAULT_NUM = '1234567890'
 DEFAULT_CONTENT = 'Hello world!'
+
 
 class Device(object):
     """
@@ -32,19 +34,19 @@ class Device(object):
     """
 
     def __init__(
-        self,
-        device_serial=None,
-        is_emulator=False,
-        output_dir=None,
-        cv_mode=False,
-        grant_perm=False,
-        send_document=False,
-        telnet_auth_token=None,
-        enable_accessibility_hard=False,
-        humanoid=None,
-        ignore_ad=False,
-        app_package_name=None,
-        is_harmonyos=False
+            self,
+            device_serial=None,
+            is_emulator=False,
+            output_dir=None,
+            cv_mode=False,
+            grant_perm=False,
+            send_document=False,
+            telnet_auth_token=None,
+            enable_accessibility_hard=False,
+            humanoid=None,
+            ignore_ad=False,
+            app_package_name=None,
+            is_harmonyos=False
     ):
         """
         initialize a device connection
@@ -103,20 +105,20 @@ class Device(object):
 
         # adapters
         self.adb = ADB(device=self)
-        #Start the emulator console via Telnet.
+        # Start the emulator console via Telnet.
         self.telnet = TelnetConsole(device=self, auth_token=telnet_auth_token)
 
         # self.droidbot_app = DroidBotAppConn(device=self)
 
-        #Minicap is an open-source screen capture tool for Android, commonly used to capture screen content for automation testing or remote viewing.
+        # Minicap is an open-source screen capture tool for Android, commonly used to capture screen content for automation testing or remote viewing.
         self.minicap = Minicap(device=self)
-        #Logcat is a logging tool in the Android system used to capture various log messages that occur on the device.
+        # Logcat is a logging tool in the Android system used to capture various log messages that occur on the device.
         self.logcat = Logcat(device=self)
-        #The UserInputMonitor class is typically used to monitor and handle user input events (such as touch, clicks, keyboard input, etc.) on Android devices.
+        # The UserInputMonitor class is typically used to monitor and handle user input events (such as touch, clicks, keyboard input, etc.) on Android devices.
         self.user_input_monitor = UserInputMonitor(device=self)
-        #ProcessMonitor is a class used to monitor and manage processes on the device.
+        # ProcessMonitor is a class used to monitor and manage processes on the device.
         self.process_monitor = ProcessMonitor(device=self)
-        #Uiautomator2_Helper is a class used to handle the logic for interacting with UIAutomator2.
+        # Uiautomator2_Helper is a class used to handle the logic for interacting with UIAutomator2.
         self.uiautomator_helper = Uiautomator2_Helper(device=self)
 
         # self.droidbot_ime = DroidBotIme(device=self)
@@ -139,8 +141,9 @@ class Device(object):
 
         # self.resource_path = "Document"
         self.resource_path = pkg_resources.resource_filename(
-                "kea", "resources/Document"
-            )
+            "kea", "resources/Document"
+        )
+
     def check_connectivity(self):
         """
         check if the device is available
@@ -668,19 +671,19 @@ class Device(object):
         out = self.adb.shell(cmd)
         if re.search(r"(Error)|(Cannot find 'App')", out, re.IGNORECASE | re.MULTILINE):
             raise RuntimeError(out)
-        
+
     def send_documents(self, app):
         if not self.send_document:
             self.logger.info("No document need to be sent")
             return
-        
+
         self.logger.info("Sending documents.")
         for file in os.listdir(self.resource_path):
             if "anki" in app.package_name and file == "collection.anki2":
                 self.mkdir("/storage/emulated/0/AnkiDroid/")
                 self.push_file(os.path.join(self.resource_path, file), "/storage/emulated/0/AnkiDroid/")
                 continue
-            
+
             if "activitydiary" in app.package_name and file == "ActivityDiary_Export.sqlite3":
                 self.push_file(os.path.join(self.resource_path, file), "/storage/emulated/0/Download/")
                 continue
@@ -698,7 +701,7 @@ class Device(object):
         #                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         package_name = app.get_package_name()
         if package_name not in self.adb.get_installed_apps():
-            install_cmd = ["adb", "-s", self.serial, "install","-t", "-r"]
+            install_cmd = ["adb", "-s", self.serial, "install", "-t", "-r"]
             if self.grant_perm and self.get_sdk_version() >= 23 and "amaze" not in package_name:
                 print("Granting permissions for app %s" % package_name)
                 install_cmd.append("-g")
@@ -783,9 +786,9 @@ class Device(object):
 
         for activity in activities:
             if (
-                "android.intent.action.MAIN" in activities[activity]["actions"]
-                and "android.intent.category.LAUNCHER"
-                in activities[activity]["categories"]
+                    "android.intent.action.MAIN" in activities[activity]["actions"]
+                    and "android.intent.category.LAUNCHER"
+                    in activities[activity]["categories"]
             ):
                 main_activity = activity
         return main_activity
@@ -856,19 +859,20 @@ class Device(object):
     def pull_file(self, remote_file, local_file):
         self.adb.run_cmd(["pull", remote_file, local_file], disable_log=True)
 
-    def mkdir(self,path):
-        self.adb.run_cmd(["shell","mkdir",path])
-    
-    def save_screenshot_for_report(self, event_name = None, event = None):
+    def mkdir(self, path):
+        self.adb.run_cmd(["shell", "mkdir", path])
+
+    def save_screenshot_for_report(self, event_name=None, event=None, current_state=None):
         """
         save screenshot for report, save to "all_states" dir
         """
 
         self.cur_event_count += 1
-        self.current_state = self.get_current_state(self.cur_event_count)
-        self.save_to_all_states_dir(self.screenshot_path, event_name = event_name, event = event)
-        from_state = self.current_state
-        return from_state
+        if current_state is None:
+            self.current_state = self.get_current_state()
+        else:
+            self.current_state = current_state
+        self.save_to_all_states_dir(self.screenshot_path, event_name=event_name, event=event)
 
     def draw_event(self, event, event_name, screenshot_path):
         import cv2
@@ -893,13 +897,19 @@ class Device(object):
                     return
             else:
                 if event_name == "click":
-                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (0, 0, 255), 5)
+                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])),
+                                  (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])),
+                                  (0, 0, 255), 5)
                 elif event_name == "long_click":
-                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (0, 255, 0), 5)
+                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])),
+                                  (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])),
+                                  (0, 255, 0), 5)
                 elif event_name == "set_text":
-                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])), (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])), (255, 0, 0), 5)
+                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])),
+                                  (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])),
+                                  (255, 0, 0), 5)
                 elif event_name == "press":
-                    cv2.putText(image,event, (100,300), cv2.FONT_HERSHEY_SIMPLEX, 5,(0, 255, 0), 3, cv2.LINE_AA)
+                    cv2.putText(image, event, (100, 300), cv2.FONT_HERSHEY_SIMPLEX, 5, (0, 255, 0), 3, cv2.LINE_AA)
                 else:
                     return
             try:
@@ -934,7 +944,7 @@ class Device(object):
 
         return local_image_path
 
-    def save_to_all_states_dir(self, local_image_path, event, event_name = None):
+    def save_to_all_states_dir(self, local_image_path, event, event_name=None):
         import shutil
         all_states_dir = os.path.join(self.output_dir, "all_states")
         if not os.path.exists(all_states_dir):
@@ -951,6 +961,7 @@ class Device(object):
 
         if self.current_state is not None:
             dest_state_json_path = "%s/state_%s.json" % (all_states_dir, self.cur_event_count)
+            # self.current_state.screenshot_path = dest_screenshot_path
             state_json_file = open(dest_state_json_path, "w")
             state_json_file.write(self.current_state.to_json())
             state_json_file.close()
@@ -963,7 +974,6 @@ class Device(object):
         if event_name is None:
             event_name = event.get_event_name()
 
-        
         img_file_name = os.path.basename(dest_screenshot_path)
 
         report_screen = {
@@ -981,8 +991,7 @@ class Device(object):
 
         self.draw_event(event, event_name, dest_screenshot_path)
 
-
-    def get_current_state(self, action_count=None):
+    def get_current_state(self):
         self.logger.debug("getting current device state...")
         current_state = None
         try:
@@ -1002,7 +1011,7 @@ class Device(object):
                 activity_stack=activity_stack,
                 background_services=background_services,
                 screenshot_path=screenshot_path,
-                tag=action_count
+                tag=self.cur_event_count
             )
         except Exception as e:
             self.logger.warning("exception in get_current_state: %s" % e)
@@ -1128,4 +1137,3 @@ class Device(object):
         :param package_name: the app package name
         """
         self.adb.clear_app_data(package_name)
-        

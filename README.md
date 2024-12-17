@@ -86,18 +86,45 @@ That's it! You can see the test results in the "output" directory.
 * transistor: [#488](https://codeberg.org/y20k/transistor/issues/488), [#489](https://codeberg.org/y20k/transistor/issues/489), [#495](https://codeberg.org/y20k/transistor/issues/495)
 * Simpletask: [#1230](https://github.com/mpcjanssen/simpletask-android/issues/1230)
 
-
-# Maintainers
-
-[Yiheng Xiong](https://xyiheng.github.io/), 
-[Xiangchen Shen](https://xiangchenshen.github.io/), 
-[Xixian Liang](https://xixianliang.github.io/resume/),
-[Ting Su](http://tingsu.github.io/)
-
-
-# Relevant Tools
+### Relevant Tools Used in Kea
 
 1. [droidbot](https://github.com/honeynet/droidbot)
 2. [uiautomator2](https://github.com/openatx/uiautomator2)
 3. [hmdriver2](https://github.com/codematrixer/hmdriver2)
 4. [hypothesis](https://github.com/HypothesisWorks/hypothesis)
+
+### Contributors/Maintainers
+
+The original authors of Kea are:
+[Yiheng Xiong](https://xyiheng.github.io/), 
+[Ting Su](http://tingsu.github.io/),
+[Jue Wang](https://cv.juewang.info/),
+[Jingling Sun](https://jinglingsun.github.io/),
+[Geguang Pu](),
+[Zhendong Su](https://people.inf.ethz.ch/suz/)
+
+Now we have additional active contributors:
+[Xiangchen Shen](https://xiangchenshen.github.io/), 
+[Xixian Liang](https://xixianliang.github.io/resume/),
+[Mengqian Xu]()
+
+### Relevant References for Kea
+
+📘 An Empirical Study of Functional Bugs in Android Apps. ISSTA 2023. [pdf](https://dl.acm.org/doi/10.1145/3597926.3598138)
+
+📘 Property-Based Testing for Validating User Privacy-Related Functionalities in Social Media Apps. FSE 2024. [pdf](https://dl.acm.org/doi/10.1145/3663529.3663863)
+
+📘 Property-Based Fuzzing for Finding Data Manipulation Errors in Android Apps. ESEC/FSE 2023. [pdf](https://dl.acm.org/doi/10.1145/3611643.3616286)
+
+📘 Characterizing and Finding System Setting-Related Defects in Android Apps. TSE 2023. [pdf](https://ieeexplore.ieee.org/document/10064083)
+
+📘 Understanding and Finding System Setting-related Defects in Android Apps. ISSTA 2021. [pdf](https://dl.acm.org/doi/10.1145/3460319.3464806)
+
+
+### References for Property-based Testing
+
+📘 Property-Based Testing in Practice. ICSE 2024. [pdf](https://dl.acm.org/doi/10.1145/3597503.3639581)
+
+📘 QuickCheck: a lightweight tool for random testing of Haskell programs. ICFP 2000. [pdf](https://dl.acm.org/doi/10.1145/357766.351266)
+
+📘 Property-based testing: a new approach to testing for assurance. Software Engineering Notes 1997. [pdf](https://dl.acm.org/doi/pdf/10.1145/263244.263267)

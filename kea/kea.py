@@ -86,7 +86,7 @@ class KeaTestElements:
 
     def load_initializers(self, keaTest:"KeaTest"):
         """
-        Load the rule from the KeaTest class (user written property).
+        Load the initializers from the KeaTest class (user written property).
         """
         for _, v in inspect.getmembers(keaTest):
             initializer = getattr(v, INITIALIZER_MARKER, None)
@@ -95,7 +95,7 @@ class KeaTestElements:
 
     def load_mainPaths(self, keaTest:"KeaTest"):
         """
-        Load the rule from the KeaTest class (user written property).
+        Load the mainPaths from the KeaTest class (user written property).
         """
         for _, v in inspect.getmembers(keaTest):
             mainPath = getattr(v, MAINPATH_MARKER, None)

@@ -191,7 +191,6 @@ class Kea:
                 continue
             
             try:
-                # print(f"Importting module {module_name}")
                 module = importlib.import_module(module_name)
 
                 #! IMPORTANT: set the pdl driver in the modules (the user written properties)
@@ -199,7 +198,7 @@ class Kea:
 
                 from .kea_test import KeaTest
 
-                # find all kea tests in the module and attempt to instantiate them.
+                # find all kea tests in the module and attempt to load them.
                 for _, obj in inspect.getmembers(module):
                     if inspect.isclass(obj) and issubclass(obj, KeaTest) and obj is not KeaTest:
                         print(f"Loading property {obj.__name__} from {file}")

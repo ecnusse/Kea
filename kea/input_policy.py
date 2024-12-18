@@ -456,7 +456,7 @@ class RandomPolicy(KeaInputPolicy):
                 self.last_rotate_events = KEY_RotateDeviceToLandscapeEvent
                 event = (
                     RotateDeviceToLandscapeEvent()
-                )  # TODO wierd naming? landscape or portrait?
+                )
             else:
                 self.last_rotate_events = KEY_RotateDeviceToPortraitEvent
                 event = RotateDeviceToPortraitEvent()

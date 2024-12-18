@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from kea.droidbot import DroidBot
 import time
 
-class Android_PDL_Driver(Driver):  #TODO rename `PDL` to `AndroidDriver` `HarmonyDriver`??
+class Android_PDL_Driver(Driver):
     """The pdl driver for Android
     """
 

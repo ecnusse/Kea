@@ -72,7 +72,7 @@ class KeaTestElements:
     def __init__(self, keaTest_name):
         self.keaTest_name = keaTest_name 
         self.rules:List["Rule"] = list()
-        self.initializers:List["Initializer"] = list() # TODO why  "Rule"?
+        self.initializers:List["Initializer"] = list()
         self.mainPaths:List["MainPath"] = list()
 
     def load_rules(self, keaTest:"KeaTest"):
@@ -134,7 +134,7 @@ class Kea:
     @property
     def initializer(self) -> Initializer:
         """
-        TODO by default, one app only has one initializer 
+        By default, one app only has one initializer. 
         """
         for keaTest, keaTestElements in self._KeaTest_DB.items():
             if len(keaTestElements.initializers) > 0:
@@ -185,8 +185,7 @@ class Kea:
             # the import of the user properties work correctly
             os.chdir(module_dir)
 
-            # TODO why it is a list [...]
-            module_name, extension_name = [str(_) for _ in os.path.splitext(os.path.basename(file_abspath))]
+            module_name, extension_name = (str(_) for _ in os.path.splitext(os.path.basename(file_abspath)))
             if not extension_name == ".py":
                 print(f"{file} is not a property file... skipping this file")
                 continue

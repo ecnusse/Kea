@@ -612,7 +612,7 @@ class DeviceHM(Device):
         try:
             foreground_activity = self.get_top_activity_name()
             # activity_stack = self.get_current_activity_stack()
-            activity_stack = [foreground_activity]      # TODO Need to get the stack
+            activity_stack = [foreground_activity]
             # background_services = self.get_service_names()
             screenshot_path = self.take_screenshot()
             self.screenshot_path = screenshot_path

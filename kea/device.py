@@ -85,7 +85,7 @@ class Device(object):
         self.cur_event_count = 0
         self.screenshot_path = None
         self.current_state = None
-        # TODO: would rasise error when using HarmonyOS?
+        
         self.u2 = uiautomator2.connect(self.serial)
         # disable keyboard
         self.u2.set_fastinput_ime(True)

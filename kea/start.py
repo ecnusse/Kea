@@ -142,7 +142,6 @@ def start_kea(kea:"Kea", settings:"Setting" = None):
         env_policy = None,
         policy_name=settings.policy_name,
         random_input=settings.random_input,
-        script_path=settings.script_path,
         event_interval=settings.event_interval,
         timeout=settings.timeout,
         event_count=settings.event_count,

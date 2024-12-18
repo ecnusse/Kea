@@ -33,7 +33,6 @@ class DroidBot(object):
         env_policy=None,
         policy_name=None,
         random_input=True,
-        script_path=None,
         event_interval=None,
         event_count=0,
         timeout=None,
@@ -112,7 +111,6 @@ class DroidBot(object):
         self.env_policy = env_policy
         self.policy_name = policy_name
         self.random_input = random_input
-        self.script_path = script_path
         self.event_interval = event_interval
         self.event_count = event_count
         self.cv_mode = cv_mode
@@ -164,7 +162,6 @@ class DroidBot(object):
                 random_input=self.random_input,
                 event_interval=self.event_interval,
                 event_count=self.event_count,
-                script_path=self.script_path,
                 profiling_method=self.profiling_method,
                 master=self.master,
                 replay_output=self.replay_output,
@@ -202,7 +199,6 @@ class DroidBot(object):
                 random_input=self.random_input,
                 event_count=self.event_count,
                 event_interval=self.event_interval,
-                script_path=self.script_path,
                 profiling_method=self.profiling_method,
                 master=self.master,
                 replay_output=self.replay_output,

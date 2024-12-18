@@ -115,6 +115,8 @@ def load_ymal_args(opts):
             opts.device_serial = value
         elif key.lower() in ["property", "properties", "file", "files"] and value:
             opts.property_files = value
+        elif key.lower() == "keep_app" and value:
+            opts.keep_app = value
     
     return opts
 
@@ -187,7 +189,8 @@ def main():
                        is_harmonyos=options.is_harmonyos,
                        grant_perm=options.grant_perm,
                        is_emulator=options.is_emulator,
-                       generate_utg=options.generate_utg
+                       generate_utg=options.generate_utg,
+                       is_package=options.is_package
                        )
     
     # load the pdl driver for Android/HarmonyOS

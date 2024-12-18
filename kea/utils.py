@@ -306,10 +306,13 @@ def sanitize_args(options):
         raise AttributeError("No properties. Use -f to specify the properties to be tested.")
     
     if not str(options.apk_path).endswith((".apk", ".hap")):
+        options.is_package = True
         COLOR_YELLOW = "\033[93m"
         COLOR_RESET = "\033[0m"
         print(f"{COLOR_YELLOW}Warning: {options.apk_path} is not a valid apk or hap file ... may be an app package name, trying to validate this app package ...{COLOR_RESET}")
         sanitize_app_package_name(options)
+    else:
+        options.is_package = False
 
 def identify_device_serial(options):
     """

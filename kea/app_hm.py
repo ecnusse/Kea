@@ -8,7 +8,7 @@ import shutil
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .core import Setting
+    from .start import Setting
 
 if __name__ != "__main__":
     from .intent import Intent

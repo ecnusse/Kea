@@ -72,7 +72,7 @@ class KeaTestElements:
     def __init__(self, keaTest_name):
         self.keaTest_name = keaTest_name 
         self.rules:List["Rule"] = list()
-        self.initializers:List["Initializer"] = list() # TODO why  "Rule"?
+        self.initializers:List["Initializer"] = list()
         self.mainPaths:List["MainPath"] = list()
 
     def load_rules(self, keaTest:"KeaTest"):
@@ -86,7 +86,7 @@ class KeaTestElements:
 
     def load_initializers(self, keaTest:"KeaTest"):
         """
-        Load the rule from the KeaTest class (user written property).
+        Load the initializers from the KeaTest class (user written property).
         """
         for _, v in inspect.getmembers(keaTest):
             initializer = getattr(v, INITIALIZER_MARKER, None)
@@ -95,7 +95,7 @@ class KeaTestElements:
 
     def load_mainPaths(self, keaTest:"KeaTest"):
         """
-        Load the rule from the KeaTest class (user written property).
+        Load the mainPaths from the KeaTest class (user written property).
         """
         for _, v in inspect.getmembers(keaTest):
             mainPath = getattr(v, MAINPATH_MARKER, None)
@@ -134,7 +134,7 @@ class Kea:
     @property
     def initializer(self) -> Initializer:
         """
-        TODO by default, one app only has one initializer 
+        By default, one app only has one initializer. 
         """
         for keaTest, keaTestElements in self._KeaTest_DB.items():
             if len(keaTestElements.initializers) > 0:
@@ -185,14 +185,12 @@ class Kea:
             # the import of the user properties work correctly
             os.chdir(module_dir)
 
-            # TODO why it is a list [...]
-            module_name, extension_name = [str(_) for _ in os.path.splitext(os.path.basename(file_abspath))]
+            module_name, extension_name = (str(_) for _ in os.path.splitext(os.path.basename(file_abspath)))
             if not extension_name == ".py":
                 print(f"{file} is not a property file... skipping this file")
                 continue
             
             try:
-                # print(f"Importting module {module_name}")
                 module = importlib.import_module(module_name)
 
                 #! IMPORTANT: set the pdl driver in the modules (the user written properties)
@@ -200,7 +198,7 @@ class Kea:
 
                 from .kea_test import KeaTest
 
-                # find all kea tests in the module and attempt to instantiate them.
+                # find all kea tests in the module and attempt to load them.
                 for _, obj in inspect.getmembers(module):
                     if inspect.isclass(obj) and issubclass(obj, KeaTest) and obj is not KeaTest:
                         print(f"Loading property {obj.__name__} from {file}")

@@ -22,9 +22,8 @@ class Android_PDL_Driver(Driver):
         self.delay = delay
         # set the delay between sending events
         self.settings['operation_delay'] = (0, self.delay)
-        self.settings['wait_timeout'] = 5.0 # 默认控件等待时间
-
-    # def set_device_serial(self, serial):
+        # default timeout for waiting a widget to appear.
+        self.settings['wait_timeout'] = 5.0  
 
     def __call__(self, **kwargs: Any) -> "Ui":
         return Ui(self, Selector(**kwargs), droidbot=self.droidbot)

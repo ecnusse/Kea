@@ -336,68 +336,6 @@ class DeviceHM(Device):
         else:
             return None
 
-    def get_task_activities(self):
-        """
-        Get current tasks and corresponding activities.
-        :return: a dict mapping each task id to a list of activities, from top to down.
-        """
-        task_to_activities = {}
-
-        lines = self.adb.shell("dumpsys activity activities").splitlines()
-        activity_line_re = re.compile(r'\*\s*Hist\s*#\d+:\s*ActivityRecord\{[^ ]+\s*[^ ]+\s*([^ ]+)\s*t(\d+)}')
-
-        for line in lines:
-            line = line.strip()
-            activity_line_task_re = re.compile(r'^\s*Task\s*id\s*#(\d+)|^\s*Task\{\w+\s*#(\d+)')
-            activity_line_task_m = activity_line_task_re.match(line)
-            if activity_line_task_m:
-                if activity_line_task_m.group(1):
-                    task_id = activity_line_task_m.group(1)
-                else:
-                    task_id = activity_line_task_m.group(2)
-                task_to_activities[task_id] = []
-            elif re.match(r'\*\s*Hist\s*#', line):
-                m = activity_line_re.match(line)
-                if m:
-                    activity = m.group(1)
-                    task_id = m.group(2)
-                    if task_id not in task_to_activities:
-                        task_to_activities[task_id] = []
-                    task_to_activities[task_id].append(activity)
-
-        return task_to_activities
-
-    def get_service_names(self):
-        """
-        get current running services
-        :return: list of services
-        """
-        services = []
-        dat = self.adb.shell('dumpsys activity services')
-        lines = dat.splitlines()
-        service_re = re.compile('^.+ServiceRecord{.+ ([A-Za-z0-9_.]+)/([A-Za-z0-9_.]+)')
-
-        for line in lines:
-            m = service_re.search(line)
-            if m:
-                package = m.group(1)
-                service = m.group(2)
-                services.append("%s/%s" % (package, service))
-        return services
-
-    def get_package_path(self, package_name):
-        """
-        get the installed package (app)
-        :param package_name:
-        :return: list of packages (app) in device
-        """
-        dat = self.adb.shell('pm path %s' % package_name)
-        package_path_re = re.compile('^package:(.+)$')
-        m = package_path_re.match(dat)
-        if m:
-            path = m.group(1)
-            return path.strip()
-        return None
 
     def install_app(self, app):
         """

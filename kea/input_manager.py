@@ -62,7 +62,6 @@ class InputManager(object):
         self.policy_name = policy_name
         self.random_input = random_input
         self.events = []
-        self.policy = None
         self.event_count = event_count
         self.event_interval = event_interval
         self.replay_output = replay_output

@@ -23,7 +23,7 @@ class CreateTest(KeaTest):
         d(resourceId="com.amaze.filemanager:id/design_menu_item_text", textContains="Internal Storage").click()
         d(resourceId="com.amaze.filemanager:id/sd_main_fab").click()
         d(resourceId="com.amaze.filemanager:id/sd_label", text="Folder").click()
-        file_name = self._files.get_random_value()
+        file_name = self._files.get_random_text()
         d.send_keys(file_name, clear=True)
         d(resourceId="com.amaze.filemanager:id/md_buttonDefaultPositive").click()
         self._files.add(file_name)

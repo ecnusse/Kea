@@ -48,9 +48,9 @@ class Bundle():
     def get_all_data(self):
         return self.data_value
 
-    def get_random_value(self, value_len = 10):
-        value = st.text(alphabet=string.ascii_letters, min_size=1, max_size=value_len).example()
-        return value
+    def get_random_text(self, value_len = 10):
+        text = st.text(alphabet=string.ascii_letters, min_size=1, max_size=value_len).example()
+        return text
 
     def get_random_data(self):
         random_item = random.choice(self.data_value)

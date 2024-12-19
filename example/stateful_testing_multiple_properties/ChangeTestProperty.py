@@ -22,7 +22,7 @@ class ChangeTest(KeaTest):
         d(description="Navigate up").click()
         d(resourceId="com.amaze.filemanager:id/design_menu_item_text", textContains="Internal Storage").click()
         file_name = self._files.get_random_data()
-        new_name = self._files.get_random_value()
+        new_name = self._files.get_random_text()
         d(scrollable=True).scroll.to(resourceId="com.amaze.filemanager:id/firstline", text=file_name)
         selected_file = d(resourceId="com.amaze.filemanager:id/firstline", text=file_name)
         selected_file.right(resourceId="com.amaze.filemanager:id/properties").click()

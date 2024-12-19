@@ -22,17 +22,12 @@ class HarmonyOS_PDL_Driver(Driver):
     def __init__(self, delay=1, serial=None) -> None:
         self.delay = delay
         super().__init__(serial=serial)
-
-    def set_device_serial(self, serial):
-        pass
     
     def __new__(cls: Type[Any], serial: str) -> Any:
         return super().__new__(cls, serial)
 
     def __call__(self, **kwargs: Any) -> "Ui":
-        kwargs
-        ui = Ui(self, **kwargs)
-        return ui
+        return Ui(self, **kwargs)
 
     def set_droidbot(self, droidbot:"DroidBot"):
         self.droidbot = droidbot

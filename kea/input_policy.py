@@ -601,7 +601,9 @@ class GuidedPolicy(KeaInputPolicy):
         return event
 
     def get_next_event_from_main_path(self):
-        """ """
+        """
+        get a next event when execute on the main path
+        """
         if self.current_index_on_main_path == self.mutate_node_index_on_main_path:
             self.logger.info(
                 "reach the mutate index, start mutate on the node %d"
@@ -624,6 +626,9 @@ class GuidedPolicy(KeaInputPolicy):
         return u2_event_str
 
     def get_ui_element_dict(self, ui_element_str: str) -> Dict[str, str]:
+        """
+        get ui elements of the event
+        """
         start_index = ui_element_str.find("(") + 1
         end_index = ui_element_str.find(")", start_index)
 
@@ -641,7 +646,9 @@ class GuidedPolicy(KeaInputPolicy):
         return ui_elements_dict
 
     def get_event_from_main_path(self):
-        """ """
+        """
+        get an event can lead current state to go back to the main path
+        """
         if self.index_on_main_path_after_mutation == -1:
             for i in range(len(self.main_path_list) - 1, -1, -1):
                 event_str = self.main_path_list[i]

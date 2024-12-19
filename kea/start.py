@@ -25,7 +25,6 @@ class Setting:
     is_emulator: bool =True     #True for emulators, False for real devices.
     policy_name: str = DEFAULT_POLICY
     random_input: bool =True
-    script_path: str=None
     event_interval: int= DEFAULT_EVENT_INTERVAL
     timeout: int = DEFAULT_TIMEOUT
     event_count: int= DEFAULT_EVENT_COUNT

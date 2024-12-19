@@ -48,8 +48,8 @@ class Bundle():
     def get_all_data(self):
         return self.data_value
 
-    def get_random_text(self, value_len = 10):
-        text = st.text(alphabet=string.ascii_letters, min_size=1, max_size=value_len).example()
+    def get_random_text(self, value_max_len = 10):
+        text = st.text(alphabet=string.ascii_letters, min_size=1, max_size=value_max_len).example()
         return text
 
     def get_random_data(self):

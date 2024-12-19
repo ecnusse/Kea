@@ -41,7 +41,6 @@ class InputManager(object):
         random_input,
         event_interval,
         event_count=DEFAULT_EVENT_COUNT,  # the number of event generated in the explore phase.
-        script_path=None,
         profiling_method=None,
         master=None,
         replay_output=None,
@@ -58,29 +57,17 @@ class InputManager(object):
         """
         self.logger = logging.getLogger('InputEventManager')
         self.enabled = True
-
         self.device = device
         self.app = app
         self.policy_name = policy_name
         self.random_input = random_input
         self.events = []
         self.policy = None
-        self.script = None
         self.event_count = event_count
         self.event_interval = event_interval
         self.replay_output = replay_output
-
         self.monkey = None
-
-        if script_path is not None:
-            f = open(script_path, 'r')
-            script_dict = json.load(f)
-            from .input_script import DroidBotScript
-
-            self.script = DroidBotScript(script_dict)
-
         self.kea = kea
-        
         self.profiling_method = profiling_method
         self.number_of_events_that_restart_app = number_of_events_that_restart_app
         self.generate_utg = generate_utg
@@ -107,7 +94,6 @@ class InputManager(object):
             )
             input_policy = None
         if isinstance(input_policy, KeaInputPolicy):
-            input_policy.script = self.script
             input_policy.master = master
         return input_policy
 

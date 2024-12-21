@@ -125,9 +125,14 @@ class InputPolicy(object):
                     event = self.generate_event()
 
                 if event is not None:
-                    self.device.save_screenshot_for_report(
-                        event=event, current_state=self.from_state
-                    )
+                    try:
+                        self.device.save_screenshot_for_report(
+                            event=event, current_state=self.from_state
+                        )
+                    except Exception as e:
+                        self.logger.error("SaveScreenshotForReport failed: %s", e)
+                        self.from_state = self.device.get_current_state()
+                        self.device.save_screenshot_for_report(event=event, current_state=self.from_state)
                     input_manager.add_event(event)
                 self.to_state = self.device.get_current_state()
                 self.last_event = event
@@ -515,10 +520,8 @@ class GuidedPolicy(KeaInputPolicy):
         if event is not None:
             return event
 
-        if (
-                self.event_count == START_TO_GENERATE_EVENT_IN_POLICY
-                and self.current_index_on_main_path == 0
-        ) or isinstance(self.last_event, ReInstallAppEvent):
+        if ((self.event_count == START_TO_GENERATE_EVENT_IN_POLICY)
+                or isinstance(self.last_event, ReInstallAppEvent)):
             self.select_main_path()
             self.run_initializer()
             time.sleep(2)

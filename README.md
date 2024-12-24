@@ -1,5 +1,5 @@
 <div align="center">
-<h1>Kea - 功能性质驱动的移动操作系统应用全自动、强检错测试工具</h1>
+<h1>Kea - 基于性质的移动操作系统应用自动化功能测试工具</h1>
 
  <a href='LICENSE'><img src='https://img.shields.io/badge/License-MIT-orange'></a> &nbsp;&nbsp;&nbsp;
  <a><img src='https://img.shields.io/badge/python-3.9, 3.10, 3.11, 3.12, 3.13-blue'></a> &nbsp;&nbsp;&nbsp;

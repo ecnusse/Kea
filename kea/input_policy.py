@@ -416,12 +416,11 @@ class RandomPolicy(KeaInputPolicy):
         rules_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
 
         if len(rules_to_check) > 0:
-            self.time_needed_to_satisfy_precondition.append(
-                self.time_recoder.get_time_duration()
-            )
+            t = self.time_recoder.get_time_duration()
+            self.time_needed_to_satisfy_precondition.append(t)
             self.logger.debug(
                 "has rule that matches the precondition and the time duration is "
-                + self.time_recoder.get_time_duration()
+                + t
             )
             if random.random() < 0.5:
                 self.logger.info("Check property")
@@ -578,6 +577,11 @@ class GuidedPolicy(KeaInputPolicy):
                     if len(rules_to_check) > 0:
                         t = self.time_recoder.get_time_duration()
                         self.time_needed_to_satisfy_precondition.append(t)
+                        self.logger.debug(
+                            "has rule that matches the precondition and the time duration is "
+                            + t
+                        )
+                        self.logger.info("Check property")
                         self.check_rule_whose_precondition_are_satisfied()
                     return self.stop_mutation()
 
@@ -597,8 +601,18 @@ class GuidedPolicy(KeaInputPolicy):
 
         if len(self.kea.get_rules_whose_preconditions_are_satisfied()) > 0:
             # if the property has been checked, don't return any event
-            self.check_rule_whose_precondition_are_satisfied()
-            return None
+            t = self.time_recoder.get_time_duration()
+            self.time_needed_to_satisfy_precondition.append(t)
+            self.logger.debug(
+                "has rule that matches the precondition and the time duration is "
+                + t
+            )
+            if random.random() < 0.5:
+                self.logger.info("Check property")
+                self.check_rule_whose_precondition_are_satisfied()
+                return None
+            else:
+                self.logger.info("Don't check the property due to the randomness")
 
         event = self.generate_random_event_based_on_current_state()
         return event

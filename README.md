@@ -47,6 +47,10 @@ Kea是**首个**基于性质测试理论设计开发的移动应用自动化功�
 
 ### [工具系统测试覆盖率报告](https://xixianliang.github.io/kea-technic-docs/)
 
+### 工具的教学应用
+
+本工具应用于华东师范大学《[软件分析与验证前沿](https://github.com/ecnu-sa-labs/ecnu-sa-labs/?tab=readme-ov-file#lab-instructions-%E6%95%99%E7%A8%8B%E6%8C%87%E5%BC%95)》课程（本科生选修/研究生必修，用于模糊测试、基于性质测试内容的教学）、《智能化软件测试》（本科生必修）的教学中。
+
 ### 工具安装与快速开始
 
 **环境要求：**

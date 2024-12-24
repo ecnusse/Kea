@@ -178,15 +178,15 @@ def generate_report(img_path, html_path, bug_information=None, precondition_info
         new_bug_str = new_bug_str + item
 
     if len(bug_information) > 0:
-        first_bug_infor = ("<div style=\"color:red;\">Time needed to trigger the first bug: " + str(bug_information[0][1]) + " seconds</div><br>")
+        first_bug_infor = ("<div style=\"color:red;\">Time needed to found the first bug: " + str(bug_information[0][1]) + " seconds</div><br>")
     else:
-        first_bug_infor = ("<div style=\"color:green;\">No bug has been triggered.</div><br>")
+        first_bug_infor = ("<div style=\"color:green;\">No bug was found.</div><br>")
     if len(precondition_information) > 0:
-        first_pre_infor = ("<div>Time needed to satisfy the first precondition: " + str(precondition_information[0]) + " seconds</div><br>")
+        first_pre_infor = ("<div>Time needed to satisfy the precondition at the first time: " + str(precondition_information[0]) + " seconds</div><br>")
     else:
         first_pre_infor = ("<div style=\"color:red;\">No precondition has been satisfied.</div><br>")
 
-    total_time_str = "<div>Total time: " + str(total_time) + " seconds</div>"
+    total_time_str = "<div>Total Testing Time: " + str(total_time) + " seconds</div>"
 
     new_str = new_str + "   </ul>"
     old_str = "<ul id=\"menu\"></ul>"
@@ -194,12 +194,12 @@ def generate_report(img_path, html_path, bug_information=None, precondition_info
     old_first_str="<div>Time</div>"
     old_num_str="<div>Num</div>"
     if bug_information is None or len(bug_information) == 0:
-        new_num_str = "<div style=\"color:green;\">Triggered 0 bugs.</div><br>"
+        new_num_str = "<div style=\"color:green;\">Found 0 bugs.</div><br>"
     else:
-        new_num_str = "<div style=\"color:red;\">Triggered " + str(len(bug_information)) + " bugs.</div><br>"
+        new_num_str = "<div style=\"color:red;\">Found " + str(len(bug_information)) + " bugs.</div><br>"
 
     if precondition_information is not None:
-        new_num_str = new_num_str + "<div> Satisfied "+ str(len(precondition_information)) + " preconditions</div><br>" + "<div>Total Events: " + str(total_count) + " </div>"
+        new_num_str = new_num_str + "<div> Satisfied "+ str(len(precondition_information)) + " preconditions</div><br>" + "<div>Total Executed Events: " + str(total_count) + " </div>"
     else:
         new_num_str = new_num_str + "<div>Satisfied 0 preconditions.</div>"
     for line in f_style:

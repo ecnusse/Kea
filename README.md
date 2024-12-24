@@ -1,14 +1,18 @@
 <div align="center">
-<h1>基于性质的移动应用功能性错误检测工具 - Kea</h1>
+<h1>Kea - 功能性质驱动的移动操作系统应用全自动、强检错测试工具</h1>
 
  <a href='LICENSE'><img src='https://img.shields.io/badge/License-MIT-orange'></a> &nbsp;&nbsp;&nbsp;
  <a><img src='https://img.shields.io/badge/python-3.9, 3.10, 3.11, 3.12, 3.13-blue'></a> &nbsp;&nbsp;&nbsp;
- <a href='https://kea-doc.readthedocs.io/en/latest/'><img src='https://img.shields.io/badge/doc-1.0.0-blue'></a>
+ <a href='https://kea-technic-docs.readthedocs.io/zh-cn/latest/part-theory/introduction.html'><img src='https://img.shields.io/badge/doc-1.0.0-blue'></a>
 </div>
 
 <div align="center">
     <img src="kea/resources/kea_log(1).png" alt="kea_logo" style="border-radius: 18px"/>
 </div>
+
+### 参赛信息
+
+OS应用开发赛道： 基于开源操作系统开发的系统功能测试工具。
 
 ### 参赛队伍信息
 
@@ -34,7 +38,9 @@ Kea是一款基于PBT开发的移动应用自动化功能测试工具，支持�
 - `adb` 或 `hdc` 命令行工具可用
 - 连接一个安卓或鸿蒙设备/模拟器
 
-输入以下命令安装：
+**工具安装：**
+
+在终端中输入以下命令安装Kea。
 
 ```bash
 git clone https://gitlab.eduxiji.net/T202410269994802/project2608128-276509.git
@@ -47,3 +53,7 @@ pip install -e .
 ```
 kea -f example.py -a omninotes.apk
 ```
+
+### 工具系统测试
+
+覆盖率报告: https://xixianliang.github.io/kea-technic-docs/

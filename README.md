@@ -45,7 +45,7 @@ Kea是**首个**基于性质测试理论设计开发的移动应用自动化功�
 
 [测试文档](https://kea-technic-docs.readthedocs.io/zh-cn/latest/part-experiment/exp.html)
 
-### [工具系统测试覆盖率报告](https://xixianliang.github.io/kea-technic-docs/)
+[工具系统测试覆盖率报告](https://xixianliang.github.io/kea-technic-docs/)
 
 ### 工具的教学应用
 

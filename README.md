@@ -33,7 +33,7 @@ OS应用开发赛道
 
 基于性质测试理论（Property-Based Testing，PBT）于2000年在函数式编程领域提出。该理论方法以被测系统应满足的性质为测试断言， 通过自动生成大量随机输入数据以验证这些性质是否在各种情况下保持正确。 与传统测试相比，基于性质的测试能够高效有效地覆盖被测系统输入空间及其边界情况，从而发现深层次的功能缺陷。
 
-Kea是**首个**基于性质测试理论设计开发的移动应用自动化功能测试工具，目前支持鸿蒙 (OpenHarmony/HarmonyOS) 和安卓 (Android) 应用软件的自动化功能测试。Kea设计了：(1)一套面向移动应用的性质描述语言（可支持用户编写以前置条件、交互场景、后置条件为主要形式的应用功能性质），(2)三种页面探索策略：随机遍历、基于主路径遍历、大模型引导的路径遍历（自动生成事件序列来达到应用更深层的状态，有效覆盖移动应用事件探索空间）。
+Kea是**首个**基于性质测试理论设计开发的移动应用自动化功能测试工具，目前支持鸿蒙 (OpenHarmony/HarmonyOS) 和安卓 (Android) 应用软件的自动化功能测试。Kea设计了：(1)一种面向移动应用的性质描述语言（可支持用户编写以前置条件、交互场景、后置条件为主要形式的应用功能性质），(2)三种页面探索策略：随机遍历、基于主路径遍历、大模型引导的路径遍历（自动生成事件序列来达到应用更深层的状态，有效覆盖移动应用事件探索空间）。
 
 ### 工具文档
 
@@ -43,7 +43,9 @@ Kea是**首个**基于性质测试理论设计开发的移动应用自动化功�
 
 [设计文档](https://kea-technic-docs.readthedocs.io/zh-cn/latest/part-designDocument/intro.html)
 
-[测试文档](https://kea-technic-docs.readthedocs.io/zh-cn/latest/part-experiment/trophies.html)
+[测试文档](https://kea-technic-docs.readthedocs.io/zh-cn/latest/part-experiment/exp.html)
+
+### [工具系统测试覆盖率报告](https://xixianliang.github.io/kea-technic-docs/)
 
 ### 工具安装与快速开始
 
@@ -71,9 +73,7 @@ pip install -e .
 kea -f example.py -a omninotes.apk
 ```
 
-### 工具系统测试
 
-覆盖率报告: https://xixianliang.github.io/kea-technic-docs/
 
 ### [版本历史](https://gitlab.eduxiji.net/T202410269994802/project2608128-276509/-/tags)
 

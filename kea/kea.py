@@ -7,6 +7,7 @@ import importlib
 import inspect
 import attr
 from .utils import INITIALIZER_MARKER, MAINPATH_MARKER, RULE_MARKER
+import threading
 
 from dataclasses import dataclass
 from typing import Dict, List, TYPE_CHECKING, Optional, Union
@@ -116,6 +117,7 @@ class Kea:
     # the driver for executing kea tests
     _pdl_driver: Optional[Union["Android_PDL_Driver", "HarmonyOS_PDL_Driver"]]
     _all_rules_list = None
+    _all_rules_DB = None
 
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -130,6 +132,20 @@ class Kea:
             for keaTestElements in self._KeaTest_DB.values():
                 self._all_rules_list.extend(keaTestElements.rules)
         return self._all_rules_list
+    
+    @property
+    def all_rules_DB(self):
+        """Return all rules dict by <rule, keaTest> items.
+        """
+        if self._all_rules_DB is not None:
+            return self._all_rules_DB
+        
+        self._all_rules_DB: Dict["Rule", "KeaTest"] = dict()
+        for keaTest, KeaTestElements in self._KeaTest_DB.items():
+            for target_rule in KeaTestElements.rules:
+                self._all_rules_DB[target_rule] = keaTest
+        
+        return self._all_rules_DB
     
     @property
     def initializer(self) -> Initializer:
@@ -319,15 +335,52 @@ class Kea:
 
     def get_rules_whose_preconditions_are_satisfied(self) -> Dict["Rule", "KeaTest"]:
         '''Check all rules and return the list of rules that meet the preconditions.'''
-        rules_passed_precondition:Dict["Rule", "KeaTest"] = {}
-        
-        for keaTest, keaTestElements in self._KeaTest_DB.items():
-            for target_rule in keaTestElements.rules:
+         
+        if len(self.all_rules_DB) < 5:
+            rules_passed_precondition: Dict["Rule", "KeaTest"] = dict()
+            
+            for target_rule, target_keaTest in self.all_rules_DB.items():
                 if len(target_rule.preconditions) > 0:
-                    if all(precond(keaTest) for precond in target_rule.preconditions):
-                        rules_passed_precondition[target_rule] = keaTest
+                    if all(precond(target_keaTest) for precond in target_rule.preconditions):
+                        rules_passed_precondition[target_rule] = target_keaTest
+            
+            return rules_passed_precondition
+        
+        else:
+            return self.multi_thread_precondition_checker() 
+    
+    def multi_thread_precondition_checker(self):
+        """
+        check precondition with multi-threadings
+        """
+        rules_passed_precondition: Dict["Rule", "KeaTest"] = dict()
+        threads = []
 
+        # Use a lock to avoid write-after-write of rules_passed_precondition
+        lock = threading.Lock()
+        
+        for rule in self.all_rules_DB.keys():
+            thread = threading.Thread(
+                target=self.precond_checking_worker,
+                args=(rule, rules_passed_precondition, lock)
+            )
+            threads.append(thread)
+            thread.start()
+        
+        for thread in threads:
+            thread.join()
+        
         return rules_passed_precondition
+    
+    def precond_checking_worker(self, target_rule:"Rule", rules_passed_precondition: Dict["Rule", "KeaTest"], lock: threading.Lock):
+        """
+        the threading worker for checking a precondition
+        """
+        if len(target_rule.preconditions) > 0:
+            target_keaTest = self.all_rules_DB[target_rule]
+            if all(precond(target_keaTest) for precond in target_rule.preconditions):
+                with lock:
+                    rules_passed_precondition[target_rule] = target_keaTest
 
     def get_rules_without_preconditions(self) -> Dict["Rule", "KeaTest"]:
         '''Return the list of rules that do not have preconditions.

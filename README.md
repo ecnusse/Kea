@@ -57,3 +57,35 @@ kea -f example.py -a omninotes.apk
 ### 工具系统测试
 
 覆盖率报告: https://xixianliang.github.io/kea-technic-docs/
+
+### 版本历史
+
+**v2.0.3**
+优化错误报告，修复了一些错误
+
+**v2.0.2**
+优化带状态的测试，修复了一些错误
+
+**v2.0.1**
+修改了uidumper技术，修复了一些错误
+
+**v2.0.0**
+工具重大重构，更新用户接口
+
+**v1.3.1**
+提升交互自动化能力
+
+**v1.3.0**
+新增 LLM Policy
+
+**v1.2.0**
+工具重构，新增鸿蒙设备，kea for harmonyOS
+
+**v1.1.1**
+修改了提供的mainPath样例
+
+**v1.1.0**
+新增PDL样式的mainPath定义接口
+
+**v1.0.0**
+Kea 1.0

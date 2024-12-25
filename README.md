@@ -39,6 +39,10 @@ Kea是**首个**基于性质测试理论设计开发的移动应用自动化功�
   <img src="kea/resources/kea-platforms.jpg" width="300"/>
 </p>
 
+### 演示视频
+
+[![观看视频](kea/resources/video.png)](https://www.bilibili.com/video/BV1QPkoYREgh/?share_source=copy_web)
+
 ### 工具文档
 
 [工具文档(pdf)](/kea.pdf)

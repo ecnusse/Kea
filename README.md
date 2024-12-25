@@ -26,6 +26,7 @@ OS应用开发赛道
 
 **指导老师：** 苏亭、陈良育
 
+### [演示视频](https://www.bilibili.com/video/BV1QPkoYREgh/?share_source=copy_web)
 
 ### 项目背景
 
@@ -39,9 +40,6 @@ Kea是**首个**基于性质测试理论设计开发的移动应用自动化功�
   <img src="kea/resources/kea-platforms.jpg" width="300"/>
 </p>
 
-### 演示视频
-
-[![观看视频](kea/resources/video.png)](https://www.bilibili.com/video/BV1QPkoYREgh/?share_source=copy_web)
 
 ### 工具文档
 

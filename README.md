@@ -118,3 +118,13 @@ kea -f example.py -a omninotes.apk
 
 **v1.0.0**
 Kea 1.0
+
+### 参考的开源工具
+
+- [Droidbot](https://github.com/honeynet/droidbot)
+
+- [hypothesis](https://github.com/HypothesisWorks/hypothesis)
+
+- [hmdriver2](https://github.com/codematrixer/hmdriver2)
+
+- [uiautomator2](https://github.com/openatx/uiautomator2)

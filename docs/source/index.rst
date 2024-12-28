@@ -50,5 +50,8 @@ Contents
 
 .. automodule:: kea.start
    :members:
-   :undoc-members:
    :show-inheritance:
+
+aaa
+
+.. autofunction:: main

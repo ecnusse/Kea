@@ -2,11 +2,12 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../../../'))
+language = os.getenv('LANGUAGE', 'zh')
 # -- Project information
 
 project = "Kea"
 copyright = "2024, ECNU-SE-lab"
-author = "梁锡贤、沈祥臣、马搏"
+author = "梁锡贤、沈祥臣、马搏、熊一衡"
 
 release = "2.0.3"
 version = "1.0"

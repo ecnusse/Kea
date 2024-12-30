@@ -1,13 +1,12 @@
 # Configuration file for the Sphinx documentation builder.
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../../'))
-language = os.getenv('LANGUAGE', 'en')
+sys.path.insert(0, os.path.abspath('../'))
 # -- Project information
 
 project = "Kea"
 copyright = "2024, ECNU-SE-lab"
-author = "Xixian Liang, Xiang chen Shen, Bo Ma, Yiheng Xiong"
+author = "梁锡贤、沈祥臣、马搏"
 
 release = "2.0.3"
 version = "1.0"
@@ -20,6 +19,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
+    'sphinx.ext.i18n'
 ]
 
 intersphinx_mapping = {

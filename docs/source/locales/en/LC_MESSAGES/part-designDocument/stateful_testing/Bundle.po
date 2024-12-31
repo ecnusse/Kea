@@ -1,0 +1,203 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:2
+msgid "带状态的测试"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:4
+msgid "本部分旨在解释 Kea 的带状态的测试是如何设计及实现的"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:8
+msgid "功能说明与功能设计"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:10
+msgid "Bundle类是带状态测试的核心类。 主要负责记录多组不同类型数据的相关状态和操作的组合，用于测试系统在不同状态下的行为。 该类提供了完整的成员方法用于状态的增删改查操作。 Bundle所包含的主要方法有："
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:15
+msgid "根据当前类型数据的状态情况判断是否需要新增状态（单例模式）。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:16
+msgid "对某类型数据状态的增删改查。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:17
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:141
+msgid "随机生成指定长度的状态文本值。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:18
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:160
+msgid "随机获取某类型数据的一个状态。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:23
+msgid "Bundle 类的组成"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:26
+msgid "Bundle类中的数据结构的实现"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:28
+msgid "**_bundle_**"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:30
+msgid "_bundle_为Bundle的类变量，是带状态测试中各种类型数据的状态记录库，用于存储应用状态便于对状态的操作。 每个数据项以 <string, Bundle> 的键值对方式存储。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:33
+msgid "**data_name**"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:35
+msgid "data_name为string类型，存储了一个类型的数据的名称。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:37
+msgid "**data_value**"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:39
+msgid "data_value是list类型，存储了该类型的数据的所有状态。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:43
+msgid "为了便于读者理解，本文中提供的代码段简化版本仅对核心流程进行抽象并展示，实际代码与简化的参考代码不完全一致。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:46
+msgid "Bundle类中功能方法的实现"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:49
+msgid "单例模式方法"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:51
+msgid "**__new__**"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:53
+msgid "根据当前类型数据的名称判断是否已经实例化过该类型数据的Bundle对象，若没有实例化则实例化该类型Bundle对象并返回。 否则，不实例化并返回之前实例化的对象。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:0
+msgid "参数"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:57
+msgid "``data_name``: 想要实例化的某个类型数据名称。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:0
+msgid "返回"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:60
+msgid "该类型数据的实例。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:73
+msgid "数据状态增删改查的成员方法"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:75
+msgid "**add**"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:77
+msgid "为当前类型数据增加状态。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:80
+msgid "``value``: 新增的状态值。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:89
+msgid "**delete**"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:91
+msgid "为当前类型数据删除状态。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:94
+msgid "``value``: 要删除的状态值。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:103
+msgid "**update**"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:105
+msgid "为当前类型数据更新状态。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:108
+msgid "``value``: 要修改的旧状态值。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:109
+msgid "``new_value``: 新的状态值。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:124
+msgid "**get_all_data**"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:126
+msgid "获取该类型数据的所有状态。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:129
+msgid "状态列表"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:137
+msgid "随机生成状态文本的成员方法"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:139
+msgid "**get_random_text**"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:144
+msgid "``value_max_len``: 需要状态文本值的最大长度。"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:147
+msgid "合法的状态文本值"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:156
+msgid "随机获取一个状态的成员方法"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:158
+msgid "**get_random_data**"
+msgstr ""
+
+#: ../../source/part-designDocument/stateful_testing/Bundle.rst:163
+msgid "该类型数据的一个状态值"
+msgstr ""

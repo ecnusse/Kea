@@ -1,0 +1,335 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:2
+msgid "命令行交互功能"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:4
+msgid "本部分旨在解释 Kea 的命令行界面（CLI）是如何设计及实现的，包括如何处理命令行参数、YAML 配置文件以及参数清洗。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:8
+msgid "功能说明与功能设计"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:10
+msgid "下述流程图的介绍了Kea工具CLI的启动和配置过程。涵盖了从命令行参数解析、配置文件加载、测试环境设置到自动化测试执行的整个自动化测试准备和启动过程。通过这种方式，用户可以灵活地配置测试环境，并自动化地执行测试用例。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:16
+msgid "CLI实现的流程图"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:18
+msgid "具体执行步骤如下："
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:20
+msgid "**解析命令行和配置文件参数**"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:22
+msgid "使用 ``argparse`` 库创建一个参数解析器。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:23
+msgid "定义接受的命令行参数，例如 ``-f`` 用于指定性质文件，``-d`` 用于指定设备序列号等。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:24
+msgid "解析命令行输入的参数。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:26
+msgid "**检查是否加载配置文件**"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:28
+msgid "检查命令行参数中是否包含了 ``--load_config`` 标志，该标志指示是否从配置文件 ``config.yml`` 中加载参数。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:30
+msgid "**从`config.yml`加载参数**"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:32
+msgid "如果指定了 ``--load_config`` ，则调用 ``load_ymal_args`` 函数从 ``config.yml`` 文件中读取参数。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:33
+msgid "这些参数会覆盖命令行中指定的参数。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:35
+msgid "**使用命令行参数**"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:37
+msgid "如果没有指定 ``--load_config`` ，则直接使用命令行解析得到的参数。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:39
+msgid "**设置参数并创建`Setting`实例**"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:41
+msgid "根据解析得到的参数，创建一个 ``Setting`` 类的实例，该实例包含了所有需要的配置信息。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:43
+msgid "**加载PDL驱动**"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:45
+msgid "根据 ``Setting`` 实例中的 ``is_harmonyos`` 属性判断目标设备是Android还是HarmonyOS。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:46
+msgid "根据平台加载相应的PDL（Property Description Language）驱动。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:48
+msgid "**创建`Kea`实例**"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:50
+msgid "创建 ``Kea`` 类的实例， ``Kea`` 可能是一个自动化测试框架的核心类。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:52
+msgid "**加载应用性质**"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:54
+msgid "使用 ``Kea.load_app_properties`` 方法加载需要测试的应用性质，这些性质定义了要测试的应用行为。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:56
+msgid "**启动`Kea`**"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:58
+msgid "调用 ``start_kea`` 函数，传入 ``Kea`` 实例和 ``Setting`` 实例，开始执行自动化测试流程。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:59
+msgid "``start_kea`` 函数会初始化 ``DroidBot`` ，它是 ``Kea`` 的数据生成器，并启动测试。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:62
+msgid "命令行参数解析"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:64
+msgid "Kea 使用 `argparse` 库来解析命令行参数。以下是主要的命令行参数："
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:66
+msgid "``-f`` 或 ``--property_files``: 指定要测试的应用性质文件。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:67
+msgid "``-d`` 或 ``--device_serial``: 指定目标设备的序列号。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:68
+msgid "``-a`` 或 ``--apk``: 指定待测应用安装包文件的路径，或待测应用的包名。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:69
+msgid "``-o`` 或 ``--output``: 指定输出目录，默认为 \"output\"。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:70
+msgid "``-p`` 或 ``--policy``: 指定输入事件生成策略，默认为 \"random\"。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:71
+msgid "``-t`` 或 ``--timeout``: 指定超时时间（秒），默认为预设值。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:72
+msgid "``-debug``: 开启调试模式，输出调试信息。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:73
+msgid "``-keep_app``: 测试后保留设备上的应用。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:74
+msgid "``-grant_perm``: 安装时授予所有权限，对 Android 6.0+ 有用。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:75
+msgid "``-is_emulator``: 声明目标设备为模拟器。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:76
+msgid "``-is_harmonyos``: 使用 HarmonyOS 设备。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:77
+msgid "``-load_config``: 从 ``config.yml`` 加载参数，命令行参数将被忽略。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:80
+msgid "YAML 配置文件"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:82
+msgid "Kea 支持通过 YAML 配置文件（``config.yml``）来指定参数，以简化参数的配置过程。YAML 文件中的参数值将覆盖命令行参数。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:91
+msgid "参数对象"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:93
+msgid "Kea 使用 `dataclass` 定义了一个名为 `Setting` 的参数对象，用于存储和传递参数。这个对象包含了所有与测试相关的配置。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:96
+msgid "启动 Kea"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:98
+msgid "以下是 Kea 启动流程的简要说明："
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:100
+msgid "解析命令行参数和 YAML 配置文件。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:101
+msgid "设置参数对象 `Setting`。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:102
+msgid "根据目标平台加载相应的 PDL 驱动。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:103
+msgid "创建 Kea 实例并加载应用性质。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:104
+msgid "启动 Kea 进行测试。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:107
+msgid "主要函数设计"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:109
+msgid "以下是 Kea CLI 中每个主要函数的功能介绍："
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:115
+msgid "`parse_args` 函数："
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:112
+msgid "负责解析命令行输入的参数。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:113
+msgid "根据用户输入设置相应的命令行参数，并处理 `-load_config` 选项以决定是否从 YAML 配置文件中加载参数。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:115
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:137
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:156
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:173
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:195
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:211
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:226
+msgid "其简化代码如下："
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:137
+msgid "`load_yaml_args` 函数："
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:134
+msgid "负责从 `config.yml` YAML 配置文件中读取参数。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:135
+msgid "将配置文件中的参数值应用到参数对象中，覆盖命令行输入的参数。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:156
+msgid "`sanitize_args` 函数："
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:153
+msgid "对解析后的参数进行清洗和验证。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:154
+msgid "确保所有参数在传递给 Kea 之前都是有效和一致的。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:173
+msgid "`Setting` 数据类："
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:170
+msgid "定义了 Kea 运行所需的配置参数的数据结构。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:171
+msgid "存储和管理如 APK 路径、设备序列号、输出目录等参数。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:195
+msgid "`load_pdl_driver` 函数："
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:192
+msgid "根据目标平台（Android 或 HarmonyOS）加载相应的 PDL 驱动。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:193
+msgid "确保 Kea 能够与目标设备的操作系统交互。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:211
+msgid "`start_kea` 函数："
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:208
+msgid "初始化 DroidBot 实例，并设置 Kea 的 PDL 驱动。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:209
+msgid "创建 Kea 实例，加载应用性质，并开始执行测试。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:226
+msgid "`main` 函数："
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:223
+msgid "作为程序的入口点，串联起整个 Kea 启动流程。"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/cli/cli.rst:224
+msgid "调用其他函数完成参数解析、配置加载、PDL 驱动加载和 Kea 启动。"
+msgstr ""

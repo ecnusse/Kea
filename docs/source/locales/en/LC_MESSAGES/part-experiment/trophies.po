@@ -1,0 +1,169 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-experiment/trophies.rst:2
+msgid "Kea工具应用效果简介"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:4
+msgid "Kea在8个开源应用中找到了25个此前未知的功能缺陷。下面是这些功能缺陷清单："
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:35
+msgid "OmniNotes:"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:7
+msgid "`#942 https://github.com/federicoiosue/Omni-Notes/issues/942 <https://github.com/federicoiosue/Omni-Notes/issues/942>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:9
+msgid "`#946 https://github.com/federicoiosue/Omni-Notes/issues/946 <https://github.com/federicoiosue/Omni-Notes/issues/946>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:11
+msgid "`#948 https://github.com/federicoiosue/Omni-Notes/issues/948 <https://github.com/federicoiosue/Omni-Notes/issues/948>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:13
+msgid "`#949 https://github.com/federicoiosue/Omni-Notes/issues/949 <https://github.com/federicoiosue/Omni-Notes/issues/949>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:15
+msgid "`#950 https://github.com/federicoiosue/Omni-Notes/issues/950 <https://github.com/federicoiosue/Omni-Notes/issues/950>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:17
+msgid "`#951 https://github.com/federicoiosue/Omni-Notes/issues/951 <https://github.com/federicoiosue/Omni-Notes/issues/951>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:19
+msgid "`#954 https://github.com/federicoiosue/Omni-Notes/issues/954 <https://github.com/federicoiosue/Omni-Notes/issues/954>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:21
+msgid "`#956 https://github.com/federicoiosue/Omni-Notes/issues/956 <https://github.com/federicoiosue/Omni-Notes/issues/956>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:23
+msgid "`#981 https://github.com/federicoiosue/Omni-Notes/issues/981 <https://github.com/federicoiosue/Omni-Notes/issues/981>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:25
+msgid "`#937 https://github.com/federicoiosue/Omni-Notes/issues/937 <https://github.com/federicoiosue/Omni-Notes/issues/937>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:27
+msgid "`#938 https://github.com/federicoiosue/Omni-Notes/issues/938 <https://github.com/federicoiosue/Omni-Notes/issues/938>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:29
+msgid "`#939 https://github.com/federicoiosue/Omni-Notes/issues/937 <https://github.com/federicoiosue/Omni-Notes/issues/937>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:31
+msgid "`#940 https://github.com/federicoiosue/Omni-Notes/issues/940 <https://github.com/federicoiosue/Omni-Notes/issues/940>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:33
+msgid "`#941 https://github.com/federicoiosue/Omni-Notes/issues/941 <https://github.com/federicoiosue/Omni-Notes/issues/941>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:35
+msgid "`#945 https://github.com/federicoiosue/Omni-Notes/issues/945 <https://github.com/federicoiosue/Omni-Notes/issues/945>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:48
+msgid "Markor:"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:38
+msgid "`#2153 https://github.com/gsantner/markor/issues/2153 <https://github.com/gsantner/markor/issues/2153>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:40
+msgid "`#2196 https://github.com/gsantner/markor/issues/2196 <https://github.com/gsantner/markor/issues/2196>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:42
+msgid "`#2197 https://github.com/gsantner/markor/issues/2197 <https://github.com/gsantner/markor/issues/2197>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:44
+msgid "`#2198 https://github.com/gsantner/markor/issues/2198 <https://github.com/gsantner/markor/issues/2198>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:46
+msgid "`#2199 https://github.com/gsantner/markor/issues/2199 <https://github.com/gsantner/markor/issues/2199>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:48
+msgid "`#2250 https://github.com/gsantner/markor/issues/2250 <https://github.com/gsantner/markor/issues/2250>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:55
+msgid "AmazeFileManager:"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:51
+msgid "`#3991  https://github.com/TeamAmaze/AmazeFileManager/issues/3991 <https://github.com/TeamAmaze/AmazeFileManager/issues/3991>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:53
+msgid "`#4016  https://github.com/TeamAmaze/AmazeFileManager/issues/4016 <https://github.com/TeamAmaze/AmazeFileManager/issues/4016>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:55
+msgid "`#4130  https://github.com/TeamAmaze/AmazeFileManager/issues/4130 <https://github.com/TeamAmaze/AmazeFileManager/issues/4130>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:60
+msgid "AnkiDroid:"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:58
+msgid "`#15993 https://github.com/ankidroid/Anki-Android/issues/15993 <https://github.com/ankidroid/Anki-Android/issues/15993>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:60
+msgid "`#15995 https://github.com/ankidroid/Anki-Android/issues/15995 <https://github.com/ankidroid/Anki-Android/issues/15995>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:67
+msgid "transistor:"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:63
+msgid "`#488 https://codeberg.org/y20k/transistor/issues/488 <https://codeberg.org/y20k/transistor/issues/488>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:65
+msgid "`#489 https://codeberg.org/y20k/transistor/issues/489 <https://codeberg.org/y20k/transistor/issues/489>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:67
+msgid "`#495 https://codeberg.org/y20k/transistor/issues/495 <https://codeberg.org/y20k/transistor/issues/495>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:69
+msgid "Simpletask:"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:70
+msgid "`#1230 https://github.com/mpcjanssen/simpletask-android/issues/1230 <https://github.com/mpcjanssen/simpletask-android/issues/1230>`_"
+msgstr ""

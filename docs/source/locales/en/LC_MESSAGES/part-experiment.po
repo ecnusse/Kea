@@ -21,45 +21,45 @@ msgstr ""
 
 #: ../source/part-experiment/exp.rst:2
 msgid "静态代码分析"
-msgstr "Static Analysis"
+msgstr "Static Code Analysis"
 
 #: ../source/part-experiment/exp.rst:4
 msgid "使用 Flake8 对 Kea 的代码进行静态分析，检查错误。"
-msgstr "We use Flake8 to do static analysis for Kea."
+msgstr "We use Flake8 to perform static analysis on Kea's code to check for errors."
 
 #: ../source/part-experiment/exp.rst:6
 msgid "使用 black 对 Kea 的代码进行重构，以确保代码符合 PEP8 标准。"
-msgstr ""
+msgstr "We use Black to refactor Kea's code to ensure it complies with PEP8 standards."
 
 #: ../source/part-experiment/exp.rst:9
 msgid "动态代码测试"
-msgstr ""
+msgstr "Dynamic Code Testing"
 
 #: ../source/part-experiment/exp.rst:11
 msgid ""
 "我们使用 python coverage 运行 kea 进行 `覆盖率分析 <https://xixianliang.github.io/kea-"
 "technic-docs/>`_。"
-msgstr ""
+msgstr "We use Python coverage to run Kea for `coverage analysis <https://xixianliang.github.io/kea-technic-docs/>`_."
 
 #: ../source/part-experiment/exp.rst:13
 msgid "其结果如下"
-msgstr ""
+msgstr "The results are as follows"
 
 #: ../source/part-experiment/exp.rst:18
 msgid "kea覆盖率分析整体数据"
-msgstr ""
+msgstr "Overall data of Kea coverage analysis"
 
 #: ../source/part-experiment/trophies.rst:2
 msgid "Kea工具应用效果简介"
-msgstr ""
+msgstr "Introduction to the Effects of Kea Tool Application"
 
 #: ../source/part-experiment/trophies.rst:4
 msgid "Kea在8个开源应用中找到了25个此前未知的功能缺陷。下面是这些功能缺陷清单："
-msgstr ""
+msgstr "Kea found 25 previously unknown functional defects in 8 open-source applications. Here is the list of these defects:"
 
 #: ../source/part-experiment/trophies.rst:35
 msgid "OmniNotes:"
-msgstr ""
+msgstr "OmniNotes:"
 
 #: ../source/part-experiment/trophies.rst:7
 msgid ""
@@ -108,6 +108,7 @@ msgid ""
 "`#956 https://github.com/federicoiosue/Omni-Notes/issues/956 "
 "<https://github.com/federicoiosue/Omni-Notes/issues/956>`_"
 msgstr ""
+
 
 #: ../source/part-experiment/trophies.rst:23
 msgid ""

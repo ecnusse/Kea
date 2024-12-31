@@ -16,25 +16,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../../source/index.rst:4
-msgid "概述"
-msgstr "Introduction"
-
-#: ../../source/index.rst:10
-#: ../../source/index.rst:12
-msgid "用户手册"
+#: ../../source/part-designDocument/intro.rst:4
+msgid "架构图"
 msgstr ""
 
-#: ../../source/index.rst:26
-#: ../../source/index.rst:28
-msgid "设计手册"
+#: ../../source/part-designDocument/intro.rst:9
+msgid "Kea 架构图"
 msgstr ""
 
-#: ../../source/index.rst:34
-#: ../../source/index.rst:36
-msgid "实验与结果"
+#: ../../source/part-designDocument/intro.rst:13
+msgid "目录结构"
 msgstr ""
 
-#: ../../source/index.rst:2
-msgid "目录"
+#: ../../source/part-designDocument/intro.rst:59
+msgid "各功能部分设计文档"
 msgstr ""

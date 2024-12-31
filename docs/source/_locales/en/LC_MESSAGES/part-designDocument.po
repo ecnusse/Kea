@@ -25,14 +25,15 @@ msgstr ""
 
 #: ../source/part-designDocument/InputGenerator/InputManager.rst:4
 msgid "本部分旨在解释 Kea 的中的策略及输入控制器类 InputManager 的设计与实现。"
-msgstr ""
+msgstr "This section aims to explain the design and implementation of the strategy and the input controller class InputManager in Kea."
 
 #: ../source/part-designDocument/InputGenerator/InputManager.rst:8
 #: ../source/part-designDocument/kea/kea.rst:7
 #: ../source/part-designDocument/kea/keaTestElements.rst:7
 #: ../source/part-designDocument/user-interface/keaTest-suite/kea-test.rst:7
 msgid "功能设计与实现"
-msgstr ""
+msgstr "Functional Design and Implementation"
+
 
 #: ../source/part-designDocument/InputGenerator/InputManager.rst:10
 msgid ""
@@ -2687,11 +2688,11 @@ msgstr ""
 
 #: ../source/part-designDocument/intro.rst:4
 msgid "架构图"
-msgstr ""
+msgstr "Project Structure"
 
 #: ../source/part-designDocument/intro.rst:9
 msgid "Kea 架构图"
-msgstr ""
+msgstr "Kea Project Structure"
 
 #: ../source/part-designDocument/intro.rst:13
 msgid "目录结构"

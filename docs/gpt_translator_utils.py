@@ -1,6 +1,8 @@
 from openai import OpenAI
 import os
 import logging
+import re
+import subprocess
 class OpenaiTranslator:
     def __init__(self, api_key:str, prompt):
         self.logger = logging.getLogger(name=self.__class__.__name__)
@@ -38,9 +40,6 @@ class OpenaiTranslator:
         with open(file_path, 'r', encoding='utf-8') as file:
             content = file.read()
         
-        if self.already_translated(content):
-            return
-        
         # 翻译文本
         translated_text = self.translate_text(content)
         
@@ -59,8 +58,20 @@ class OpenaiTranslator:
                         break
                     fp.write(line+"\n")
     
-    def already_translated(text):
-        pass
+    
+def get_not_translated_files():
+    pattern = re.compile(r".*(\d+)\s*untranslated.*")
+    translation_state = subprocess.check_output(["sphinx-intl", "stat"], text=True)
+
+    not_translated_files = []
+    for line in translation_state.splitlines():
+        r = re.search(pattern, line)
+        unstanslated_sentences = int(r.group(1))
+        file_path = line.split(":")[0]
+        if unstanslated_sentences > 0:
+            not_translated_files.append(file_path)
+    return not_translated_files
+
 
 GLOSSARY = """
 性质 -> property

@@ -38,11 +38,11 @@ msgstr "The design of the PDL driver references uiautomator2 and hmdriver2."
 
 #: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:16
 msgid "uiautomator2: https://github.com/openatx/uiautomator2"
-msgstr ""
+msgstr "uiautomator2: https://github.com/openatx/uiautomator2"
 
 #: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:18
 msgid "hmdriver2: https://github.com/codematrixer/hmdriver2"
-msgstr ""
+msgstr "hmdriver2: https://github.com/codematrixer/hmdriver2"
 
 #: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:20
 msgid "PDL驱动的使用语法是 ``d(Selector(**kwargs)).attr(args)`` 。其中 ``Selecotor(**kwargs)`` 是控件选择器， 控件选择器通过字典的方式指定控件的属性，如安卓中的 resourceId, className，鸿蒙中的 id， bundlename等。attr 是对选定控件的操作，包括click、longClick等操作。 ``attr(args)`` 中的 ``args`` 为传入方法的参数。如在 ``input_text(\"Hello\")`` 中传入要输入的字符串 \"Hello\"。"

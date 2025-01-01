@@ -38,6 +38,9 @@ class OpenaiTranslator:
         with open(file_path, 'r', encoding='utf-8') as file:
             content = file.read()
         
+        if self.already_translated(content):
+            return
+        
         # 翻译文本
         translated_text = self.translate_text(content)
         
@@ -55,7 +58,9 @@ class OpenaiTranslator:
                     if line.strip == "```":
                         break
                     fp.write(line+"\n")
-         
+    
+    def already_translated(text):
+        pass
 
 GLOSSARY = """
 性质 -> property

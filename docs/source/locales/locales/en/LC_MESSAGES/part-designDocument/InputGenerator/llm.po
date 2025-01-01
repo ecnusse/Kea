@@ -1,0 +1,431 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:4
+msgid "LLMPolicy"
+msgstr "LLMPolicy"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:6
+msgid "LLMPolicy类是使用LLM（Large Language Model）在检测到UI陷阱时生成输入事件的核心类。 主要负责在应用状态空间中遇到难以探索的UI状态时，利用LLM生成输入事件以增强功能场景覆盖。 该类提供了完整的LLM辅助事件生成策略的事件生成过程。 LLMPolicy所包含的主要方法有："
+msgstr "The LLMPolicy class is the core class that generates input events using LLM (Large Language Model) when UI traps are detected. It is mainly responsible for using LLM to generate input events to enhance functional scenario coverage when encountering UI states that are difficult to explore in the application state space. This class provides a complete event generation process for LLM-assisted event generation strategies. The main methods included in LLMPolicy are:"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:11
+msgid "根据当前状态生成一个LLM辅助的随机事件。"
+msgstr "Generate an LLM-assisted random event based on the current state."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:12
+msgid "根据配置重启或重新安装应用。"
+msgstr "Restart or reinstall the application based on the configuration."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:13
+msgid "在满足预条件的情况下，根据随机性决定是否检查性质。"
+msgstr "Decide whether to check properties based on randomness, provided that preconditions are met."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:16
+msgid "LLM辅助事件生成策略的介绍"
+msgstr "Introduction to LLM-assisted event generation strategy"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:18
+msgid "LLM辅助事件生成策略是一种结合了大型语言模型的策略，它可以在应用的GUI测试中遇到难以通过传统随机策略探索的状态时，利用LLM生成更有效的输入事件。 这种策略特别适用于那些需要深入探索应用状态空间或需要优化测试覆盖率的场景。"
+msgstr "The LLM-assisted event generation strategy is a strategy that combines large language models, which can utilize LLM to generate more effective input events when encountering states in GUI testing of applications that are difficult to explore through traditional random strategies. This strategy is particularly suitable for scenarios that require in-depth exploration of the application state space or need to optimize test coverage."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:24
+msgid "LLM辅助事件生成策略的流程图"
+msgstr "Flowchart of LLM-assisted event generation strategy"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:26
+msgid "具体执行步骤如下："
+msgstr "The specific execution steps are as follows:"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:28
+msgid "步骤1：开始执行 LLMPolicy 类的事件生成过程。"
+msgstr "Step 1: Begin the event generation process of the LLMPolicy class."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:30
+msgid "步骤2：初始化 LLMPolicy 实例，设置日志记录器、动作历史记录等。"
+msgstr "Step 2: Initialize the LLMPolicy instance, set up the logger, action history, etc."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:32
+msgid "步骤3：启动事件生成循环，直到输入管理器的事件计数结束或条件不再满足。"
+msgstr "Step 3: Start the event generation loop until the input manager's event count ends or conditions are no longer met."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:34
+msgid "步骤4：检查事件计数器是否小于输入管理器设定的事件计数。"
+msgstr "Step 4: Check if the event counter is less than the event count set by the input manager."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:36
+msgid "步骤5：如果事件计数器小于输入管理器设定的事件计数，获取当前应用状态。"
+msgstr "Step 5: If the event counter is less than the event count set by the input manager, obtain the current application state."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:38
+msgid "步骤6：判断当前状态是否为空。"
+msgstr "Step 6: Determine whether the current state is empty."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:40
+msgid "步骤7：如果当前状态为空，等待5秒并返回一个名称为\"BACK\"的键事件。"
+msgstr "Step 7: If the current state is empty, wait for 5 seconds and return a key event named \"BACK\"."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:42
+msgid "步骤8：如果当前状态不为空，检查是否检测到UI陷阱。"
+msgstr "Step 8: If the current state is not empty, check if a UI trap has been detected."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:44
+msgid "步骤9：如果检测到UI陷阱，检查模拟计数器是否超过了最大查询LLM次数。"
+msgstr "Step 9: If a UI trap is detected, check if the simulation counter exceeds the maximum number of queries to LLM."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:46
+msgid "步骤10：如果模拟计数器超过了最大查询LLM次数，记录日志并返回一个名称为\"BACK\"的键事件。"
+msgstr "Step 10: If the simulation counter exceeds the maximum number of queries to LLM, log the entry and return a key event named \"BACK\"."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:48
+msgid "步骤11：如果模拟计数器未超过最大查询LLM次数，生成一个LLM事件。"
+msgstr "Step 11: If the simulation counter has not exceeded the maximum number of queries to LLM, generate an LLM event."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:50
+msgid "步骤12：如果未检测到UI陷阱，生成一个随机事件。"
+msgstr "Step 12: If no UI trap is detected, generate a random event."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:52
+msgid "步骤13：基于当前用户触发的事件（UTG）生成LLM事件。"
+msgstr "Step 13: Generate an LLM event based on the current user-triggered event (UTG)."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:54
+msgid "步骤14：返回生成的事件，该事件将被用于与应用的交互。"
+msgstr "Step 14: Return the generated event, which will be used for interaction with the application."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:56
+msgid "步骤15：保存截图并将生成的事件添加到输入管理器。"
+msgstr "Step 15: Save the screenshot and add the generated event to the input manager."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:58
+msgid "步骤16：更新当前状态和最后事件。"
+msgstr "Step 16: Update the current state and last event."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:60
+msgid "步骤17：检查是否允许生成UTG。"
+msgstr "Step 17: Check if generating UTG is allowed."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:62
+msgid "步骤18：如果允许生成UTG，更新UTG。"
+msgstr "Step 18: If generating UTG is allowed, update the UTG."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:64
+msgid "步骤19：生成报告，包括所有状态和触发的bug信息。"
+msgstr "Step 19: Generate a report including all states and triggered bug information."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:66
+msgid "步骤20：事件计数器加1，回到步骤4继续循环。"
+msgstr "Step 20: Increment the event counter by 1, go back to Step 4 and continue the loop."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:68
+msgid "步骤21：如果事件计数器达到输入管理器设定的事件计数，结束事件生成循环。"
+msgstr "Step 21: If the event counter reaches the event count set by the input manager, end the event generation loop."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:70
+msgid "步骤22：清理资源，结束 LLMPolicy 类的事件生成过程。"
+msgstr "Step 22: Clean up resources and end the event generation process of the LLMPolicy class."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:73
+msgid "LLM辅助事件生成策略的伪代码"
+msgstr "Pseudocode for LLM-assisted event generation strategy."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:75
+msgid ":math:`\\textbf{Algorithm:} LLM-Assisted Event Generation`"
+msgstr ":math:`\\textbf{Algorithm:} LLM-Assisted Event Generation`"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:77
+msgid ":math:`\\textbf{Input:} None`"
+msgstr ":math:`\\textbf{Input:} None`"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:79
+msgid ":math:`\\textbf{Output:} Bug Report`"
+msgstr ":math:`\\textbf{Output:} Bug Report`"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:204
+msgid "LLMPolicy类中的数据结构"
+msgstr "Data Structures in LLMPolicy Class"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:206
+msgid "**event_count**"
+msgstr "**event_count**"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:208
+msgid "``event_count`` 整型，记录了已经生成的事件数量。"
+msgstr "``event_count`` Integer, records the number of events that have been generated."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:210
+msgid "**number_of_events_that_restart_app**"
+msgstr "**number_of_events_that_restart_app**"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:212
+msgid "``number_of_events_that_restart_app`` 整型，记录了在重启应用前需要生成的事件数量。"
+msgstr "``number_of_events_that_restart_app`` Integer, records the number of events that need to be generated before restarting the application."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:214
+msgid "**clear_and_restart_app_data_after_100_events**"
+msgstr "**clear_and_restart_app_data_after_100_events**"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:216
+msgid "``clear_and_restart_app_data_after_100_events`` 布尔型，指示是否在100次事件后清除并重启应用数据。"
+msgstr "``clear_and_restart_app_data_after_100_events`` Boolean, indicates whether to clear and restart application data after 100 events."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:218
+msgid "**restart_app_after_check_property**"
+msgstr "**restart_app_after_check_property**"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:220
+msgid "``restart_app_after_check_property`` 布尔型，指示在检查性质后是否重启应用。"
+msgstr "``restart_app_after_check_property`` Boolean, indicates whether to restart the application after checking properties."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:222
+msgid "**_action_history**"
+msgstr "**_action_history**"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:224
+msgid "``_action_history`` 列表，记录了动作历史。"
+msgstr "``_action_history`` List, records the action history."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:226
+msgid "**_all_action_history**"
+msgstr "**_all_action_history**"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:228
+msgid "``_all_action_history`` 集合，记录了所有动作历史记录。"
+msgstr "``_all_action_history`` Set, records all action history."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:230
+msgid "**_activity_history**"
+msgstr "**_activity_history**"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:232
+msgid "``_activity_history`` 集合，记录了活动历史记录。"
+msgstr "``_activity_history`` Set, records the activity history."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:234
+msgid "**from_state**"
+msgstr "**from_state**"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:236
+msgid "``from_state`` 对象，记录了起始状态。"
+msgstr "``from_state`` Object, records the starting state."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:238
+msgid "**task**"
+msgstr "**task**"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:240
+msgid "``task`` 字符串，记录了LLM的任务描述。"
+msgstr "``task`` String, records the task description for the LLM."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:244
+msgid "LLMPolicy类中的成员方法"
+msgstr "Member Methods in LLMPolicy Class"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:247
+msgid "启动事件生成的方法"
+msgstr "Methods to Start Event Generation"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:249
+msgid "**start**"
+msgstr "**start**"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:251
+msgid "``start`` 方法用于启动事件生成过程。"
+msgstr "The ``start`` method is used to initiate the event generation process."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:0
+msgid "参数"
+msgstr "Parameters"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:254
+msgid "input_manager: InputManager的实例。"
+msgstr "input_manager: Instance of InputManager."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:0
+msgid "核心流程"
+msgstr "Core Process"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:257
+msgid "初始化事件计数器和输入管理器。"
+msgstr "Initialize the event counter and input manager."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:258
+msgid "循环生成事件直到达到输入管理器设定的事件计数或条件不再满足。"
+msgstr "Loop to generate events until the event count set by the input manager is reached or the conditions are no longer met."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:259
+msgid "根据当前状态和LLM的指导生成事件。"
+msgstr "Generate events based on the current state and guidance from LLM."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:260
+msgid "将生成的事件添加到输入管理器中并更新设备状态。"
+msgstr "Add the generated events to the input manager and update device state."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:261
+msgid "处理异常情况并在每次事件后增加事件计数器。"
+msgstr "Handle exceptional situations and increment the event counter after each event."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:288
+msgid "生成LLM事件的方法"
+msgstr "Methods to Generate LLM Events"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:290
+msgid "**generate_llm_event**"
+msgstr "**generate_llm_event**"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:292
+msgid "``generate_llm_event`` 方法用于生成一个LLM辅助的事件。"
+msgstr "The ``generate_llm_event`` method is used to generate an LLM-assisted event."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:295
+#: ../../source/part-designDocument/InputGenerator/llm.rst:342
+msgid "无"
+msgstr "None"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:0
+msgid "返回"
+msgstr "Returns"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:298
+#: ../../source/part-designDocument/InputGenerator/llm.rst:345
+msgid "生成的事件对象。"
+msgstr "Generated event object."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:301
+msgid "检查是否需要运行初始化器并获取当前应用状态。"
+msgstr "Check if the initializer needs to run and obtain the current application state."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:302
+msgid "根据事件计数和设置决定是否重启应用或清除并重新安装应用。"
+msgstr "Decide whether to restart the application or clear and reinstall based on event count and settings."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:303
+msgid "检查是否有满足前提条件的规则，并根据随机性决定是否检查性质。"
+msgstr "Check if there are rules that meet the preconditions and decide whether to check properties based on randomness."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:304
+msgid "生成基于LLM的事件。"
+msgstr "Generate LLM-based events."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:335
+msgid "生成基于UTG的LLM事件的方法"
+msgstr "Methods to Generate LLM Events Based on UTG"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:337
+msgid "**generate_llm_event_based_on_utg**"
+msgstr "**generate_llm_event_based_on_utg**"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:339
+msgid "``generate_llm_event_based_on_utg`` 方法用于基于当前UTG生成一个LLM辅助的事件。"
+msgstr "The ``generate_llm_event_based_on_utg`` method is used to generate an LLM-assisted event based on the current UTG."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:348
+msgid "获取当前应用状态。"
+msgstr "Obtain the current application state."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:349
+msgid "如果应用不在活动堆栈中，尝试启动应用。"
+msgstr "If the application is not on the active stack, try to launch the application."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:350
+msgid "如果应用在活动堆栈中但不在前台，尝试返回前台。"
+msgstr "If the application is in the active stack but not in the foreground, try to bring it to the foreground."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:351
+msgid "如果应用在前台，根据LLM的指导选择下一步操作。"
+msgstr "If the application is in the foreground, choose the next action based on LLM's guidance."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:377
+msgid "查询LLM的方法"
+msgstr "Methods to Query LLM"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:379
+msgid "**_query_llm**"
+msgstr "**_query_llm**"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:381
+msgid "``_query_llm`` 方法用于向LLM查询以生成事件。"
+msgstr "The ``_query_llm`` method is used to query LLM to generate events."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:384
+msgid "prompt: 提供给LLM的提示文本。"
+msgstr "prompt: The prompt text provided to LLM."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:385
+msgid "model_name: 使用的LLM模型名称，默认为\"gpt-3.5-turbo\"。"
+msgstr "model_name: The name of the LLM model used, default is \"gpt-3.5-turbo\"."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:388
+msgid "LLM的响应文本。"
+msgstr "LLM's response text."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:391
+msgid "设置LLM客户端。"
+msgstr "Set up the LLM client."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:392
+msgid "发送提示文本到LLM。"
+msgstr "Send the prompt text to LLM."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:393
+msgid "接收并返回LLM的响应。"
+msgstr "Receive and return LLM's response."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:406
+msgid "获取动作与LLM交互的方法"
+msgstr "Methods to Get Actions Interacting with LLM"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:408
+msgid "**_get_action_with_LLM**"
+msgstr "**_get_action_with_LLM**"
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:410
+msgid "``_get_action_with_LLM`` 方法用于获取基于LLM的下一个动作。"
+msgstr "The ``_get_action_with_LLM`` method is used to get the next action based on LLM."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:413
+msgid "current_state: 当前应用状态。"
+msgstr "current_state: Current application state."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:414
+msgid "action_history: 动作历史记录。"
+msgstr "action_history: Action history."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:415
+msgid "activity_history: 活动历史记录。"
+msgstr "activity_history: Activity history."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:418
+msgid "选中的动作和候选动作列表。"
+msgstr "Selected actions and candidate action list."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:421
+msgid "构建包含任务描述、当前状态和历史记录的提示文本。"
+msgstr "Construct prompt text containing task description, current state, and history."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:422
+msgid "向LLM查询并接收响应。"
+msgstr "Query LLM and receive a response."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:423
+msgid "解析响应以获取动作索引。"
+msgstr "Parse the response to get action index."
+
+#: ../../source/part-designDocument/InputGenerator/llm.rst:424
+msgid "根据索引选择动作并更新历史记录。"
+msgstr "Select action based on the index and update the history."

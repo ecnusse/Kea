@@ -1,0 +1,121 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-keaUserManuel/api.rst:4
+msgid "应用性质描述语言接口"
+msgstr "Property Description Language Interface"
+
+#: ../../source/part-keaUserManuel/api.rst:6
+msgid "应用性质描述语言（PDL）是Kea与被测试应用交互的方式，用户可通过接口的调用来实现与被测移动应用的交互。"
+msgstr "The Property Description Language (PDL) is the way Kea interacts with the application under test, allowing users to interact with the mobile application under test through interface calls."
+
+#: ../../source/part-keaUserManuel/api.rst:9
+msgid "用户界面交互事件"
+msgstr "User Interface Interaction Events"
+
+#: ../../source/part-keaUserManuel/api.rst:13
+msgid "目前，kea的性质描述语言底层通过 `uiautomator2 <https://github.com/openatx/uiautomator2>`_ 作为交互工具，来进行与移动设备的交互。"
+msgstr "Currently, the underlying Property Description Language of Kea uses `uiautomator2 <https://github.com/openatx/uiautomator2>`_ as the interaction tool to interact with mobile devices."
+
+#: ../../source/part-keaUserManuel/api.rst:15
+msgid "例如，要向应用程序发送点击事件，你可以使用以下代码："
+msgstr "For example, to send a click event to the application, you can use the following code:"
+
+#: ../../source/part-keaUserManuel/api.rst:22
+msgid "``d`` 是 uiautomator2 的驱动。"
+msgstr "``d`` is the driver of uiautomator2."
+
+#: ../../source/part-keaUserManuel/api.rst:24
+msgid "``resourceId`` 设置组件的编号，用于选择器定位组件。"
+msgstr "``resourceId`` sets the identifier of the component for the selector to locate the component."
+
+#: ../../source/part-keaUserManuel/api.rst:26
+msgid "``click()`` 表示向该组件发送点击事件。"
+msgstr "``click()`` sends a click event to the component."
+
+#: ../../source/part-keaUserManuel/api.rst:28
+msgid "下面是一些常用的交互事件:"
+msgstr "Here are some commonly used interaction events:"
+
+#: ../../source/part-keaUserManuel/api.rst:30
+msgid "click"
+msgstr "click"
+
+#: ../../source/part-keaUserManuel/api.rst:36
+msgid "long_click"
+msgstr "long_click"
+
+#: ../../source/part-keaUserManuel/api.rst:42
+msgid "edit text"
+msgstr "edit text"
+
+#: ../../source/part-keaUserManuel/api.rst:48
+msgid "rotate device"
+msgstr "rotate device"
+
+#: ../../source/part-keaUserManuel/api.rst:55
+msgid "press [key]"
+msgstr "press [key]"
+
+#: ../../source/part-keaUserManuel/api.rst:62
+msgid "在定位组件时，可以使用以下选择器。"
+msgstr "When locating components, the following selectors can be used."
+
+#: ../../source/part-keaUserManuel/api.rst:65
+msgid "选择器"
+msgstr "Selector"
+
+#: ../../source/part-keaUserManuel/api.rst:67
+msgid "选择器用于在用户界面中识别特定的组件，其支持以下参数："
+msgstr "Selectors are used to identify specific components in the user interface, and they support the following parameters:"
+
+#: ../../source/part-keaUserManuel/api.rst:69
+msgid "``text``, ``textContains``, ``textMatches``, ``textStartsWith``"
+msgstr "``text``, ``textContains``, ``textMatches``, ``textStartsWith``"
+
+#: ../../source/part-keaUserManuel/api.rst:70
+msgid "``className``, ``classNameMatches``"
+msgstr "``className``, ``classNameMatches``"
+
+#: ../../source/part-keaUserManuel/api.rst:71
+msgid "``description``, ``descriptionContains``, ``descriptionMatches``, ``descriptionStartsWith``"
+msgstr "``description``, ``descriptionContains``, ``descriptionMatches``, ``descriptionStartsWith``"
+
+#: ../../source/part-keaUserManuel/api.rst:72
+msgid "``checkable``, ``checked``, ``clickable``, ``longClickable``"
+msgstr "``checkable``, ``checked``, ``clickable``, ``longClickable``"
+
+#: ../../source/part-keaUserManuel/api.rst:73
+msgid "``scrollable``, ``enabled``, ``focusable``, ``focused``, ``selected``"
+msgstr "``scrollable``, ``enabled``, ``focusable``, ``focused``, ``selected``"
+
+#: ../../source/part-keaUserManuel/api.rst:74
+msgid "``packageName``, ``packageNameMatches``"
+msgstr "``packageName``, ``packageNameMatches``"
+
+#: ../../source/part-keaUserManuel/api.rst:75
+msgid "``resourceId``, ``resourceIdMatches``"
+msgstr "``resourceId``, ``resourceIdMatches``"
+
+#: ../../source/part-keaUserManuel/api.rst:76
+msgid "``index``, ``instance``"
+msgstr "``index``, ``instance``"
+
+#: ../../source/part-keaUserManuel/api.rst:80
+msgid "样例"
+msgstr "Examples"

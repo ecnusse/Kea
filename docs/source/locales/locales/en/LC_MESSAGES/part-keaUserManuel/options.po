@@ -1,0 +1,173 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-keaUserManuel/options.rst:2
+msgid "Kea 的参数选项"
+msgstr "Kea Parameter Options"
+
+#: ../../source/part-keaUserManuel/options.rst:5
+msgid "Kea 的参数"
+msgstr "Kea Parameters"
+
+#: ../../source/part-keaUserManuel/options.rst:7
+msgid "Kea 提供了以下选项。使用 ``kea -h`` 查看详细信息。"
+msgstr "Kea provides the following options. Use ``kea -h`` for more information."
+
+#: ../../source/part-keaUserManuel/options.rst:9
+msgid "以下参数是 kea 中最重要的参数。大多数时候，你需要指定它们。"
+msgstr "The following parameters are the most important parameters in kea. Most of the time, you need to specify them."
+
+#: ../../source/part-keaUserManuel/options.rst:11
+msgid "``-f``：包含性质的测试文件。你可以针对多个文件运行多个性质。参见 :ref:`target_multiple_properties`。"
+msgstr "``-f``: Test file containing properties. You can run multiple properties against multiple files. See :ref:`target_multiple_properties`."
+
+#: ../../source/part-keaUserManuel/options.rst:13
+msgid "``-a --apk``：被测试应用的安装包文件或包名。"
+msgstr "``-a --apk``: The installation package file or package name of the application under test."
+
+#: ../../source/part-keaUserManuel/options.rst:15
+msgid "``-d --device_serial``：用于测试的设备的序列号。（当只连接了一个设备时，此参数可缺省，kea将自动指定目标设备。你可以使用 'adb devices' 或 'hdc list targets' 查找你的目标设备）"
+msgstr "``-d --device_serial``: Serial number of the device used for testing. (This parameter can be omitted when only one device is connected; kea will automatically specify the target device. You can use 'adb devices' or 'hdc list targets' to find your target device.)"
+
+#: ../../source/part-keaUserManuel/options.rst:17
+msgid "``-o --output``：执行结果的输出目录。（默认：\"output\"）"
+msgstr "``-o --output``: Output directory for execution results. (Default: \"output\")"
+
+#: ../../source/part-keaUserManuel/options.rst:19
+msgid "``-p --policy``：探索策略的名称。（**\"random\"**、**\"guided\"** 或 **\"llm\"**）"
+msgstr "``-p --policy``: Name of the exploration policy. (**\"random\"**, **\"guided\"**, or **\"llm\"**)"
+
+#: ../../source/part-keaUserManuel/options.rst:21
+msgid "``-is_emulator``：声明目标设备为模拟器。"
+msgstr "``-is_emulator``: Declares the target device as an emulator."
+
+#: ../../source/part-keaUserManuel/options.rst:23
+msgid "以下是启动 kea 的一些示例。"
+msgstr "Here are some examples of starting kea."
+
+#: ../../source/part-keaUserManuel/options.rst:42
+msgid "以下是用于自定义 kea 的命令。"
+msgstr "Here are commands to customize kea."
+
+#: ../../source/part-keaUserManuel/options.rst:44
+msgid "``-t --timeout``：测试时间（秒）。"
+msgstr "``-t --timeout``: Test duration (seconds)."
+
+#: ../../source/part-keaUserManuel/options.rst:46
+msgid "``-n``：每 n 个事件后，重新启动应用，默认为100。"
+msgstr "``-n``: Restart the application after every n events, default is 100."
+
+#: ../../source/part-keaUserManuel/options.rst:48
+msgid "``-debug``：以调试模式运行（输出调试信息）。"
+msgstr "``-debug``: Run in debug mode (outputs debug information)."
+
+#: ../../source/part-keaUserManuel/options.rst:50
+msgid "``-keep_app``：测试后保留设备上的应用。"
+msgstr "``-keep_app``: Keep the application on the device after testing."
+
+#: ../../source/part-keaUserManuel/options.rst:52
+msgid "``-grant_perm``：安装时授予所有权限。对 Android 6.0+ 有用。"
+msgstr "``-grant_perm``: Grant all permissions at installation. Useful for Android 6.0+."
+
+#: ../../source/part-keaUserManuel/options.rst:54
+msgid "``-is_harmonyos``：使用 HarmonyOS 设备"
+msgstr "``-is_harmonyos``: Use HarmonyOS device."
+
+#: ../../source/part-keaUserManuel/options.rst:56
+msgid "``-load_config``：从 config.yml 加载配置。config.yml 中的设置将覆盖命令行参数。"
+msgstr "``-load_config``: Load configuration from config.yml. Settings in config.yml will override command line parameters."
+
+#: ../../source/part-keaUserManuel/options.rst:58
+msgid "``-utg``：生成UTG图。"
+msgstr "``-utg``: Generate UTG graph."
+
+#: ../../source/part-keaUserManuel/options.rst:63
+msgid "YAML 配置"
+msgstr "YAML Configuration"
+
+#: ../../source/part-keaUserManuel/options.rst:65
+msgid "你可以使用 YAML 配置来启动 kea。在你的 kea 根目录中找到 ``config.yml``。"
+msgstr "You can use YAML configuration to start kea. Find ``config.yml`` in your kea root directory."
+
+#: ../../source/part-keaUserManuel/options.rst:67
+msgid "config.yml 文件用于简化通过配置文件指定参数的过程。请注意，config.yml 中的参数值将覆盖通过命令行指定的参数值。"
+msgstr "The config.yml file is used to simplify the process of specifying parameters through a configuration file. Note that parameter values in config.yml will override those specified on the command line."
+
+#: ../../source/part-keaUserManuel/options.rst:69
+msgid "**配置参数对应关系**"
+msgstr "**Mapping of Configuration Parameters**"
+
+#: ../../source/part-keaUserManuel/options.rst:71
+msgid "以下是 config.yml 文件中的参数与 Kea 参数对象中的对应关系："
+msgstr "The following are the mappings of parameters in the config.yml file to the parameters in the Kea parameter object:"
+
+#: ../../source/part-keaUserManuel/options.rst:73
+msgid "system: 对应 -is_harmonyos，用于指定是否使用 HarmonyOS 设备。"
+msgstr "system: Corresponds to -is_harmonyos, used to specify whether to use a HarmonyOS device."
+
+#: ../../source/part-keaUserManuel/options.rst:75
+msgid "app_path, package, package_name: 这些参数对应 -a，用于指定应用的 apk 文件路径或包名。"
+msgstr "app_path, package, package_name: These parameters correspond to -a, used to specify the apk file path or package name of the application."
+
+#: ../../source/part-keaUserManuel/options.rst:77
+msgid "policy: 对应 -p，用于指定探索策略。"
+msgstr "policy: Corresponds to -p, used to specify the exploration policy."
+
+#: ../../source/part-keaUserManuel/options.rst:79
+msgid "output_dir: 对应 -o，用于指定执行结果的输出目录。"
+msgstr "output_dir: Corresponds to -o, used to specify the output directory for execution results."
+
+#: ../../source/part-keaUserManuel/options.rst:81
+msgid "count: 对应 -n，用于指定测试次数。"
+msgstr "count: Corresponds to -n, used to specify the number of tests."
+
+#: ../../source/part-keaUserManuel/options.rst:83
+msgid "target, device, device_serial: 这些参数对应 -d，用于指定测试使用的设备序列号。"
+msgstr "target, device, device_serial: These parameters correspond to -d, used to specify the device serial number used for testing."
+
+#: ../../source/part-keaUserManuel/options.rst:85
+msgid "property, properties, file, files: 这些参数对应 -f，用于指定包含性质的测试文件列表。"
+msgstr "property, properties, file, files: These parameters correspond to -f, used to specify a list of test files containing properties."
+
+#: ../../source/part-keaUserManuel/options.rst:87
+msgid "以下是配置的示例。"
+msgstr "Here are examples of configurations."
+
+#: ../../source/part-keaUserManuel/options.rst:107
+msgid "一旦完成配置，你可以简单地使用 ``kea -load_config`` 启动 kea。"
+msgstr "Once the configuration is complete, you can simply start kea using ``kea -load_config``."
+
+#: ../../source/part-keaUserManuel/options.rst:110
+msgid "当你在 HarmonyOS 上使用 kea 时，config.yml 是必需的。"
+msgstr "When using kea on HarmonyOS, config.yml is required."
+
+#: ../../source/part-keaUserManuel/options.rst:115
+msgid "当运行多个性质时 kea 做了什么？"
+msgstr "What does kea do when running multiple properties?"
+
+#: ../../source/part-keaUserManuel/options.rst:116
+msgid "默认情况下，随机和主路径引导探索策略在每次运行中验证应用的一个性质。 当应用有多个性质可用时，这两种策略可以一起验证这些性质的任何子集。 一个好处是 Kea 可以提高验证性质的效率。 另一个好处是多个性质的交互场景提供了应用的部分模型。 这个部分模型使我们更有可能在测试期间达到应用的更深层次状态。"
+msgstr "By default, the random and main path guided exploration strategies validate a property of the application in each run. When multiple properties are available for the application, these two strategies can validate any subset of those properties together. One benefit is that Kea can enhance the efficiency of property validation. Another benefit is that the interactions of multiple properties provide a partial model of the application. This partial model makes it more likely for us to reach a deeper state of the application during testing."
+
+#: ../../source/part-keaUserManuel/options.rst:122
+msgid "具体来说，要一起验证多个性质，随机策略会检查 多个性质的前提条件是否满足，并随机选择一个性质进行检查。 主路径引导探索策略会随机选择一个性质作为目标， 并沿着其主路径进行引导探索。当这个主路径上的每个状态都被探索后， 这种策略会随机选择另一个性质作为新目标。 此外，当多个性质的前提条件满足时，这种策略会随机选择一个性质进行检查。"
+msgstr "Specifically, to validate multiple properties together, the random strategy checks if the prerequisites for multiple properties are satisfied and randomly selects one property to check. The main path guided exploration strategy randomly selects one property as the target and performs guided exploration along its main path. Once every state along this main path has been explored, this strategy randomly selects another property as a new target. Additionally, when the prerequisites for multiple properties are satisfied, this strategy randomly selects one property to check."
+
+#: ../../source/part-keaUserManuel/options.rst:129
+msgid "你可以在 :ref:`kea_mechanism` 中查看详细信息。"
+msgstr "You can see more details in :ref:`kea_mechanism`."

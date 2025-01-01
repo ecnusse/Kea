@@ -1,0 +1,113 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:2
+msgid "配置 HarmonyOS 环境"
+msgstr "Configure HarmonyOS Environment"
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:6
+msgid "本节目标"
+msgstr "Objectives of this Section"
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:8
+msgid "**1. 让 `hdc` 命令可用**"
+msgstr "**1. Make the `hdc` command available**"
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:10
+msgid "Kea 依赖 hdc 命令与鸿蒙设备进行交互。关键是将 hdc 添加到 PATH 环境变量中。"
+msgstr "Kea relies on the `hdc` command to interact with HarmonyOS devices. The key is to add `hdc` to the PATH environment variable."
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:12
+msgid "**2. 连接真机或使用模拟器**"
+msgstr "**2. Connect a physical device or use an emulator**"
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:16
+msgid "1. 安装 DevEco Studio"
+msgstr "1. Install DevEco Studio"
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:17
+msgid "下载并安装 DevEco Studio: `下载 DevEco Studio <https://developer.huawei.com/consumer/cn/deveco-studio/>`_."
+msgstr "Download and install DevEco Studio: `Download DevEco Studio <https://developer.huawei.com/consumer/cn/deveco-studio/>`."
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:21
+msgid "2. 安装并配置 HarmonyOS SDK"
+msgstr "2. Install and configure HarmonyOS SDK"
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:22
+msgid "打开 DevEco Studio， 安装 HamonyOS SDK :guilabel:`DevEco Studio` -> :guilabel:`preferences` -> :guilabel:`OpenHarmony SDK`."
+msgstr "Open DevEco Studio, install HarmonyOS SDK: :guilabel:`DevEco Studio` -> :guilabel:`preferences` -> :guilabel:`OpenHarmony SDK`."
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:27
+msgid "在 DevEco Studio 中设置 SDK"
+msgstr "Set up the SDK in DevEco Studio"
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:29
+msgid "点击 :guilabel:`edit`。设置你的 SDK 路径并安装 OpenHarmony SDK 工具链。API 版本应为 12+（5.0+）。"
+msgstr "Click :guilabel:`edit`. Set your SDK path and install the OpenHarmony SDK toolchain. The API version should be 12+ (5.0+)."
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:34
+msgid "下载 toolchains (API 12+)"
+msgstr "Download toolchains (API 12+)"
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:36
+msgid "添加sdk toolchains到环境变量"
+msgstr "Add SDK toolchains to the environment variables"
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:41
+msgid "MacOS 和 Linux"
+msgstr "MacOS and Linux"
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:50
+msgid "``source`` shell的配置文件以激活修改。"
+msgstr "Modify the shell configuration file to activate the changes."
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:53
+msgid "Windows 系统"
+msgstr "Windows System"
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:55
+msgid "在你的电脑上安装了 DevEco Studio。你需要做的是将其工具目录添加至 PATH 变量，以便令SDK命令后工具在终端中生效。"
+msgstr "You have installed DevEco Studio on your computer. What you need to do is to add its tool directory to the PATH variable so that the SDK commands are effective in the terminal."
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:57
+msgid "如果你使用的是 zsh 或 bash，请使用 ``EXPORT`` 命令设置 ``HARMONY_SDK_HOME`` 环境变量。``HARMONY_SDK_HOMEE`` 环境变量应指向你的 SDK 安装路径。默认路径是 ``C:\\Users\\usr_name\\AppData\\Local\\OpenHarmony\\Sdk``。你可以通过 :guilabel:`File` -> :guilabel:`Settings` -> :guilabel:`OpenHarmony SDK` -> :guilabel:`Edit` 查看你的安装路径。"
+msgstr "If you are using zsh or bash, use the `EXPORT` command to set the `HARMONY_SDK_HOME` environment variable. The `HARMONY_SDK_HOME` environment variable should point to your SDK installation path. The default path is `C:\\Users\\usr_name\\AppData\\Local\\OpenHarmony\\Sdk`. You can check your installation path through :guilabel:`File` -> :guilabel:`Settings` -> :guilabel:`OpenHarmony SDK` -> :guilabel:`Edit`."
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:63
+msgid "DevEco Studio 中 HamonyOS SDK 路径的示例"
+msgstr "Example of HarmonyOS SDK Path in DevEco Studio"
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:65
+msgid "然后，将以下路径添加到 PATH 变量中。请参见 `Windows 系统中如何添加 PATH 环境变量 <https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/>`_。"
+msgstr "Then, add the following path to the PATH variable. See `How to Add a PATH Environment Variable in Windows <https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/>`."
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:74
+msgid "在终端中运行 ``hdc``， 查看命令是否可用。"
+msgstr "Run `hdc` in the terminal to check if the command is available."
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:78
+msgid "3. 运行一个模拟器"
+msgstr "3. Run an Emulator"
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:80
+msgid "根据此指南运行一个模拟器： `管理及运行模拟器 <https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V13/ide-emulator-management-V13>`_"
+msgstr "Run an emulator according to this guide: `Manage and Run Emulators <https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V13/ide-emulator-management-V13>`."
+
+#: ../../source/part-keaUserManuel/harmonyos_setup.rst:83
+msgid "在终端中运行 ``hdc list targets``。 你可以看到模拟器以一个环回地址套接字(127.0.0.1:port)的形式提供。"
+msgstr "Run `hdc list targets` in the terminal. You can see the emulator provided in the form of a loopback address socket (127.0.0.1:port)."

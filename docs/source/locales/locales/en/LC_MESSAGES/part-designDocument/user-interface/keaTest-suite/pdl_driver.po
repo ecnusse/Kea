@@ -1,0 +1,81 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:2
+msgid "PDL 驱动"
+msgstr "PDL Driver"
+
+#: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:4
+msgid "本部分旨在解释 Kea 的性质定义语言驱动 PDL 是如何设计及实现的。"
+msgstr "This section aims to explain how the Property Definition Language driver PDL of Kea is designed and implemented."
+
+#: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:7
+msgid "PDL 驱动的功能设计"
+msgstr "Functional Design of PDL Driver"
+
+#: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:9
+msgid "PDL 驱动是在基于性质的测试中，用户与设备在执行性质时与设备交互的驱动。 PDL 驱动有安卓设备的 PDL 驱动（基于uiautomator2），鸿蒙设备的 PDL 驱动（基于hmdriver2）"
+msgstr "The PDL driver is a driver that interacts with the device during property-based testing where users execute properties on the device. The PDL driver includes PDL drivers for Android devices (based on uiautomator2) and HarmonyOS devices (based on hmdriver2)."
+
+#: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:14
+msgid "PDL 驱动设计参考了 uiautomator2 和 hmdriver2"
+msgstr "The design of the PDL driver references uiautomator2 and hmdriver2."
+
+#: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:16
+msgid "uiautomator2: https://github.com/openatx/uiautomator2"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:18
+msgid "hmdriver2: https://github.com/codematrixer/hmdriver2"
+msgstr ""
+
+#: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:20
+msgid "PDL驱动的使用语法是 ``d(Selector(**kwargs)).attr(args)`` 。其中 ``Selecotor(**kwargs)`` 是控件选择器， 控件选择器通过字典的方式指定控件的属性，如安卓中的 resourceId, className，鸿蒙中的 id， bundlename等。attr 是对选定控件的操作，包括click、longClick等操作。 ``attr(args)`` 中的 ``args`` 为传入方法的参数。如在 ``input_text(\"Hello\")`` 中传入要输入的字符串 \"Hello\"。"
+msgstr "The usage syntax of the PDL driver is ``d(Selector(**kwargs)).attr(args)``. Here ``Selector(**kwargs)`` is the control selector, which specifies the properties of the control in dictionary form, such as resourceId and className in Android, and id and bundlename in HarmonyOS. `attr` refers to the operations on the selected control, including click, longClick, etc. The ``args`` in ``attr(args)`` are the parameters passed to the method. For example, in ``input_text(\"Hello\")``, the string \"Hello\" is passed as the input."
+
+#: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:25
+msgid "我们的PDL驱动实际上是kea与对应自动化测试工具(uiautomator2、hmdriver2)的中间层，语法与目标的测试工具一致， 主要用于做一些额外的操作，如保存当前事件、截图等，以方便kea访问到对应的操作数据，方便生成错误报告等。"
+msgstr "Our PDL driver is essentially an intermediary layer between Kea and the corresponding automation testing tools (uiautomator2, hmdriver2), with syntax consistent with the target testing tools. It is mainly used to perform some additional operations, such as saving current events, taking screenshots, etc., to facilitate Kea's access to the corresponding operational data and generate error reports."
+
+#: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:29
+msgid "安卓设备的 PDL 驱动的实现"
+msgstr "Implementation of the PDL Driver for Android Devices"
+
+#: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:31
+msgid "安卓设备的PDL驱动通过uiautomator2实现。主要用于让用户编写的性质和应用进行交互。"
+msgstr "The PDL driver for Android devices is implemented through uiautomator2. It is mainly used to enable interaction between the properties written by users and the application."
+
+#: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:33
+msgid "安卓的PDL驱动继承于uiautomator2的Driver类，部分安卓PDL的python风格简化代码实现示意如下："
+msgstr "The Android PDL driver inherits from the Driver class of uiautomator2. A simplified implementation of some Android PDL in Python style is as follows:"
+
+#: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:65
+msgid "PDL的核心功能的解析如下："
+msgstr "The analysis of the core functionality of PDL is as follows:"
+
+#: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:94
+msgid "鸿蒙设备的 PDL 驱动实现"
+msgstr "Implementation of the PDL Driver for HarmonyOS Devices"
+
+#: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:96
+msgid "鸿蒙设备的PDL驱动通过hmdriver2实现。主要用于让用户编写的性质和应用进行交互。"
+msgstr "The PDL driver for HarmonyOS devices is implemented through hmdriver2. It is mainly used to enable interaction between the properties written by users and the application."
+
+#: ../../source/part-designDocument/user-interface/keaTest-suite/pdl_driver.rst:98
+msgid "鸿蒙的PDL驱动继承于hmdriver2的Driver类，部分鸿蒙PDL的python风格简化代码实现示意如下："
+msgstr "The HarmonyOS PDL driver inherits from the Driver class of hmdriver2. A simplified implementation of some HarmonyOS PDL in Python style is as follows:"

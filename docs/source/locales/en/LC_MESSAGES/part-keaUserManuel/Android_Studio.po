@@ -70,7 +70,7 @@ msgstr "Run ``source`` on the shell's configuration file to activate the changes
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:49
 msgid "text"
-msgstr ""
+msgstr "text"
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:51
 msgid "在终端中输入 ``adb`` 检查设置是否成功。"

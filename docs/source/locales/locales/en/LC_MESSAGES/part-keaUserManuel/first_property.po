@@ -1,0 +1,197 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-keaUserManuel/first_property.rst:2
+msgid "编写第一个性质"
+msgstr "Write Your First Property"
+
+#: ../../source/part-keaUserManuel/first_property.rst:5
+msgid "检查环境"
+msgstr "Check the Environment"
+
+#: ../../source/part-keaUserManuel/first_property.rst:7
+msgid "Kea 是一个基于性质的移动应用测试框架，目前支持 Android 和 HarmonyOS。请确保你拥有一台移动设备，并在你的电脑上安装了 Android/HarmonyOS 命令行工具。检查 ``adb`` （Android）或 ``hdc`` （HarmonyOS）是否可用。"
+msgstr "Kea is a property-based mobile application testing framework that currently supports Android and HarmonyOS. Please ensure you have a mobile device and have installed the Android/HarmonyOS command line tools on your computer. Check if `adb` (Android) or `hdc` (HarmonyOS) is available."
+
+#: ../../source/part-keaUserManuel/first_property.rst:9
+msgid "如果你没有真机，可以通过模拟器使用 Kea。"
+msgstr "If you don't have a physical device, you can use Kea with an emulator."
+
+#: ../../source/part-keaUserManuel/first_property.rst:11
+msgid "请确保你已安装 ``python 3.9+``。"
+msgstr "Please ensure you have `python 3.9+` installed."
+
+#: ../../source/part-keaUserManuel/first_property.rst:15
+msgid "安装"
+msgstr "Installation"
+
+#: ../../source/part-keaUserManuel/first_property.rst:16
+msgid "使用以下命令安装Kea"
+msgstr "Install Kea using the following command"
+
+#: ../../source/part-keaUserManuel/first_property.rst:24
+msgid "输入 ``kea -h`` 以检查 Kea 是否已成功安装。"
+msgstr "Enter `kea -h` to check if Kea has been installed successfully."
+
+#: ../../source/part-keaUserManuel/first_property.rst:27
+msgid "编写第一个性质(安卓)"
+msgstr "Write Your First Property (Android)"
+
+#: ../../source/part-keaUserManuel/first_property.rst:29
+msgid "启动你的设备或 Android 模拟器。在终端中输入 ``adb devices`` 以确保它可用。"
+msgstr "Start your device or Android emulator. Type `adb devices` in the terminal to ensure it is available."
+
+#: ../../source/part-keaUserManuel/first_property.rst:31
+msgid "我们将使用 `weditor <https://github.com/alibaba/web-editor>`_ 来检查 Android 元素并编写性质。"
+msgstr "We will use `weditor <https://github.com/alibaba/web-editor>`_ to inspect Android elements and write properties."
+
+#: ../../source/part-keaUserManuel/first_property.rst:33
+msgid "**1. 启动 weditor 并安装你的应用。**"
+msgstr "**1. Start weditor and install your application.**"
+
+#: ../../source/part-keaUserManuel/first_property.rst:40
+msgid "上述命令将在你的电脑上安装 weditor 并启动它。它提供了一个主机服务器（默认：http://localhost:17310）。你可以在网页浏览器中访问它。"
+msgstr "The above command will install weditor on your computer and start it. It provides a host server (default: http://localhost:17310). You can access it in your web browser."
+
+#: ../../source/part-keaUserManuel/first_property.rst:45
+msgid "weditor 的主页。"
+msgstr "Homepage of weditor."
+
+#: ../../source/part-keaUserManuel/first_property.rst:47
+msgid "然后，进入 kea 工作区并安装应用 omninotes。"
+msgstr "Next, enter the kea workspace and install the omninotes application."
+
+#: ../../source/part-keaUserManuel/first_property.rst:53
+msgid "检查应用是否已成功安装。"
+msgstr "Check if the application has been successfully installed."
+
+#: ../../source/part-keaUserManuel/first_property.rst:55
+msgid "**2. Dump hierachy并检查 Android 元素**"
+msgstr "**2. Dump Hierarchy and Inspect Android Elements**"
+
+#: ../../source/part-keaUserManuel/first_property.rst:57
+msgid "在 weditor 中Dump hierachy以获取 Android 元素。"
+msgstr "Dump hierarchy in weditor to obtain Android elements."
+
+#: ../../source/part-keaUserManuel/first_property.rst:59
+msgid ":guilabel:`输入设备序列号` -> :guilabel:`Connect` -> :guilabel:`Dump hierachy`"
+msgstr ":guilabel:`Enter Device Serial Number` -> :guilabel:`Connect` -> :guilabel:`Dump Hierarchy`"
+
+#: ../../source/part-keaUserManuel/first_property.rst:64
+msgid "从 weditor Dump hierachy"
+msgstr "Dump hierarchy from weditor"
+
+#: ../../source/part-keaUserManuel/first_property.rst:66
+msgid "连接到 weditor 后，你可以点击 :guilabel:`Dump hierachy` 来刷新元素（即Dump hierachy），每当你的屏幕发生变化时。 或者，你可以启用自动Dump hierachy，以避免手动刷新元素。"
+msgstr "After connecting to weditor, you can click on :guilabel:`Dump Hierarchy` to refresh elements (i.e., Dump Hierarchy) whenever your screen changes. Alternatively, you can enable automatic Dump Hierarchy to avoid manually refreshing elements."
+
+#: ../../source/part-keaUserManuel/first_property.rst:69
+msgid "你可以点击一个元素并检查其属性。"
+msgstr "You can click on an element and check its properties."
+
+#: ../../source/part-keaUserManuel/first_property.rst:71
+msgid "**3. 编写你的第一个性质**"
+msgstr "**3. Write Your First Property**"
+
+#: ../../source/part-keaUserManuel/first_property.rst:73
+msgid "我们在这个应用中有一个简单的功能需要检查：**旋转后搜索输入框不应被清空。**"
+msgstr "We have a simple functionality in this application that we need to check: **the search input box should not be cleared after rotation.**"
+
+#: ../../source/part-keaUserManuel/first_property.rst:75
+msgid "现在，让我们编写前置条件。这应该是功能开始时的唯一特征。我们想检查搜索输入框，所以让我们先移动到搜索功能。通过点击 :guilabel:`搜索` 按钮，你可以进入搜索编辑页面。显然，这个页面的唯一特征应该是搜索输入框本身。"
+msgstr "Now, let's write the precondition. This should be the only feature at the beginning of the functionality. We want to check the search input box, so let's first navigate to the search functionality. By clicking the :guilabel:`Search` button, you can enter the search edit page. Obviously, the only feature of this page should be the search input box itself."
+
+#: ../../source/part-keaUserManuel/first_property.rst:77
+msgid "**在 weditor 中Dump hierachy。点击搜索框以检查其属性。**"
+msgstr "**Dump hierarchy in weditor. Click on the search box to check its properties.**"
+
+#: ../../source/part-keaUserManuel/first_property.rst:82
+msgid "在 weditor 中检查一个控件"
+msgstr "Inspect a control in weditor"
+
+#: ../../source/part-keaUserManuel/first_property.rst:84
+msgid "我们需要特定于控件的属性来定位一个控件。最常用的唯一属性是 **resourceId**。 如果没有 **resourceId**，**text** 或 **className** 也可以，但大多数情况下它们不是唯一的，会导致错误。"
+msgstr "We need control-specific properties to locate a control. The most commonly used unique property is **resourceId**. If there is no **resourceId**, **text** or **className** can also work, but in most cases they are not unique and can lead to errors."
+
+#: ../../source/part-keaUserManuel/first_property.rst:87
+msgid "因此，为了避免 kea 进入错误状态，你可以使用多个属性在选择器中定位一个控件，并使用多个控件定位一个页面。"
+msgstr "Therefore, to avoid Kea entering an erroneous state, you can use multiple properties to locate a control in the selector and use multiple controls to locate a page."
+
+#: ../../source/part-keaUserManuel/first_property.rst:89
+msgid "**经过检查，我们知道搜索输入框的 resourceId。我们可以用以下命令来定位它。**"
+msgstr "**After inspection, we know the resourceId of the search input box. We can locate it using the following command.**"
+
+#: ../../source/part-keaUserManuel/first_property.rst:91
+msgid "``d(resourceId=\"it.feio.android.omninotes.alpha:id/search_src_text\")``"
+msgstr "``d(resourceId=\"it.feio.android.omninotes.alpha:id/search_src_text\")``"
+
+#: ../../source/part-keaUserManuel/first_property.rst:95
+msgid "你可能会对 ``d(**选择器)`` 脚本感到困惑。这是 kea 的 PDL（Property Description Language, 性质描述语言） 用于与 AUT（被测应用）交互。你可以阅读 :ref:`pdl_api` 以获取详细信息。"
+msgstr "You may be confused by the ``d(**selector)`` script. This is Kea's PDL (Property Description Language) used for interacting with the AUT (Application Under Test). You can read :ref:`pdl_api` for more details."
+
+#: ../../source/part-keaUserManuel/first_property.rst:98
+msgid "**要检查这个控件是否存在，我们调用 ``exists``。**"
+msgstr "**To check if this control exists, we call ``exists``.**"
+
+#: ../../source/part-keaUserManuel/first_property.rst:100
+msgid "``d(resourceId=\"it.feio.android.omninotes.alpha:id/search_src_text\").exists()``"
+msgstr "``d(resourceId=\"it.feio.android.omninotes.alpha:id/search_src_text\").exists()``"
+
+#: ../../source/part-keaUserManuel/first_property.rst:103
+msgid "双击 weditor 中的控件。这将自动为你生成 **click** 的动作脚本。 你可以参考它来编写自己的脚本。"
+msgstr "Double-click on the control in weditor. This will automatically generate the **click** action script for you. You can refer to it to write your own script."
+
+#: ../../source/part-keaUserManuel/first_property.rst:106
+msgid "**编写交互场景（即功能的作用）。**"
+msgstr "**Write Interaction Scenarios (i.e., the action of the function).**"
+
+#: ../../source/part-keaUserManuel/first_property.rst:108
+msgid "我们需要旋转设备。从竖屏状态到横屏，再回到竖屏状态。脚本可以这样编写： ``d.rotate('l')`` ``d.rotate('n')``"
+msgstr "We need to rotate the device. From portrait to landscape, and back to portrait. The script can be written as follows: ``d.rotate('l')`` ``d.rotate('n')``"
+
+#: ../../source/part-keaUserManuel/first_property.rst:112
+msgid "**编写后置条件。旋转后输入框仍然应该存在。我们使用断言来确认它的存在。**"
+msgstr "**Write postconditions. The input box should still exist after rotation. We use assertions to confirm its existence.**"
+
+#: ../../source/part-keaUserManuel/first_property.rst:114
+msgid "``assert d(resourceId=\"it.feio.android.omninotes.alpha:id/search_src_text\").exists()``"
+msgstr "``assert d(resourceId=\"it.feio.android.omninotes.alpha:id/search_src_text\").exists()``"
+
+#: ../../source/part-keaUserManuel/first_property.rst:116
+msgid "恭喜！你已经编写了你的第一个性质！"
+msgstr "Congratulations! You have written your first property!"
+
+#: ../../source/part-keaUserManuel/first_property.rst:118
+msgid "**4. 使用 Kea API 封装你的性质**"
+msgstr "**4. Wrap Your Properties Using Kea API**"
+
+#: ../../source/part-keaUserManuel/first_property.rst:120
+msgid "在 kea 的根目录下创建一个 Python 文件 **my_prop.py**。"
+msgstr "Create a Python file **my_prop.py** in the root directory of Kea."
+
+#: ../../source/part-keaUserManuel/first_property.rst:137
+msgid "启动 kea 并检查你的性质"
+msgstr "Start Kea and Check Your Properties"
+
+#: ../../source/part-keaUserManuel/first_property.rst:139
+msgid "通过以下命令启动 kea。"
+msgstr "Start Kea with the following command."
+
+#: ../../source/part-keaUserManuel/first_property.rst:145
+msgid "检查 ``output/bug_report.html`` 中的错误报告。你可以在本教程中学习如何阅读错误报告： :ref:`bug_report_tutorial`。"
+msgstr "Check the error report in ``output/bug_report.html``. You can learn how to read the error report in this tutorial: :ref:`bug_report_tutorial`."

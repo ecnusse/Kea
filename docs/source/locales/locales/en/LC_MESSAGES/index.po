@@ -1,0 +1,40 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/index.rst:4
+msgid "概述"
+msgstr "Introduction"
+
+#: ../../source/index.rst:10
+#: ../../source/index.rst:12
+msgid "用户手册"
+msgstr "User Manual"
+
+#: ../../source/index.rst:26
+#: ../../source/index.rst:28
+msgid "设计手册"
+msgstr "Design Manual"
+
+#: ../../source/index.rst:34
+#: ../../source/index.rst:36
+msgid "实验与结果"
+msgstr "Experiments and Results"
+
+#: ../../source/index.rst:2
+msgid "目录"
+msgstr "Table of Contents"

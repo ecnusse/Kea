@@ -1,0 +1,401 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:4
+msgid "GuidedPolicy"
+msgstr "Guided Policy"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:6
+msgid "GuidedPolicy类是主路径引导探索策略的核心类。 主要负责获取用户在定义性质时定义的主路径以及根据主路径引导探索策略生成输入事件。 该类提供了完整的主路径引导探索策略的事件生成过程引导方法。 GuidedPolicy所包含的主要方法有："
+msgstr "The GuidedPolicy class is the core class of the main path guided exploration strategy. It is mainly responsible for obtaining the main path defined by the user when defining properties and generating input events based on the main path guided exploration strategy. This class provides a complete guiding method for the event generation process of the main path guided exploration strategy. The main methods included in GuidedPolicy are:"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:11
+msgid "开始一段测试前从用户定义的主路径中随机选择一条主路径。"
+msgstr "Randomly select a main path from the user-defined main paths before starting a test."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:12
+msgid "根据当前状态是否在主路径上决定返回事件种类。"
+msgstr "Determine the type of event to return based on whether the current state is on the main path."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:13
+msgid "在主路径上获取下一个执行的事件。"
+msgstr "Get the next event to execute on the main path."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:14
+msgid "离开主路径探索应用深层状态过程的主要调控。"
+msgstr "The main control of exploring the application's deep state process after leaving the main path."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:15
+msgid "从主路径上获取能引导应用回到主路径上的事件。"
+msgstr "Obtain events from the main path that can guide the application back to the main path."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:19
+msgid "主路径引导策略的介绍"
+msgstr "Introduction to the main path guided strategy"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:21
+msgid "据观察，当用户指定应用程序性质时，用户通常沿着应用程序入口的主路径到达目标应用程序功能。这样的主要路径可以很容易地作为获得，并能够用于指导探索。 具体来说，当从应用程序入口执行主路径时，我们可以获得一系列GUI状态 :math:`S = [s_0,s_1,s_2,……,s_n]`, 其中 :math:`s_n \\models P`， 即 :math:`s_n` 满足前置条件。此外，探索靠近主路径的状态可能会有更高的机会达到满足前提条件的 GUI 状态。本算法的核心执行流程如图。"
+msgstr "It has been observed that when users specify the properties of applications, they typically reach the target application functions along the main path from the entry point. Such primary paths can be easily obtained and used to guide exploration. Specifically, when executing the main path from the application entry, we can obtain a series of GUI states: :math:`S = [s_0,s_1,s_2,……,s_n]`, where :math:`s_n \\models P`, meaning :math:`s_n` meets the preconditions. In addition, exploring states close to the main path may have a higher chance of reaching GUI states that meet the preconditions. The core execution process of this algorithm is illustrated in the figure."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:28
+msgid "主路径引导探索策略的流程图"
+msgstr "Flowchart of the main path guided exploration strategy"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:30
+msgid "具体执行步骤如下："
+msgstr "The specific execution steps are as follows:"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:32
+msgid "步骤1：将主路径中的每个事件 :math: `e_i` 发送到被测移动应用，得到主路径的状态序列 :math:`S = [s_0,s_1,s_2,……,s_n]`， 从而使被测移动应用到达满足前置条件 :math:`P` 的状态 :math:`s_n`;"
+msgstr "Step 1: Send each event :math: `e_i` from the main path to the mobile application under test, obtaining the state sequence of the main path :math:`S = [s_0,s_1,s_2,……,s_n]`, thus making the mobile application under test reach the state :math:`s_n` that satisfies the precondition :math:`P`."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:35
+msgid "步骤2：判断是否达到最大测试执行时间，若达到则结束测试，否则按照 :math:`S = [s_0,s_1,s_2,……,s_n]` 倒序探索应用程序。 若 :math:`S` 中的所有状态被探索完毕，则初始化被测移动应用；否则，按倒序关系取出一个未被探索的状态 :math:`s_i`， 发送相应的前序事件序列 :math:`[e_1,e_2,……，e_i]`,使得被测移动应用到达主路径状态 :math:`s_i`,继续步骤3；"
+msgstr "Step 2: Determine whether the maximum test execution time has been reached; if so, end the test; otherwise, explore the application in reverse order according to :math:`S = [s_0,s_1,s_2,……,s_n]`. If all states in :math:`S` have been explored, initialize the mobile application under test; otherwise, retrieve an unexplored state :math:`s_i` according to the reverse relationship, send the corresponding prefix event sequence :math:`[e_1,e_2,……,e_i]` to make the mobile application under test reach the main path state :math:`s_i`, and continue to step 3;"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:39
+msgid "步骤3：以状态 :math:`s_i` 作为探索被测移动应用的起始状态，判断当前已执行事件个数是否达到最大执行事件个数， 如没有达到，获取当前被测移动应用状态，继续步骤4；如果达到，则执行6；"
+msgstr "Step 3: Use state :math:`s_i` as the starting state to explore the mobile application under test, determining whether the number of events executed so far has reached the maximum number of events; if not, obtain the current state of the mobile application under test and continue to step 4; if it has, execute step 6;"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:42
+msgid "步骤4：判断当前被测移动应用状态是否满足一个或多个前置条件 :math:`P`。若没有任何前置条件满足或者不进行性质检测， 则继续执行步骤5；否则，执行交互场景 :math:`I` 中定义的事件序列，判断后置条件 :math:`Q` 是否满足，返回步骤3；"
+msgstr "Step 4: Determine whether the current state of the mobile application under test satisfies one or more preconditions :math:`P`. If no preconditions are met or if no property check is performed, continue to step 5; otherwise, execute the event sequence defined in the interactive scenario :math:`I`, check whether the postcondition :math:`Q` is satisfied, and return to step 3;"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:45
+msgid "步骤5：使用外部用户界面交互工具分析当前界面状态获取可执行事件列表，从可以执行的事件列表中随机选择一项事件， 并发送给被测移动应用执行，返回步骤3；"
+msgstr "Step 5: Use external user interface interaction tools to analyze the current interface state to obtain a list of executable events, randomly select one event from the list of executable events, and send it to the mobile application under test to execute, then return to step 3;"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:48
+msgid "步骤6：判断当前状态能否转换为状态 :math:`s_n`，若能，则发送相应的事件到被测移动应用，使得移动应用的状态满足前置条件；"
+msgstr "Step 6: Determine whether the current state can be transformed into state :math:`s_n`; if so, send the corresponding event to the mobile application under test to ensure that the state of the mobile application meets the precondition;"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:50
+msgid "为了更清晰的展示该策略的上述过程，在此通过下图进一步详析这一过程。"
+msgstr "To present the above process of the strategy more clearly, the following figure further analyzes this process."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:55
+msgid "主路径引导探索策略的实施例示意图"
+msgstr "Schematic diagram of the implementation of the main path guided exploration strategy"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:57
+msgid "令 :math:`s_0` 为被测移动应用的起始探索状态，主路径为 :math:`E = [e_1,e_2,e_3,e_4]`，性质为 :math:`\\phi = <P,I,Q>`。 在第一次迭代中，该策略将发送 :math: `E` 的所有事件并到达 :math:`s_4` 并且 :math:`s_4 \\models P`。 满足 :math:`P` 的状态用灰色标记。然后本策略引导从 :math:`s_4` 开始随机探索。假设它在 :math:`s_4` 上生成 :math:`e_5` 并达到 :math:`s_5`。 假设 :math:`s_5 \\models P`，策略可能决定执行 :math:`I` 获得结束状态 :math:`s_6` 并在该状态上检查后置条件 :math:`Q`。 假设 :math:`s_6 \\models P`，则说明没有发现性质错误。此时，假设 :math:`e_5` 和 :math:`I` 的执行事件数量超过预先限定的最大事件数量， 策略将停止随机探索并尝试导航到满足 :math:`P` 的主路径。假设 :math:`E` 中的事件无法在 :math:`s_6` 上发送，则该策略会放弃引导过程，并开始第二次迭代。 在第二次和第三次迭代中，它将分别从 :math:`s_3` 和 :math:`s_2` 开始，并执行与第一次迭代类似的过程。在第 4 次迭代中，从 :math:`s_1` 开始。 假设过程中通过生成两个随机事件 :math:`e_6` 和 :math:`e_7` 来探索 :math:`s_1`，:math:`e_6 \\to s_7`，:math:`e_7 \\to s_8`， 但 :math:`s_7` 和 :math:`s_8` 都不满足前置条件 :math:`P`，则本策略尝试导航回遵循满足 :math:`P` 的主路径。假设过程中发现 :math:`e_3` 可以在 :math:`s_8` 上发送。它会依次发送 :math:`e_3` 和 :math:`e_4` 以尝试遵循主路径。假设最终到达满足 :math:`P` 的 :math:`s_4` 本策略将执行 :math:`I` 并在结束状态 :math:`s_9` 上检查后置条件 :math:`Q`。如果后置条件不成立，则表明发现一个功能性质错误。"
+msgstr "Let :math:`s_0` be the starting exploration state of the mobile application under test, and the main path be :math:`E = [e_1,e_2,e_3,e_4]`, with properties :math:`\\phi = <P,I,Q>`. In the first iteration, this strategy will send all events of :math: `E` and reach :math:`s_4`, where :math:`s_4 \\models P`. States satisfying :math:`P` are marked in gray. Then the strategy guides random exploration starting from :math:`s_4`. Assume it generates :math:`e_5` at :math:`s_4` and reaches :math:`s_5`. Suppose :math:`s_5 \\models P`, the strategy may decide to execute :math:`I` to obtain the end state :math:`s_6` and check postcondition :math:`Q` at this state. If :math:`s_6 \\models P`, it indicates no property errors found. At this point, if the number of executed events of :math:`e_5` and :math:`I` exceeds the predefined maximum event count, the strategy will stop random exploration and attempt to navigate to the main path satisfying :math:`P`. If events in :math:`E` cannot be sent at :math:`s_6`, this strategy will abandon the guiding process and start the second iteration. In the second and third iterations, it will start from :math:`s_3` and :math:`s_2`, respectively, and perform a process similar to the first iteration. In the fourth iteration, it starts from :math:`s_1`. Assume that during the process two random events :math:`e_6` and :math:`e_7` are generated to explore :math:`s_1`, :math:`e_6 \\to s_7`, :math:`e_7 \\to s_8`, but both :math:`s_7` and :math:`s_8` do not satisfy the precondition :math:`P`, then this strategy attempts to navigate back to follow the main path that satisfies :math:`P`. Assume that during the process it finds that :math:`e_3` can be sent at :math:`s_8`. It will sequentially send :math:`e_3` and :math:`e_4` to attempt to follow the main path. Finally, it reaches :math:`s_4` satisfying :math:`P`, and this strategy will execute :math:`I` and check postcondition :math:`Q` at the end state :math:`s_9`. If the postcondition is not satisfied, it indicates the discovery of a functional property error."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:69
+msgid "步骤7：检查当前状态是否满足前置条件，若满足则进行性质测试；"
+msgstr "Step 7: Check whether the current state meets the preconditions; if it does, perform property testing;"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:71
+msgid "步骤8：重启移动应用并返回步骤2。"
+msgstr "Step 8: Restart the mobile application and return to step 2."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:74
+msgid "默认参数"
+msgstr "Default parameters"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:76
+msgid "``MAX_NUM_RESTARTS``: 最大重启次数。"
+msgstr "``MAX_NUM_RESTARTS``: Maximum number of restarts."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:77
+msgid "``MAX_NUM_STEPS_OUTSIDE``: 应用外的最大步骤数。"
+msgstr "``MAX_NUM_STEPS_OUTSIDE``: Maximum number of steps outside the application."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:78
+msgid "``MAX_NUM_STEPS_OUTSIDE_KILL``: 应用外最大步骤数（强制终止）。"
+msgstr "``MAX_NUM_STEPS_OUTSIDE_KILL``: Maximum number of steps outside the application (forced termination)."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:79
+msgid "``START_TO_GENERATE_EVENT_IN_POLICY``: 策略中生成事件的起始时间。"
+msgstr "``START_TO_GENERATE_EVENT_IN_POLICY``: Start time of event generation in the policy."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:80
+msgid "``MAX_NUM_QUERY_LLM``: 最大查询 LLM 的次数。"
+msgstr "``MAX_NUM_QUERY_LLM``: Maximum number of queries to LLM."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:81
+msgid "``EVENT_FLAG_STARTED``: 事件开始标志。"
+msgstr "``EVENT_FLAG_STARTED``: Event start flag."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:82
+msgid "``EVENT_FLAG_START_APP``: 启动应用的事件标志。"
+msgstr "``EVENT_FLAG_START_APP``: Event flag for starting the application."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:83
+msgid "``EVENT_FLAG_STOP_APP``: 停止应用的事件标志。"
+msgstr "``EVENT_FLAG_STOP_APP``: Event flag for stopping the application."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:84
+msgid "``EVENT_FLAG_EXPLORE``: 探索事件标志。"
+msgstr "``EVENT_FLAG_EXPLORE``: Exploration event flag."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:85
+msgid "``EVENT_FLAG_NAVIGATE``: 导航事件标志。"
+msgstr "``EVENT_FLAG_NAVIGATE``: Navigation event flag."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:86
+msgid "``EVENT_FLAG_TOUCH``: 触摸事件标志。"
+msgstr "``EVENT_FLAG_TOUCH``: Touch event flag."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:87
+msgid "``POLICY_GUIDED``: 主路径引导策略名称。"
+msgstr "``POLICY_GUIDED``: Name of the main path guided strategy."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:88
+msgid "``POLICY_RANDOM``: 随机策略名称。"
+msgstr "``POLICY_RANDOM``: Name of the random strategy."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:89
+msgid "``POLICY_LLM``: LLM 策略名称。"
+msgstr "``POLICY_LLM``: Name of the LLM strategy."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:90
+msgid "``POLICY_NONE``: 无策略名称。"
+msgstr "``POLICY_NONE``: Name of no strategy."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:93
+msgid "GuidedPolicy类中的数据结构"
+msgstr "Data structures in the GuidedPolicy class"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:95
+msgid "**main_path**"
+msgstr "**main_path**"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:97
+msgid "main_path是MainPath类的对象，是当前测试过程所选用的主路径。"
+msgstr "main_path is an object of the MainPath class, representing the main path chosen for the current testing process."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:99
+msgid "**execute_main_path**"
+msgstr "**execute_main_path**"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:101
+msgid "execute_main_path为bool类型，用于记录当前界面状态是否在主路径上。用于根据不同情况生成不同事件。"
+msgstr "execute_main_path is a boolean that records whether the current interface state is on the main path. It is used to generate different events based on different situations."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:103
+msgid "**current_index_on_main_path**"
+msgstr "**current_index_on_main_path**"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:105
+msgid "current_index_on_main_path整型，为当前所处主路径的事件节点编号。初始值为0。"
+msgstr "current_index_on_main_path is an integer that represents the event node number of the current position on the main path. Its initial value is 0."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:107
+msgid "**current_number_of_mutate_steps_on_single_node**"
+msgstr "**current_number_of_mutate_steps_on_single_node**"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:109
+msgid "current_number_of_mutate_steps_on_single_node整型，记录了已经在当前状态节点上探索生成事件的次数。初始值为0。"
+msgstr "current_number_of_mutate_steps_on_single_node is an integer that records the number of times events have been explored and generated at the current state node. Its initial value is 0."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:111
+msgid "**max_number_of_mutate_steps_on_single_node**"
+msgstr "**max_number_of_mutate_steps_on_single_node**"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:113
+msgid "max_number_of_mutate_steps_on_single_node整型，记录了对单个状态节点最大探索生成事件的次数。初始值为20。"
+msgstr "max_number_of_mutate_steps_on_single_node is an integer that records the maximum number of exploration and event generation attempts for a single state node. Its initial value is 20."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:115
+msgid "**number_of_events_that_try_to_find_event_on_main_path**"
+msgstr "**number_of_events_that_try_to_find_event_on_main_path**"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:117
+msgid "number_of_events_that_try_to_find_event_on_main_path整型，记录了当前尝试回到主路径的次数。初始值为0。"
+msgstr "number_of_events_that_try_to_find_event_on_main_path is an integer that records the current number of attempts to return to the main path. Its initial value is 0."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:119
+msgid "**index_on_main_path_after_mutation**"
+msgstr "**index_on_main_path_after_mutation**"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:121
+msgid "index_on_main_path_after_mutation整型，是对某个状态节点执行一系列事件探索后能够回到的主路径上的事件编号。初始值为-1。"
+msgstr "index_on_main_path_after_mutation is an integer representing the event number on the main path that can be returned to after executing a series of event explorations on a specific state node. Its initial value is -1."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:123
+msgid "**mutate_node_index_on_main_path**"
+msgstr "**mutate_node_index_on_main_path**"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:125
+msgid "mutate_node_index_on_main_path整型，是记录当前所探索的主路径上的事件节点编号。初始值为所选主路径的长度。"
+msgstr "mutate_node_index_on_main_path is an integer that records the event node number on the current explored main path. Its initial value is the length of the selected main path."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:128
+msgid "主路径引导策略的伪代码"
+msgstr "Pseudocode for the main path guided strategy"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:130
+msgid ":math:`\\textbf{Algorithm:} Main Path Guided Exploration`"
+msgstr ":math:`\\textbf{Algorithm:} Main Path Guided Exploration`"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:132
+msgid ":math:`\\textbf{Input:} \\phi = <P,I,Q>,E=[e_1,e_2,……,e_n]`"
+msgstr ":math:`\\textbf{Input:} \\phi = <P,I,Q>,E=[e_1,e_2,……,e_n]`"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:134
+msgid ":math:`\\textbf{Output:} Bug Report`"
+msgstr ":math:`\\textbf{Output:} Bug Report`"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:177
+msgid "此策略采用输入一个性质 :math:`\\phi = <P,I,Q>` 和事件序列 :math:`E = [e_1,e_2,……,e_n]` 形式的主路径。 该策略沿主路径向后遍历，并在接近主路径的范围内进行UI探索（第 3-12 行）。具体来说， 它从 :math:`e_n` 向后迭代到 :math:`e_1` （第 8 行）。对于 :math:`0 < i \\leq n` 的每个事件 :math:`e_i`, 它会将前缀 :math:`[e_1,e_2,……,e_i]` 发送到应用程序，以达到主路径的 GUI 状态 :math:`s_i` （第 5-6 行）。 接下来，它探索接近 :math:`s_i` 的 GUI 状态，尝试找到满足前置条件 :math:`P` 的状态（第 7 行）。请注意， 在 :math:`s_1` 之后，本系统还通过不从 :math:`E` 发送任何事件来探索接近 :math:`s_0` 的 GUI 状态（第 4 行）。 如果时间预算允许，可以沿主路径进行多次遍历，我们在探索主路径上的每个状态（第 9-11 行）后清理应用程序数据。"
+msgstr "This strategy adopts a main path in the form of an input property :math:`\\phi = <P,I,Q>` and an event sequence :math:`E = [e_1,e_2,……,e_n]`. The strategy traverses backward along the main path and conducts UI exploration within the proximity of the main path (lines 3-12). Specifically, it iterates from :math:`e_n` backward to :math:`e_1` (line 8). For each event :math:`e_i` where :math:`0 < i \\leq n`, it sends the prefix :math:`[e_1,e_2,……,e_i]` to the application to reach the GUI state on the main path :math:`s_i` (lines 5-6). Next, it explores the GUI states close to :math:`s_i`, attempting to find states that satisfy the precondition :math:`P` (line 7). Note that after :math:`s_1`, this system also explores GUI states close to :math:`s_0` by not sending any events from :math:`E` (line 4). If time budget permits, multiple traversals can be made along the main path, and after exploring each state on the main path (lines 9-11), application data will be cleaned."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:185
+msgid "从主路径的 GUI 状态开始的探索类似于前述随机探索策略（第 14-20 行）。具体来说，在每个 GUI 状态中， 本算法检查是否满足某个前置条件 :math:`P` （第 15-16 行）。如果有前置条件满足，本算法会有50%的概率来测试 :math:`s` 处的性质（第 16 行）。否则，将生成随机事件并发送给设备以达到另一个状态（第 19-20 行）。 上述过程迭代 :math:`MAX_STEP` 次（第 14 行）。"
+msgstr "Exploration starting from the GUI state of the main path is similar to the aforementioned random exploration strategy (lines 14-20). Specifically, in each GUI state, this algorithm checks for the satisfaction of a certain precondition :math:`P` (lines 15-16). If a precondition is met, the algorithm has a 50% probability of testing the property at :math:`s` (line 16). Otherwise, it will generate random events and send them to the device to reach another state (lines 19-20). The aforementioned process iterates :math:`MAX_STEP` times (line 14)."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:190
+msgid "探索完之后，本算法尝试回到满足前提条件的状态（第 21-23 行）。因为从主路径的 GUI 状态开始的随机探索可能会改变应用程序的内部状态， 在这种情况下，达到满足前置条件的状态可能会进一步表现出不同的行为。为此， 本算法搜索可在当前 GUI 状态（第 28-32 行）发送的最接近事件 :math:`e_j`。如果 :math:`e_j` 存在， 我们尝试给设备发送发送 :math:`E` 的后缀 :math:`[e_j,e_j+1,……,e_n]` （第 34-37 行）。 最后尝试再次测试应用性质（第 24-26 行）。"
+msgstr "After exploration is complete, this algorithm attempts to return to states that meet the preconditions (lines 21-23). Since random exploration starting from the GUI state of the main path may change the internal state of the application, in such cases, reaching states that meet the preconditions might exhibit different behaviors further. To this end, this algorithm searches for the nearest event :math:`e_j` that can be sent in the current GUI state (lines 28-32). If :math:`e_j` exists, we attempt to send the suffix :math:`[e_j,e_j+1,……,e_n]` of :math:`E` to the device (lines 34-37). Finally, we attempt to test the application properties again (lines 24-26)."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:197
+msgid "GuidedPolicy类中的成员方法"
+msgstr "Member methods in the GuidedPolicy class"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:201
+msgid "为了便于读者理解，本文中提供的代码段简化版本仅对核心流程进行抽象并展示，实际代码与简化的参考代码不完全一致。"
+msgstr "To facilitate readers' understanding, the simplified version of the code snippets provided in this paper only abstracts and showcases the core processes, and the actual code may not completely align with the simplified reference code."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:204
+msgid "获取主路径的方法"
+msgstr "Methods for obtaining the main path"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:206
+msgid "**select_main_path**"
+msgstr "**select_main_path**"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:208
+msgid "select_main_path从用户定义的所有主路径中随机选择一条作为本轮测试的引导路径。"
+msgstr "select_main_path randomly selects a main path from all user-defined main paths as the guiding path for this round of testing."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:223
+msgid "事件生成管理的成员方法"
+msgstr "Member methods of event generation management"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:225
+msgid "**generate_event**"
+msgstr "**generate_event**"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:227
+msgid "根据当前应用状态判断应当生成事件的方法。如果在应用外则返回应用；如果在初始阶段则运行初始化函数；如果在执行主路径则返回主路径事件； 如果在探索应用则返回继续探索所需事件。"
+msgstr "A method for determining which events should be generated based on the current application state. If outside the application, it returns to the application; if in the initial stage, it runs the initialization function; if executing the main path, it returns main path events; if exploring the application, it returns events needed to continue exploration."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:0
+msgid "参数"
+msgstr "Parameters"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:230
+msgid "无"
+msgstr "None"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:0
+msgid "返回"
+msgstr "Returns"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:233
+msgid "一个生成的事件。"
+msgstr "A generated event."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:257
+msgid "在主路径上获取事件的成员方法"
+msgstr "Member methods for obtaining events on the main path"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:259
+msgid "**get_next_event_from_main_path**"
+msgstr "**get_next_event_from_main_path**"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:261
+msgid "获取主路径上应该执行的下一个事件。"
+msgstr "Get the next event to be executed on the main path."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:265
+msgid "主路径上的下一个事件。"
+msgstr "The next event on the main path."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:281
+msgid "应用状态探索过程的成员方法"
+msgstr "Member methods of application state exploration process"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:283
+msgid "**mutate_the_main_path**"
+msgstr "**mutate_the_main_path**"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:285
+msgid "根据当前事件执行次数判断是继续生成随机事件还是回到主路径上。"
+msgstr "Determine whether to continue generating random events or return to the main path based on the current number of event executions."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:290
+msgid "探索过后生成的事件。"
+msgstr "Events generated after exploration."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:321
+msgid "**generate_random_event_based_on_current_state**"
+msgstr "**generate_random_event_based_on_current_state**"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:323
+msgid "生成随机事件探索应用。"
+msgstr "Generate random events to explore the application."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:327
+msgid "随机生成的事件。"
+msgstr "Randomly generated event."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:343
+msgid "**stop_mutation**"
+msgstr "**stop_mutation**"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:345
+msgid "停止探索过程，并重置参数。"
+msgstr "Stop the exploration process and reset parameters."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:349
+msgid "重启或者重装应用事件。"
+msgstr "Restart or reinstall application events."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:366
+msgid "从探索过程返回主路径的成员方法"
+msgstr "Member methods for returning to the main path from the exploration process"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:368
+msgid "**get_event_from_main_path**"
+msgstr "**get_event_from_main_path**"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:370
+msgid "根据当前是否已经回到主路径上，如果已经回到则执行完后续主路径事件，如果没回到主路径上则根据主路径事件序列倒叙尝试返回主路径。"
+msgstr "Depending on whether the current state has returned to the main path, if it has returned, execute the subsequent main path events; if it hasn't returned to the main path, attempt to return to the main path in reverse order based on the main path event sequence."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:375
+msgid "主路径事件字符串。"
+msgstr "Main path event string."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:401
+msgid "**get_ui_element_dict**"
+msgstr "**get_ui_element_dict**"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:403
+msgid "获取主路径上单个事件所操作的组件的相关信息。"
+msgstr "Get relevant information about the components operated on by a single event on the main path."
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:406
+msgid "ui_element_str: 组件信息字符串"
+msgstr "ui_element_str: Component information string"
+
+#: ../../source/part-designDocument/InputGenerator/MainPath Guided Policy.rst:408
+msgid "字典形式的该组件相关信息。"
+msgstr "Dictionary form of the relevant information for that component."

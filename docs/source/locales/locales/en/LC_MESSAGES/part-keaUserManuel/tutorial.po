@@ -1,0 +1,209 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-keaUserManuel/tutorial.rst:2
+msgid "性质定义教程"
+msgstr "Property Definition Tutorial"
+
+#: ../../source/part-keaUserManuel/tutorial.rst:4
+msgid "在本教程中，你将学习如何使用 Kea 编写应用性质并进行测试。"
+msgstr "In this tutorial, you will learn how to write application properties and test them using Kea."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:6
+msgid "在移动应用中，性质定义了应用的预期行为。如果应用违反了该性质，则意味着发现了一个错误。"
+msgstr "In mobile applications, properties define the expected behavior of the application. If the application violates this property, it indicates that a bug has been discovered."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:8
+msgid "用户所定义的应用功能性质由三个关键组件组成。 **<P, I, Q>**, (1) *P* 是一个前置条件, (2) *I* 是一个交互场景，定义了如何执行应用功能, (3) *Q* 是一个后置条件，定义了预期的行为。"
+msgstr "The user-defined application functionality properties consist of three key components. **<P, I, Q>**, (1) *P* is a precondition, (2) *I* is an interaction scenario defining how the application function is executed, and (3) *Q* is a postcondition defining the expected behavior."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:12
+msgid "Kea 给用户提供 ``@initializer()`` 帮助用户定义初始化函数，让应用能够跳过欢迎页面或登录页面。"
+msgstr "Kea provides users with ``@initializer()`` to help define an initialization function that allows the application to skip the welcome or login page."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:14
+msgid "在 Kea 中，性质是通过应用 ``@rule()`` 这样一个性质函数上的装饰器来定义的。"
+msgstr "In Kea, properties are defined using decorators on property functions such as ``@rule()``."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:16
+msgid "要定义性质的前置条件，用户可以在 ``@rule()`` 装饰的函数上，使用装饰器 ``@precondition()``。"
+msgstr "To define the preconditions of a property, users can use the ``@precondition()`` decorator on the function decorated with ``@rule()``."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:18
+msgid "后置条件则在 ``@rule()`` 装饰的函数内部使用 ``assert`` 来完成定义。"
+msgstr "Postconditions are defined using ``assert`` within the function decorated with ``@rule()``."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:20
+msgid "对于移动应用，用户可以从多个途径获取应用性质，例如应用的规范、应用的文档、应用的测试用例、应用的错误报告等。"
+msgstr "For mobile applications, users can derive application properties from multiple sources, such as application specifications, documentation, test cases, and bug reports."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:22
+msgid "让我们从几个简单的例子开始，介绍如何获取一个性质，如何在 Kea 中编写该性质，以及如何通过 Kea 测试该性质。"
+msgstr "Let's start with a few simple examples to introduce how to derive a property, how to write it in Kea, and how to test it using Kea."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:25
+msgid "从应用错误报告中获取应用性质"
+msgstr "Extracting Application Properties from Bug Reports"
+
+#: ../../source/part-keaUserManuel/tutorial.rst:27
+msgid "以下这个例子将展示如何从应用 `OmniNotes <https://github.com/federicoiosue/Omni-Notes/>`_ 中获取一个性质。"
+msgstr "The following example will show how to extract a property from the application `OmniNotes <https://github.com/federicoiosue/Omni-Notes/>`_."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:29
+msgid "`OmniNotes <https://github.com/federicoiosue/Omni-Notes/>`_ 是一个用于记录和管理笔记的应用。"
+msgstr "`OmniNotes <https://github.com/federicoiosue/Omni-Notes/>`_ is an application for recording and managing notes."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:31
+msgid "本样例来自该应用的错误报告 `#634 <https://github.com/federicoiosue/Omni-Notes/issues/634>`_, 用户表示，当他删除一个标签时，其他共享相同前缀的标签也被删除。"
+msgstr "This example is based on the bug report `#634 <https://github.com/federicoiosue/Omni-Notes/issues/634>`_ where a user reported that when they deleted a tag, other tags sharing the same prefix were also deleted."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:33
+msgid "然后，从这个错误报告中，可以得到一下应用性质："
+msgstr "From this bug report, the following application property can be derived:"
+
+#: ../../source/part-keaUserManuel/tutorial.rst:35
+msgid "在删除标签后，标签应该成功移除，笔记内容应保持不变。"
+msgstr "After deleting a tag, the tag should be successfully removed, and the note content should remain unchanged."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:37
+msgid "根据错误报告，你可以得到一个这样的应用性质："
+msgstr "Based on the bug report, you can derive the following application property:"
+
+#: ../../source/part-keaUserManuel/tutorial.rst:39
+msgid "**P (前置条件)**: 应该有标签存在。"
+msgstr "**P (Precondition)**: A tag should exist."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:40
+msgid "**I (交互场景)**: 从标签列表中移除某个标签。"
+msgstr "**I (Interaction Scenario)**: Remove a tag from the tag list."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:41
+msgid "**Q (后置条件)**: 指定的标签被删除，并且其余文本内容保持不变。"
+msgstr "**Q (Postcondition)**: The specified tag is deleted, and the rest of the text content remains unchanged."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:43
+msgid "接下来，让我们在Kea中使用性质描述语言定义该性质。"
+msgstr "Next, let's define this property in Kea using property description language."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:70
+msgid "``@precondition`` 装饰器定义了该性质应当开始被测试的状态节点。 代码中， ``d(resourceId=\"it.feio.android.omninotes:id/menu_tag\").exists()`` 检查了是否标签按钮存在于界面内， ``\"#\" in d(resourceId=\"it.feio.android.omninotes:id/detail_content\").info[\"text\"]`` 检查了是否笔记内容中存在“#”字符。"
+msgstr "The ``@precondition`` decorator defines the state node where this property should begin to be tested. In the code, ``d(resourceId=\"it.feio.android.omninotes:id/menu_tag\").exists()`` checks if the tag button exists on the screen, and ``\"#\" in d(resourceId=\"it.feio.android.omninotes:id/detail_content\").info[\"text\"]`` checks if the note content contains the '#' character."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:75
+msgid "``@rule()`` 装饰器定义了应用性质函数。 在本段代码中，交互场景为执行移除标签的操作。"
+msgstr "The ``@rule()`` decorator defines the application property function. In this segment of code, the interaction scenario is to perform the operation of removing a tag."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:78
+msgid "后置条件则由 ``assert`` 语句来完成定义。 这里，Kea检查是否指定的标签被删除并且保持其余文本不变。"
+msgstr "Postconditions are defined using the ``assert`` statement. Here, Kea checks whether the specified tag is deleted and the remaining text remains unchanged."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:81
+msgid "像这样一条性质就是应该由 `OmniNotes <https://github.com/federicoiosue/Omni-Notes/>`_ 应用所遵循的。"
+msgstr "A property like this should be followed by the `OmniNotes <https://github.com/federicoiosue/Omni-Notes/>`_ application."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:83
+msgid "此外，用户还可以定义一个初始化函数，在测试性质之前设置应用的初始状态。"
+msgstr "Additionally, users can define an initialization function to set the initial state of the application before testing the property."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:85
+msgid "为了实现该功能，用户可以使用一个 ``@initializer()`` 装饰器来定义一个初始化函数并且写一些UI操作指令，来引导应用完成初始化操作:"
+msgstr "To achieve this functionality, users can use an ``@initializer()`` decorator to define an initialization function and write UI operation instructions to guide the application to complete the initialization action:"
+
+#: ../../source/part-keaUserManuel/tutorial.rst:97
+msgid "在这里，上述代码可以自动通过UI操作来跳过 `OmniNotes <https://github.com/federicoiosue/Omni-Notes/>`_ 的欢迎页面。 你可以使用 ``@initializer()`` 装饰器来定义任意应用的初始化函数。这样，Kea 会在测试应用性质之前执行该初始化函数。 这样可以确保在每次测试开始时，应用都处于预期的初始状态。"
+msgstr "Here, the above code automatically skips the `OmniNotes <https://github.com/federicoiosue/Omni-Notes/>`_ welcome page through UI operations. You can use the ``@initializer()`` decorator to define an initialization function for any application. This way, Kea will execute this initialization function before testing the application property, ensuring that the application is in the expected initial state at the start of each test."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:103
+msgid "这个功能可以用来在测试应用性质之前设置应用程序的初始状态。 例如，可以使用此功能进行登录、向应用程序添加数据等。 如果不需要设置应用程序的初始状态，可以跳过此步骤。"
+msgstr "This function can be used to set the initial state of the application before testing properties. For example, it can be used for logging in, adding data to the application, etc. If setting the initial state of the application is not necessary, this step can be skipped."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:107
+msgid "此外，如果用户想使用主路径引导探索策略，需要使用 ``@mainPath()`` 装饰器定义一个函数来设置一个主路径函数。"
+msgstr "Moreover, if users want to use a main path guiding exploration strategy, they need to define a function using the ``@mainPath()`` decorator to set a main path function."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:109
+msgid "为了给该应用完成该步骤，可以使用以下代码来定义主路径。"
+msgstr "To complete this step for the application, you can use the following code to define the main path."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:121
+msgid "上述代码可以引导 Kea 在 Omninotes 中创建一条内容为“read a book #Tag1”的笔记。"
+msgstr "The above code guides Kea to create a note with the content 'read a book #Tag1' in Omninotes."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:125
+msgid "在主路径定义部分，只能使用 UI 操作命令来完成定义； 该函数目前不支持其他 Python 语句，例如 for 循环。 但我们认为这种方法足以实现主路径的功能。"
+msgstr "In the main path definition section, only UI operation commands can be used for the definition; this function currently does not support other Python statements, such as for loops. However, we believe this method is sufficient to implement the functionality of the main path."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:129
+msgid "太棒了！到此，你已经学会了如何使用性质描述语言从错误报告中提取并定义一个应用性质。"
+msgstr "Awesome! By now, you have learned how to extract and define an application property using property description language from a bug report."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:131
+msgid "要测试这个性质，用户需要将其放入定义的一个类中，该类继承自 ``KeaTest`` 类。"
+msgstr "To test this property, users need to place it in a defined class that inherits from the ``KeaTest`` class."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:177
+msgid "在这里，需要在继承自 ``KeaTest`` 类的 ``Test`` 类中编写定义该性质。"
+msgstr "Here, the property needs to be defined in a class ``Test`` that inherits from the ``KeaTest`` class."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:179
+msgid "我们将这个性质脚本文件 ``example_mainpath_property.py`` 放在 ``example`` 目录中。 用户可以通过运行以下命令来测试应用的该性质。"
+msgstr "We place this property script file ``example_mainpath_property.py`` in the ``example`` directory. Users can test the application property by running the following command."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:186
+msgid "当你尝试测试这个性质时，你可能会迅速发现两个新的错误，这些错误违反了该性质。 然后，你可以撰写相应的错误报告并提交给应用程序的开发人员。这两个错误目前都已被开发人员修复。"
+msgstr "When you attempt to test this property, you may quickly discover two new bugs that violate this property. You can then write the corresponding bug reports and submit them to the application's developers. Both of these bugs have now been fixed by the developers."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:189
+msgid "你可以查看这两个错误的报告："
+msgstr "You can check the reports of these two bugs:"
+
+#: ../../source/part-keaUserManuel/tutorial.rst:191
+msgid "`Bug Report: Note tag cannot be removed <https://github.com/federicoiosue/Omni-Notes/issues/942>`_."
+msgstr "`Bug Report: Note tag cannot be removed <https://github.com/federicoiosue/Omni-Notes/issues/942>`_."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:194
+msgid "`Bug Report: Deleting One Tag in a Note Affects Another Tag in the Same Note <https://github.com/federicoiosue/Omni-Notes/issues/949>`_."
+msgstr "`Bug Report: Deleting One Tag in a Note Affects Another Tag in the Same Note <https://github.com/federicoiosue/Omni-Notes/issues/949>`_."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:197
+msgid "从指定应用程序功能中提取性质"
+msgstr "Extracting Properties from Specific Application Functions"
+
+#: ../../source/part-keaUserManuel/tutorial.rst:198
+msgid "接下来是一个完整的示例，展示了如何从应用 `Amaze <https://github.com/TeamAmaze/AmazeFileManager>`_ 的功能中提取性质。"
+msgstr "Next is a complete example showcasing how to extract properties from the functionality of the application `Amaze <https://github.com/TeamAmaze/AmazeFileManager>`_."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:200
+msgid "`Amaze <https://github.com/TeamAmaze/AmazeFileManager>`_ 是一个文件管理应用程序。它提供了简洁直观的用户界面，允许用户轻松浏览、管理和操作文件。"
+msgstr "`Amaze <https://github.com/TeamAmaze/AmazeFileManager>`_ is a file management application that offers a simple and intuitive user interface, allowing users to easily browse, manage, and manipulate files."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:202
+msgid "在 Amaze 中，你可以创建一个文件夹，并且在创建后新文件夹应该存在。因此，你可以定义一个性质 ``create_folder_should_exist``。 这意味着当你想要创建一个文件夹时，它应该能够被成功创建。"
+msgstr "In Amaze, you can create a folder, and the new folder should exist after creation. Therefore, you can define a property ``create_folder_should_exist``. This means that when you want to create a folder, it should be successfully created."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:206
+msgid "你任然需要使用 ``@rule()`` 和 ``@precondition()`` 来完成应用性质的定义。 在这个样例中，前置条件 *P* 是创建新文件夹的按钮需要存在，并处于能够创建文件夹的界面上。 交互场景 *I* 是一些创建文件夹的操作事件序列。 最后，后置条件 *Q* 是检查新创建的文件夹是否存在。"
+msgstr "You still need to use ``@rule()`` and ``@precondition()`` to complete the definition of the application property. In this example, the precondition *P* is that the button to create a new folder should exist and be on the interface capable of creating a folder. The interaction scenario *I* is a sequence of events for creating a folder. Finally, the postcondition *Q* is to check whether the newly created folder exists."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:225
+msgid "太好了！你已经学会了如何从应用程序功能中编写应用性质。"
+msgstr "Great! You have learned how to write application properties from application functionality."
+
+#: ../../source/part-keaUserManuel/tutorial.rst:229
+msgid "用户可以在一个 ``.py`` 文件中编写一个应用程序的单个性质或多个性质。也可以将多个性质写在多个 .py 文件中。 如果选择第一种方法，用户需要确保在一个 .py 文件中最多只有一个 ``@initializer()`` 和一个 ``@mainPath()``， 同时有多个 ``@rule()`` 和 ``@precondition()`` 来对应不同的性质。测试用例的结构如下图所示（请根据需要添加图像或示例代码）。"
+msgstr "Users can write a single property or multiple properties for an application in one ``.py`` file. They can also write multiple properties in multiple .py files. If opting for the first method, users need to ensure there is at most one ``@initializer()`` and one ``@mainPath()`` in a .py file, with multiple ``@rule()`` and ``@precondition()`` corresponding to different properties. The structure of test cases is illustrated in the diagram below (please add images or sample code as necessary)."

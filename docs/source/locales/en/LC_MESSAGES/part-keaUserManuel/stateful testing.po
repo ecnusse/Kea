@@ -1,0 +1,117 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:2
+msgid "带状态的测试"
+msgstr "Stateful Testing"
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:4
+msgid "带状态的测试是一种软件测试方法，专注于系统在不同状态下的行为和响应。 其原理基于状态管理和状态转移，通过设计测试用例来覆盖各种状态及其转换，以确保系统在不同条件下的正确性和一致性。 此方法适合应用于需要保持状态前后一致的应用程序，通过设计带状态的测试用例， 确保系统在各种状态下正常运行，从而增强软件的可靠性和用户体验。"
+msgstr "Stateful testing is a software testing method that focuses on the behavior and responses of a system in different states. Its principles are based on state management and state transitions, by designing test cases to cover various states and their transitions to ensure the correctness and consistency of the system under different conditions. This method is suitable for applications that need to maintain consistency before and after a state, ensuring that the system operates normally under various states through the design of stateful test cases, thereby enhancing software reliability and user experience."
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:9
+msgid "在移动应用中，一些功能可以根据特定的输入或操作从一个状态转换到另一个状态。因此，需要额外的数据结构来支持这一点。"
+msgstr "In mobile applications, certain functionalities can transition from one state to another based on specific inputs or actions. Therefore, additional data structures are needed to support this."
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:11
+msgid "在 Kea 中，当你编写需要记录状态信息的性质时，可以使用带状态的测试。如以下代码所示，当你想在设备上进行文件或文件夹的相关操作时，例如创建文件、删除文件或重命名文件。"
+msgstr "In Kea, when you write properties that require recording state information, you can use stateful testing. For example, when you want to perform file or folder operations on a device, such as creating a file, deleting a file, or renaming a file."
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:13
+msgid "你可以编写以下代码："
+msgstr "You can write the following code:"
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:19
+msgid "Bundle 类包含以下函数："
+msgstr "The Bundle class includes the following functions:"
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:21
+msgid "add(value: str)"
+msgstr "add(value: str)"
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:23
+msgid "向当前的 Bundle 对象内添加一个新值。"
+msgstr "Adds a new value to the current Bundle object."
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:29
+msgid "delete(value: str)"
+msgstr "delete(value: str)"
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:31
+msgid "从当前的 Bundle 对象中删除一个值。"
+msgstr "Removes a value from the current Bundle object."
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:37
+msgid "update(value: str, new_value: str)"
+msgstr "update(value: str, new_value: str)"
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:39
+msgid "将当前对象中 ``value`` 的值更新为 ``new_value``"
+msgstr "Updates the value of ``value`` in the current object to ``new_value``."
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:45
+msgid "get_all_data()"
+msgstr "get_all_data()"
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:47
+msgid "该函数会返回当前 Bundle 对象存储的值列表。"
+msgstr "This function returns a list of values stored in the current Bundle object."
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:53
+msgid "get_random_value(value_len: int = 10)"
+msgstr "get_random_value(value_len: int = 10)"
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:55
+msgid "该函数会随机生成一个值并返回。因此，你可以在使用 ``add`` 和 ``update`` 函数之前调用它。"
+msgstr "This function randomly generates a value and returns it. Therefore, you can call it before using the ``add`` and ``update`` functions."
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:62
+msgid "get_random_data()"
+msgstr "get_random_data()"
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:64
+msgid "该函数会从当前 Bundle 对象存储的值中随机选择一个值并返回。因此，你可以在使用 delete 和 update 函数之前调用它。"
+msgstr "This function randomly selects a value from the values stored in the current Bundle object and returns it. Therefore, you can call it before using the delete and update functions."
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:71
+msgid "接下来是一个完整的示例，展示了如何在定义性质时使用 Kea 的状态测试。这个示例将展示如何在应用程序 `Amaze <https://github.com/TeamAmaze/AmazeFileManager>`_ 中使用状态测试， ``Amaze`` 是一个文件管理应用， 允许用户在设备上操作文件或文件夹。这些性质是为了测试文件系统的数据操作是否存在错误而定义的。 在这种情况下，带状态的测试至关重要，你可以使用 ``Bundle`` 来存储 Kea 创建的所有文件夹，并在整个测试过程中对它们进行操作。"
+msgstr "Next is a complete example that demonstrates how to use Kea's state testing when defining properties. This example will show how state testing is used in the application `Amaze <https://github.com/TeamAmaze/AmazeFileManager>`_, which is a file management application that allows users to operate files or folders on their devices. These properties are defined to test whether there are errors in the data operations of the file system. In this case, stateful testing is crucial; you can use ``Bundle`` to store all folders created by Kea and operate on them throughout the testing process."
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:76
+msgid "首先，你可以定义一个 ``create_file_should_exist`` 性质。该性质的实现步骤如下：1. 返回到主目录。 2.创建一个文件。 3.检查新文件是否存在。 这个性质可以确保在创建文件后，文件确实存在于预期的位置。"
+msgstr "First, you can define a property called ``create_file_should_exist``. The steps to implement this property are as follows: 1. Return to the main directory. 2. Create a file. 3. Check if the new file exists. This property ensures that the file indeed exists in the expected location after it has been created."
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:82
+msgid "创建文件夹截图"
+msgstr "Create Folder Screenshot"
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:102
+msgid "接下来, 你可以定义一个 ``change_filename_should_follow`` 性质。 该性质的实现步骤如下：返回到主目录，随机选择一个文件，改变它的名称，并检查原来名称的文件是否消失并且新名称的文件是否存在。"
+msgstr "Next, you can define a property called ``change_filename_should_follow``. The steps to implement this property are: Return to the main directory, randomly select a file, change its name, and check if the original named file has disappeared and the newly named file exists."
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:107
+msgid "重命名文件夹截图"
+msgstr "Rename Folder Screenshot"
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:137
+msgid "最后, 你可以定义一个 ``del_file_should_disappear`` 性质。返回到主目录，删除一个文件，并检查该文件是否存在。"
+msgstr "Finally, you can define a property called ``del_file_should_disappear``. Return to the main directory, delete a file, and check if that file exists."
+
+#: ../../source/part-keaUserManuel/stateful testing.rst:142
+msgid "删除文件夹截图"
+msgstr "Delete Folder Screenshot"

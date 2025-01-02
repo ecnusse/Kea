@@ -1,0 +1,77 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-keaUserManuel/envirnment_setup.rst:2
+msgid "环境配置"
+msgstr "Environment Configuration"
+
+#: ../../source/part-keaUserManuel/envirnment_setup.rst:4
+msgid "跟随下列指示配置鸿蒙或安卓环境。"
+msgstr "Follow the instructions below to configure the HarmonyOS or Android environment."
+
+#: ../../source/part-keaUserManuel/envirnment_setup.rst:8
+msgid "环境配置步骤"
+msgstr "Environment Configuration Steps"
+
+#: ../../source/part-keaUserManuel/envirnment_setup.rst:10
+msgid "确保 hdc 或 adb 命令可用"
+msgstr "Ensure that the hdc or adb commands are available."
+
+#: ../../source/part-keaUserManuel/envirnment_setup.rst:12
+msgid "Kea 依赖 hdc 与鸿蒙设备进行交互。 使用adb 命令与安卓设备进行交互。需要将 hdc 和 adb 工具路径添加到 PATH 环境变量中让其生效。"
+msgstr "Kea relies on hdc to interact with HarmonyOS devices. Use adb commands to interact with Android devices. You need to add the paths for the hdc and adb tools to the PATH environment variable for them to work."
+
+#: ../../source/part-keaUserManuel/envirnment_setup.rst:14
+msgid "连接设备或在电脑上启动模拟器"
+msgstr "Connect the device or start the emulator on the computer."
+
+#: ../../source/part-keaUserManuel/envirnment_setup.rst:21
+msgid "通过 DevEco Studio 配置鸿蒙环境"
+msgstr "Configure the HarmonyOS environment through DevEco Studio."
+
+#: ../../source/part-keaUserManuel/envirnment_setup.rst:28
+msgid "通过 Android Studio 配置安卓环境"
+msgstr "Configure the Android environment through Android Studio."
+
+#: ../../source/part-keaUserManuel/envirnment_setup.rst:36
+msgid "使用命令行配置安卓环境"
+msgstr "Configure the Android environment using the command line."
+
+#: ../../source/part-keaUserManuel/envirnment_setup.rst:38
+msgid "**步骤1：在主机上安装并配置Android SDK环境**"
+msgstr "**Step 1: Install and configure the Android SDK environment on the host**"
+
+#: ../../source/part-keaUserManuel/envirnment_setup.rst:40
+msgid ":doc:`androidSDK/Linux`"
+msgstr ":doc:`androidSDK/Linux`"
+
+#: ../../source/part-keaUserManuel/envirnment_setup.rst:42
+msgid ":doc:`androidSDK/Windows`"
+msgstr ":doc:`androidSDK/Windows`"
+
+#: ../../source/part-keaUserManuel/envirnment_setup.rst:44
+msgid ":doc:`androidSDK/Mac`"
+msgstr ":doc:`androidSDK/Mac`"
+
+#: ../../source/part-keaUserManuel/envirnment_setup.rst:46
+msgid "**步骤2：创建并运行模拟器**"
+msgstr "**Step 2: Create and run the emulator**"
+
+#: ../../source/part-keaUserManuel/envirnment_setup.rst:48
+msgid ":doc:`androidSDK/emulator`"
+msgstr ":doc:`androidSDK/emulator`"

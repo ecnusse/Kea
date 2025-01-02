@@ -1,0 +1,227 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:4
+msgid "RandomPolicy"
+msgstr "RandomPolicy"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:6
+msgid "RandomPolicy类是随机事件生成策略的核心类。 主要负责基于当前应用状态生成随机事件。 该类提供了完整的随机事件生成策略的事件生成过程。 RandomPolicy所包含的主要方法有："
+msgstr "The RandomPolicy class is the core class for random event generation strategies. It is mainly responsible for generating random events based on the current application state. This class provides a complete event generation process for the random event generation strategy. The main methods included in RandomPolicy are:"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:11
+msgid "根据当前状态生成一个随机事件。"
+msgstr "Generate a random event based on the current state."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:12
+msgid "根据配置重启或重新安装应用。"
+msgstr "Restart or reinstall the application based on the configuration."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:13
+msgid "在满足预条件的情况下，根据随机性决定是否检查性质。"
+msgstr "Decide whether to check properties based on randomness if preconditions are met."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:16
+msgid "随机事件生成策略的介绍"
+msgstr "Introduction to the Random Event Generation Strategy"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:18
+msgid "随机事件生成策略是一种简单有效的策略，它可以在没有明确指导路径的情况下探索应用的状态空间。 具体来说，该策略会根据当前应用的状态随机生成事件，以期达到未探索的状态或触发应用中的某些性质。 这种策略特别适用于那些没有明确测试路径或需要广泛覆盖应用状态的场景。"
+msgstr "The random event generation strategy is a simple and effective strategy that can explore the application's state space without a clear guiding path. Specifically, this strategy randomly generates events based on the current state of the application, aiming to reach unexplored states or trigger certain properties within the application. This strategy is particularly suitable for scenarios that lack explicit testing paths or require broad coverage of application states."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:25
+msgid "随机探索策略的流程图"
+msgstr "Flowchart of the Random Exploration Strategy"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:27
+msgid "具体执行步骤如下："
+msgstr "The specific execution steps are as follows:"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:29
+msgid "步骤1：检查是否满足生成事件的条件，即事件计数是否为首次生成事件或者上一个事件是否为应用重新安装事件。"
+msgstr "Step 1: Check if the conditions for generating an event are met, namely whether the event count is the first event generated or whether the previous event was an application reinstall event."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:31
+msgid "步骤2：如果满足条件，则运行初始化器并获取设备当前状态。"
+msgstr "Step 2: If the conditions are met, run the initializer and obtain the current state of the device."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:33
+msgid "步骤3：判断当前状态是否为空，如果是，则等待5秒并返回一个名称为\"BACK\"的键事件。"
+msgstr "Step 3: Determine if the current state is empty; if it is, wait for 5 seconds and return a key event named \"BACK.\""
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:35
+msgid "步骤4：检查事件计数是否是重启应用事件数量的倍数，如果是，则根据配置决定是清除并重新安装应用还是仅仅重启应用。"
+msgstr "Step 4: Check whether the event count is a multiple of the number of restart application events. If it is, decide based on the configuration whether to clear and reinstall the application or merely restart the application."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:37
+msgid "步骤5：获取所有满足预条件的规则，如果存在这样的规则，则记录当前时间，并根据随机性决定是否检查性质。"
+msgstr "Step 5: Retrieve all rules that meet the preconditions. If such rules exist, log the current time and decide whether to check properties based on randomness."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:39
+msgid "步骤6：如果决定检查性质，则执行性质检查。如果检查后需要重启应用，则记录日志并返回应用杀进程事件；否则，不重启应用。"
+msgstr "Step 6: If it is decided to check properties, perform the property check. If the application needs to be restarted after the check, log the event and return an application kill process event; otherwise, do not restart the application."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:41
+msgid "步骤7：如果因为随机性决定不检查性质，则记录日志并继续。"
+msgstr "Step 7: If it is decided not to check properties due to randomness, log the event and continue."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:43
+msgid "步骤8：基于当前应用状态生成一个随机事件。这包括将应用移至前台（如果需要），获取当前状态可能的输入事件，并添加返回键和旋转设备事件。"
+msgstr "Step 8: Generate a random event based on the current application state. This includes bringing the application to the foreground (if needed), retrieving possible input events for the current state, and adding back key and rotate device events."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:45
+msgid "步骤9：从可能的事件列表中随机选择一个事件。如果选择的是旋转设备事件，则根据上次旋转事件的方向选择相反方向的旋转事件。"
+msgstr "Step 9: Randomly select an event from the list of possible events. If the selected event is a rotate device event, select an opposing rotate event based on the direction of the last rotate event."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:47
+msgid "步骤10：返回生成的随机事件，该事件将被用于与应用的交互。"
+msgstr "Step 10: Return the generated random event, which will be used for interaction with the application."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:50
+msgid "随机事件生成策略的伪代码"
+msgstr "Pseudocode for the Random Event Generation Strategy"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:53
+msgid ":math:`\\textbf{Algorithm:} Random Event Generation`"
+msgstr ":math:`\\textbf{Algorithm:} Random Event Generation`"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:55
+msgid ":math:`\\textbf{Input:} None`"
+msgstr ":math:`\\textbf{Input:} None`"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:57
+msgid ":math:`\\textbf{Output:} Generated Event`"
+msgstr ":math:`\\textbf{Output:} Generated Event`"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:83
+msgid "RandomPolicy类中的数据结构"
+msgstr "Data Structures in the RandomPolicy Class"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:85
+msgid "**event_count**"
+msgstr "**event_count**"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:87
+msgid "event_count整型，记录了已经生成的事件数量。"
+msgstr "event_count is an integer that records the number of events that have been generated."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:89
+msgid "**number_of_events_that_restart_app**"
+msgstr "**number_of_events_that_restart_app**"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:91
+msgid "number_of_events_that_restart_app整型，记录了在重启应用前需要生成的事件数量。"
+msgstr "number_of_events_that_restart_app is an integer that records the number of events that need to be generated before restarting the application."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:93
+msgid "**clear_and_reinstall_app**"
+msgstr "**clear_and_reinstall_app**"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:95
+msgid "clear_and_reinstall_app布尔型，指示是否在重启应用前清除并重新安装应用。"
+msgstr "clear_and_reinstall_app is a boolean indicating whether to clear and reinstall the application before restarting it."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:97
+msgid "**restart_app_after_check_property**"
+msgstr "**restart_app_after_check_property**"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:99
+msgid "restart_app_after_check_property布尔型，指示在检查性质后是否重启应用。"
+msgstr "restart_app_after_check_property is a boolean indicating whether to restart the application after checking properties."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:102
+msgid "RandomPolicy类中的成员方法"
+msgstr "Member Methods in the RandomPolicy Class"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:105
+msgid "生成随机事件的方法"
+msgstr "Method for Generating Random Events"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:107
+msgid "**generate_event**"
+msgstr "**generate_event**"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:109
+msgid "``generate_event`` 方法用于生成一个随机事件。"
+msgstr "The ``generate_event`` method is used to generate a random event."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:0
+msgid "参数"
+msgstr "Parameters"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:112
+#: ../../source/part-designDocument/InputGenerator/random.rst:152
+msgid "无"
+msgstr "None"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:0
+msgid "返回"
+msgstr "Returns"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:115
+#: ../../source/part-designDocument/InputGenerator/random.rst:155
+msgid "生成的事件对象。"
+msgstr "The generated event object."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:0
+msgid "核心流程"
+msgstr "Core Process"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:118
+msgid "检查是否需要运行初始化器并获取当前应用状态。"
+msgstr "Check whether it is necessary to run the initializer and obtain the current application state."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:119
+msgid "根据事件计数和设置决定是否重启应用或清除并重新安装应用。"
+msgstr "Decide whether to restart the application or clear and reinstall the application based on event count and settings."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:120
+msgid "检查是否有满足前提条件的规则，并根据随机性决定是否检查性质。"
+msgstr "Check whether there are rules that meet the preconditions, and decide whether to check properties based on randomness."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:121
+msgid "生成基于当前状态的随机事件。"
+msgstr "Generate a random event based on the current state."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:145
+msgid "生成随机事件的成员方法"
+msgstr "Member Methods for Generating Random Events"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:147
+msgid "**generate_random_event_based_on_current_state**"
+msgstr "**generate_random_event_based_on_current_state**"
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:149
+msgid "``generate_random_event_based_on_current_state`` 方法用于基于当前状态生成一个随机事件。"
+msgstr "The ``generate_random_event_based_on_current_state`` method is used to generate a random event based on the current state."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:158
+msgid "获取当前应用状态。"
+msgstr "Obtain the current application state."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:159
+msgid "如果需要，将应用移至前台。"
+msgstr "If necessary, bring the application to the foreground."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:160
+msgid "获取当前状态可能的输入事件。"
+msgstr "Retrieve possible input events for the current state."
+
+#: ../../source/part-designDocument/InputGenerator/random.rst:161
+msgid "根据随机选择生成一个事件。"
+msgstr "Generate an event based on a random selection."

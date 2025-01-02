@@ -1,0 +1,1241 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:2
+msgid "HMDroidbot"
+msgstr "HMDroidbot"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:4
+msgid "HMDroidbot是kea在应用探索阶段与安卓设备交互的类。主要提供生成事件，截图等方法。HMDroidbot同时提供一个UTG(UI Transition Graph, 事件迁移图)。 可以基于事件迁移图，以基于模型的测试(MBT, Model Based Testing)编写更高级的应用探索策略。"
+msgstr "HMDroidbot is a class for interaction with Android devices during the application exploration phase of Kea. It mainly provides methods for generating events, taking screenshots, etc. HMDroidbot also provides a UTG (UI Transition Graph) that can be used to create more advanced application exploration strategies based on property-based testing (MBT, Model Based Testing)."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:9
+msgid "HMDroidbot为本项目工作的一部份，为队伍中梁锡贤同学开发，开发过程参考项目为droidbot，应计入本项目工作。"
+msgstr "HMDroidbot is part of the work for this project, developed by team member Liang Xixian, with the reference project being droidbot and should be counted as part of this project."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:11
+msgid "https://github.com/ecnusse/HMDroidbot"
+msgstr "https://github.com/ecnusse/HMDroidbot"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:14
+msgid "HMDroidbot项目架构"
+msgstr "HMDroidbot Project Architecture"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:16
+msgid "HMDroidbot项目架构组成部分有："
+msgstr "The components of the HMDroidbot project architecture include:"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:18
+msgid "AppHM： 用于解析鸿蒙应用安装包(.hap)或鸿蒙包(package)。提供EntryAbility等信息。"
+msgstr "AppHM: Used to parse HarmonyOS application installation packages (.hap) or Harmony packages. Provides information such as EntryAbility."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:19
+msgid "DeviceHM： 一个鸿蒙设备的抽象，提供设备层面的一些操作接口，如发送文件，输入内容，旋转设备，获取前台应用等。"
+msgstr "DeviceHM: An abstraction of a HarmonyOS device, providing some operational interfaces at the device level, such as sending files, inputting content, rotating the device, and retrieving the foreground application."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:20
+msgid "HDC： 鸿蒙设备hdc指令的抽象，提供通过hdc与设备交互的接口，如shell，pull_file等。DeviceHM依赖于本类。"
+msgstr "HDC: An abstraction of HarmonyOS device hdc commands, providing interfaces for interacting with the device via hdc, such as shell and pull_file. DeviceHM depends on this class."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:21
+msgid "Dumper： 鸿蒙设备获取界面布局的抽象类，HDC依赖于该类"
+msgstr "Dumper: An abstract class for obtaining the layout of the interface of a HarmonyOS device, on which HDC depends."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:22
+msgid "hmdriver2： 鸿蒙设备测试工具hmdriver2，为DeviceHM拓展提供输入事件等功能。"
+msgstr "hmdriver2: A testing tool for HarmonyOS devices, extending DeviceHM to provide functionalities such as input events."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:23
+msgid "InputManager： 输入控制器，提供策略选择等功能。"
+msgstr "InputManager: An input controller that provides functionalities such as strategy selection."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:24
+msgid "InputPolicy： 输入策略，提供多种输入策略，如随机策略，大模型指引策略等，用于规定探索应用的规则。"
+msgstr "InputPolicy: Input strategies providing various input strategies, such as random strategies, large model guidance strategies, etc., used to define the exploration rules for applications."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:25
+msgid "EventLog： 事件日志的抽象，执行事件输入前，事件输入后的记录操作，以及发送事件的操作。"
+msgstr "EventLog: An abstraction of the event log that records operations before and after event input, as well as operations for sending events."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:26
+msgid "InputEvent： 输入事件的类，包含点击、长按、输入等事件。"
+msgstr "InputEvent: A class for input events, including click, long press, input events, etc."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:27
+msgid "UTG： 事件迁移图(UI Transition Graph)的类，用于应用建模，可以被输入策略使用进行更复杂的决策。"
+msgstr "UTG: A class for the UI Transition Graph, used for application modeling, can be used by input strategies for more complex decision-making."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:28
+msgid "DeviceState： 用于应用界面抽象的类，对应用界面进行不同层次的抽象，提供给UTG类进行建模。"
+msgstr "DeviceState: A class for the abstraction of the application interface, providing different levels of abstraction to the UTG class for modeling."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:33
+msgid "HMDroidbot 项目架构图"
+msgstr "HMDroidbot Project Architecture Diagram"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:35
+msgid "因为InputManager, InputPolicy与Kea的输入策略重点相关，故另开章节进行介绍。hmdriver2为参考的框架，未做开发修改。 以下介绍除上述三个功能外的其他组成部分。其中EventLog、InputEvent、UTG基本复用droidbot。"
+msgstr "Since InputManager, InputPolicy, and Kea's input strategies are closely related, a separate section will be introduced. hmdriver2 is a reference framework and has not been modified for development. The following introduces other components apart from the aforementioned three functions. Among them, EventLog, InputEvent, and UTG essentially reuse droidbot."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:39
+msgid "AppHM"
+msgstr "AppHM"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:41
+msgid "AppHM是一个鸿蒙应用的抽象，用于分析一个鸿蒙应用。对外提供对鸿蒙应用的分析方法，获取应用入口(EntryAbility)等信息。"
+msgstr "AppHM is an abstraction of a HarmonyOS application, used to analyze a HarmonyOS application. It provides external methods for analyzing HarmonyOS applications and obtaining application entry (EntryAbility) information."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:43
+msgid "AppHM会根据传入的应用是一个安装包(.hap)或一个包名(如com.example.app)，选择对应的方法进行初始化。"
+msgstr "AppHM will choose the appropriate initialization method based on whether the passed application is an installation package (.hap) or a package name (e.g., com.example.app)."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:54
+msgid "以下是AppHM的方法和文档："
+msgstr "The following are the methods and documentation for AppHM:"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "方法"
+msgstr "Methods"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "输入"
+msgstr "Input"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "输出"
+msgstr "Output"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "简介"
+msgstr "Introduction"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "hap_init"
+msgstr "hap_init"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "app_path:str"
+msgstr "app_path:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "给定一个安装包路径，通过安装包初始化app"
+msgstr "Given a path to an installation package, initialize the app using the package."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "load_hap_info"
+msgstr "load_hap_info"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "pack_info:Dict"
+msgstr "pack_info:Dict"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "对安装包进行解压缩，读取其中信息"
+msgstr "Decompress the installation package and read the information inside."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "package_init"
+msgstr "package_init"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "package_name:str"
+msgstr "package_name:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "通过包名初始化app"
+msgstr "Initialize the app using the package name."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "dumpsys_package_info"
+msgstr "dumpsys_package_info"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "package_info:Dict"
+msgstr "package_info:Dict"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "从dumpsys指令获取包信息"
+msgstr "Obtain package information from the dumpsys command."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_package_name"
+msgstr "get_package_name"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取app包名"
+msgstr "Get the app package name."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_start_intent"
+msgstr "get_start_intent"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "start_intent:Intent"
+msgstr "start_intent:Intent"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取启动应用的Intent"
+msgstr "Get the Intent to start the application."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_stop_intent"
+msgstr "get_stop_intent"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取停止应用的Intent"
+msgstr "Get the Intent to stop the application."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_hashes"
+msgstr "get_hashes"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "hashes:List[str]"
+msgstr "hashes:List[str]"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取应用安装包的哈希"
+msgstr "Get the hash of the application installation package."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:69
+msgid "DeviceHM"
+msgstr "DeviceHM"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:71
+msgid "DeviceHM是一个鸿蒙设备的抽象，提供设备层面的一些操作接口，如发送文件，输入内容，旋转设备，获取前台应用等。"
+msgstr "DeviceHM is an abstraction of a HarmonyOS device, providing some operational interfaces at the device level, such as sending files, inputting content, rotating the device, and retrieving the foreground application."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:73
+msgid "以下是DeviceHM的方法和文档。"
+msgstr "The following are the methods and documentation for DeviceHM."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:77
+msgid "设备适配器(adapters)是终端与应用进行交互的适配器，DeviceHM可以通过多种不同的工具与终端交互。 如HDC、hmdriver2等。"
+msgstr "Device adapters are the adapters for interaction between the terminal and the application, and DeviceHM can interact with the terminal through various tools, such as HDC, hmdriver2, etc."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "check_connectivity"
+msgstr "check_connectivity"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "检查设备和设备适配器是否可用"
+msgstr "Check whether the device and device adapters are available."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "set_up"
+msgstr "set_up"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "初始化设备和设备适配器"
+msgstr "Initialize the device and device adapters."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "connect"
+msgstr "connect"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "连接设备和设备适配器"
+msgstr "Connect the device and device adapters."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "disconnect"
+msgstr "disconnect"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "断开设备和设备适配器"
+msgstr "Disconnect the device and device adapters."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "is_foreground"
+msgstr "is_foreground"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "app:AppHM"
+msgstr "app:AppHM"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "Boolean"
+msgstr "Boolean"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "检查某个应用是否在设备中处于前台状态"
+msgstr "Check whether a certain application is in the foreground state on the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "model_number"
+msgstr "model_number"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "model_number:str"
+msgstr "model_number:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取设备的设备号"
+msgstr "Get the device number of the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "device_name"
+msgstr "device_name"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "device_name:str"
+msgstr "device_name:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取设备名称"
+msgstr "Get the device name."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_release_version"
+msgstr "get_release_version"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "sdk_api:str"
+msgstr "sdk_api:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取设备的SDK API版本"
+msgstr "Get the SDK API version of the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_display_info"
+msgstr "get_display_info"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "display_info:Dict"
+msgstr "display_info:Dict"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取设备的分辨率"
+msgstr "Get the resolution of the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_width"
+msgstr "get_width"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "width:str"
+msgstr "width:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取设备横向分辨率"
+msgstr "Get the horizontal resolution of the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_height"
+msgstr "get_height"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "height:str"
+msgstr "height:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取设备纵向分辨率"
+msgstr "Get the vertical resolution of the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "unlock"
+msgstr "unlock"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "解锁设备"
+msgstr "Unlock the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "send_intent"
+msgstr "send_intent"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "intent:Intent"
+msgstr "intent:Intent"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "向设备中发送一个Intent"
+msgstr "Send an Intent to the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "send_evnet"
+msgstr "send_event"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "event:InputEvent"
+msgstr "event:InputEvent"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "向设备发送一个事件"
+msgstr "Send an event to the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "start_app"
+msgstr "start_app"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "启动一个应用"
+msgstr "Start an application."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_top_activity_name"
+msgstr "get_top_activity_name"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "top_ability_name"
+msgstr "top_ability_name"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取设备的栈顶Ability名称"
+msgstr "Get the top Ability name of the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_current_activity_stack"
+msgstr "get_current_activity_stack"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "current_ability_stack:List[str]"
+msgstr "current_ability_stack:List[str]"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取设备的Ability栈"
+msgstr "Get the Ability stack of the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "install_app"
+msgstr "install_app"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "安装一个应用"
+msgstr "Install an application."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "uninstall_app"
+msgstr "uninstall_app"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "卸载一个应用"
+msgstr "Uninstall an application."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "push_file"
+msgstr "push_file"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "local_file:Path, remote_dir:Path"
+msgstr "local_file:Path, remote_dir:Path"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "推送一个文件到设备上"
+msgstr "Push a file to the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "pull_file"
+msgstr "pull_file"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "remote_file:Path, local_file:Path"
+msgstr "remote_file:Path, local_file:Path"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "从设备拉取一个文件"
+msgstr "Pull a file from the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "take_screenshot"
+msgstr "take_screenshot"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "对设备进行截图"
+msgstr "Take a screenshot of the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_current_state"
+msgstr "get_current_state"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "action_count:int"
+msgstr "action_count:int"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "current_state:DeviceState"
+msgstr "current_state:DeviceState"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取当前设备的状态抽象"
+msgstr "Get the current state abstraction of the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "view_touch"
+msgstr "view_touch"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "x:int, y:int"
+msgstr "x:int, y:int"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "根据坐标执行点击操作"
+msgstr "Perform a click operation based on the coordinates."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "view_long_touch"
+msgstr "view_long_touch"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "x:int, y:int, duration:float"
+msgstr "x:int, y:int, duration:float"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "根据坐标执行长按操作"
+msgstr "Perform a long press operation based on the coordinates."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "view_drag"
+msgstr "view_drag"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "start_xy:List[int], end_xy:List[int], duration:float"
+msgstr "start_xy:List[int], end_xy:List[int], duration:float"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "根据坐标执行拖动操作"
+msgstr "Perform a drag operation based on the coordinates."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "view_append_text"
+msgstr "view_append_text"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "text:str"
+msgstr "text:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "添加一个文本"
+msgstr "Append a text."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "view_set_text"
+msgstr "view_set_text"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "设置一个文本"
+msgstr "Set a text."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "key_press"
+msgstr "key_press"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "key_code"
+msgstr "key_code"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "根据事件代码输入一个事件"
+msgstr "Input an event based on the event code."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_views"
+msgstr "get_views"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取当前设备上的控件"
+msgstr "Get the controls on the current device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_random_port"
+msgstr "get_random_port"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "port:int"
+msgstr "port:int"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "随机获取一个可用端口"
+msgstr "Get a random available port."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:116
+msgid "HDC"
+msgstr "HDC"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:118
+msgid "鸿蒙设备hdc指令的抽象，提供通过hdc与设备交互的接口，如shell，pull_file等。DeviceHM依赖于本类。"
+msgstr "HDC: An abstraction of HarmonyOS device hdc commands, providing interfaces for interacting with the device via hdc, such as shell and pull_file. DeviceHM depends on this class."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:120
+msgid "鸿蒙设备通过Dumper类获取应用的界面。Dumper类是一个抽象类，共有两种实现：UitestDumper和HiDumper。"
+msgstr "The HarmonyOS device obtains the application's interface through the Dumper class. The Dumper class is an abstract class with two implementations: UitestDumper and HiDumper."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:125
+msgid "Dumper 类与 HDC 类的关系示意"
+msgstr "Diagram of the relationship between Dumper class and HDC class."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:128
+msgid "以下是HDC的方法和文档。"
+msgstr "The following are the methods and documentation for HDC."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "初始化HDC"
+msgstr "Initialize HDC."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "run_cmd"
+msgstr "run_cmd"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "执行一个 hdc 命令行命令"
+msgstr "Execute a hdc command line command."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "shell"
+msgstr "shell"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "执行一个 hdc shell 命令行命令"
+msgstr "Execute a hdc shell command line command."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "连接HDC"
+msgstr "Connect to HDC."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "断开HDC"
+msgstr "Disconnect HDC."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "检查HDC是否可用"
+msgstr "Check if HDC is available."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_property"
+msgstr "get_property"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "property_name"
+msgstr "property_name"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "preoperty"
+msgstr "property"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "通过hdc获取设备的属性"
+msgstr "Get the device's properties through hdc."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_model_number"
+msgstr "get_model_number"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取设备的模型号"
+msgstr "Get the device's model number."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_sdk_version"
+msgstr "get_sdk_version"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "sdk_version:str"
+msgstr "sdk_version:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取SDK版本"
+msgstr "Get the SDK version."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_device_name"
+msgstr "get_device_name"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_installed_apps"
+msgstr "get_installed_apps"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "installed_apps:List[str]"
+msgstr "installed_apps:List[str]"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取已安装的应用"
+msgstr "Get the installed applications."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_display_density"
+msgstr "get_display_density"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "dpi:str"
+msgstr "dpi:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取设备显示的dpi"
+msgstr "Get the display dpi of the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "通过hdc解锁设备"
+msgstr "Unlock the device through hdc."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "touch"
+msgstr "touch"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "通过hdc根据坐标执行点击操作"
+msgstr "Perform a click operation based on the coordinates through hdc."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "long_touch"
+msgstr "long_touch"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "通过hdc根据坐标执行长按操作"
+msgstr "Perform a long press operation based on the coordinates through hdc."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "drag"
+msgstr "drag"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "通过hdc根据坐标执行拖动操作"
+msgstr "Perform a drag operation based on the coordinates through hdc."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "type"
+msgstr "type"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "通过hdc添加一个文本"
+msgstr "Add a text through hdc."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "press"
+msgstr "press"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "通过hdc根据事件代码输入一个事件"
+msgstr "Input an event based on the event code through hdc."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "通过hdc推送一个文件到设备上"
+msgstr "Push a file to the device via hdc."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "通过hdc从设备拉取一个文件"
+msgstr "Pull a file from the device via hdc."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "output_dir"
+msgstr "output_dir"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取当前页面的控件"
+msgstr "Get the controls on the current page."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:156
+msgid "Dumper主要从设备中获取当前页面的布局，并转换为安卓风格使droidbot能使用。"
+msgstr "Dumper mainly obtains the layout of the current page from the device and converts it into an Android style for use by droidbot."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:158
+msgid "以下是UiTestDumper的实现："
+msgstr "The following are the implementations of UiTestDumper:"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "dump_view"
+msgstr "dump_view"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "view_path"
+msgstr "view_path"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "通过uitest获取layout json，并返回"
+msgstr "Obtain layout json through uitest and return."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "preprocess_views"
+msgstr "preprocess_views"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "views_path"
+msgstr "views_path"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "处理views，转换为可双向查询的树结构"
+msgstr "Process views and convert them into a bi-directional query tree structure."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_adb_view"
+msgstr "get_adb_view"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "raw_view:Dict"
+msgstr "raw_view:Dict"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "处理views，转换为安卓风格方便droidbot使用"
+msgstr "Process views and convert them into an Android style for easy use by droidbot."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_view"
+msgstr "get_view"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "views:Dict"
+msgstr "views:Dict"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取views"
+msgstr "Get the views."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:168
+msgid "以下是HiDumper的实现："
+msgstr "The following are the implementations of HiDumper:"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_focus_window"
+msgstr "get_focus_window"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "focus_window"
+msgstr "focus_window"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取当前前台窗口"
+msgstr "Get the current foreground window."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "dump_target_window_to_file"
+msgstr "dump_target_window_to_file"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "focus_window:int, fp:IO"
+msgstr "focus_window:int, fp:IO"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "拉取目标窗口的布局入文件中"
+msgstr "Dump the layout of the target window into a file."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "dump_layout"
+msgstr "dump_layout"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "fp:IO"
+msgstr "fp:IO"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "根据hidumper的输出处理布局为树结构"
+msgstr "Process the layout output from HiDumper into a tree structure."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "adapt_hierachy"
+msgstr "adapt_hierarchy"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "处理布局为安卓风格"
+msgstr "Process layout into Android style."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "“get_views\""
+msgstr "\"get_views\""
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:181
+msgid "InputEvent"
+msgstr "InputEvent"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:183
+msgid "InputEvent是一个抽象类，其他所有的事件实现在此抽象接口上。"
+msgstr "InputEvent is an abstract class, and all other events are implemented on this abstract interface."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:188
+msgid "InputEvent接口和其实现"
+msgstr "InputEvent interface and its implementations."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:190
+msgid "以下是InputEvent抽象类的方法："
+msgstr "The following are the methods of the InputEvent abstract class:"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "send"
+msgstr "send"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "device:HMDevice"
+msgstr "device:HMDevice"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "向设备发送事件"
+msgstr "Send an event to the device."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "to_dict"
+msgstr "to_dict"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "event_dict:Dict"
+msgstr "event_dict:Dict"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "以字典形式保存当前事件"
+msgstr "Save the current event in dictionary form."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "from_dict"
+msgstr "from_dict"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "从字典解析获取一个InputEvent实例"
+msgstr "Get an InputEvent instance by parsing from a dictionary."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_event_str"
+msgstr "get_event_str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "state:DeviceState"
+msgstr "state:DeviceState"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "event_str:str"
+msgstr "event_str:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "根据当前状态获取事件表示"
+msgstr "Get the event representation based on the current state."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "views:List[str]"
+msgstr "views:List[str]"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取当前事件对应的views"
+msgstr "Get the views corresponding to the current event."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:202
+msgid "UTG"
+msgstr "UTG"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:204
+msgid "事件迁移图(UI Transition Graph)的类，用于应用建模，可以被输入策略使用进行更复杂的决策。"
+msgstr "A class for the UI Transition Graph, used for application modeling, can be utilized by input strategies for more complex decision-making."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:206
+msgid "以下是UTG的方法和文档。"
+msgstr "The following are the methods and documentation for UTG."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "first_state_str"
+msgstr "first_state_str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "state_str:str"
+msgstr "state_str:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "第一个事件的状态哈希"
+msgstr "The state hash of the first event."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "last_state_str"
+msgstr "last_state_str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "最后一个事件的状态哈希"
+msgstr "The state hash of the last event."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "effective_event_count"
+msgstr "effective_event_count"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "count:int"
+msgstr "count:int"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "造成迁移的事件数量"
+msgstr "The number of events that caused the transition."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "nums_transitions"
+msgstr "nums_transitions"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "发现的状态迁移数量"
+msgstr "The number of discovered state transitions."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "clear_graph"
+msgstr "clear_graph"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "清除UTG"
+msgstr "Clear the UTG."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "add_transition"
+msgstr "add_transition"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "event:InputEvent, old_state:str, new_state:str"
+msgstr "event:InputEvent, old_state:str, new_state:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "添加一个迁移"
+msgstr "Add a transition."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "remove_transition"
+msgstr "remove_transition"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "删除一个迁移"
+msgstr "Remove a transition."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "add_node"
+msgstr "add_node"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "state:DeviceState, event:InputEvent"
+msgstr "state:DeviceState, event:InputEvent"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "添加一个状态节点"
+msgstr "Add a state node."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "is_event_explored"
+msgstr "is_event_explored"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "event:InputEvent, state:str"
+msgstr "event:InputEvent, state:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "判断一个事件是否已经执行过"
+msgstr "Determine whether an event has been explored."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "is_state_reached"
+msgstr "is_state_reached"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "state:str"
+msgstr "state:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "判断一个状态是否已经到达过"
+msgstr "Determine whether a state has been reached."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_reachable_states"
+msgstr "get_reachable_states"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "current_state:str"
+msgstr "current_state:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "reachable_states:List[str]"
+msgstr "reachable_states:List[str]"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取当前状态可迁移至的状态"
+msgstr "Get the states reachable from the current state."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "reachable_from_one_state_to_another"
+msgstr "reachable_from_one_state_to_another"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "from_state:str, to_state:str"
+msgstr "from_state:str, to_state:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "判断两个状态是否可迁移"
+msgstr "Determine whether two states are reachable."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_navigation_steps"
+msgstr "get_navigation_steps"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "List[Tuple[str, InputEvent]]"
+msgstr "List[Tuple[str, InputEvent]]"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取从一个节点导航至另一个节点的步骤"
+msgstr "Get the steps to navigate from one node to another."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "find_activity_according_to_state_str"
+msgstr "find_activity_according_to_state_str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "根据状态哈希获取状态对应的Ability"
+msgstr "Get the Ability corresponding to the state based on its hash."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:227
+msgid "DeviceState"
+msgstr "DeviceState"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:229
+msgid "DeviceState是用于应用界面抽象的类，对应用界面进行不同层次的抽象，提供给UTG类进行建模。"
+msgstr "DeviceState is a class used for the abstraction of the application interface, providing different levels of abstraction for modeling with the UTG class."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:231
+msgid "以下是DeviceState的方法和文档。"
+msgstr "The following are the methods and documentation for DeviceState."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_possible_input"
+msgstr "get_possible_input"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "possible_input:List[InputEvent]"
+msgstr "possible_input:List[InputEvent]"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取当前状态上可执行的事件"
+msgstr "Get the events executable on the current state."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_text_representation"
+msgstr "get_text_representation"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "state_desc:str, activity:str, indexed_views:List[str]"
+msgstr "state_desc:str, activity:str, indexed_views:List[str]"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取当前状态的描述信息"
+msgstr "Get the description of the current state."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_view_by_attribute"
+msgstr "get_view_by_attribute"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "attribute_dict:Dict, random_select:Bool"
+msgstr "attribute_dict:Dict, random_select:Bool"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "根据属性获取可用的控件"
+msgstr "Get available controls based on attributes."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "is_view_exist"
+msgstr "is_view_exist"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "view_dict:Dict"
+msgstr "view_dict:Dict"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "判断某个控件是否存在"
+msgstr "Determine whether a certain control exists."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_view_desc"
+msgstr "get_view_desc"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "view:Dict"
+msgstr "view:Dict"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "view_desc:str"
+msgstr "view_desc:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取控件的描述"
+msgstr "Get the description of the control."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "assemble_view_tree"
+msgstr "assemble_view_tree"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "root_view:Dict, views:List[Dict]"
+msgstr "root_view:Dict, views:List[Dict]"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "将view组织为树结构"
+msgstr "Organize the view into a tree structure."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_view_str"
+msgstr "get_view_str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "view_str:str"
+msgstr "view_str:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取一个view的描述"
+msgstr "Get the description of a view."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_pagePath"
+msgstr "get_pagePath"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "pagePath:str"
+msgstr "pagePath:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取当前界面对应的pagePath"
+msgstr "Get the pagePath corresponding to the current interface."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_state_str_raw"
+msgstr "get_state_str_raw"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "state_str_raw:str"
+msgstr "state_str_raw:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取当前页面的状态描述"
+msgstr "Get the state description of the current page."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_state_str"
+msgstr "get_state_str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取当前页面的状态哈希"
+msgstr "Get the state hash of the current page."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "get_content_free_state_str"
+msgstr "get_content_free_state_str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "content_free_str:str"
+msgstr "content_free_str:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "获取当前页面的结构哈希"
+msgstr "Get the structure hash of the current page."
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "save_view_img"
+msgstr "save_view_img"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "view_dict:Dict, output_dir:str"
+msgstr "view_dict:Dict, output_dir:str"
+
+#: ../../source/part-designDocument/fuzzer/hmdroidbot.rst:1
+msgid "保存控件截图"
+msgstr "Save a screenshot of the control."

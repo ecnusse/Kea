@@ -37,15 +37,15 @@ Kea 目前支持 Android 和 HarmonyOS。
 
 ### Docs
 
-[文档](https://kea-technic-docs.readthedocs.io/zh-cn/latest/part-theory/introduction.html)
+[文档](https://kea-docs.readthedocs.io/zh-cn/latest/part-theory/introduction.html)
 
-[用户手册](https://kea-technic-docs.readthedocs.io/zh-cn/latest/part-keaUserManuel/envirnment_setup.html)
+[用户手册](https://kea-docs.readthedocs.io/zh-cn/latest/part-keaUserManuel/envirnment_setup.html)
 
-[设计手册](https://kea-technic-docs.readthedocs.io/zh-cn/latest/part-designDocument/intro.html)
+[设计手册](https://kea-docs.readthedocs.io/zh-cn/latest/part-designDocument/intro.html)
 
-[测试报告](https://kea-technic-docs.readthedocs.io/zh-cn/latest/part-experiment/exp.html)
+[测试报告](https://kea-docs.readthedocs.io/zh-cn/latest/part-experiment/exp.html)
 
-[覆盖报告](https://xixianliang.github.io/kea-technic-docs/)
+[覆盖报告](https://ecnusse.github.io/Kea/)
 
 
 ### 安装和使用

@@ -38,15 +38,15 @@ You can find more about our work on testing/analyzing mobile apps at this [ECNU 
 
 ### Docs
 
-[Full Doc](https://kea-technic-docs.readthedocs.io/en/latest/part-theory/introduction.html)
+[Full Doc](https://kea-docs.readthedocs.io/en/latest/part-theory/introduction.html)
 
-[User Manual](https://kea-technic-docs.readthedocs.io/en/latest/part-keaUserManuel/envirnment_setup.html)
+[User Manual](https://kea-docs.readthedocs.io/en/latest/part-keaUserManuel/envirnment_setup.html)
 
-[Design Manual](https://kea-technic-docs.readthedocs.io/en/latest/part-designDocument/intro.html)
+[Design Manual](https://kea-docs.readthedocs.io/en/latest/part-designDocument/intro.html)
 
-[Test Report](https://kea-technic-docs.readthedocs.io/en/latest/part-experiment/exp.html)
+[Test Report](https://kea-docs.readthedocs.io/en/latest/part-experiment/exp.html)
 
-[Coverage Report](https://xixianliang.github.io/kea-technic-docs/)
+[Coverage Report](https://ecnusse.github.io/Kea/)
 
 
 ### Installation and Quickstart

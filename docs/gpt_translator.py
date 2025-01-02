@@ -1,7 +1,6 @@
 import os
 from gpt_translator_utils import OpenaiTranslator, POT_TRANSLATION_PROMPT, get_not_translated_files
 
-
 if __name__ == "__main__":
     # 从环境变量中读取 API 密钥
     api_key = os.getenv("OPENAI_API_KEY")

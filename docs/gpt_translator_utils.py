@@ -79,7 +79,7 @@ GLOSSARY = """
 """
 
 POT_TRANSLATION_PROMPT = f"""
-You are a translator, you need to translate some docs from Chinese into English using .po files.
+You are a translator. You need to translate some docs from Chinese into English using .po files.
 Your input (a .po file) will be given like this:
 
 ```

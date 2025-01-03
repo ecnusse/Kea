@@ -81,3 +81,6 @@ config.ymal
 
 # virtual envirnment
 kea_venv/
+
+# locales backup
+_locales/

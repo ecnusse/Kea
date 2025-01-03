@@ -1,0 +1,73 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-keaUserManuel/androidSDK/Mac.rst:2
+msgid "在 MAC OS 上设置 Android SDK 环境"
+msgstr "Setting Up Android SDK Environment on MAC OS"
+
+#: ../../source/part-keaUserManuel/androidSDK/Mac.rst:4
+msgid "安装 Android 命令行工具。 前往 `Android Developer <https://developer.android.com/studio>`_ 并下载与你的操作系统匹配的工具。"
+msgstr "Install the Android command-line tools. Go to `Android Developer <https://developer.android.com/studio>`_ and download the tools that match your operating system."
+
+#: ../../source/part-keaUserManuel/androidSDK/Mac.rst:0
+msgid "你可以在命令行中使用 ``wget`` 下载工具下载压缩包，也可以从浏览器中下载并自行解压。"
+msgstr "You can use ``wget`` on the command line to download the tools package, or download and extract it from the browser."
+
+#: ../../source/part-keaUserManuel/androidSDK/Mac.rst:14
+msgid "你可以从上述 `Android Developer <https://developer.android.com/studio>`_ 网站复制下载链接。 然后使用以下命令。"
+msgstr "You can copy the download link from the above `Android Developer <https://developer.android.com/studio>`_ site, and then use the following command."
+
+#: ../../source/part-keaUserManuel/androidSDK/Mac.rst:24
+msgid "配置相关环境。"
+msgstr "Configure the relevant environment."
+
+#: ../../source/part-keaUserManuel/androidSDK/Mac.rst:26
+msgid "安装 Java。（如果你之前已经安装并配置过Java，你需要检查你的 JDK 是否与命令行工具适配。如果版本适配，你可以跳过以下关于 Java 环境配置的步骤）"
+msgstr "Install Java. (If you have previously installed and configured Java, you need to check if your JDK is compatible with the command-line tools. If the version is compatible, you can skip the following steps about configuring the Java environment.)"
+
+#: ../../source/part-keaUserManuel/androidSDK/Mac.rst:0
+msgid "我们使用 ``JDK-17`` 来运行安卓模拟器。。"
+msgstr "We use ``JDK-17`` to run the Android emulator."
+
+#: ../../source/part-keaUserManuel/androidSDK/Mac.rst:34
+msgid "打开你的 ``.bashrc`` 文件。"
+msgstr "Open your ``.bashrc`` file."
+
+#: ../../source/part-keaUserManuel/androidSDK/Mac.rst:40
+msgid "在文件末尾添加以下内容。"
+msgstr "Add the following content at the end of the file."
+
+#: ../../source/part-keaUserManuel/androidSDK/Mac.rst:0
+msgid "确保 ``PATH`` 配置与你存储相关工具的路径匹配。"
+msgstr "Ensure that the ``PATH`` configuration matches the path where you store the relevant tools."
+
+#: ../../source/part-keaUserManuel/androidSDK/Mac.rst:50
+msgid "最后，重新装载 ``.zshrc`` 文件，使更改立即应用于当前终端会话。"
+msgstr "Finally, reload the ``.zshrc`` file to apply the changes immediately to the current terminal session."
+
+#: ../../source/part-keaUserManuel/androidSDK/Mac.rst:56
+msgid "验证 ``sdkmanager`` 是否成功安装。"
+msgstr "Verify whether ``sdkmanager`` is successfully installed."
+
+#: ../../source/part-keaUserManuel/androidSDK/Mac.rst:64
+msgid "如果你获得如下信息，则安装成功。"
+msgstr "If you receive the following message, the installation is successful."
+
+#: ../../source/part-keaUserManuel/androidSDK/Mac.rst:71
+msgid "你可以从 `sdkmanager 的常用命令 <https://developer.android.com/tools/sdkmanager>`_ 了解更多。"
+msgstr "You can learn more from the `common commands of sdkmanager <https://developer.android.com/tools/sdkmanager>`_."

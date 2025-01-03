@@ -1,0 +1,101 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:2
+msgid "KeaTestElements"
+msgstr "KeaTestElements"
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:4
+msgid "本部分旨在解释 Kea 运行时数据管理类 KeaTestElements 的设计与实现。"
+msgstr "This section aims to explain the design and implementation of KeaTestElements, the runtime data management class in Kea."
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:7
+msgid "功能设计与实现"
+msgstr "Functional Design and Implementation"
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:9
+msgid "KeaTestElements是Kea运行时存储用户自定义性质的数据结构，与用户继承并自定义的keaTest一一对应。 在kea启动时，keaTestElements会读取每个用户自定义的keaTest，并重新组织为方便kea进行读取的数据结构。 具体的转换过程可参考装饰器一章：:ref:`decorators-keatestelements`。"
+msgstr "KeaTestElements is a data structure that stores user-defined properties at runtime in Kea, corresponding one-to-one with the user-inherited and customized keaTest. During the startup of kea, keaTestElements will read each user-defined keaTest and reorganize it into a data structure convenient for kea to read. For specific conversion processes, refer to the chapter on decorators: :ref:`decorators-keatestelements`."
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:14
+msgid "KeaTestElements的数据结构图示如下："
+msgstr "The data structure of KeaTestElements is illustrated as follows:"
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:19
+msgid "KeaTestElements 数据结构"
+msgstr "KeaTestElements Data Structure"
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:21
+msgid "其中，keaTest_name是一个字符串，用于存储用户定义的keaTest的类名。Rules是一个列表，用于存储Rule对象。 Initializers是一个列表，用于存储初始化函数对象Initializer。MainPaths是一个列表，用于存储主要路径对象MainPath。"
+msgstr "Here, keaTest_name is a string used to store the class name of the user-defined keaTest. Rules is a list used to store Rule objects. Initializers is a list used to store initialization function objects, Initializer. MainPaths is a list used to store main path objects, MainPath."
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:24
+msgid "其中，Rule、MainPath和Initializer对象的数据结构及定义可参见“装饰器”一章。"
+msgstr "The data structure and definitions of Rule, MainPath, and Initializer objects can be found in the chapter on 'Decorators.'"
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:26
+msgid "KeaTestElements的成员方法定义伪代码如下："
+msgstr "The pseudocode for defining the member methods of KeaTestElements is as follows:"
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:37
+msgid "load_rules接收一个用户自定义的keaTest对象，读取其中的rule并将一个keaTest中的所有rule存储入rules列表。 load_initializers接收一个用户自定义的keaTest对象，读取其中的初始化函数对象Initializer并将其存储入initializers列表。 load_mainPaths接收一个用户自定义的keaTest对象，读取其中的主路径对象mainPath并将其存储入mainPaths列表。"
+msgstr "load_rules receives a user-defined keaTest object, reads the rules within it, and stores all rules from a keaTest into the rules list. load_initializers receives a user-defined keaTest object, reads the initialization function objects, Initializer, and stores them in the initializers list. load_mainPaths receives a user-defined keaTest object, reads the main path objects, mainPath, and stores them in the mainPaths list."
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:41
+msgid "具体而言，在三个load方法的执行步骤相似，其执行步骤可描述如下："
+msgstr "Specifically, the execution steps of the three load methods are similar and can be described as follows:"
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:52
+msgid "KeaTestElements 的成员方法读取KeaTest中的数据，转换为方便Kea使用的数据结构"
+msgstr "The member methods of KeaTestElements read data from KeaTest and convert it into a data structure that is convenient for Kea to use."
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:54
+msgid "三个成员方法的具体实现如下："
+msgstr "The specific implementations of the three member methods are as follows:"
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:56
+msgid "**load_rules**"
+msgstr "**load_rules**"
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:0
+msgid "参数"
+msgstr "Parameters"
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:59
+#: ../../source/part-designDocument/kea/keaTestElements.rst:76
+#: ../../source/part-designDocument/kea/keaTestElements.rst:92
+msgid "``keaTest:KeaTest`` : 用户自定义性质的keaTest对象"
+msgstr "``keaTest:KeaTest`` : A user-defined property keaTest object"
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:0
+msgid "返回"
+msgstr "Returns"
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:62
+#: ../../source/part-designDocument/kea/keaTestElements.rst:79
+#: ../../source/part-designDocument/kea/keaTestElements.rst:95
+msgid "无"
+msgstr "None"
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:73
+msgid "**load_initializers**"
+msgstr "**load_initializers**"
+
+#: ../../source/part-designDocument/kea/keaTestElements.rst:89
+msgid "**load_mainPaths**"
+msgstr "**load_mainPaths**"

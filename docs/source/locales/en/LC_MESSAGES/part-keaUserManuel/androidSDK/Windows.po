@@ -1,0 +1,109 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:2
+msgid "在 Windows 上设置 Android SDK 环境"
+msgstr "Setting up Android SDK environment on Windows"
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:4
+msgid "安装 Android 命令行工具。 前往 `Android Developer <https://developer.android.com/studio>`_ 并下载与你的操作系统匹配的工具。"
+msgstr "Install the Android command line tools. Go to `Android Developer <https://developer.android.com/studio>`_ and download the tools that match your operating system."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:12
+msgid "将下载的 ZIP 文件解压到你希望安装 SDK 的目录中。"
+msgstr "Extract the downloaded ZIP file to the directory where you want to install the SDK."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:14
+msgid "将 ``cmdline-tools`` 文件夹中的内容移动到最新文件夹中。最终结构应为："
+msgstr "Move the contents of the ``cmdline-tools`` folder to the latest folder. The final structure should be:"
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:20
+msgid "配置相关环境。"
+msgstr "Configure related environment."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:22
+msgid "安装 Java。（如果你之前已经安装并配置过Java，你需要检查你的 JDK 是否与命令行工具适配。如果版本适配，你可以跳过以下关于 Java 环境配置的步骤）"
+msgstr "Install Java. (If you have previously installed and configured Java, you need to check if your JDK is compatible with the command line tools. If the version is compatible, you can skip the following steps about Java environment configuration)"
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:24
+msgid "访问 `Oracle JDK <https://www.oracle.com/java/technologies/downloads/#jdk21-windows>`_ 的官方网站，选择适合 Windows 的版本并下载。"
+msgstr "Visit the official website of `Oracle JDK <https://www.oracle.com/java/technologies/downloads/#jdk21-windows>`_ and choose the version suitable for Windows to download."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:0
+msgid "在这里，你可以使用 ``JDK-21``。"
+msgstr "Here, you can use ``JDK-21``."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:28
+msgid "然后运行下载的安装程序，按照提示完成安装。 确保记下安装路径以备将来参考。"
+msgstr "Then run the downloaded installer and follow the prompts to complete the installation. Make sure to note the installation path for future reference."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:35
+msgid "设置环境变量。"
+msgstr "Set environment variables."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:37
+msgid "打开环境变量设置："
+msgstr "Open the environment variable settings:"
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:39
+msgid "右键单击 ``此电脑`` 或 ``计算机``，选择 ``属性``。"
+msgstr "Right-click on ``This PC`` or ``Computer`` and select ``Properties``."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:40
+msgid "点击 ``高级系统设置``。"
+msgstr "Click on ``Advanced system settings``."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:41
+msgid "在 ``系统属性`` 窗口中选择 ``环境变量``。"
+msgstr "In the ``System Properties`` window, select ``Environment Variables``."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:45
+msgid "在 ``系统变量`` 部分，点击 ``新建`` 添加 ``JAVA_HOME`` 变量，值设置为 JDK 安装路径（``D:\\Java\\jdk-21``）。 并添加 ``ANDROID_HOME`` 变量，值设置为 AndroidSDK 安装路径（``D:\\AndroidSDK``）。"
+msgstr "In the ``System variables`` section, click ``New`` to add the ``JAVA_HOME`` variable, setting its value to the JDK installation path (``D:\\Java\\jdk-21``). Also, add the ``ANDROID_HOME`` variable, setting its value to the AndroidSDK installation path (``D:\\AndroidSDK``)."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:48
+msgid "找到 ``Path`` 变量，点击 ``编辑``，然后添加 ``%JAVA_HOME%\\bin``、``%ANDROID_HOME%\\tools``、``%ANDROID_HOME%\\emulator``、``%ANDROID_HOME%\\cmdline-tools\\latest\\bin``、 ``%ANDROID_HOME%\\tools\\bin``、``%ANDROID_HOME%\\cmdline-tools\\latest`` 和 ``%ANDROID_HOME%\\platform-tools``。"
+msgstr "Find the ``Path`` variable, click ``Edit``, and then add ``%JAVA_HOME%\\bin``, ``%ANDROID_HOME%\\tools``, ``%ANDROID_HOME%\\emulator``, ``%ANDROID_HOME%\\cmdline-tools\\latest\\bin``, ``%ANDROID_HOME%\\tools\\bin``, ``%ANDROID_HOME%\\cmdline-tools\\latest``, and ``%ANDROID_HOME%\\platform-tools``."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:51
+msgid "验证安装"
+msgstr "Verify installation"
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:53
+msgid "打开命令提示符：按 ``Win + R``，输入 cmd，然后按 ``Enter``。"
+msgstr "Open the command prompt: press ``Win + R``, type cmd, and then press ``Enter``."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:55
+msgid "在命令提示符窗口中，输入 ``java -version`` 和 ``javac -version``，然后按 Enter。"
+msgstr "In the command prompt window, type ``java -version`` and ``javac -version``, then press Enter."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:63
+msgid "如果显示版本信息，则表示配置成功。"
+msgstr "If version information is displayed, it indicates that the configuration was successful."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:65
+msgid "验证 ``sdkmanager`` 是否成功安装。"
+msgstr "Verify if ``sdkmanager`` was successfully installed."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:73
+msgid "在这里，你应该会看到信息显示 ``All SDK package licenses accepted``。"
+msgstr "Here, you should see information displaying ``All SDK package licenses accepted``."
+
+#: ../../source/part-keaUserManuel/androidSDK/Windows.rst:75
+msgid "你可以从 `sdkmanager 的常用命令 <https://developer.android.com/tools/sdkmanager>`_ 了解更多。"
+msgstr "You can learn more from the common commands of `sdkmanager <https://developer.android.com/tools/sdkmanager>`_."

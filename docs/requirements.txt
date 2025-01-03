@@ -1,0 +1,14 @@
+sphinx==7.1.2
+sphinx-rtd-theme==3.0.2
+sphinx-intl==2.3.1
+networkx
+Pillow
+uiautomator2==3.2.2
+androguard==4.0.0
+attrs
+opencv-python
+coloredlogs
+hypothesis
+hmdriver2
+pyyaml
+openai

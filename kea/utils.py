@@ -128,11 +128,10 @@ def generate_report(img_path, html_path, bug_information=None, precondition_info
                     interaction_end = report_screen['event_index']
             bug_link = ("<tr><td>" + property_name + "</td>" +
                         "<td><a href=\"#"+str(bug[0][0] + 1)+"\">"+str(bug[0][0] + 1)+"</a></td>" +
-                        "<td><a href=\"#"+str(bug[0][1]) + "\">"+str(bug[0][0] + 1)+ " ~ " + str(bug[0][1]) + "</a></td>" +
+                        "<td><a href=\"#"+str(bug[0][1] + 1) + "\">"+str(bug[0][0] + 1)+ " ~ " + str(bug[0][1] + 1) + "</a></td>" +
                         "<td><a href=\"#"+str(bug[0][1] + 1) + "\">"+str(bug[0][1] + 1)+"</a></td></tr>")
             bug_link_list.append(bug_link)
             bug_set.add(str(bug[0][0] + 1))
-            bug_set.add(str(bug[0][1]))
             bug_set.add(str(bug[0][1] + 1))
     f_html = open(
         os.path.join(html_path,  "bug_report.html"), 'w', encoding='utf-8'

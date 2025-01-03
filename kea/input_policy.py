@@ -310,7 +310,7 @@ class KeaInputPolicy(InputPolicy):
             self.statistics_of_rules[str(rule_to_check)][
                 RULE_STATE.PROPERTY_CHECKED
             ] += 1
-            pre_id = self.device.cur_event_count  # TODO what does pre_id mean?
+            precondition_page_index = self.device.cur_event_count
             # check rule, record relavant info and output log
             result = self.kea.execute_rule(
                 rule=rule_to_check, keaTest=rules_ready_to_be_checked[rule_to_check]
@@ -326,10 +326,10 @@ class KeaInputPolicy(InputPolicy):
                 self.statistics_of_rules[str(rule_to_check)][
                     RULE_STATE.POSTCONDITION_VIOLATED
                 ] += 1
-                post_id = self.device.cur_event_count  # TODO what does post_id mean?
+                postcondition_page__index = self.device.cur_event_count
                 self.triggered_bug_information.append(
                     (
-                        (pre_id, post_id),
+                        (precondition_page_index, postcondition_page__index),
                         self.time_recoder.get_time_duration(),
                         rule_to_check.function.__name__,
                     )

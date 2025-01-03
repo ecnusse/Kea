@@ -1,0 +1,125 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:2
+msgid "在 Linux 上设置 Android SDK 环境"
+msgstr "Setting up Android SDK environment on Linux"
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:4
+msgid "安装 Android 命令行工具。 前往 `Android Developer <https://developer.android.com/studio>`_ 并下载与你的操作系统匹配的工具。"
+msgstr "Install the Android command line tools. Go to `Android Developer <https://developer.android.com/studio>`_ and download the tools that match your operating system."
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:0
+msgid "你可以在命令行中使用 ``wget`` 下载工具下载压缩包，也可以从浏览器中下载并自行解压。"
+msgstr "You can use ``wget`` in the command line to download the tool as a compressed package, or download it from the browser and extract it yourself."
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:14
+msgid "你可以从上述 `Android Developer <https://developer.android.com/studio>`_ 网站复制下载链接。 然后使用以下命令。"
+msgstr "You can copy the download link from the above `Android Developer <https://developer.android.com/studio>`_ website. Then use the following command."
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:24
+msgid "配置相关环境。"
+msgstr "Configure the relevant environment."
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:26
+msgid "安装 Java。（如果你之前已经安装并配置过Java，你需要检查你的 JDK 是否与命令行工具适配。如果版本适配，你可以跳过以下关于 Java 环境配置的步骤）"
+msgstr "Install Java. (If you have already installed and configured Java, you need to check if your JDK is compatible with the command line tools. If the versions are compatible, you can skip the following steps regarding Java environment configuration.)"
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:0
+msgid "我们使用 ``JDK-17`` 来运行安卓模拟器。。"
+msgstr "We use ``JDK-17`` to run the Android emulator."
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:34
+msgid "打开你的 ``.bashrc`` 文件。"
+msgstr "Open your ``.bashrc`` file."
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:40
+msgid "在文件末尾添加以下内容。"
+msgstr "Add the following content at the end of the file."
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:0
+msgid "确保 ``PATH`` 配置与你存储相关工具的路径匹配。"
+msgstr "Ensure that the ``PATH`` configuration matches the path where you store the relevant tools."
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:51
+msgid "最后，重新装载 ``.bashrc`` 文件，使更改立即应用于当前终端会话。"
+msgstr "Finally, reload the ``.bashrc`` file to apply the changes immediately to the current terminal session."
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:57
+msgid "验证 ``sdkmanager`` 是否成功安装。 .. code-block:: bash"
+msgstr "Verify if ``sdkmanager`` is successfully installed. .. code-block:: bash"
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:60
+msgid "sdkmanager --update sdkmanager --list sdkmanager --licenses"
+msgstr "sdkmanager --update sdkmanager --list sdkmanager --licenses"
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:64
+msgid "如果你获得如下信息，则安装成功。"
+msgstr "If you receive the following information, the installation was successful."
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:71
+msgid "你可以从 `sdkmanager 的常用命令 <https://developer.android.com/tools/sdkmanager>`_ 了解更多。"
+msgstr "You can learn more from the `Common Commands of sdkmanager <https://developer.android.com/tools/sdkmanager>`_."
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:74
+msgid "WSL 常见问题"
+msgstr "Common Issues with WSL"
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:76
+msgid "**1. WSL 依赖项**"
+msgstr "**1. WSL Dependencies**"
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:78
+msgid "请将你的 Windows 升级到 Win11，并使用 WSL 2。这将解决大多数 Win10 和 WSL 1 中的 WSL 问题。"
+msgstr "Please upgrade your Windows to Win11 and use WSL 2. This will resolve most WSL issues in Win10 and WSL 1."
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:80
+msgid "**2. WSL PATH 设置**"
+msgstr "**2. WSL PATH Settings**"
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:82
+msgid "默认情况下，WSL 将共享 Windows 系统中的环境变量。有时这会导致错误的行为。 你可能会发现你使用的实际可执行文件并不是你通过 ``which`` 命令找到的文件。此问题的根本原因是：WSL 中的 ``which`` 命令只能找到 WSL 的 PATH 中的可执行文件。但是，如果你在 Windows PATH 和 WSL PATH 中同时配置了一个可执行文件（例如 python3），而 Windows PATH 在 WSL PATH 之前设置（``PATH=$Windows_PATH:$WSL_PATH``）。那么你使用的实际可执行文件就是 Windows_PATH 中的文件。但你通过 ``which`` 找到的则是 WSL_PATH 中的文件。"
+msgstr "By default, WSL shares environment variables from the Windows system. Sometimes this can lead to incorrect behavior. You may find that the actual executable file you are using is not the one found through the ``which`` command. The root cause of this issue is that the ``which`` command in WSL can only find executable files in the WSL PATH. However, if you configure an executable file (e.g., python3) in both Windows PATH and WSL PATH, and the Windows PATH is set before the WSL PATH (``PATH=$Windows_PATH:$WSL_PATH``). Then the actual executable file you are using is the one from Windows_PATH. But the one you find through ``which`` is from WSL_PATH."
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:85
+msgid "要解决此问题，你可以按照以下建议操作："
+msgstr "To resolve this issue, you can follow these suggestions:"
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:87
+msgid "在设置 PATH 时将你的环境 PATH 放在前面"
+msgstr "Place your environment PATH at the front when setting up PATH"
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:89
+msgid "使用 ``PATH=New_PATH:$PATH`` 而不是 ``PATH=$PATH:New_PATH``。这是一个良好的习惯，可以优先考虑你的最新设置并确保其始终有效。"
+msgstr "Use ``PATH=New_PATH:$PATH`` instead of ``PATH=$PATH:New_PATH``. This is a good practice that prioritizes your latest settings and ensures they always work."
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:91
+msgid "禁用环境变量的共享"
+msgstr "Disable the sharing of environment variables"
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:105
+msgid "**3. CPU 硬件加速问题**"
+msgstr "**3. CPU Hardware Acceleration Issues**"
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:109
+msgid "This user doesn't have permissions to use KVM (/dev/kvm), ERROR: x86 emulation currently requires hardware acceleration!"
+msgstr "该用户没有使用 KVM (/dev/kvm) 的权限，错误：x86 模拟目前需要硬件加速！"
+
+#: ../../source/part-keaUserManuel/androidSDK/Linux.rst:116
+msgid "请遵循 `Stack Overflow - Android Studio: /dev/kvm device permission denied <https://stackoverflow.com/questions/37300811/android-studio-dev-kvm-device-permission-denied>`_ 中的第一个解决方案。 然后，注销并重新登录Linux。"
+msgstr "Please follow the first solution in `Stack Overflow - Android Studio: /dev/kvm device permission denied <https://stackoverflow.com/questions/37300811/android-studio-dev-kvm-device-permission-denied>`_. Then log out and log back into Linux."

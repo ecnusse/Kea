@@ -1,0 +1,246 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-designDocument/kea/kea.rst:2
+msgid "Kea"
+msgstr "Kea"
+
+#: ../../source/part-designDocument/kea/kea.rst:4
+msgid "本部分旨在解释 Kea 的中的核心控制器类 Kea 的设计与实现。"
+msgstr "This section aims to explain the design and implementation of the core controller class Kea in Kea."
+
+#: ../../source/part-designDocument/kea/kea.rst:7
+msgid "功能设计与实现"
+msgstr "Functional Design and Implementation"
+
+#: ../../source/part-designDocument/kea/kea.rst:9
+msgid "Kea类是工具中的核心类，为工具中与基于性质测试相关功能的控制器。在Kea类中，存储的内容和对外暴露的方法主要有："
+msgstr "The Kea class is the core class of the tool, serving as the controller for functionality related to property-based testing. In the Kea class, the main stored contents and exposed methods are:"
+
+#: ../../source/part-designDocument/kea/kea.rst:11
+msgid "加载所有KeaTest并读取至KeaTest至KeaTestElements的相关方法。"
+msgstr "Methods for loading all KeaTests and reading them into KeaTestElements."
+
+#: ../../source/part-designDocument/kea/kea.rst:12
+msgid "存储用户定义的所有KeaTestElements。以及访问这些性质相关函数(initializer, rule, mainPath)的方法。"
+msgstr "Storage of all user-defined KeaTestElements, as well as methods to access these property-related functions (initializer, rule, mainPath)."
+
+#: ../../source/part-designDocument/kea/kea.rst:13
+msgid "存储当前运行的PDL驱动（含安卓与鸿蒙系统）。以及设置当前要运行的PDL驱动的方法。"
+msgstr "Storage of the currently running PDL driver (including Android and HarmonyOS) and methods to set the PDL driver to be run."
+
+#: ../../source/part-designDocument/kea/kea.rst:14
+msgid "性质的前置条件检查器方法，返回当前应用界面中通过了前置条件的性质。"
+msgstr "The property precondition checker method returns the properties that have passed the preconditions in the current application interface."
+
+#: ../../source/part-designDocument/kea/kea.rst:15
+msgid "执行一条性质的交互场景的方法。"
+msgstr "Method to execute an interactive scenario of a property."
+
+#: ../../source/part-designDocument/kea/kea.rst:16
+msgid "执行主路径步骤的方法。"
+msgstr "Method to execute main path steps."
+
+#: ../../source/part-designDocument/kea/kea.rst:21
+msgid "Kea 类的组成"
+msgstr "Composition of the Kea Class"
+
+#: ../../source/part-designDocument/kea/kea.rst:24
+msgid "Kea类中的数据结构实现"
+msgstr "Implementation of Data Structures in the Kea Class"
+
+#: ../../source/part-designDocument/kea/kea.rst:26
+msgid "**KeaTest_DB**"
+msgstr "**KeaTest_DB**"
+
+#: ../../source/part-designDocument/kea/kea.rst:28
+msgid "KeaTest_DB是Kea运行时的数据库，用于存储所有的用户自定义性质。每个数据项以 <keaTest, keaTestElements> 的键值对方式存储。"
+msgstr "KeaTest_DB is the database at runtime for Kea, used to store all user-defined properties. Each data item is stored as a key-value pair of <keaTest, keaTestElements>."
+
+#: ../../source/part-designDocument/kea/kea.rst:31
+msgid "**pdl_driver**"
+msgstr "**pdl_driver**"
+
+#: ../../source/part-designDocument/kea/kea.rst:33
+msgid "pdl_driver 存储的是当前的 PDL (Property Description Languague, 性质描述语言) 的驱动。 此处存储的是鸿蒙或安卓设备的驱动，主要用于执行主路径中的某一步。"
+msgstr "The pdl_driver stores the current PDL (Property Description Language) driver. Here, it stores the driver for HarmonyOS or Android devices, mainly used to execute a certain step in the main path."
+
+#: ../../source/part-designDocument/kea/kea.rst:37
+msgid "Kea类中的成员方法实现"
+msgstr "Implementation of Member Methods in the Kea Class"
+
+#: ../../source/part-designDocument/kea/kea.rst:40
+msgid "读取性质的相关方法"
+msgstr "Methods for Reading Properties"
+
+#: ../../source/part-designDocument/kea/kea.rst:42
+msgid "读取性质的相关方法主要对外提供读取用户自定义相关性质的方法。这些性质被读取后会按keaTestElements数据结构的方式组织， 并存储进入KeaTest_DB。"
+msgstr "Methods related to reading properties primarily provide external access to read user-defined properties. These properties are organized in the format of the KeaTestElements data structure after being read, and then stored in KeaTest_DB."
+
+#: ../../source/part-designDocument/kea/kea.rst:45
+msgid "**load_app_properties**"
+msgstr "**load_app_properties**"
+
+#: ../../source/part-designDocument/kea/kea.rst:47
+msgid "load_app_properties 从用户指定的性质文件中读取性质并存储入Kea，其核心流程如下。"
+msgstr "load_app_properties reads properties from a user-specified properties file and stores them into Kea. Its core process is as follows."
+
+#: ../../source/part-designDocument/kea/kea.rst:58
+msgid "具体步骤的简化的python风格代码如下："
+msgstr "The simplified Python-style code for the specific steps is as follows:"
+
+#: ../../source/part-designDocument/kea/kea.rst:60
+msgid "*注：为了描述清晰，简化的代码仅对核心流程进行抽象并展示，实际代码与简化的参考代码不完全一致。 下文将展示的其他简化代码遵循的规则相同。*"
+msgstr "*Note: For clarity, the simplified code abstracts and displays only the core process, and the actual code may not completely align with the simplified reference code. The same rules will apply to other simplified codes presented later.*"
+
+#: ../../source/part-designDocument/kea/kea.rst:0
+msgid "参数"
+msgstr "Parameters"
+
+#: ../../source/part-designDocument/kea/kea.rst:64
+msgid "``property_files:List[str]`` : 用户自定义性质的文件路径列表"
+msgstr "``property_files:List[str]`` : List of file paths for user-defined properties."
+
+#: ../../source/part-designDocument/kea/kea.rst:0
+msgid "返回"
+msgstr "Return"
+
+#: ../../source/part-designDocument/kea/kea.rst:67
+#: ../../source/part-designDocument/kea/kea.rst:206
+#: ../../source/part-designDocument/kea/kea.rst:232
+#: ../../source/part-designDocument/kea/kea.rst:258
+msgid "无"
+msgstr "None"
+
+#: ../../source/part-designDocument/kea/kea.rst:93
+msgid "**load_KeaTest**"
+msgstr "**load_KeaTest**"
+
+#: ../../source/part-designDocument/kea/kea.rst:95
+msgid "load_KeaTest 从 KeaTest 中取出用户自定义的性质（含初始化函数对象、交互场景、主路径函数对象）， 转换为 KeaTestElements 数据结构并存储入 KeaTest_DB 。"
+msgstr "load_KeaTest retrieves user-defined properties (including initializer function objects, interactive scenarios, main path function objects) from KeaTest, converting them into the KeaTestElements data structure and storing them in KeaTest_DB."
+
+#: ../../source/part-designDocument/kea/kea.rst:98
+msgid "load_KeaTest 的流程如下："
+msgstr "The process of load_KeaTest is as follows:"
+
+#: ../../source/part-designDocument/kea/kea.rst:105
+msgid "其实现通过简化的python代码展示如下："
+msgstr "Its implementation is shown in the following simplified Python code:"
+
+#: ../../source/part-designDocument/kea/kea.rst:108
+msgid "``keaTest:KeaTest`` : 用户自定义性质的keaTest对象"
+msgstr "``keaTest:KeaTest`` : User-defined property keaTest object."
+
+#: ../../source/part-designDocument/kea/kea.rst:111
+msgid "``keaTestElements:KeaTestElements`` : 读取了keaTest对象的keaTestElements对象"
+msgstr "``keaTestElements:KeaTestElements`` : The KeaTestElements object read from the keaTest object."
+
+#: ../../source/part-designDocument/kea/kea.rst:135
+msgid "性质执行相关方法"
+msgstr "Methods Related to Property Execution"
+
+#: ../../source/part-designDocument/kea/kea.rst:137
+msgid "性质执行的相关方法主要对外提供与性质执行相关功能的接口，主要交由输入策略调用。如获取当前页面通过前置条件的性质， 执行一条性质的交互场景等。"
+msgstr "Methods related to property execution mainly provide interfaces for functionalities associated with property execution, primarily called through input strategies. For example, to get properties that pass the preconditions in the current page, execute an interactive scenario of a property, etc."
+
+#: ../../source/part-designDocument/kea/kea.rst:140
+msgid "**execute_rules**"
+msgstr "**execute_rules**"
+
+#: ../../source/part-designDocument/kea/kea.rst:142
+msgid "对一组rules(性质)，随机选择一条性质并调用execute_rule方法尝试执行之。"
+msgstr "For a group of rules (properties), randomly select a property and call the execute_rule method to attempt execution."
+
+#: ../../source/part-designDocument/kea/kea.rst:144
+msgid "其python风格的简化代码定义实现如下。"
+msgstr "The defined implementation in simplified Python style is as follows."
+
+#: ../../source/part-designDocument/kea/kea.rst:147
+#: ../../source/part-designDocument/kea/kea.rst:177
+msgid "``rules:List[Rule]`` : 性质交互场景列表"
+msgstr "``rules:List[Rule]`` : List of property interactive scenarios."
+
+#: ../../source/part-designDocument/kea/kea.rst:150
+msgid "执行结果"
+msgstr "Execution Result"
+
+#: ../../source/part-designDocument/kea/kea.rst:162
+msgid "**execute_rule**"
+msgstr "**execute_rule**"
+
+#: ../../source/part-designDocument/kea/kea.rst:164
+msgid "对于一条rule(性质)，执行之并返回执行结果。其返回的结果CHECK_RESULT是一个结构体常量，如下为它的五种返回情况及其含义："
+msgstr "For a rule (property), execute it and return the execution result. The returned result CHECK_RESULT is a struct constant, which has five return situations and their meanings as follows:"
+
+#: ../../source/part-designDocument/kea/kea.rst:174
+msgid "其python风格的简化代码实现如下。"
+msgstr "Its implementation in simplified Python style is as follows."
+
+#: ../../source/part-designDocument/kea/kea.rst:180
+msgid "``CHECK_RESULT``: 执行结果"
+msgstr "``CHECK_RESULT``: Execution Result"
+
+#: ../../source/part-designDocument/kea/kea.rst:199
+msgid "**get_rules_whose_preconditions_are_satisfied**"
+msgstr "**get_rules_whose_preconditions_are_satisfied**"
+
+#: ../../source/part-designDocument/kea/kea.rst:201
+msgid "对于一组性质，检查他们的前置条件，并获取通过前置条件的性质。"
+msgstr "For a group of properties, check their preconditions and get the properties that pass the preconditions."
+
+#: ../../source/part-designDocument/kea/kea.rst:203
+#: ../../source/part-designDocument/kea/kea.rst:229
+msgid "其python风格的简化代码如下："
+msgstr "The simplified Python code is as follows:"
+
+#: ../../source/part-designDocument/kea/kea.rst:209
+msgid "``rules_passed_precondition:Dict[Rule, KeaTest]``: 通过了前置条件的性质列表"
+msgstr "``rules_passed_precondition:Dict[Rule, KeaTest]``: List of properties that have passed the preconditions."
+
+#: ../../source/part-designDocument/kea/kea.rst:222
+msgid "**get_rules_without_precondition**"
+msgstr "**get_rules_without_precondition**"
+
+#: ../../source/part-designDocument/kea/kea.rst:224
+msgid "对于一组性质，若他们的前置条件，并获取无前置条件的性质。"
+msgstr "For a group of properties, if they have no preconditions, retrieve those properties without preconditions."
+
+#: ../../source/part-designDocument/kea/kea.rst:227
+msgid "无前置条件的性质被视为无条件执行，等价于前置条件恒成立。"
+msgstr "Properties without preconditions are regarded as unconditional execution, equivalent to the preconditions always holding true."
+
+#: ../../source/part-designDocument/kea/kea.rst:235
+msgid "``rules_passed_precondition:Dict[Rule, KeaTest]``: 无前置条件的性质列表"
+msgstr "``rules_passed_precondition:Dict[Rule, KeaTest]``: List of properties without preconditions."
+
+#: ../../source/part-designDocument/kea/kea.rst:247
+msgid "**execute_event_from_main_path**"
+msgstr "**execute_event_from_main_path**"
+
+#: ../../source/part-designDocument/kea/kea.rst:249
+msgid "对于给定的一个主路径步骤的源代码，尝试执行之。因为主路径中是用户利用PDL驱动编写的步骤， 因此需要获取驱动对象，并让其执行相应操作。驱动储存在前述数据结构的pdl_driver中。"
+msgstr "For a given source code of a main path step, attempt to execute it. Since the main path consists of steps written by the user using the PDL driver, it is necessary to obtain the driver object and allow it to execute the corresponding operations. The driver is stored in the previously mentioned data structure's pdl_driver."
+
+#: ../../source/part-designDocument/kea/kea.rst:252
+msgid "其python代码如下。"
+msgstr "The Python code is as follows."
+
+#: ../../source/part-designDocument/kea/kea.rst:255
+msgid "``executable_script:str`` : 可执行的主路径步骤源代码"
+msgstr "``executable_script:str`` : Executable source code of the main path step."

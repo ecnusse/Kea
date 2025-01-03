@@ -1,0 +1,49 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/part-keaUserManuel/bug_report.rst:4
+msgid "缺陷报告阅读指南"
+msgstr "Guide to Reading Defect Reports"
+
+#: ../../source/part-keaUserManuel/bug_report.rst:9
+msgid "缺陷报告示意图"
+msgstr "Defect Report Diagram"
+
+#: ../../source/part-keaUserManuel/bug_report.rst:11
+msgid "上面的图像是 Omninotes 的一个错误报告，用户在旋转屏幕后搜索栏消失了。 因此，这违反了 ``搜索框在旋转屏幕后需要任然存在`` 这一性质。"
+msgstr "The image above is an error report for Omninotes, where the search bar disappeared after the user rotated the screen. Therefore, this violates the property that the 'search box should still exist after the screen rotation'."
+
+#: ../../source/part-keaUserManuel/bug_report.rst:14
+msgid "在测试执行完成之后，你可以在你设置的输出路径下看到 ``bug_report.html`` 。 你可以使用浏览器 (Google Chrome, Firefox等) 来打开这个 ``bug_report.html``。"
+msgstr "After the test execution is complete, you will find ``bug_report.html`` in the output path you set. You can open this ``bug_report.html`` using a browser (e.g., Google Chrome, Firefox)."
+
+#: ../../source/part-keaUserManuel/bug_report.rst:17
+msgid "报告顶部的记录了测试过程中每个用户界面状态的截图，可以帮助你识别和重现该错误。在每个截图下方， 你可以看到在该用户界面状态上执行的事件索引和事件类型 (例如 click, long click)。"
+msgstr "The report contains screenshots of each user interface state during the testing process, which can help you identify and reproduce the error. Below each screenshot, you can see the event index and event types (e.g., click, long click) executed in that user interface state."
+
+#: ../../source/part-keaUserManuel/bug_report.rst:20
+msgid "``Time Consumption Statistics`` 模块记录了第一次违反性质的时间，第一次满足前置条件的时间，以及截至目前的测试总用时。"
+msgstr "The ``Time Consumption Statistics`` module records the time of the first violation of property, the time of first meeting preconditions, and the total time spent on tests so far."
+
+#: ../../source/part-keaUserManuel/bug_report.rst:22
+msgid "``Statisfaction Quantity Statistics`` 模块记录了截至目前违反性质和满足前置条件的总次数，以及总共操作的事件数。"
+msgstr "The ``Satisfaction Quantity Statistics`` module records the total number of violations of properties and the number of times preconditions have been met so far, as well as the total number of events operated."
+
+#: ../../source/part-keaUserManuel/bug_report.rst:24
+msgid "``bug_report.html`` 界面下方的表格显示了性质违规列表，包含每个违背性质的 ``Precondition Page（前置条件界面）``, ``Interaction Page（交互场景界面）`` 和 ``Postcondition Page（后置条件界面）``。 点击表格内链接将跳转到相应的截图，以帮助用户了解具体的bug触发情况。"
+msgstr "The table at the bottom of the ``bug_report.html`` interface shows a list of property violations, including the ``Precondition Page``, ``Interaction Page`` and ``Postcondition Page`` for each violated property. Clicking the links within the table will take you to the corresponding screenshot to help users understand the specific bug triggers."

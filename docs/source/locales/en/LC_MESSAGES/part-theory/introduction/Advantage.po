@@ -1,0 +1,108 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, ECNU-SE-lab
+# This file is distributed under the same license as the Kea package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kea 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-02 11:06+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/part-theory/introduction/Advantage.rst:2
+msgid "Kea 的优势"
+msgstr "Advantages of Kea"
+
+#: ../../source/part-theory/introduction/Advantage.rst:4
+#, fuzzy
+msgid ""
+"在传统的应用测试中，我们一般会进行静态分析，动态遍历测试，脚本测试。我们可以从 **输入空间** 、 **功能相关性** 两个 "
+"维度评估这些测试方法对 **功能性缺陷** 的查错能力。"
+msgstr ""
+"In traditional application testing, we generally perform static analysis,"
+" dynamic exploration testing, and script testing. We can evaluate the "
+"error detection capability of these testing methods for **functional "
+"defects** from two dimensions: **input space** and **functional "
+"relevance**."
+
+#: ../../source/part-theory/introduction/Advantage.rst:7
+msgid "静态分析的输入空间小，仅对源代码利用静态分析的算法进行分析。功能相关性低，分析难以贴近真实应用功能。"
+msgstr ""
+"The input space of static analysis is small, analyzing only the source "
+"code using static analysis algorithms. The functional relevance is low, "
+"and the analysis is difficult to closely align with real application "
+"functions."
+
+#: ../../source/part-theory/introduction/Advantage.rst:9
+msgid ""
+"动态遍历测试(Fuzzing)的输入空间大，可以生成大量不同的输入，从而到达不同的应用状态。然而其功能相关性低， "
+"一个应用功能可由一条多个事件组合而成的路径表示，随机测试的过程难以完整走出一个完整的应用功能路径。"
+msgstr ""
+"Dynamic exploration testing (Fuzzing) has a large input space, capable of"
+" generating a large number of different inputs to reach different "
+"application states. However, its functional relevance is low; an "
+"application function can be represented by a path composed of multiple "
+"events, making it difficult for the random testing process to fully "
+"traverse a complete application function path."
+
+#: ../../source/part-theory/introduction/Advantage.rst:12
+msgid "脚本测试的输入空间小，一个脚本测试由初始化，应用功能执行脚本及断言组成，始终为一个单一的路径。功能相关性高， 每个脚本都定义了一个功能。"
+msgstr ""
+"Script testing has a small input space, with a script test consisting of "
+"initialization, application function execution scripts, and assertions, "
+"always following a single path. The functional relevance is high as each "
+"script defines a function."
+
+#: ../../source/part-theory/introduction/Advantage.rst:15
+msgid ""
+"上述三种传统测试方法的能力可以通过以下的坐标图显示，此前没有一种测试方法能同时达成高输入空间和高功能相关性。 "
+"因此，我们提出将基于性质的测试方法应用于移动应用的功能测试领域，此方法能同时达成高功能相关性和高输入空间，从而对应用的功能正确性进行充分验证。"
+msgstr ""
+"The capabilities of the three traditional testing methods can be "
+"represented in the following coordinate graph, where none of these "
+"methods previously achieved both high input space and high functional "
+"relevance. Therefore, we propose applying property-based testing methods "
+"to the functional testing field of mobile applications, which can achieve"
+" both high functional relevance and high input space, thereby fully "
+"validating the functional correctness of the application."
+
+#: ../../source/part-theory/introduction/Advantage.rst:21
+msgid "Kea 与传统测试方法的能力对比示意图"
+msgstr ""
+"A comparison diagram of the capabilities of Kea and traditional testing "
+"methods"
+
+#: ../../source/part-theory/introduction/Advantage.rst:23
+msgid "这里列举了 Kea 的一些优势："
+msgstr "Here are some advantages of Kea:"
+
+#: ../../source/part-theory/introduction/Advantage.rst:25
+msgid "基于性质的测试：Kea 引入了一种通用且实用的测试技术，基于性质的测试（PBT），能够有效验证应用的功能性。"
+msgstr ""
+"Property-based testing: Kea introduces a general and practical testing "
+"technique known as property-based testing (PBT), which can effectively "
+"validate the functionality of applications."
+
+#: ../../source/part-theory/introduction/Advantage.rst:27
+msgid "低维护成本：与传统的脚本测试相比，应用性质的维护成本较低，减少了测试人员的工作负担。"
+msgstr ""
+"Low maintenance costs: Compared to traditional script testing, the "
+"maintenance costs for application properties are lower, reducing the "
+"workload for testers."
+
+#: ../../source/part-theory/introduction/Advantage.rst:29
+msgid "强大的功能缺陷检测能力：Kea 在检测移动应用中的功能性缺陷方面非常强大，能够自动探索并验证应用的性质，快速发现潜在问题。"
+msgstr ""
+"Powerful functional defect detection capability: Kea is very strong in "
+"detecting functional defects in mobile applications, capable of "
+"automatically exploring and verifying the properties of applications, "
+"quickly discovering potential issues."
+

@@ -119,7 +119,7 @@ class Device(object):
         # ProcessMonitor is a class used to monitor and manage processes on the device.
         self.process_monitor = ProcessMonitor(device=self)
         # Uiautomator2_Helper is a class used to handle the logic for interacting with UIAutomator2.
-        self.uiautomator_helper = Uiautomator2_Helper(device=self)
+        self.uiautomator_helper = Uiautomator2_Helper(device=self, package_name=self.app_package_name)
 
         # self.droidbot_ime = DroidBotIme(device=self)
 

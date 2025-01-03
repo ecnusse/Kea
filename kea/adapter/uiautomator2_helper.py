@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 
 
 class Uiautomator2_Helper:
-    def __init__(self, device=None):
+    def __init__(self, device=None, package_name = None):
         if device is None:
             from kea.device import Device
 
@@ -19,6 +19,8 @@ class Uiautomator2_Helper:
 
             self.__first_cap_re = re.compile("(.)([A-Z][a-z]+)")
             self.__all_cap_re = re.compile("([a-z0-9])([A-Z])")
+
+        self.package_name: str = package_name
 
     def __id_convert(self, name):
         name = name.replace(".", "_").replace(":", "_").replace("/", "_")
@@ -117,14 +119,17 @@ class Uiautomator2_Helper:
         :return: the selected root node
         """
         # exclude some package
-        exlude_package = ["com.android.systemui","com.github.uiautomator","android"]
+        exlude_package = ["com.android.systemui","com.github.uiautomator"]
         # iterate all the root nodes from the xml node, and select the one we want
         root = ET.fromstring(xml)
-        for child in root:
-            if child.tag == "node" and child.get("package") in exlude_package:
-                continue
-            return child
-
+        packages = {child.get("package") : child for child in root if child.tag == "node"}
+        if self.package_name in packages:
+            return packages[self.package_name]
+        else:
+            for package in packages:
+                if package in exlude_package:
+                    continue
+                return packages[package]
         return None
 
     def dump_view(self) -> Dict:

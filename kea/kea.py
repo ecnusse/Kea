@@ -7,6 +7,7 @@ import importlib
 import inspect
 import attr
 from .utils import INITIALIZER_MARKER, MAINPATH_MARKER, RULE_MARKER
+from concurrent.futures import ThreadPoolExecutor
 
 from dataclasses import dataclass
 from typing import Dict, List, TYPE_CHECKING, Optional, Union
@@ -116,9 +117,11 @@ class Kea:
     # the driver for executing kea tests
     _pdl_driver: Optional[Union["Android_PDL_Driver", "HarmonyOS_PDL_Driver"]]
     _all_rules_list = None
+    _all_rules_DB = None
 
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
+        self.thread_executor = ThreadPoolExecutor(max_workers=48)
 
     @property
     def all_rules(self) -> List["Rule"]:
@@ -130,6 +133,20 @@ class Kea:
             for keaTestElements in self._KeaTest_DB.values():
                 self._all_rules_list.extend(keaTestElements.rules)
         return self._all_rules_list
+    
+    @property
+    def all_rules_DB(self):
+        """Return all rules dict by <rule, keaTest> items.
+        """
+        if self._all_rules_DB is not None:
+            return self._all_rules_DB
+        
+        self._all_rules_DB: Dict["Rule", "KeaTest"] = dict()
+        for keaTest, KeaTestElements in self._KeaTest_DB.items():
+            for target_rule in KeaTestElements.rules:
+                self._all_rules_DB[target_rule] = keaTest
+        
+        return self._all_rules_DB
     
     @property
     def initializer(self) -> Initializer:
@@ -319,15 +336,50 @@ class Kea:
 
     def get_rules_whose_preconditions_are_satisfied(self) -> Dict["Rule", "KeaTest"]:
         '''Check all rules and return the list of rules that meet the preconditions.'''
-        rules_passed_precondition:Dict["Rule", "KeaTest"] = {}
+         
+        if len(self.all_rules_DB) < 5:
+            return self.single_thread_precondition_checker()
+        else:
+            return self.multi_thread_precondition_checker()
+    
+    def single_thread_precondition_checker(self):
+        """
+        check precondition with sigle-thread
+        """
+        rules_passed_precondition: Dict["Rule", "KeaTest"] = dict()
+            
+        for target_rule, target_keaTest in self.all_rules_DB.items():
+            if len(target_rule.preconditions) > 0:
+                if all(precond(target_keaTest) for precond in target_rule.preconditions):
+                    rules_passed_precondition[target_rule] = target_keaTest
         
-        for keaTest, keaTestElements in self._KeaTest_DB.items():
-            for target_rule in keaTestElements.rules:
-                if len(target_rule.preconditions) > 0:
-                    if all(precond(keaTest) for precond in target_rule.preconditions):
-                        rules_passed_precondition[target_rule] = keaTest
-
         return rules_passed_precondition
+    
+    def multi_thread_precondition_checker(self):
+        """
+        check precondition with multi-threadings
+        """
+        
+        # Retrieve the rules to check and use map to execute tasks concurrently.
+        # `map` will return results in the same order as the input `rules_to_check`.
+        rules_to_check = list(self.all_rules_DB.keys())
+        results = self.thread_executor.map(self.precond_checking_worker, rules_to_check)
+        
+        # Use a dict to return the results
+        rules_passed_precondition: Dict["Rule", "KeaTest"] = dict()
+        for rule, passed_precond in zip(rules_to_check, results):
+            if passed_precond:
+                rules_passed_precondition[rule] = self.all_rules_DB[rule]
+            
+        return rules_passed_precondition
+    
+    def precond_checking_worker(self, target_rule:"Rule"):
+        """
+        the threading worker for checking a precondition
+        """
+        if len(target_rule.preconditions) > 0:
+            target_keaTest = self.all_rules_DB[target_rule]
+            return all(precond(target_keaTest) for precond in target_rule.preconditions)
 
     def get_rules_without_preconditions(self) -> Dict["Rule", "KeaTest"]:
         '''Return the list of rules that do not have preconditions.
@@ -345,7 +397,6 @@ class Kea:
     def teardown(self):
         """Called after a run has finished executing to clean up any necessary
         state.
-        Does nothing by default.
         """
-        ...
+        self.thread_executor.shutdown()
 

@@ -15,6 +15,7 @@ from .input_manager import InputManager
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .start import Setting
+    from .kea import Kea
 
 class DroidBot(object):
     """
@@ -102,7 +103,7 @@ class DroidBot(object):
         self.replay_output = replay_output
 
         self.enabled = True
-        self.kea = kea
+        self.kea:"Kea" = kea
 
         # param initializer
         self.app_path = app_path
@@ -287,6 +288,7 @@ class DroidBot(object):
 
             proxy = xmlrpc.client.ServerProxy(self.input_manager.policy.master)
             proxy.stop_worker(self.device.serial)
+        self.kea.teardown()
 
 class DroidBotException(Exception):
     pass

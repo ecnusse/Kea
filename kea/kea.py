@@ -8,6 +8,7 @@ import inspect
 import attr
 from .utils import INITIALIZER_MARKER, MAINPATH_MARKER, RULE_MARKER
 import threading
+import asyncio
 
 from dataclasses import dataclass
 from typing import Dict, List, TYPE_CHECKING, Optional, Union
@@ -347,39 +348,37 @@ class Kea:
             return rules_passed_precondition
         
         else:
-            return self.multi_thread_precondition_checker() 
+            ans = asyncio.run(self.multi_thread_precondition_checker()) 
+            return ans
     
-    def multi_thread_precondition_checker(self):
+    async def multi_thread_precondition_checker(self):
         """
         check precondition with multi-threadings
         """
         rules_passed_precondition: Dict["Rule", "KeaTest"] = dict()
-        threads = []
+        tasks = []
 
         # Use a lock to avoid write-after-write of rules_passed_precondition
-        lock = threading.Lock()
+        lock = asyncio.Lock()
         
         for rule in self.all_rules_DB.keys():
-            thread = threading.Thread(
-                target=self.precond_checking_worker,
-                args=(rule, rules_passed_precondition, lock)
+            task = asyncio.create_task(
+                self.precond_checking_worker(rule, rules_passed_precondition, lock)
             )
-            threads.append(thread)
-            thread.start()
+            tasks.append(task)
         
-        for thread in threads:
-            thread.join()
+        await asyncio.gather(*tasks)
         
         return rules_passed_precondition
     
-    def precond_checking_worker(self, target_rule:"Rule", rules_passed_precondition: Dict["Rule", "KeaTest"], lock: threading.Lock):
+    async def precond_checking_worker(self, target_rule:"Rule", rules_passed_precondition: Dict["Rule", "KeaTest"], lock: asyncio.Lock):
         """
         the threading worker for checking a precondition
         """
         if len(target_rule.preconditions) > 0:
             target_keaTest = self.all_rules_DB[target_rule]
             if all(precond(target_keaTest) for precond in target_rule.preconditions):
-                with lock:
+                async with lock:
                     rules_passed_precondition[target_rule] = target_keaTest
 
     def get_rules_without_preconditions(self) -> Dict["Rule", "KeaTest"]:

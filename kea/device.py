@@ -868,6 +868,7 @@ class Device(object):
         """
 
         self.cur_event_count += 1
+        self.logger.debug("current event count: %s" % self.cur_event_count)
         if current_state is None:
             self.current_state = self.get_current_state()
         else:

@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import re
 import functools
@@ -312,6 +313,23 @@ def sanitize_args(options):
         sanitize_app_package_name(options)
     else:
         options.is_package = False
+
+def load_properties_from_dir(property_files):
+    new_property_files = []
+    for property_file in property_files:
+        if os.path.isdir(property_file):
+            print(f"load all the property files under: {property_file} ")
+            try:
+                for entry in os.listdir(property_file):
+                    full_path = os.path.join(property_file, entry)
+                    if os.path.isfile(full_path):
+                        new_property_files.append(full_path)
+            except Exception as e:
+                print(e)
+        else:
+            new_property_files.append(property_file)
+    return new_property_files
+
 
 def identify_device_serial(options):
     """

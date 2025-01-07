@@ -1,4 +1,5 @@
 import argparse
+import os
 import warnings
 from dataclasses import dataclass
 
@@ -9,7 +10,7 @@ coloredlogs.install()
 
 from .input_manager import DEFAULT_POLICY, DEFAULT_TIMEOUT
 from .kea import Kea
-from .utils import get_yml_config, sanitize_args
+from .utils import get_yml_config, sanitize_args, load_properties_from_dir
 from .droidbot import DroidBot
 from .utils import DEFAULT_POLICY, DEFAULT_EVENT_INTERVAL, DEFAULT_TIMEOUT, DEFAULT_EVENT_COUNT
 
@@ -86,9 +87,10 @@ def parse_args():
     # load the args from the config file `config.yml`
     if options.load_config:
         options = load_ymal_args(options)
+    options.property_files = load_properties_from_dir(options.property_files)
 
     # sanitize these args
-    sanitize_args(options) 
+    sanitize_args(options)
 
     return options
 
@@ -190,7 +192,7 @@ def main():
                        generate_utg=options.generate_utg,
                        is_package=options.is_package
                        )
-    
+
     # load the pdl driver for Android/HarmonyOS
     driver = load_pdl_driver(settings)
     Kea.set_pdl_driver(driver)

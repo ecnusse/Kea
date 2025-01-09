@@ -3,7 +3,7 @@ import logging
 import time
 
 from .similarity import Similarity
-
+from .utils import save_log
 from .input_event import EventLog
 from .input_policy import (
     GuidedPolicy,
@@ -46,7 +46,8 @@ class InputManager(object):
         replay_output=None,
         kea=None,
         number_of_events_that_restart_app=100,
-        generate_utg=False
+        generate_utg=False,
+        output_dir=None
     ):
         """
         manage input event sent to the target device
@@ -56,6 +57,8 @@ class InputManager(object):
         :return:
         """
         self.logger = logging.getLogger('InputEventManager')
+        self.output_dir = output_dir
+        save_log(self.logger, self.output_dir)
         self.enabled = True
         self.device = device
         self.app = app
@@ -81,12 +84,13 @@ class InputManager(object):
                 device,
                 app,
                 self.kea,
-                self.generate_utg
+                self.generate_utg,
+                self.output_dir
             )
         elif self.policy_name == POLICY_RANDOM:
-            input_policy = RandomPolicy(device, app, kea=self.kea, number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_reinstall_app=True, allow_to_generate_utg = self.generate_utg)
+            input_policy = RandomPolicy(device, app, kea=self.kea, number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_reinstall_app=True, allow_to_generate_utg = self.generate_utg, output_dir=self.output_dir)
         elif self.policy_name == POLICY_LLM:
-            input_policy = LLMPolicy(device, app, kea=self.kea, number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True, allow_to_generate_utg = self.generate_utg)
+            input_policy = LLMPolicy(device, app, kea=self.kea, number_of_events_that_restart_app = self.number_of_events_that_restart_app, clear_and_restart_app_data_after_100_events=True, allow_to_generate_utg = self.generate_utg, output_dir=self.output_dir)
         else:
             self.logger.warning(
                 "No valid input policy specified. Using policy \"none\"."

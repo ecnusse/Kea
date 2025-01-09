@@ -120,6 +120,8 @@ def load_ymal_args(opts):
             opts.property_files = value
         elif key.lower() == "keep_app" and value:
             opts.keep_app = value
+        elif key.lower() == "disable_rotate" and value:
+            opts.disable_rotate = value
     
     return opts
 

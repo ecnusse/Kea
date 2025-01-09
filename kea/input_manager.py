@@ -48,7 +48,7 @@ class InputManager(object):
         number_of_events_that_restart_app=100,
         generate_utg=False,
         output_dir=None,
-        is_package=None
+        is_package=False,
     ):
         """
         manage input event sent to the target device
@@ -74,9 +74,9 @@ class InputManager(object):
         self.profiling_method = profiling_method
         self.number_of_events_that_restart_app = number_of_events_that_restart_app
         self.generate_utg = generate_utg
-        self.policy = self.get_input_policy(device, app, master)
         self.sim_calculator = Similarity(DEFAULT_UI_TARPIT_NUM)
         self.is_package = is_package
+        self.policy = self.get_input_policy(device, app, master)
 
     def get_input_policy(self, device, app, master):
         if self.policy_name == POLICY_NONE:

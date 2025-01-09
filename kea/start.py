@@ -46,6 +46,7 @@ class Setting:
     is_harmonyos:bool=False
     generate_utg:bool=False
     is_package:bool=False
+    disable_rotate:bool=False
 
 def parse_args():
     """Parse, load and sanitize the args from the command line and the config file `config.yml`.
@@ -82,6 +83,8 @@ def parse_args():
                         help="load the args from config.yml, and the args in the command line will be ignored.")
     parser.add_argument("-utg", action="store_true", dest="generate_utg", default=False,
                         help="Generate UI transition graph")
+    parser.add_argument("-disable_rotate", action="store_true", dest="disable_rotate", default=False,
+                        help="Disable rotate event in the testing")
     options = parser.parse_args()
 
     # load the args from the config file `config.yml`
@@ -91,7 +94,6 @@ def parse_args():
 
     # sanitize these args
     sanitize_args(options)
-
     return options
 
 def load_ymal_args(opts):
@@ -164,7 +166,8 @@ def start_kea(kea:"Kea", settings:"Setting" = None):
         is_harmonyos=settings.is_harmonyos,
         is_package=settings.is_package,
         settings=settings,
-        generate_utg=settings.generate_utg
+        generate_utg=settings.generate_utg,
+        disable_rotate=settings.disable_rotate
     )
 
     kea._pdl_driver.set_droidbot(droidbot)  
@@ -190,7 +193,8 @@ def main():
                        grant_perm=options.grant_perm,
                        is_emulator=options.is_emulator,
                        generate_utg=options.generate_utg,
-                       is_package=options.is_package
+                       is_package=options.is_package,
+                       disable_rotate=options.disable_rotate
                        )
 
     # load the pdl driver for Android/HarmonyOS

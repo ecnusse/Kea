@@ -377,6 +377,7 @@ class RandomPolicy(KeaInputPolicy):
             number_of_events_that_restart_app=100,
             clear_and_reinstall_app=False,
             allow_to_generate_utg=False,
+            disable_rotate=False,
             output_dir=None
     ):
         super(RandomPolicy, self).__init__(device, app, kea, allow_to_generate_utg)
@@ -386,6 +387,7 @@ class RandomPolicy(KeaInputPolicy):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.output_dir=output_dir
         save_log(self.logger, self.output_dir)
+        self.disable_rotate=disable_rotate
         self.last_rotate_events = KEY_RotateDeviceToPortraitEvent
 
     def generate_event(self):
@@ -452,7 +454,8 @@ class RandomPolicy(KeaInputPolicy):
 
         possible_events = current_state.get_possible_input()
         possible_events.append(KeyEvent(name="BACK"))
-        possible_events.append(RotateDevice())
+        if not self.disable_rotate:
+            possible_events.append(RotateDevice())
 
         self._event_trace += EVENT_FLAG_EXPLORE
 
@@ -475,11 +478,12 @@ class GuidedPolicy(KeaInputPolicy):
     generate events around the main path
     """
 
-    def __init__(self, device, app, kea=None, allow_to_generate_utg=False,output_dir=None):
+    def __init__(self, device, app, kea=None, allow_to_generate_utg=False,disable_rotate=False,output_dir=None):
         super(GuidedPolicy, self).__init__(device, app, kea, allow_to_generate_utg)
         self.logger = logging.getLogger(self.__class__.__name__)
         self.output_dir = output_dir
         save_log(self.logger,self.output_dir)
+        self.disable_rotate = disable_rotate
         if len(self.kea.all_mainPaths):
             self.logger.info("Found %d mainPaths" % len(self.kea.all_mainPaths))
         else:
@@ -708,7 +712,8 @@ class GuidedPolicy(KeaInputPolicy):
         # if self.random_input:
         #     random.shuffle(possible_events)
         possible_events.append(KeyEvent(name="BACK"))
-        possible_events.append(RotateDevice())
+        if not self.disable_rotate:
+            possible_events.append(RotateDevice())
 
         self._event_trace += EVENT_FLAG_EXPLORE
 

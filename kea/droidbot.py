@@ -169,7 +169,8 @@ class DroidBot(object):
                 kea=self.kea,
                 number_of_events_that_restart_app=self.number_of_events_that_restart_app,
                 generate_utg=self.generate_utg,
-                output_dir=self.output_dir
+                output_dir=self.output_dir,
+                is_package=self.is_package
             )
             # self.send_documents()
         # initializer for HarmonyOS system
@@ -205,7 +206,8 @@ class DroidBot(object):
                 master=self.master,
                 replay_output=self.replay_output,
                 kea=self.kea,
-                output_dir=self.output_dir)
+                output_dir=self.output_dir,
+                is_package=self.is_package)
 
     @staticmethod
     def get_instance():

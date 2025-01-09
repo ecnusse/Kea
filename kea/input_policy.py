@@ -5,7 +5,7 @@ import random
 import copy
 import re
 import time
-from .utils import Time, generate_report
+from .utils import Time, generate_report, save_log
 from abc import abstractmethod
 from .input_event import (
     KEY_RotateDeviceToPortraitEvent,
@@ -377,12 +377,15 @@ class RandomPolicy(KeaInputPolicy):
             number_of_events_that_restart_app=100,
             clear_and_reinstall_app=False,
             allow_to_generate_utg=False,
+            output_dir=None
     ):
         super(RandomPolicy, self).__init__(device, app, kea, allow_to_generate_utg)
         self.restart_app_after_check_property = restart_app_after_check_property
         self.number_of_events_that_restart_app = number_of_events_that_restart_app
         self.clear_and_reinstall_app = clear_and_reinstall_app
         self.logger = logging.getLogger(self.__class__.__name__)
+        self.output_dir=output_dir
+        save_log(self.logger, self.output_dir)
         self.last_rotate_events = KEY_RotateDeviceToPortraitEvent
 
     def generate_event(self):
@@ -472,10 +475,11 @@ class GuidedPolicy(KeaInputPolicy):
     generate events around the main path
     """
 
-    def __init__(self, device, app, kea=None, allow_to_generate_utg=False):
+    def __init__(self, device, app, kea=None, allow_to_generate_utg=False,output_dir=None):
         super(GuidedPolicy, self).__init__(device, app, kea, allow_to_generate_utg)
         self.logger = logging.getLogger(self.__class__.__name__)
-
+        self.output_dir = output_dir
+        save_log(self.logger,self.output_dir)
         if len(self.kea.all_mainPaths):
             self.logger.info("Found %d mainPaths" % len(self.kea.all_mainPaths))
         else:
@@ -734,9 +738,12 @@ class LLMPolicy(RandomPolicy):
             number_of_events_that_restart_app=100,
             clear_and_restart_app_data_after_100_events=False,
             allow_to_generate_utg=False,
+            output_dir=None
     ):
         super(LLMPolicy, self).__init__(device, app, kea)
         self.logger = logging.getLogger(self.__class__.__name__)
+        self.output_dir = output_dir
+        save_log(self.logger,self.output_dir)
         self.__action_history = []
         self.__all_action_history = set()
         self.__activity_history = set()

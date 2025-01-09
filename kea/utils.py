@@ -330,6 +330,14 @@ def load_properties_from_dir(property_files):
             new_property_files.append(property_file)
     return new_property_files
 
+def save_log(logger, output_dir):
+    # output logging into a txt file
+    log_dir = os.path.join(output_dir, "records.log")
+    file_handler = logging.FileHandler(log_dir)
+    file_handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
 
 def identify_device_serial(options):
     """

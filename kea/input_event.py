@@ -789,7 +789,7 @@ class SwipeEvent(UIEvent):
         return views
 
     def get_event_name(self):
-        return self.get_event_str()
+        return "Swipe"
 
 class ScrollEvent(UIEvent):
     """

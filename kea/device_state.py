@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from .device import Device
 
 from .utils import md5, deprecated
-from .input_event import SearchEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent, UIEvent
+from .input_event import SearchEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent, UIEvent, SwipeEvent
 
 
 class DeviceState(object):
@@ -599,6 +599,20 @@ class DeviceState(object):
 
         # For old Android navigation bars
         # possible_events.append(KeyEvent(name="MENU"))
+
+        for view_id in enabled_view_ids:
+            if self.__safe_dict_get(self.views[view_id], 'package') == 'com.tencent.mm' and self.__safe_dict_get(self.views[view_id], 'resource_id') == "com.tencent.mm:id/media_container":
+                bounds = self.__safe_dict_get(self.views[view_id], 'bounds')
+                x0 = bounds[0][0]
+                y0 = bounds[0][1]
+                x1 = bounds[1][0]
+                y1 = bounds[1][1]
+                swipe_x = (x0 + x1) / 2.0
+                swipe_y0 = y0 + 3.0 * (y1 - y0) / 4.0
+                swipe_y1 = y0 + (y1- y0) / 4.0
+                possible_events.append(SwipeEvent(start_x=swipe_x, start_y=swipe_y0, end_x=swipe_x, end_y=swipe_y1, duration = 500))
+                possible_events.append(SwipeEvent(start_x=swipe_x, start_y=swipe_y1, end_x=swipe_x, end_y=swipe_y0, duration = 500))
+
 
         self.possible_events = possible_events
         return [] + possible_events

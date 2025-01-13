@@ -1,11 +1,10 @@
-from dataclasses import dataclass
 import os
 import logging
 import random
 import copy
 import re
 import time
-from .utils import Time, generate_report, save_log
+from .utils import Time, generate_report, save_log, RULE_STATE
 from abc import abstractmethod
 from .input_event import (
     KEY_RotateDeviceToPortraitEvent,
@@ -57,14 +56,6 @@ POLICY_RANDOM = "random"
 POLICY_NONE = "none"
 POLICY_LLM = "llm"
 
-
-@dataclass
-class RULE_STATE:
-    PRECONDITION_SATISFIED = "#satisfy pre"
-    PROPERTY_CHECKED = "#check property"
-    POSTCONDITION_VIOLATED = "#postcondition is violated"
-
-
 class InputInterruptedException(Exception):
     pass
 
@@ -89,6 +80,7 @@ class InputPolicy(object):
         self.allow_to_generate_utg = allow_to_generate_utg
         self.triggered_bug_information = []
         self.time_needed_to_satisfy_precondition = []
+        self.statistics_of_rules = {}
 
         self._num_restarts = 0
         self._num_steps_outside = 0
@@ -148,6 +140,7 @@ class InputPolicy(object):
                     self.time_needed_to_satisfy_precondition,
                     self.device.cur_event_count,
                     self.time_recoder.get_time_duration(),
+                    self.statistics_of_rules
                 )
 
             except KeyboardInterrupt:
@@ -262,12 +255,12 @@ class KeaInputPolicy(InputPolicy):
         # self.to_state = None
 
         # retrive all the rules from the provided properties
-        self.statistics_of_rules = {}
         for rule in self.kea.all_rules:
-            self.statistics_of_rules[str(rule)] = {
+            self.statistics_of_rules[str(rule.function.__name__)] = {
                 RULE_STATE.PRECONDITION_SATISFIED: 0,
                 RULE_STATE.PROPERTY_CHECKED: 0,
                 RULE_STATE.POSTCONDITION_VIOLATED: 0,
+                RULE_STATE.UI_OBJECT_NOT_FOUND: 0
             }
 
     def run_initializer(self):
@@ -298,16 +291,12 @@ class KeaInputPolicy(InputPolicy):
             return
 
         candidate_rules_list = list(rules_ready_to_be_checked.keys())
-        for candidate_rule in candidate_rules_list:
-            self.statistics_of_rules[str(candidate_rule)][
-                RULE_STATE.PRECONDITION_SATISFIED
-            ] += 1
         # randomly select a rule to check
         rule_to_check = random.choice(candidate_rules_list)
 
         if rule_to_check is not None:
             self.logger.info(f"-------Check Property : {rule_to_check}------")
-            self.statistics_of_rules[str(rule_to_check)][
+            self.statistics_of_rules[str(rule_to_check.function.__name__)][
                 RULE_STATE.PROPERTY_CHECKED
             ] += 1
             precondition_page_index = self.device.cur_event_count
@@ -323,7 +312,7 @@ class KeaInputPolicy(InputPolicy):
                     "-------time from start : %s-----------"
                     % str(self.time_recoder.get_time_duration())
                 )
-                self.statistics_of_rules[str(rule_to_check)][
+                self.statistics_of_rules[str(rule_to_check.function.__name__)][
                     RULE_STATE.POSTCONDITION_VIOLATED
                 ] += 1
                 postcondition_page__index = self.device.cur_event_count
@@ -347,6 +336,9 @@ class KeaInputPolicy(InputPolicy):
                 self.logger.error(
                     f"-------Execution failed: UiObjectNotFound during exectution. Property:{rule_to_check}-----------"
                 )
+                self.statistics_of_rules[str(rule_to_check.function.__name__)][
+                    RULE_STATE.UI_OBJECT_NOT_FOUND
+                ] += 1
             elif result == CHECK_RESULT.PRECON_NOT_SATISFIED:
                 self.logger.info("-------Precondition not satisfied-----------")
             else:
@@ -419,6 +411,10 @@ class RandomPolicy(KeaInputPolicy):
             return KillAndRestartAppEvent(app=self.app)
 
         rules_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
+        for rule_to_check in rules_to_check:
+            self.statistics_of_rules[str(rule_to_check.function.__name__)][
+                RULE_STATE.PRECONDITION_SATISFIED
+            ] += 1
 
         if len(rules_to_check) > 0:
             t = self.time_recoder.get_time_duration()
@@ -579,9 +575,11 @@ class GuidedPolicy(KeaInputPolicy):
                     self.logger.info(
                         "reach the end of the main path that could satisfy the precondition"
                     )
-                    rules_to_check = (
-                        self.kea.get_rules_whose_preconditions_are_satisfied()
-                    )
+                    rules_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
+                    for rule_to_check in rules_to_check:
+                        self.statistics_of_rules[str(rule_to_check.function.__name__)][
+                            RULE_STATE.PRECONDITION_SATISFIED
+                        ] += 1
                     if len(rules_to_check) > 0:
                         t = self.time_recoder.get_time_duration()
                         self.time_needed_to_satisfy_precondition.append(t)
@@ -861,6 +859,10 @@ class LLMPolicy(RandomPolicy):
             )
             return ReInstallAppEvent(self.app)
         rules_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
+        for rule_to_check in rules_to_check:
+            self.statistics_of_rules[str(rule_to_check.function.__name__)][
+                RULE_STATE.PRECONDITION_SATISFIED
+            ] += 1
 
         if len(rules_to_check) > 0:
             t = self.time_recoder.get_time_duration()

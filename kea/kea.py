@@ -344,7 +344,7 @@ class Kea:
     
     def single_thread_precondition_checker(self):
         """
-        check precondition with sigle-thread
+        check precondition with single-thread
         """
         rules_passed_precondition: Dict["Rule", "KeaTest"] = dict()
             

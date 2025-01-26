@@ -19,7 +19,7 @@ from .adapter.minicap import Minicap
 from .adapter.process_monitor import ProcessMonitor
 from .adapter.telnet import TelnetConsole
 from .adapter.user_input_monitor import UserInputMonitor
-
+from .utils import save_log
 from .app import App
 from .intent import Intent
 
@@ -30,7 +30,6 @@ from .utils import COLOR
 
 DEFAULT_NUM = '1234567890'
 DEFAULT_CONTENT = 'Hello world!'
-
 
 class Device(object):
     """
@@ -60,6 +59,8 @@ class Device(object):
         """
 
         self.logger = logging.getLogger(self.__class__.__name__)
+        self.output_dir = output_dir
+        save_log(self.logger, self.output_dir)
         self.app_package_name = app_package_name
         if device_serial is None:
             from .utils import get_available_devices
@@ -76,7 +77,6 @@ class Device(object):
         self.serial = device_serial
         self.is_emulator = is_emulator
         self.cv_mode = cv_mode
-        self.output_dir = output_dir
         if output_dir is not None:
             if not os.path.isdir(output_dir):
                 os.makedirs(output_dir)
@@ -872,6 +872,7 @@ class Device(object):
         """
 
         self.cur_event_count += 1
+        self.logger.info("Total event count: %s" % self.cur_event_count)
         if current_state is None:
             self.current_state = self.get_current_state()
         else:

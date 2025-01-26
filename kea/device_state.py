@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .device import Device
 
-from .utils import md5, deprecated
+from .utils import md5, deprecated, COLOR
 from .input_event import SearchEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent, UIEvent, SwipeEvent
 
 
@@ -615,8 +615,7 @@ class DeviceState(object):
 
 
         self.possible_events = possible_events
-        return [] + possible_events
-    
+        return [] + possible_events 
 
     def get_text_representation(self, merge_buttons=False):
         """
@@ -760,7 +759,7 @@ class DeviceState(object):
                 return value
         return default
 
-    def get_view_by_attribute(self, attribute_dict,random_select=False):
+    def get_view_by_attribute(self, attribute_dict, random_select=False):
         """
         get the veiw that matches the attribute dict
         :param attribute_dict: the attribute dict
@@ -811,8 +810,7 @@ class DeviceState(object):
         if len(view_list) == 0:
             self.logger.info("No view found for %s" % ui_element)
         return view_list
-
-    # 
+ 
     def is_view_exist(self, view_dict):
         """
         
@@ -934,3 +932,28 @@ class DeviceState(object):
                 action_name = f'scroll {action.direction.lower()}'
             desc = f'- {action_name} {self.get_view_desc(action.view)}'
         return desc
+    
+    def get_covered_widgets(self):
+        """
+        get all covered widgets
+        """
+        covered_widgets = []
+        for view in self.views:
+            if view["covered"]:
+                covered_widgets.append(view)
+        return covered_widgets
+    
+    def get_vaild_widgets(self):
+        """
+        get all vaild widgets. (not covered and able to input) 
+        """
+        valid_widgets = []
+        for view in self.views:
+            if not view["covered"] and view["visible"] and any([
+                view["clickable"],
+                view["checkable"],
+                view["editable"],
+                view["long_clickable"]
+            ]):
+                valid_widgets.append(view)
+        return valid_widgets

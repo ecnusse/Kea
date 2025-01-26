@@ -1,7 +1,8 @@
 from typing import List, Dict
 import uiautomator2
 import xml.etree.ElementTree as ET
-
+import rtree
+from ..utils import deprecated
 
 class Uiautomator2_Helper:
     def __init__(self, device=None, package_name = None):
@@ -27,7 +28,7 @@ class Uiautomator2_Helper:
         s1 = self.__first_cap_re.sub(r"\1_\2", name)
         return self.__all_cap_re.sub(r"\1_\2", s1).lower()
 
-    def __view_tree_to_list(self, view_tree, view_list):
+    def __view_tree_to_list(self, view_tree, view_list: List):
         tree_id = len(view_list)
         view_tree['temp_id'] = tree_id
 
@@ -68,6 +69,7 @@ class Uiautomator2_Helper:
             "is_password": element.get("password") == "true",
             "focusable": element.get("focusable") == "true",
             "enabled": element.get("enabled") == "true",
+            "drawing-order": int(element.get("drawing-order")) if element.get("drawing-order") else None,
             "content_description": element.get("content-desc")
             if element.get("content-desc")
             else None,
@@ -143,8 +145,63 @@ class Uiautomator2_Helper:
         view_tree = self.select_target_root_node(xml)
         # convert the xml file to dict
         view_tree = self.xml_to_dict(view_tree)
+        
+        # Try to prune a sub-tree according to the drawing-order, deprecated.
+        # self.prune_blocked_views(view_tree)
+        
+        DrawingOrderSetter(view_tree)
 
         return view_tree
+    
+    @deprecated("The pruning algorithm is not able to calulate the cover relations")
+    def prune_blocked_views(self, view_tree):
+        """
+        Try to prune a sub-tree according to the drawing-order
+        """
+        width = len(view_tree["children"])
+        if width == 0:
+            return
+        if width >= 2:
+            bounds_lt = [child["bounds"] for child in view_tree["children"]]
+            if self.bounds_intersect(bounds_lt):
+                drawing_orders = [child["drawing-order"] for child in view_tree["children"]]
+                
+                # get subtree drew on top
+                top_subtree = view_tree["children"][drawing_orders.index(width)]
+                
+                # Exlude the statusBar and navigationBar
+                if top_subtree["resource_id"] in \
+                    ['android:id/navigationBarBackground',
+                     'android:id/statusBarBackground']:
+                    pass
+                else:
+                    view_tree["children"] = [top_subtree]
+                           
+        for child in view_tree["children"]:
+            self.prune_blocked_views(child)
+
+    @deprecated("The pruning algorithm is not able to calulate the cover relations")
+    def bounds_intersect(self, bounds_lt):
+        
+        def intersects(bounds_A, bounds_B):
+            vertexs = [[bounds_A[0], bounds_A[1]],
+                       [bounds_A[0], bounds_A[3]],
+                       [bounds_A[2], bounds_A[1]],
+                       [bounds_A[2], bounds_A[3]]]
+            
+            x1_B, y1_B, x2_B, y2_B = bounds_B
+            
+            for x, y in vertexs:
+                if x1_B < x < x2_B and y1_B < y < y2_B:
+                    return False
+            
+            return True
+                     
+        for i in range(len(bounds_lt)):
+            for j in range(i + 1, len(bounds_lt)):
+                if intersects(bounds_lt[i], bounds_lt[j]):
+                    return True
+        return False       
 
     def get_views(self) -> List:
         """
@@ -158,6 +215,44 @@ class Uiautomator2_Helper:
         view_list = []
         self.__view_tree_to_list(view_tree, view_list)
         return view_list
+
+
+class DrawingOrderSetter:
+    def __init__(self, view_tree):
+        self.global_drawing_order = 0
+        self.views = []
+        self.resolution = view_tree["bounds"]
+        self.idx = rtree.index.Index()
+        self.set_drawing_orders(view_tree)
+   
+    def set_drawing_orders(self, view_tree):
+        view_tree["global_drawing_order"] = self.global_drawing_order
+        view_tree["covered"] = False
+        self.views.append(view_tree)
+
+        # if current widget is clickable
+        if view_tree["clickable"]:
+            # delete all the clickable widgets covered by this widget
+            if (covered_widget_ids := list(self.idx.contains(view_tree["bounds"]))):
+                for covered_widget_id in covered_widget_ids:
+                    self.views[covered_widget_id]["covered"] = True
+                    self.idx.delete(covered_widget_id,
+                                    self.views[covered_widget_id]["bounds"])
+
+            # add the center of this widget into the map
+            bounds = view_tree["bounds"]
+            center = [(bounds[0] + bounds[2]) / 2,
+                      (bounds[1] + bounds[3]) / 2]
+            self.idx.insert(self.global_drawing_order, (center[0], center[1], center[0], center[1]))
+            
+        self.global_drawing_order += 1
+        child_with_drawing_orders = sorted(view_tree["children"], key=lambda x: x["drawing-order"])
+        for child in child_with_drawing_orders:
+            self.set_drawing_orders(view_tree=child)
+    
+    def filter_covered_view(self):
+        for view in self.views:
+            pass
 
 
 if __name__ == '__main__':

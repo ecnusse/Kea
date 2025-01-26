@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import json
 import os
 import re
@@ -25,6 +26,19 @@ RANDOM_POLICY = "random"
 DEFAULT_EVENT_INTERVAL = 1
 DEFAULT_EVENT_COUNT = 100000000
 DEFAULT_TIMEOUT = 3600
+
+
+@dataclass
+class COLOR:
+    BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
+    RED = (0, 0, 255)
+    GREEN = (0, 255, 0)
+    BLUE = (255, 0, 0)
+    YELLOW = (0, 255, 255)
+    CYAN = (255, 255, 0)
+    MAGENTA = (255, 0, 255)
+
 
 def lazy_property(func):
     attribute = '_lazy_' + func.__name__

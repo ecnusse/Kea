@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .device import Device
 
-from .utils import md5, deprecated
+from .utils import md5, deprecated, COLOR
 from .input_event import SearchEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, KeyEvent, UIEvent
 
 
@@ -20,7 +20,7 @@ class DeviceState(object):
 
     def __init__(
         self,
-        device:"Device",
+        device: "Device",
         views,
         foreground_activity,
         activity_stack,
@@ -79,10 +79,8 @@ class DeviceState(object):
         return state
 
     def to_json(self):
-        import json
-
         return json.dumps(self.to_dict(), indent=2)
-    
+     
     def __parse_views(self, raw_views):
         views = []
         if not raw_views or len(raw_views) == 0:
@@ -232,26 +230,28 @@ class DeviceState(object):
                 property_values.add(property_value)
         return property_values
 
+    @deprecated("Not used")
     def draw_event(self, event, screenshot_path):
         import cv2
         image = cv2.imread(screenshot_path)
         if event is not None and screenshot_path is not None:
             if isinstance(event, TouchEvent):
-                cv2.rectangle(image, (int(event.view['bounds'][0][0]),int(event.view['bounds'][0][1])),(int(event.view['bounds'][1][0]),int(event.view['bounds'][1][1])), (0, 0, 255), 5)
+                cv2.rectangle(image, (int(event.view['bounds'][0][0]), int(event.view['bounds'][0][1])),(int(event.view['bounds'][1][0]),int(event.view['bounds'][1][1])), COLOR.RED, 5)
             elif isinstance(event, LongTouchEvent):
-                cv2.rectangle(image, (int(event.view['bounds'][0][0]),int(event.view['bounds'][0][1])),(int(event.view['bounds'][1][0]),int(event.view['bounds'][1][1])), (0, 255, 0), 5)
+                cv2.rectangle(image, (int(event.view['bounds'][0][0]), int(event.view['bounds'][0][1])),(int(event.view['bounds'][1][0]),int(event.view['bounds'][1][1])), COLOR.GREEN, 5)
             elif isinstance(event, SetTextEvent):
-                cv2.rectangle(image, (int(event.view['bounds'][0][0]),int(event.view['bounds'][0][1])),(int(event.view['bounds'][1][0]),int(event.view['bounds'][1][1])), (255, 0, 0), 5)
+                cv2.rectangle(image, (int(event.view['bounds'][0][0]), int(event.view['bounds'][0][1])),(int(event.view['bounds'][1][0]),int(event.view['bounds'][1][1])), COLOR.BLUE, 5)
             elif isinstance(event, ScrollEvent):
-                cv2.rectangle(image, (int(event.view['bounds'][0][0]),int(event.view['bounds'][0][1])),(int(event.view['bounds'][1][0]),int(event.view['bounds'][1][1])), (255, 255, 0), 5)
+                cv2.rectangle(image, (int(event.view['bounds'][0][0]), int(event.view['bounds'][0][1])),(int(event.view['bounds'][1][0]),int(event.view['bounds'][1][1])), COLOR.CYAN, 5)
             elif isinstance(event, KeyEvent):
-                cv2.putText(image,event.name, (100,300), cv2.FONT_HERSHEY_SIMPLEX, 5,(0, 255, 0), 3, cv2.LINE_AA)
+                cv2.putText(image, event.name, (100, 300), cv2.FONT_HERSHEY_SIMPLEX, 5, COLOR.RED, 3, cv2.LINE_AA)
             else:
                 return
             try:
                 cv2.imwrite(screenshot_path, image)
             except Exception as e:
                 self.logger.warning(e)    
+                
     def save_view_img(self, view_dict, output_dir=None):
         try:
             if output_dir is None:

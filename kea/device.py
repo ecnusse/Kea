@@ -7,7 +7,9 @@ import sys
 import time
 
 import uiautomator2
+# uiautomator2.enable_pretty_logging()
 import pkg_resources
+import cv2
 from .adapter.uiautomator2_helper import Uiautomator2_Helper
 
 from .adapter.adb import ADB
@@ -22,7 +24,9 @@ from .app import App
 from .intent import Intent
 
 from .input_event import InputEvent, SetTextAndSearchEvent, TouchEvent, LongTouchEvent, ScrollEvent, SetTextEvent, \
-    KeyEvent
+    KeyEvent, UIEvent
+
+from .utils import COLOR
 
 DEFAULT_NUM = '1234567890'
 DEFAULT_CONTENT = 'Hello world!'
@@ -875,47 +879,58 @@ class Device(object):
         self.save_to_all_states_dir(self.screenshot_path, event_name=event_name, event=event)
 
     def draw_event(self, event, event_name, screenshot_path):
-        import cv2
+        if event is None or screenshot_path is None:
+            return
         image = cv2.imread(screenshot_path)
-        if event is not None and screenshot_path is not None:
-            if isinstance(event, InputEvent):
-                if isinstance(event, TouchEvent):
-                    cv2.rectangle(image, (int(event.view['bounds'][0][0]), int(event.view['bounds'][0][1])),
-                                  (int(event.view['bounds'][1][0]), int(event.view['bounds'][1][1])), (0, 0, 255), 5)
-                elif isinstance(event, LongTouchEvent):
-                    cv2.rectangle(image, (int(event.view['bounds'][0][0]), int(event.view['bounds'][0][1])),
-                                  (int(event.view['bounds'][1][0]), int(event.view['bounds'][1][1])), (0, 255, 0), 5)
-                elif isinstance(event, SetTextEvent):
-                    cv2.rectangle(image, (int(event.view['bounds'][0][0]), int(event.view['bounds'][0][1])),
-                                  (int(event.view['bounds'][1][0]), int(event.view['bounds'][1][1])), (255, 0, 0), 5)
-                elif isinstance(event, ScrollEvent):
-                    cv2.rectangle(image, (int(event.view['bounds'][0][0]), int(event.view['bounds'][0][1])),
-                                  (int(event.view['bounds'][1][0]), int(event.view['bounds'][1][1])), (255, 255, 0), 5)
-                elif isinstance(event, KeyEvent):
-                    cv2.putText(image, event.name, (100, 300), cv2.FONT_HERSHEY_SIMPLEX, 5, (0, 255, 0), 3, cv2.LINE_AA)
-                else:
-                    return
-            else:
-                if event_name == "click":
-                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])),
-                                  (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])),
-                                  (0, 0, 255), 5)
-                elif event_name == "long_click":
-                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])),
-                                  (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])),
-                                  (0, 255, 0), 5)
-                elif event_name == "set_text":
-                    cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])),
-                                  (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])),
-                                  (255, 0, 0), 5)
-                elif event_name == "press":
-                    cv2.putText(image, event, (100, 300), cv2.FONT_HERSHEY_SIMPLEX, 5, (0, 255, 0), 3, cv2.LINE_AA)
-                else:
-                    return
-            try:
-                cv2.imwrite(screenshot_path, image)
-            except Exception as e:
-                self.logger.warning(e)
+        
+        if isinstance(event, InputEvent):
+            self.draw_droidbot_event(event, image)
+        else:
+            self.draw_u2_event(event, event_name, image)
+        
+        try:
+            cv2.imwrite(screenshot_path, image)
+        except Exception as e:
+            self.logger.warning(f"Execption when drawing events: {e}")
+                
+    def draw_droidbot_event(self, event, image):
+        if isinstance(event, UIEvent):
+            pt1, pt2 = event.view["bounds"]
+            if isinstance(event, TouchEvent):
+                cv2.rectangle(image, pt1, pt2, COLOR.RED, thickness=5)
+            elif isinstance(event, LongTouchEvent):
+                cv2.rectangle(image, pt1, pt2, COLOR.GREEN, thickness=5)
+            elif isinstance(event, SetTextEvent):
+                cv2.rectangle(image, pt1, pt2, COLOR.BLUE, thickness=5)
+            elif isinstance(event, ScrollEvent):
+                cv2.rectangle(image, pt1, pt2, COLOR.CYAN, thickness=5)
+        elif isinstance(event, KeyEvent):
+            cv2.putText(image, text=event.name,
+                        org=(100, 300),
+                        fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                        fontScale=5,
+                        color=COLOR.GREEN,
+                        thickness=3,
+                        lineType=cv2.LINE_AA)
+    
+    def draw_u2_event(self, event, event_name, image):
+        if event_name == "click":
+            cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])),
+                            (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])),
+                            COLOR.RED, 5)
+        elif event_name == "long_click":
+            cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])),
+                            (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])),
+                            COLOR.GREEN, 5)
+        elif event_name == "set_text":
+            cv2.rectangle(image, (int(event.info['bounds']['left']), int(event.info['bounds']['top'])),
+                            (int(event.info['bounds']['right']), int(event.info['bounds']['bottom'])),
+                            COLOR.BLUE, 5)
+        elif event_name == "press":
+            cv2.putText(image, event, (100, 300), cv2.FONT_HERSHEY_SIMPLEX, 5, COLOR.GREEN, 3, cv2.LINE_AA)
+        else:
+            return
+        
 
     def take_screenshot(self):
         if self.output_dir is None:

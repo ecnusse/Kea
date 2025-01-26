@@ -1,4 +1,5 @@
 import argparse
+import os
 import warnings
 from dataclasses import dataclass
 
@@ -9,7 +10,7 @@ coloredlogs.install()
 
 from .input_manager import DEFAULT_POLICY, DEFAULT_TIMEOUT
 from .kea import Kea
-from .utils import get_yml_config, sanitize_args
+from .utils import get_yml_config, sanitize_args, load_properties_from_dir
 from .droidbot import DroidBot
 from .utils import DEFAULT_POLICY, DEFAULT_EVENT_INTERVAL, DEFAULT_TIMEOUT, DEFAULT_EVENT_COUNT
 
@@ -45,6 +46,7 @@ class Setting:
     is_harmonyos:bool=False
     generate_utg:bool=False
     is_package:bool=False
+    disable_rotate:bool=False
 
 def parse_args():
     """Parse, load and sanitize the args from the command line and the config file `config.yml`.
@@ -81,15 +83,17 @@ def parse_args():
                         help="load the args from config.yml, and the args in the command line will be ignored.")
     parser.add_argument("-utg", action="store_true", dest="generate_utg", default=False,
                         help="Generate UI transition graph")
+    parser.add_argument("-disable_rotate", action="store_true", dest="disable_rotate", default=False,
+                        help="Disable rotate event in the testing")
     options = parser.parse_args()
 
     # load the args from the config file `config.yml`
     if options.load_config:
         options = load_ymal_args(options)
+    options.property_files = load_properties_from_dir(options.property_files)
 
     # sanitize these args
-    sanitize_args(options) 
-
+    sanitize_args(options)
     return options
 
 def load_ymal_args(opts):
@@ -116,6 +120,8 @@ def load_ymal_args(opts):
             opts.property_files = value
         elif key.lower() == "keep_app" and value:
             opts.keep_app = value
+        elif key.lower() == "disable_rotate" and value:
+            opts.disable_rotate = value
     
     return opts
 
@@ -162,7 +168,8 @@ def start_kea(kea:"Kea", settings:"Setting" = None):
         is_harmonyos=settings.is_harmonyos,
         is_package=settings.is_package,
         settings=settings,
-        generate_utg=settings.generate_utg
+        generate_utg=settings.generate_utg,
+        disable_rotate=settings.disable_rotate
     )
 
     kea._pdl_driver.set_droidbot(droidbot)  
@@ -188,9 +195,10 @@ def main():
                        grant_perm=options.grant_perm,
                        is_emulator=options.is_emulator,
                        generate_utg=options.generate_utg,
-                       is_package=options.is_package
+                       is_package=options.is_package,
+                       disable_rotate=options.disable_rotate
                        )
-    
+
     # load the pdl driver for Android/HarmonyOS
     driver = load_pdl_driver(settings)
     Kea.set_pdl_driver(driver)

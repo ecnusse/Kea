@@ -5,6 +5,7 @@ import re
 import subprocess
 import sys
 import time
+import shutil
 
 import uiautomator2
 # uiautomator2.enable_pretty_logging()
@@ -27,6 +28,9 @@ from .input_event import InputEvent, SetTextAndSearchEvent, TouchEvent, LongTouc
     KeyEvent, UIEvent
 
 from .utils import COLOR
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .device_state import DeviceState
 
 DEFAULT_NUM = '1234567890'
 DEFAULT_CONTENT = 'Hello world!'
@@ -877,7 +881,46 @@ class Device(object):
             self.current_state = self.get_current_state()
         else:
             self.current_state = current_state
+
+        self.save_to_filtered_dir(self.screenshot_path, current_state)
         self.save_to_all_states_dir(self.screenshot_path, event_name=event_name, event=event)
+    
+    def save_to_filtered_dir(self, screenshot_path, current_state: "DeviceState"):
+        """
+        a widget which was covered is a widget to filter.
+        This function will draw the filtered widgets
+        """
+        filtered_widgets_path = os.path.join(self.output_dir, "filtered_widgets")
+        
+        if not os.path.exists(filtered_widgets_path):
+            os.makedirs(filtered_widgets_path)
+        
+        covered_widgets = current_state.get_covered_widgets()
+
+        image = cv2.imread(screenshot_path)
+        covered_widget_info = []
+        for covered_widget in covered_widgets:
+            # draw a rectangle on the covered widgets
+            pt1, pt2 = covered_widget["bounds"]
+            cv2.rectangle(image, pt1, pt2, COLOR.GREEN, 3)
+            # collect and save the covered widgets info.
+            covered_widget_info.append(covered_widget["signature"])
+        
+        # save the screenshot with covered rectangles
+        dest_screenshot_path = "%s/screen_%s.png" % (filtered_widgets_path, self.cur_event_count)
+        cv2.imwrite(filename=dest_screenshot_path, img=image)
+        
+        # save the covered and valid widgets info to txt
+        valid_widgets = current_state.get_vaild_widgets()
+        valid_widgets_info = [_["signature"] for _ in valid_widgets]
+        dest_filteredinfo_path = "%s/screen_%s.txt" % (filtered_widgets_path, self.cur_event_count)
+
+        with open(dest_filteredinfo_path, "w") as fp:
+            fp.write("======== covered widgets =========" + "\n")
+            fp.write("\n".join(covered_widget_info)) 
+            fp.write("\n\n" + "========= valid widgets ==========" + "\n")
+            fp.write("\n".join(valid_widgets_info))
+        
 
     def draw_event(self, event, event_name, screenshot_path):
         if event is None or screenshot_path is None:
@@ -960,8 +1003,7 @@ class Device(object):
 
         return local_image_path
 
-    def save_to_all_states_dir(self, local_image_path, event, event_name=None):
-        import shutil
+    def save_to_all_states_dir(self, local_image_path, event, event_name=None):   
         all_states_dir = os.path.join(self.output_dir, "all_states")
         if not os.path.exists(all_states_dir):
             os.makedirs(all_states_dir)

@@ -108,6 +108,7 @@ class Device(object):
         self.ro_secure = None
         self.connected = True
         self.last_know_state = None
+        self.from_state:"DeviceState" = None
         self.__used_ports = []
         self.pause_sending_event = False
 
@@ -882,7 +883,7 @@ class Device(object):
         else:
             self.current_state = current_state
 
-        self.save_to_filtered_dir(self.screenshot_path, current_state)
+        self.save_to_filtered_dir(self.screenshot_path, self.current_state)
         self.save_to_all_states_dir(self.screenshot_path, event_name=event_name, event=event)
     
     def save_to_filtered_dir(self, screenshot_path, current_state: "DeviceState"):

@@ -106,7 +106,10 @@ class InputPolicy(object):
                     self.from_state = self.to_state
                 else:
                     self.from_state = self.device.get_current_state()
-
+                
+                # set the from_state to droidbot to let the pdl get the state
+                self.device.from_state = self.from_state
+                
                 if self.event_count == 0:
                     # If the application is running, close the application.
                     event = KillAppEvent(app=self.app)
@@ -673,7 +676,7 @@ class GuidedPolicy(KeaInputPolicy):
         get an event can lead current state to go back to the main path
         """
         if self.index_on_main_path_after_mutation == -1:
-            for i in range(len(self.main_path_list) - 1, -1, -1):
+            for i in reversed(range(len(self.main_path_list))):
                 event_str = self.main_path_list[i]
                 ui_elements_dict = self.get_ui_element_dict(event_str)
                 current_state = self.from_state

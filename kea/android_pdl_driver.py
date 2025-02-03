@@ -6,7 +6,7 @@ Please checkout Kea's doc and its paper for the details.
 
 from uiautomator2._selector import Selector, UiObject
 from uiautomator2 import Device as Driver
-from typing import Any, Union, TYPE_CHECKING
+from typing import Any, Union, TYPE_CHECKING, Dict
 if TYPE_CHECKING:
     from kea.droidbot import DroidBot
 import time
@@ -52,9 +52,23 @@ class Ui(UiObject):
     """
     TODO extend more UI operations, e.g., random selecting one tag
     """
-    def __init__(self, session:"Android_PDL_Driver", selector: Selector, droidbot:"DroidBot"):
+    def __init__(self, 
+                 session:"Android_PDL_Driver",
+                 selector: Selector,
+                 droidbot:"DroidBot"):
         super().__init__(session, selector)
         self.droidbot=droidbot
+        self.selector=selector
+    
+    def exists(self):
+        # TODO add a static checker here
+        cur_state = self.droidbot.device.from_state
+        kwargs = dict()
+        for key, value in self.selector.items():
+            if key not in ["mask", "childOrSibling", "childOrSiblingSelector"]:
+                kwargs[key] = value
+        view = cur_state.get_view_by_attribute(kwargs)
+        return view is not None
 
     def click(self, offset=None):
         self.droidbot.device.save_screenshot_for_report(event_name="click", event = self)

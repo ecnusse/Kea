@@ -336,6 +336,8 @@ class Kea:
 
     def get_rules_whose_preconditions_are_satisfied(self) -> Dict["Rule", "KeaTest"]:
         '''Check all rules and return the list of rules that meet the preconditions.'''
+
+        return self.single_thread_precondition_checker()
          
         if len(self.all_rules_DB) < 5:
             return self.single_thread_precondition_checker()

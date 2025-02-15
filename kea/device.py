@@ -912,8 +912,10 @@ class Device(object):
         cv2.imwrite(filename=dest_screenshot_path, img=image)
         
         # save the covered and valid widgets info to txt
+        # TODO If there's no bad case (the vaild wigets were exlcuded). The following code
+        # TODO can be removed.
         valid_widgets = current_state.get_vaild_widgets()
-        valid_widgets_info = [_["signature"] for _ in valid_widgets]
+        valid_widgets_info = [(_["signature"] + "[bounds]" + str(_["bounds"])) for _ in valid_widgets]
         dest_filteredinfo_path = "%s/screen_%s.txt" % (filtered_widgets_path, self.cur_event_count)
 
         with open(dest_filteredinfo_path, "w") as fp:

@@ -337,6 +337,7 @@ class Kea:
     def get_rules_whose_preconditions_are_satisfied(self) -> Dict["Rule", "KeaTest"]:
         '''Check all rules and return the list of rules that meet the preconditions.'''
 
+        # 2025/02/15 Support static precondition checker in Android system.
         return self.single_thread_precondition_checker()
          
         if len(self.all_rules_DB) < 5:

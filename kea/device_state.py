@@ -493,6 +493,9 @@ class DeviceState(object):
         enabled_view_ids = []
         touch_exclude_view_ids = set()
         for view_dict in self.views:
+            # exclude if the widget is covered
+            if self.__safe_dict_get(view_dict, 'covered'):
+                continue
             # exclude navigation bar if exists
             if (
                 self.__safe_dict_get(view_dict, 'enabled')
@@ -801,6 +804,10 @@ class DeviceState(object):
             origin_list = self.views
         view_list = []
         for view in origin_list:
+            # exclude the covered widgets
+            if view["covered"]:
+                continue
+            # matching the current widget with given attributes.
             flag = True
             for attribute_key, attribute_value in ui_element.items():
                 if view[attribute_key] != attribute_value:
@@ -808,7 +815,7 @@ class DeviceState(object):
             if flag:
                 view_list.append(view)
         if len(view_list) == 0:
-            self.logger.info("No view found for %s" % ui_element)
+            self.logger.debug("No view found for %s" % ui_element)
         return view_list
  
     def is_view_exist(self, view_dict):

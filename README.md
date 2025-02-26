@@ -23,7 +23,7 @@ Kea currently supports Android and HarmonyOS.
 
 ### Publication 
 
-📘 **[Kea's Paper @ ASE 2024 (ACM Distinguished Paper)](https://xyiheng.github.io//files/Property_Based_Testing_for_Android_Apps.pdf)**
+📘 **[Kea's Paper @ ASE 2024 (won ACM Distinguished Paper Award!)](https://xyiheng.github.io//files/Property_Based_Testing_for_Android_Apps.pdf)**
 
 > "General and Practical Property-based Testing for Android Apps". 
 > Yiheng Xiong, Ting Su, Jue Wang, Jingling Sun, Geguang Pu, Zhendong Su.

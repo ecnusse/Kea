@@ -15,7 +15,8 @@ install_requires = ["networkx",
         "hypothesis",
         "hmdriver2",
         "pyyaml",
-        "openai"
+        "openai",
+        "rtree"
     ]
 
 if sys.version_info >= (3, 12):

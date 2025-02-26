@@ -13,7 +13,7 @@
 
 ### Intro ([中文](README_CN.md))
 
-Kea is a general and practical testing tool based on the idea of [property-based testing](https://en.wikipedia.org/wiki/Software_testing#Property_testing) for finding functional bugs in mobile (GUI) apps.
+Kea is a general and practical testing tool based on the idea of [property-based testing](https://en.wikipedia.org/wiki/Software_testing#Property_testing) for finding functional (logic) bugs in mobile (GUI) apps.
 Kea currently supports Android and HarmonyOS.
 
 

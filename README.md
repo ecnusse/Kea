@@ -11,9 +11,7 @@
 </div>
 
 
-### [中文文档](README_CN.md)
-
-### Intro 
+### Intro ([中文](README_CN.md))
 
 Kea is a general and practical testing tool based on the idea of [property-based testing](https://en.wikipedia.org/wiki/Software_testing#Property_testing) for finding functional bugs in mobile (GUI) apps.
 Kea currently supports Android and HarmonyOS.
@@ -31,10 +29,22 @@ Kea currently supports Android and HarmonyOS.
 > Yiheng Xiong, Ting Su, Jue Wang, Jingling Sun, Geguang Pu, Zhendong Su.
 > In ASE 2024. 
 
-You can find more about our work on testing/analyzing mobile apps at this [ECNU SE lab - mobile app analysis](https://mobile-app-analysis.github.io).
+### Blogs (In Chinese)
+
+[别再苦哈哈写测试脚本了，生成它们吧！(一)](https://mp.weixin.qq.com/s/R2kLCkXpDjpa8wCX4Eidtg)
+
+[别再苦哈哈写测试脚本了，生成它们吧！(二)](https://mp.weixin.qq.com/s/s4WkdstNcKupu9OP8jeOXw)
+
+[别再苦哈哈写测试脚本了，生成它们吧！(三)](https://mp.weixin.qq.com/s/BjXyo-xJRmPB_sCc4pmh8g)
+
+### More Info
+
+> Find more about our work on testing/analyzing mobile apps: [ECNU-SSE-Lab - Mobile App Analysis](https://mobile-app-analysis.github.io).
+
+> A list of literature on mobile app testing and analysis: [Mobile App Analysis and Testing Literature](https://github.com/XYIheng/MobileAppTesting).
 
 
-### [Demonstration Video (Chinese)](https://www.bilibili.com/video/BV1QPkoYREgh/?share_source=copy_web)
+### [Demonstration Video](https://www.bilibili.com/video/BV1QPkoYREgh/?share_source=copy_web) (In Chinese)
 
 ### Docs
 

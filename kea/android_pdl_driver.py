@@ -4,7 +4,7 @@ kind of DSL (Domain Sepcific Language).
 Please checkout Kea's doc and its paper for the details.
 """
 
-from deprecated import deprecated
+# from deprecated import deprecated
 from uiautomator2._selector import Selector, UiObject
 from uiautomator2 import Device as Driver
 from typing import Any, Union, TYPE_CHECKING, Dict

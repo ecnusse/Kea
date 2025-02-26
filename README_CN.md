@@ -2,7 +2,7 @@
 <h1>Kea</h1>
 
  <a href='LICENSE'><img src='https://img.shields.io/badge/License-MIT-orange'></a> &nbsp;&nbsp;&nbsp;
- <a><img src='https://img.shields.io/badge/python-3.9, 3.10, 3.11, 3.12, 3.13-blue'></a> &nbsp;&nbsp;&nbsp;
+ <a><img src='https://img.shields.io/badge/python-3.8, 3.9, 3.10, 3.11, 3.12, 3.13-blue'></a> &nbsp;&nbsp;&nbsp;
  <a href='https://kea-docs.readthedocs.io/zh-cn/latest/part-theory/introduction.html'><img src='https://img.shields.io/badge/doc-1.0.0-blue'></a>
 </div>
 
@@ -52,7 +52,7 @@ Kea 目前支持 Android 和 HarmonyOS。
 
 **环境配置**
 
-- Python 3.9+
+- Python 3.8+
 - `adb` or `hdc` cmd tools available
 - Connect an Android / HarmonyOS device or emulator to your PC
 

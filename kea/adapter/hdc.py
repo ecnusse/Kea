@@ -1,4 +1,5 @@
 # This is the interface for hdc
+from typing import Dict
 import subprocess
 import logging
 import re
@@ -580,7 +581,7 @@ class UitestDumper(Dumper):
         temp_id = 0
 
         while queue:
-            node:dict = queue.popleft()
+            node: Dict = queue.popleft()
 
             # process the node and add the hierachy info so that Droidbot can
             # recongnize while traversing

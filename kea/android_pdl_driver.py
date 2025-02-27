@@ -63,15 +63,15 @@ class Ui(UiObject):
         self.droidbot=droidbot
         self.selector=selector
     
-    def exists(self):
-        # TODO add a static checker here
-        cur_state = self.droidbot.device.from_state
-        kwargs = dict()
-        for key, value in self.selector.items():
-            if key not in ["mask", "childOrSibling", "childOrSiblingSelector"]:
-                kwargs[key] = value
-        view = cur_state.get_view_by_attribute(kwargs)
-        return view is not None
+    # def exists(self):
+    #     # TODO add a static checker here
+    #     cur_state = self.droidbot.device.from_state
+    #     kwargs = dict()
+    #     for key, value in self.selector.items():
+    #         if key not in ["mask", "childOrSibling", "childOrSiblingSelector"]:
+    #             kwargs[key] = value
+    #     view = cur_state.get_view_by_attribute(kwargs)
+    #     return view is not None
 
     def click(self, offset=None):
         self.droidbot.device.save_screenshot_for_report(event_name="click", event = self)

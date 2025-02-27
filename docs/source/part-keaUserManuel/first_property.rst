@@ -92,7 +92,7 @@ Kea 是一个基于性质的移动应用测试框架，目前支持 Android 和 
 
 .. note:: 
 
-    你可能会对 ``d(**选择器)`` 脚本感到困惑。这是 kea 的 PDL（Property Description Language, 性质描述语言）  
+    你可能会对 ``d(**Selector)`` 脚本感到困惑。这是 kea 的 PDL（Property Description Language, 性质描述语言）  
     用于与 AUT（被测应用）交互。你可以阅读 :ref:`pdl_api` 以获取详细信息。
 
 **要检查这个控件是否存在，我们调用 ``exists``。**

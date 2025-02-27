@@ -122,9 +122,9 @@ Kea 是一个基于性质的移动应用测试框架，目前支持 Android 和 
 .. code-block:: python
 
     #my_prop.py
-    from kea.core import *
+    from kea import *
 
-    class CheckSearchBox(Kea):
+    class CheckSearchBox(KeaTest):
         @precondition(lambda self: d(resourceId="it.feio.android.omninotes.alpha:id/search_src_text").exists())
         @rule()
         def search_box_should_exist_after_rotation(self):
@@ -140,6 +140,6 @@ Kea 是一个基于性质的移动应用测试框架，目前支持 Android 和 
 
 .. code-block:: bash
 
-    kea -f prop.py -a example/omninotes.apk -o output
+    kea -f my_prop.py -a example/omninotes.apk -o output
 
 检查 ``output/bug_report.html`` 中的错误报告。你可以在本教程中学习如何阅读错误报告： :ref:`bug_report_tutorial`。

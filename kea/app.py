@@ -7,7 +7,7 @@ from .intent import Intent
 
 from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
-    from .core import Setting
+    from .start import Setting
 
 class App(object):
     """

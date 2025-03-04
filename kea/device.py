@@ -710,7 +710,7 @@ class Device(object):
         #                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         package_name = app.get_package_name()
         if package_name not in self.adb.get_installed_apps():
-            install_cmd = ["adb", "-s", self.serial, "install", "-t", "-r"]
+            install_cmd = ["adb", "-s", self.serial, "install", "-t", "-r", "-d"]
             if self.grant_perm and self.get_sdk_version() >= 23 and "amaze" not in package_name:
                 print("Granting permissions for app %s" % package_name)
                 install_cmd.append("-g")

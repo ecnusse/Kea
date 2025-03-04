@@ -346,9 +346,6 @@ def sanitize_args(options):
     if options.apk_path is None:
         raise AttributeError("No target app. Use -a to specify the app to be tested")
     
-    if options.property_files is None:
-        raise AttributeError("No properties. Use -f to specify the properties to be tested.")
-    
     if not str(options.apk_path).endswith((".apk", ".hap")):
         options.is_package = True
         COLOR_YELLOW = "\033[93m"
@@ -359,6 +356,8 @@ def sanitize_args(options):
         options.is_package = False
 
 def load_properties_from_dir(property_files):
+    if property_files is None:
+        raise AttributeError("No properties. Use -f to specify the properties to be tested.")
     new_property_files = []
     for property_file in property_files:
         if os.path.isdir(property_file):
@@ -372,6 +371,8 @@ def load_properties_from_dir(property_files):
                 print(e)
         else:
             new_property_files.append(property_file)
+        if not new_property_files:
+            raise AttributeError("Property files is none. Reset the property file or property directory.")
     return new_property_files
 
 def save_log(logger, output_dir):

@@ -709,19 +709,17 @@ class Device(object):
         # subprocess.check_call(["adb", "-s", self.serial, "uninstall", app.get_package_name()],
         #                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         package_name = app.get_package_name()
-        if package_name not in self.adb.get_installed_apps():
-            install_cmd = ["adb", "-s", self.serial, "install", "-t", "-r", "-d"]
-            if self.grant_perm and self.get_sdk_version() >= 23 and "amaze" not in package_name:
-                print("Granting permissions for app %s" % package_name)
-                install_cmd.append("-g")
-            install_cmd.append(app.app_path)
-            install_p = subprocess.Popen(install_cmd, stdout=subprocess.PIPE)
-            while self.connected and package_name not in self.adb.get_installed_apps():
-                self.logger.info("Please wait while installing the app...")
-                time.sleep(2)
-            if not self.connected:
-                install_p.terminate()
-                return
+        # if package_name not in self.adb.get_installed_apps():
+        install_cmd = ["install", "-t", "-r", "-d"]
+        if self.grant_perm and self.get_sdk_version() >= 23 and "amaze" not in package_name:
+            print("Granting permissions for app %s" % package_name)
+            install_cmd.append("-g")
+        install_cmd.append(app.app_path)
+        success = None
+        while self.connected and success is None:
+            self.logger.info("Please wait while installing the app...")
+            success = self.adb.run_cmd(install_cmd)
+            time.sleep(2)
 
         dumpsys_p = subprocess.Popen(
             ["adb", "-s", self.serial, "shell", "dumpsys", "package", package_name],

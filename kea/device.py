@@ -715,11 +715,18 @@ class Device(object):
             print("Granting permissions for app %s" % package_name)
             install_cmd.append("-g")
         install_cmd.append(app.app_path)
-        success = None
-        while self.connected and success is None:
-            self.logger.info("Please wait while installing the app...")
-            success = self.adb.run_cmd(install_cmd)
-            time.sleep(2)
+
+        
+        self.logger.info("Please wait while installing the app...")
+        
+        r = self.adb.run_cmd(install_cmd)
+        
+        if "Success" not in r.split():
+            self.logger.error(f"Fail to install apk. ADB output:\n{r}")
+            self.disconnect()
+        
+        if package_name not in self.adb.get_installed_apps():
+            self.logger.warning(f"Package name not in device's package list. Which may lead to unexpected behaivour.")
 
         dumpsys_p = subprocess.Popen(
             ["adb", "-s", self.serial, "shell", "dumpsys", "package", package_name],

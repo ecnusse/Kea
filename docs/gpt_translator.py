@@ -12,9 +12,14 @@ if __name__ == "__main__":
     untranslated_files = get_not_translated_files()
     
     print(f"found {len(untranslated_files)} untranslated files.")
-    for untranslated_file in untranslated_files:
-        print(untranslated_file)
     
-    for untranslated_file in untranslated_files:
-        abs_path = os.path.join(docs_dir, untranslated_file)
-        translater.translate_file(abs_path)
+    if len(untranslated_files) > 0:  
+        for untranslated_file in untranslated_files:
+            print(untranslated_file)
+        
+        print(f"===== start translating {len(untranslated_files)} files =====")
+        
+        for i, untranslated_file in enumerate(untranslated_files):
+            print(f"({i+1}/{len(untranslated_files)}) translating {untranslated_file}")
+            abs_path = os.path.join(docs_dir, untranslated_file)
+            translater.translate_file(abs_path)

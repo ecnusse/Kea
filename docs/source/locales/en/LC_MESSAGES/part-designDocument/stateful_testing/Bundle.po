@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the Kea package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Kea 1.0\n"
@@ -122,7 +121,6 @@ msgid "**__new__**"
 msgstr "**__new__**"
 
 #: ../../source/part-designDocument/stateful_testing/Bundle.rst:53
-#, fuzzy
 msgid ""
 "根据当前类型数据的名称判断是否已经实例化过该类型数据的Bundle对象，若没有实例化则实例化该类型Bundle对象并返回。 "
 "否则，不实例化并返回之前实例化的对象。"
@@ -232,4 +230,3 @@ msgstr "**get_random_data**"
 #: ../../source/part-designDocument/stateful_testing/Bundle.rst:163
 msgid "该类型数据的一个状态值"
 msgstr "A state value of that type of data."
-

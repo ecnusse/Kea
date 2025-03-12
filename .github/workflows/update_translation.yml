@@ -8,6 +8,7 @@ on:
 jobs:
   update-translation:
     runs-on: ubuntu-latest
+    environment: gpt_translator
 
     steps:
       - name: Check out repository

@@ -9,7 +9,7 @@ class OpenaiTranslator:
         # 创建 OpenAI 客户端实例
         self.client = OpenAI(
             api_key=api_key,
-            base_url=r"https://api.chatanywhere.tech"
+            base_url=r"https://api.chatanywhere.org"
         )
         self.prompt = prompt
 

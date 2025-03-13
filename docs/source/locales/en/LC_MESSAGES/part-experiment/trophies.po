@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kea 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-13 12:32+0000\n"
+"POT-Creation-Date: 2025-03-13 12:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -155,4 +155,150 @@ msgstr ""
 #, fuzzy
 msgid ""
 "`#945 https://github.com/federicoiosue/Omni-Notes/issues/945 "
-"<
+"<https://github.com/federicoiosue/Omni-Notes/issues/945>`_"
+msgstr ""
+"`#945 https://github.com/federicoiosue/Omni-Notes/issues/945 "
+"<https://github.com/federicoiosue/Omni-Notes/issues/945>`_"
+
+#: ../../source/part-experiment/trophies.rst:50
+msgid "Markor:"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:40
+#, fuzzy
+msgid ""
+"`#2153 https://github.com/gsantner/markor/issues/2153 "
+"<https://github.com/gsantner/markor/issues/2153>`_"
+msgstr ""
+"`#2153 https://github.com/gsantner/markor/issues/2153 "
+"<https://github.com/gsantner/markor/issues/2153>`_"
+
+#: ../../source/part-experiment/trophies.rst:42
+#, fuzzy
+msgid ""
+"`#2196 https://github.com/gsantner/markor/issues/2196 "
+"<https://github.com/gsantner/markor/issues/2196>`_"
+msgstr ""
+"`#2196 https://github.com/gsantner/markor/issues/2196 "
+"<https://github.com/gsantner/markor/issues/2196>`_"
+
+#: ../../source/part-experiment/trophies.rst:44
+#, fuzzy
+msgid ""
+"`#2197 https://github.com/gsantner/markor/issues/2197 "
+"<https://github.com/gsantner/markor/issues/2197>`_"
+msgstr ""
+"`#2197 https://github.com/gsantner/markor/issues/2197 "
+"<https://github.com/gsantner/markor/issues/2197>`_"
+
+#: ../../source/part-experiment/trophies.rst:46
+#, fuzzy
+msgid ""
+"`#2198 https://github.com/gsantner/markor/issues/2198 "
+"<https://github.com/gsantner/markor/issues/2198>`_"
+msgstr ""
+"`#2198 https://github.com/gsantner/markor/issues/2198 "
+"<https://github.com/gsantner/markor/issues/2198>`_"
+
+#: ../../source/part-experiment/trophies.rst:48
+#, fuzzy
+msgid ""
+"`#2199 https://github.com/gsantner/markor/issues/2199 "
+"<https://github.com/gsantner/markor/issues/2199>`_"
+msgstr ""
+"`#2199 https://github.com/gsantner/markor/issues/2199 "
+"<https://github.com/gsantner/markor/issues/2199>`_"
+
+#: ../../source/part-experiment/trophies.rst:50
+#, fuzzy
+msgid ""
+"`#2250 https://github.com/gsantner/markor/issues/2250 "
+"<https://github.com/gsantner/markor/issues/2250>`_"
+msgstr ""
+"`#2250 https://github.com/gsantner/markor/issues/2250 "
+"<https://github.com/gsantner/markor/issues/2250>`_"
+
+#: ../../source/part-experiment/trophies.rst:57
+msgid "AmazeFileManager:"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:53
+#, fuzzy
+msgid ""
+"`#3991  https://github.com/TeamAmaze/AmazeFileManager/issues/3991 "
+"<https://github.com/TeamAmaze/AmazeFileManager/issues/3991>`_"
+msgstr ""
+"`#3991  https://github.com/TeamAmaze/AmazeFileManager/issues/3991 "
+"<https://github.com/TeamAmaze/AmazeFileManager/issues/3991>`_"
+
+#: ../../source/part-experiment/trophies.rst:55
+#, fuzzy
+msgid ""
+"`#4016  https://github.com/TeamAmaze/AmazeFileManager/issues/4016 "
+"<https://github.com/TeamAmaze/AmazeFileManager/issues/4016>`_"
+msgstr ""
+"`#4016  https://github.com/TeamAmaze/AmazeFileManager/issues/4016 "
+"<https://github.com/TeamAmaze/AmazeFileManager/issues/4016>`_"
+
+#: ../../source/part-experiment/trophies.rst:57
+#, fuzzy
+msgid ""
+"`#4130  https://github.com/TeamAmaze/AmazeFileManager/issues/4130 "
+"<https://github.com/TeamAmaze/AmazeFileManager/issues/4130>`_"
+msgstr ""
+"`#4130  https://github.com/TeamAmaze/AmazeFileManager/issues/4130 "
+"<https://github.com/TeamAmaze/AmazeFileManager/issues/4130>`_"
+
+#: ../../source/part-experiment/trophies.rst:62
+msgid "AnkiDroid:"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:60
+#, fuzzy
+msgid ""
+"`#15993 https://github.com/ankidroid/Anki-Android/issues/15993 "
+"<https://github.com/ankidroid/Anki-Android/issues/15993>`_"
+msgstr ""
+"`#15993 https://github.com/ankidroid/Anki-Android/issues/15993 "
+"<https://github.com/ankidroid/Anki-Android/issues/15993>`_"
+
+#: ../../source/part-experiment/trophies.rst:62
+#, fuzzy
+msgid ""
+"`#15995 https://github.com/ankidroid/Anki-Android/issues/15995 "
+"<https://github.com/ankidroid/Anki-Android/issues/15995>`_"
+msgstr ""
+"`#15995 https://github.com/ankidroid/Anki-Android/issues/15995 "
+"<https://github.com/ankidroid/Anki-Android/issues/15995>`_"
+
+#: ../../source/part-experiment/trophies.rst:69
+msgid "transistor:"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:65
+msgid ""
+"`#488 https://codeberg.org/y20k/transistor/issues/488 "
+"<https://codeberg.org/y20k/transistor/issues/488>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:67
+msgid ""
+"`#489 https://codeberg.org/y20k/transistor/issues/489 "
+"<https://codeberg.org/y20k/transistor/issues/489>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:69
+msgid ""
+"`#495 https://codeberg.org/y20k/transistor/issues/495 "
+"<https://codeberg.org/y20k/transistor/issues/495>`_"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:71
+msgid "Simpletask:"
+msgstr ""
+
+#: ../../source/part-experiment/trophies.rst:72
+msgid ""
+"`#1230 https://github.com/mpcjanssen/simpletask-android/issues/1230 "
+"<https://github.com/mpcjanssen/simpletask-android/issues/1230>`_"
+msgstr ""

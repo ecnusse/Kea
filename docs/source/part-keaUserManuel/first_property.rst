@@ -140,6 +140,6 @@ Kea 是一个基于性质的移动应用测试框架，目前支持 Android 和 
 
 .. code-block:: bash
 
-    kea -f my_prop.py -a example/omninotes.apk -o output
+    kea -f my_prop.py -a example/omninotes.apk -o output -d your_device_serial
 
 检查 ``output/bug_report.html`` 中的错误报告。你可以在本教程中学习如何阅读错误报告： :ref:`bug_report_tutorial`。

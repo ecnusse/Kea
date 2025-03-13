@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kea 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 13:22+0000\n"
+"POT-Creation-Date: 2025-03-13 11:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,11 +24,16 @@ msgstr "Introduction to the Effectiveness of Kea Tool Applications"
 msgid ""
 "当前，Kea 正在与 腾讯 - WXG 合作，帮助发现并拦截微信中的缺陷。截止 2025 年 3 "
 "月，我们已成功拦截二十余个问题，为微信的产品质量保驾护航。"
-msgstr "Currently, Kea is collaborating with Tencent - WXG to help discover and intercept defects in WeChat. As of March 2025, we have successfully intercepted over twenty issues, ensuring the product quality of WeChat."
+msgstr ""
+"Currently, Kea is collaborating with Tencent - WXG to help discover and "
+"intercept defects in WeChat. As of March 2025, we have successfully "
+"intercepted over twenty issues, ensuring the product quality of WeChat."
 
 #: ../../source/part-experiment/trophies.rst:6
 msgid "同时，Kea 此前在 8 个开源应用中找到了 25 个此前未知的功能缺陷。下面是这些功能缺陷清单："
-msgstr "Meanwhile, Kea previously found 25 previously unknown functional defects in 8 open-source applications. Here is the list of these defects:"
+msgstr ""
+"Meanwhile, Kea previously found 25 previously unknown functional defects "
+"in 8 open-source applications. Here is the list of these defects:"
 
 #: ../../source/part-experiment/trophies.rst:37
 msgid "OmniNotes:"
@@ -124,4 +129,29 @@ msgstr ""
 
 #: ../../source/part-experiment/trophies.rst:31
 msgid ""
-"`#939 https://
+"`#939 https://github.com/federicoiosue/Omni-Notes/issues/937 "
+"<https://github.com/federicoiosue/Omni-Notes/issues/937>`_"
+msgstr ""
+"`#939 https://github.com/federicoiosue/Omni-Notes/issues/937 "
+"<https://github.com/federicoiosue/Omni-Notes/issues/937>`_"
+
+#: ../../source/part-experiment/trophies.rst:33
+msgid ""
+"`#940 https://github.com/federicoiosue/Omni-Notes/issues/940 "
+"<https://github.com/federicoiosue/Omni-Notes/issues/940>`_"
+msgstr ""
+"`#940 https://github.com/federicoiosue/Omni-Notes/issues/940 "
+"<https://github.com/federicoiosue/Omni-Notes/issues/940>`_"
+
+#: ../../source/part-experiment/trophies.rst:35
+msgid ""
+"`#941 https://github.com/federicoiosue/Omni-Notes/issues/941 "
+"<https://github.com/federicoiosue/Omni-Notes/issues/941>`_"
+msgstr ""
+"`#941 https://github.com/federicoiosue/Omni-Notes/issues/941 "
+"<https://github.com/federicoiosue/Omni-Notes/issues/941>`_"
+
+#: ../../source/part-experiment/trophies.rst:37
+msgid ""
+"`#945 https://github.com/federicoiosue/Omni-Notes/issues/945 "
+"<https://github

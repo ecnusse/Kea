@@ -709,25 +709,24 @@ class Device(object):
         # subprocess.check_call(["adb", "-s", self.serial, "uninstall", app.get_package_name()],
         #                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         package_name = app.get_package_name()
+        # if package_name not in self.adb.get_installed_apps():
+        install_cmd = ["install", "-t", "-r", "-d"]
+        if self.grant_perm and self.get_sdk_version() >= 23 and "amaze" not in package_name:
+            print("Granting permissions for app %s" % package_name)
+            install_cmd.append("-g")
+        install_cmd.append(app.app_path)
+
+
+        self.logger.info("Please wait while installing the app...")
+
+        r = self.adb.run_cmd(install_cmd)
+
+        if "Success" not in r.split():
+            self.logger.error(f"Fail to install apk. ADB output:\n{r}")
+            self.disconnect()
+
         if package_name not in self.adb.get_installed_apps():
-            # if package_name not in self.adb.get_installed_apps():
-            install_cmd = ["install", "-t", "-r", "-d"]
-            if self.grant_perm and self.get_sdk_version() >= 23 and "amaze" not in package_name:
-                print("Granting permissions for app %s" % package_name)
-                install_cmd.append("-g")
-            install_cmd.append(app.app_path)
-
-
-            self.logger.info("Please wait while installing the app...")
-
-            r = self.adb.run_cmd(install_cmd)
-
-            if "Success" not in r.split():
-                self.logger.error(f"Fail to install apk. ADB output:\n{r}")
-                self.disconnect()
-
-            if package_name not in self.adb.get_installed_apps():
-                self.logger.warning(f"Package name not in device's package list. Which may lead to unexpected behaivour.")
+            self.logger.warning(f"Package name not in device's package list. Which may lead to unexpected behaivour.")
 
         dumpsys_p = subprocess.Popen(
             ["adb", "-s", self.serial, "shell", "dumpsys", "package", package_name],

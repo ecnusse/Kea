@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the Kea package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Kea 1.0\n"
@@ -22,7 +21,6 @@ msgid "Kea 的优势"
 msgstr "Advantages of Kea"
 
 #: ../../source/part-theory/introduction/Advantage.rst:4
-#, fuzzy
 msgid ""
 "在传统的应用测试中，我们一般会进行静态分析，动态遍历测试，脚本测试。我们可以从 **输入空间** 、 **功能相关性** 两个 "
 "维度评估这些测试方法对 **功能性缺陷** 的查错能力。"
@@ -105,4 +103,3 @@ msgstr ""
 "detecting functional defects in mobile applications, capable of "
 "automatically exploring and verifying the properties of applications, "
 "quickly discovering potential issues."
-

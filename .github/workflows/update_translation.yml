@@ -1,0 +1,58 @@
+name: Update Translations and Push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-translation:
+    runs-on: ubuntu-latest
+    environment: gpt_translator
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+        with:
+          # 保证能使用 GITHUB_TOKEN 推送变更
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install docs dependencies and build gettext files
+        working-directory: docs
+        run: |
+          # 安装依赖
+          python3 -m pip install --upgrade pip
+          pip install -r requirements.txt
+          # 构建 Sphinx 文档
+          make clean
+          make gettext
+          # 根据 gettext 文件更新现有的 .po 文件
+          sphinx-intl update -p build/gettext
+      
+      - name: Translate
+        working-directory: docs
+        env:
+            OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          # 执行自定义的翻译脚本
+          python3 gpt_translator.py
+
+      - name: Commit and push changes if any
+        run: |
+          # 配置 Git 用户信息
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # 回到仓库根目录，如果有变化则提交。这里只提交 docs 目录下的变更文件
+          git add docs
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "Automated update of translation files [skip ci]"
+            git push
+          else
+            echo "No changes to commit."
+          fi

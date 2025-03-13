@@ -74,6 +74,8 @@ pip install -e .
 kea -f example/example_property.py -a example/omninotes.apk
 ```
 
+**注意：** 目前 LLM 模块仍处于实验阶段。我们正在积极收集反馈以改进该模块的功能和稳定性。感谢您的理解和支持，同时欢迎您提出建议和意见。
+
 ### 作者/维护者
 
 Kea的原作者是：
@@ -87,7 +89,7 @@ Kea的原作者是：
 目前 Kea 的核心维护者：
 [Xiangchen Shen](https://xiangchenshen.github.io/), 
 [Xixian Liang](https://xixianliang.github.io/resume/),
-[Mengqian Xu](), [Bo Ma]()
+[Mengqian Xu](https://mengqianx.github.io/), [Bo Ma]()
 
 ### Kea 参考的开源工具
 

@@ -85,6 +85,8 @@ pip install -e .
 kea -f example/example_property.py -a example/omninotes.apk
 ```
 
+**Note:** The LLM module is currently in an experimental phase. We are actively gathering feedback to improve its functionality and stability. We appreciate your understanding and support from the community, and we welcome any suggestions or comments.
+
 ### Contributors/Maintainers
 
 The original authors of Kea are:
@@ -98,7 +100,7 @@ The original authors of Kea are:
 Now we have additional active contributors:
 [Xiangchen Shen](https://xiangchenshen.github.io/), 
 [Xixian Liang](https://xixianliang.github.io/resume/),
-[Mengqian Xu]()
+[Mengqian Xu](https://mengqianx.github.io/)
 
 ### Relevant Tools Used in Kea
 

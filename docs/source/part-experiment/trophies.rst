@@ -1,7 +1,9 @@
 Kea工具应用效果简介
 ======================
 
-Kea在8个开源应用中找到了25个此前未知的功能缺陷。下面是这些功能缺陷清单：
+当前，Kea 正在与 腾讯 - WXG 合作，帮助发现并拦截微信中的缺陷。截止 2025 年 3 月，我们已成功拦截二十余个问题，为微信的产品质量保驾护航。
+
+同时，Kea 此前在 8 个开源应用中找到了 25 个此前未知的功能缺陷。下面是这些功能缺陷清单：
 
 * OmniNotes: 
     `#942 https://github.com/federicoiosue/Omni-Notes/issues/942 <https://github.com/federicoiosue/Omni-Notes/issues/942>`_

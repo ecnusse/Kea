@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kea 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-13 11:59+0000\n"
+"POT-Creation-Date: 2025-03-13 12:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -152,6 +152,7 @@ msgstr ""
 "<https://github.com/federicoiosue/Omni-Notes/issues/941>`_"
 
 #: ../../source/part-experiment/trophies.rst:37
+#, fuzzy
 msgid ""
 "`#945 https://github.com/federicoiosue/Omni-Notes/issues/945 "
-"<https://github
+"<

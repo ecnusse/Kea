@@ -129,6 +129,8 @@ Now we have additional active contributors:
 
 > 📘 Understanding and Finding System Setting-related Defects in Android Apps. ISSTA 2021. [pdf](https://dl.acm.org/doi/10.1145/3460319.3464806)
 
+> 📘 Fully Automated Functional Fuzzing of Android Apps for Detecting Non-Crashing Logic Bugs. OOPSLA 2021. [pdf](https://dl.acm.org/doi/10.1145/3485533)
+
 </details>
 
 <details>

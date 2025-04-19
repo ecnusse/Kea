@@ -5,19 +5,20 @@ import os
 import sys
 
 
-install_requires = ["networkx",
-        "Pillow",
-        "uiautomator2==3.2.2",
-        "androguard==4.0.0",
-        "attrs",
-        "opencv-python",
-        "coloredlogs",
-        "hypothesis",
-        "hmdriver2",
-        "pyyaml",
-        "openai",
-        "rtree"
-    ]
+install_requires = [
+    "networkx",
+    "Pillow",
+    "uiautomator2==3.2.2",
+    "androguard==4.0.0",
+    "attrs",
+    "opencv-python",
+    "coloredlogs",
+    "hypothesis",
+    "hmdriver2",
+    "pyyaml",
+    "openai",
+    "rtree"
+]
 
 if sys.version_info >= (3, 12):
     install_requires.append("setuptools")

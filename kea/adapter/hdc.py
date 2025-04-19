@@ -1,4 +1,6 @@
 # This is the interface for hdc
+import datetime
+import json
 from typing import Dict
 import subprocess
 import logging
@@ -10,6 +12,12 @@ import pathlib
 import typing
 import time
 from ..utils import get_yml_config
+
+try:
+    from hmdriver2.driver import Driver, HmClient
+except ImportError:
+    pass
+
 try:
     from shlex import quote # Python 3
 except ImportError:
@@ -38,6 +46,11 @@ class HDCException(Exception):
     """
     pass
 
+class HierarchyDumpError(HDCException):
+    """
+    Error during dumping hierarchy
+    """
+
 class Dumper(ABC):
 
     @abstractmethod
@@ -61,7 +74,7 @@ class HDC(Adapter):
     # VERSION_SDK_PROPERTY = ''
     # VERSION_RELEASE_PROPERTY = ''
 
-    def __init__(self, device=None):
+    def __init__(self, device=None, hmclient=None):
         """
         initiate a HDC connection from serial no
         the serial no should be in output of `hdc devices`
@@ -69,9 +82,7 @@ class HDC(Adapter):
         :return:
         """
         self.logger = logging.getLogger(self.__class__.__name__)
-        if device is None:
-            from droidbot.device import Device
-            device = Device()
+        self.hmclient: Driver = hmclient
         self.device = device
 
         self.cmd_prefix = [HDC_EXEC, "-t", device.serial]
@@ -80,7 +91,9 @@ class HDC(Adapter):
     def set_up(self):
         self.logger.info(f"[CONNECTION] Setting up Adapter hdc.")
         # make the temp path in output dir to store the dumped layout result
-        temp_path = os.getcwd() + "/" + self.device.output_dir + "/temp"
+        temp_path = os.path.join(
+            os.getcwd(), self.device.output_dir, "temp"
+        )
         if os.path.exists(temp_path):
             import shutil
             shutil.rmtree(temp_path)
@@ -340,7 +353,14 @@ class HDC(Adapter):
         # views = dumper.hierachy
 
         #* use uitest dumper to get views
-        dumper = UitestDumper(hdc=self, output_dir=output_dir)
+        # dumper = UitestDumper(hdc=self, output_dir=output_dir)
+        # views = dumper.get_views()
+
+        
+        #* use HMClient dumper to get views
+        if HmDriverDumper.device is None:
+            HmDriverDumper.device = self.hmclient._client
+        dumper = HmDriverDumper(hdc=self)
         views = dumper.get_views()
 
         return views
@@ -558,7 +578,7 @@ class UitestDumper(Dumper):
 
         remote_path = r.split(":")[-1]
         return remote_path
-    
+
     def preprocess_views(self, views_path):
         """
         bfs the view tree and turn it into the android style
@@ -567,7 +587,6 @@ class UitestDumper(Dumper):
         """
         from collections import deque
         self._views = []
-
 
         with open(views_path, "r", encoding="utf-8") as f:
             import json
@@ -600,14 +619,14 @@ class UitestDumper(Dumper):
                     assert self.hdc.safe_dict_get(node["attributes"], "pagePath") is not None, "pagePath not exist"
                     child["attributes"]["pagePath"] = self.hdc.safe_dict_get(node["attributes"], "pagePath")
                 queue.append(child)
-            
+
             temp_id += 1
-        
+
         # get the 'children' attributes
         self.get_view_children()
 
         return self._views
-        
+
     def get_view_children(self):
         """
         get the 'children' attributes by the 'parent'
@@ -617,7 +636,7 @@ class UitestDumper(Dumper):
             if temp_id > -1:
                 self._views[temp_id]["children"].append(view["temp_id"])
                 assert self._views[temp_id]["temp_id"] == temp_id
-    
+
     def get_adb_view(self, raw_view:dict):
         """
         process the view and turn it into the android style
@@ -649,9 +668,9 @@ class UitestDumper(Dumper):
                 view["resource_id"] = value
                 continue
             view[key] = value
-    
+
         return view
-    
+
     def get_bounds(self, raw_bounds:str):
         # capturing the coordinate of the bounds and return 2-dimensional list
         # e.g.  "[10,20][30,40]" -->  [[10, 20], [30, 40]]
@@ -661,11 +680,11 @@ class UitestDumper(Dumper):
         if match:
             return [[int(match.group(1)), int(match.group(2))], \
                     [int(match.group(3)), int(match.group(4))]]
-    
+
     def get_size(self, raw_bounds:str):
         bounds = self.get_bounds(raw_bounds)
         return f"{bounds[1][0]-bounds[0][0]}*{bounds[1][1]-bounds[0][1]}"
-    
+
     @property
     def views(self):
         if self._views is None:
@@ -681,6 +700,188 @@ class UitestDumper(Dumper):
             self.hdc.pull_file(remote_path, HDC.get_relative_path(local_path))
 
             return self.preprocess_views(local_path)
+
+    def get_views(self):
+        return self.views
+
+
+class HmDriverDumper(Dumper):
+    """
+    This class use HMDriver and uitest to dump layout.
+    """
+
+    device: "HmClient" = None
+
+    def __init__(self, hdc: HDC):
+        self.hdc = hdc
+
+    def dump_view(self) -> str:
+        """
+        Using uitest to dumpLayout, and return the remote path of the layout file
+        :Return: remote path
+        """
+
+        r = self._request_hierarchy()
+        if r is None:
+            raise HierarchyDumpError("error when dumping hierarchy")
+        return r
+
+    def _request_hierarchy(self):
+        request_id = datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
+        params = {"api": "captureLayout", "args": []}
+
+        msg = {
+            "module": "com.ohos.devicetest.hypiumApiHelper",
+            "method": "Captures",
+            "params": params,
+            "request_id": request_id,
+        }
+
+        self.device._send_msg(msg)
+        buffer_size = 1024 * 16
+        full_msg = bytearray()
+        r = None
+        while True:
+            try:
+                relay = self.device.sock.recv(buffer_size)
+                full_msg.extend(relay)
+                r = json.loads(full_msg)
+                break
+            except json.JSONDecodeError as NOT_EOF:
+                buffer_size *= 4
+                continue
+            except (TimeoutError, UnicodeDecodeError) as e:
+                break
+
+        return r["result"] if r is not None else None
+
+    def preprocess_views(self, views_dict):
+        """
+        bfs the view tree and turn it into the android style
+        views list
+        ### :param: view path
+        """
+        from collections import deque
+
+        self._views = []
+
+        self.views_raw = views_dict
+
+        # process the root node
+        self.views_raw["attributes"]["parent"] = -1
+
+        # add it into a queue to bfs
+        queue = deque([self.views_raw])
+        temp_id = 0
+
+        while queue:
+            node: dict = queue.popleft()
+
+            # process the node and add the hierachy info so that Droidbot can
+            # recongnize while traversing
+            node["attributes"]["temp_id"] = temp_id
+            node["attributes"]["child_count"] = len(node["children"])
+            node["attributes"]["children"] = list()
+
+            # process the view, turn it into android style and add to view list
+            self._views.append(self.get_adb_view(node["attributes"]))
+
+            # bfs the tree
+            for child in node["children"]:
+                child["attributes"]["parent"] = temp_id
+                if "bundleName" in node["attributes"]:
+                    child["attributes"]["bundleName"] = HDC.safe_dict_get(
+                        node["attributes"], "bundleName"
+                    )
+                    assert (
+                        self.hdc.safe_dict_get(node["attributes"], "pagePath")
+                        is not None
+                    ), "pagePath not exist"
+                    child["attributes"]["pagePath"] = self.hdc.safe_dict_get(
+                        node["attributes"], "pagePath"
+                    )
+                queue.append(child)
+
+            temp_id += 1
+
+        # get the 'children' attributes
+        self.get_view_children()
+
+        return self._views
+
+    def get_view_children(self):
+        """
+        get the 'children' attributes by the 'parent'
+        """
+        for view in self._views:
+            temp_id = HDC.safe_dict_get(view, "parent")
+            if temp_id > -1:
+                self._views[temp_id]["children"].append(view["temp_id"])
+                assert self._views[temp_id]["temp_id"] == temp_id
+
+    def get_adb_view(self, raw_view: dict):
+        """
+        process the view and turn it into the android style
+        """
+        view = dict()
+        for key, value in raw_view.items():
+            # adapt the attributes into adb form
+            if key in [
+                "visible",
+                "checkable",
+                "enabled",
+                "clickable",
+                "scrollable",
+                "selected",
+                "focused",
+                "checked",
+            ]:
+                view[key] = True if value in ["True", "true"] else False
+                continue
+            if key == "longClickable":
+                view["long_clickable"] = bool(value)
+                continue
+            if key == "bounds":
+                view[key] = self.get_bounds(value)
+                view["size"] = self.get_size(value)
+                continue
+            if key == "bundleName":
+                view["package"] = value
+                continue
+            if key == "description":
+                view["content_description"] = value
+                continue
+            if key == "type":
+                view["class"] = value
+                continue
+            if key == "key":
+                view["resource_id"] = value
+                continue
+            view[key] = value
+
+        return view
+
+    def get_bounds(self, raw_bounds: str):
+        # capturing the coordinate of the bounds and return 2-dimensional list
+        # e.g.  "[10,20][30,40]" -->  [[10, 20], [30, 40]]
+        import re
+
+        size_pattern = r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]"
+        match = re.search(size_pattern, raw_bounds)
+        if match:
+            return [
+                [int(match.group(1)), int(match.group(2))],
+                [int(match.group(3)), int(match.group(4))],
+            ]
+
+    def get_size(self, raw_bounds: str):
+        bounds = self.get_bounds(raw_bounds)
+        return f"{bounds[1][0]-bounds[0][0]}*{bounds[1][1]-bounds[0][1]}"
+
+    @property
+    def views(self):
+        view_dict = self.dump_view()
+        return self.preprocess_views(view_dict)
 
     def get_views(self):
         return self.views

@@ -71,13 +71,13 @@ class DeviceHM(Device):
         self.is_harmonyos = is_harmonyos
         self.save_log = save_log
 
-        # adapters
-        self.hdc = HDC(device=self)
-        self.hilog = Hilog(device=self)
 
         from hmdriver2.driver import Driver
         self.hm2 = Driver(serial=self.serial)
 
+        # adapters
+        self.hdc = HDC(device=self, hmclient=self.hm2)
+        self.hilog = Hilog(device=self)
 
         self.logger.info("You're runing droidbot on HarmonyOS")
         self.adapters = {

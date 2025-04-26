@@ -4,6 +4,7 @@ kind of DSL (Domain Sepcific Language).
 Please checkout Kea's doc and its paper for the details.
 """
 
+from functools import cached_property
 from hmdriver2._client import HmClient
 from hmdriver2.driver import Driver
 from hmdriver2._uiobject import UiObject
@@ -37,9 +38,14 @@ class HarmonyOS_PDL_Driver(Driver):
         super().set_orientation(mode)
         time.sleep(1)
 
-    def press(self, key: Union[int, str], meta=None):
+    def press_key(self, key: Union[int, str], meta=None):
         self.droidbot.device.save_screenshot_for_report(event_name="press", event = key)
-        super().press(key, meta)
+        super().press_key(key, meta)
+
+    @cached_property
+    def xpath(self):
+        self.droidbot.device.save_screenshot_for_report(event_name="xpath")
+        return super().xpath(self)
 
 
 class Ui(UiObject):

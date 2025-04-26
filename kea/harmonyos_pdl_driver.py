@@ -5,7 +5,7 @@ Please checkout Kea's doc and its paper for the details.
 """
 
 from functools import cached_property
-from hmdriver2._client import HmClient
+from hmdriver2.proto import KeyCode
 from hmdriver2.driver import Driver
 from hmdriver2._uiobject import UiObject
 from typing import TYPE_CHECKING, Type
@@ -19,11 +19,11 @@ if TYPE_CHECKING:
 import time
 
 class HarmonyOS_PDL_Driver(Driver):
-    
+
     def __init__(self, delay=1, serial=None) -> None:
         self.delay = delay
         super().__init__(serial=serial)
-    
+
     def __new__(cls: Type[Any], serial: str) -> Any:
         return super().__new__(cls, serial)
 
@@ -38,14 +38,15 @@ class HarmonyOS_PDL_Driver(Driver):
         super().set_orientation(mode)
         time.sleep(1)
 
-    def press_key(self, key: Union[int, str], meta=None):
-        self.droidbot.device.save_screenshot_for_report(event_name="press", event = key)
-        super().press_key(key, meta)
+    def press_key(self, key: Union[int, KeyCode]):
+        self.droidbot.device.save_screenshot_for_report(event_name="press", event=key)
+        super().press_key(key)
 
     @cached_property
     def xpath(self):
         self.droidbot.device.save_screenshot_for_report(event_name="xpath")
-        return super().xpath(self)
+        from hmdriver2._xpath import _XPath
+        return _XPath(self)
 
 
 class Ui(UiObject):
@@ -66,4 +67,3 @@ class Ui(UiObject):
     def input_text(self, text):
         self.droidbot.device.save_screenshot_for_report(event_name="input_text " + text, event = self)
         super().input_text(text)
-        

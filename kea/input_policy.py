@@ -288,6 +288,7 @@ class KeaInputPolicy(InputPolicy):
         rules_ready_to_be_checked = (
             self.kea.get_rules_whose_preconditions_are_satisfied()
         )
+        self.logger.info(f"{len(rules_ready_to_be_checked)} preconditions satisfied.")
         rules_ready_to_be_checked.update(self.kea.get_rules_without_preconditions())
         if len(rules_ready_to_be_checked) == 0:
             self.logger.debug("No rules match the precondition")

@@ -123,6 +123,7 @@ class AppHM(object):
         """
         bundle_name = self.get_package_name()
         main_ability = self.get_main_activity()
+        main_ability = "EntryAbility" if not main_ability else main_ability
         # hdc shell aa -b [bundleName] -a [Main ability]
         return Intent(suffix="-b {} -a {}".format(bundle_name, main_ability), is_harmonyos=True)
 

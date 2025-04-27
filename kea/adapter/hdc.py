@@ -668,6 +668,9 @@ class UitestDumper(Dumper):
                 view["resource_id"] = value
                 continue
             view[key] = value
+        
+        if view["class"] in {"RichEditor", "TextInput", "TextArea"}:
+            view["editable"] = True
 
         return view
 

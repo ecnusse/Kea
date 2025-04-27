@@ -47,6 +47,7 @@ class OpenaiTranslator:
             print(
                 f"Error when translating {file_path}.", e
             )
+            return
         
         lines = translated_text.splitlines()
         begin_flag = False

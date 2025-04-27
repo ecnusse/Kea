@@ -52,7 +52,7 @@ class AppHM(object):
     def _dumpsys_package_info(self):
         from .adapter.hdc import HDC_EXEC
         cmd = [HDC_EXEC, "-t", self.settings.device_serial, "shell", "bm", "dump", "-n", self.package_name]
-        r = subprocess.check_output(cmd, text=True)
+        r = subprocess.check_output(cmd, text=True, encoding="utf-8")
         package_info_str = r.split("\n", maxsplit=1)[-1]
         import json
         package_info = json.loads(package_info_str)

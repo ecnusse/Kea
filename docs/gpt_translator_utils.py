@@ -17,7 +17,7 @@ class OpenaiTranslator:
     def translate_text(self, text):
         # 使用流式传输请求翻译文本
         stream = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4.1-nano",
             messages=[{
                 "role": "system",
                 "content": self.prompt
@@ -41,7 +41,12 @@ class OpenaiTranslator:
             content = file.read()
         
         # 翻译文本
-        translated_text = self.translate_text(content)
+        try:
+            translated_text = self.translate_text(content)
+        except Exception as e:
+            print(
+                f"Error when translating {file_path}.", e
+            )
         
         lines = translated_text.splitlines()
         begin_flag = False

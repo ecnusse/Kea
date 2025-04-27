@@ -273,7 +273,7 @@ class HDC(Adapter):
         self.shell("uitest uiInput click %d %d" %
                    self.__transform_point_by_orientation((x, y), orientation, self.get_orientation()))
 
-    def long_touch(self, x, y, duration=2000, orientation=-1):
+    def long_touch(self, x, y, orientation=-1):
         """
         Long touches at (x, y)
         """
@@ -297,7 +297,8 @@ class HDC(Adapter):
         (x0, y0) = self.__transform_point_by_orientation((x0, y0), orientation, self.get_orientation())
         (x1, y1) = self.__transform_point_by_orientation((x1, y1), orientation, self.get_orientation())
 
-        self.shell("uitest uiInput swipe %d %d %d %d %d" % (x0, y0, x1, y1, duration))
+        speed = 2000
+        self.shell("uitest uiInput swipe %d %d %d %d %d" % (x0, y0, x1, y1, speed))
         
     def type(self, text):
         # hdc shell uitest uiInput inputText 100 100 hello

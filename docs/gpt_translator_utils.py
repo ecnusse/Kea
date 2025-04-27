@@ -13,33 +13,29 @@ class OpenaiTranslator:
         )
         self.prompt = prompt
 
-
     def translate_text(self, text):
-        # 使用流式传输请求翻译文本
-        stream = self.client.chat.completions.create(
+        """
+        translate the text with gpt
+        """
+        response = self.client.chat.completions.create(
             model="gpt-4.1-mini",
-            messages=[{
-                "role": "system",
-                "content": self.prompt
-                },   
-                {"role": "user", 
-                 "content": f"{text}"}],
-            stream=True,
+            messages=[
+                {"role": "system", "content": self.prompt},
+                {"role": "user", "content": text},
+            ],
+            stream=False,
         )
-        
-        translated_text = ""
-        for chunk in stream:
-            if chunk.choices[0].delta.content:
-                translated_text += chunk.choices[0].delta.content
-        
-        return translated_text.strip()
+
+        translated = response.choices[0].message.content
+
+        return translated.strip()
 
     def translate_file(self, file_path):
         self.logger.info(f"translating file {os.path.split(file_path)[-1]}")
-        
+
         with open(file_path, 'r', encoding='utf-8') as file:
             content = file.read()
-        
+
         # 翻译文本
         try:
             translated_text = self.translate_text(content)
@@ -48,10 +44,10 @@ class OpenaiTranslator:
                 f"Error when translating {file_path}.", e
             )
             return
-        
+
         lines = translated_text.splitlines()
         begin_flag = False
-        
+
         self.logger.info(f"writing file {os.path.split(file_path)[-1]}")
         # 输出翻译结果
         with open(file_path, "w") as fp:
@@ -63,8 +59,8 @@ class OpenaiTranslator:
                     if line.strip == "```":
                         break
                     fp.write(line+"\n")
-    
-    
+
+
 def get_not_translated_files():
     pattern = re.compile(r".*(\d+)\s*fuzzy.*(\d+)\s*untranslated.*")
     translation_state = subprocess.check_output(["sphinx-intl", "stat"], text=True)

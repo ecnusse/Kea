@@ -17,7 +17,7 @@ class OpenaiTranslator:
     def translate_text(self, text):
         # 使用流式传输请求翻译文本
         stream = self.client.chat.completions.create(
-            model="gpt-4.1-nano",
+            model="gpt-4.1-mini",
             messages=[{
                 "role": "system",
                 "content": self.prompt
@@ -29,7 +29,7 @@ class OpenaiTranslator:
         
         translated_text = ""
         for chunk in stream:
-            if chunk.choices[0].delta.content is not None:
+            if chunk.choices[0].delta.content:
                 translated_text += chunk.choices[0].delta.content
         
         return translated_text.strip()

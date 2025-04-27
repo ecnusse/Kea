@@ -521,7 +521,7 @@ class HiDumper(Dumper):
                 if key in ["visible", "clickable", "checkable", "scrollable", "checked"]:
                     node[key] = bool(int(value))
                     continue
-                if key == "longclickable":
+                if key == "longClickable":
                     node["long_clickable"] = bool(int(value))
                     continue
                 if key == "ID":
@@ -649,7 +649,7 @@ class UitestDumper(Dumper):
                 view[key] = True if value in ["True", "true"] else False
                 continue
             if key == "longClickable":
-                view["long_clickable"] = bool(value)
+                view["long_clickable"] = bool(value.lower() == "true")
                 continue
             if key == "bounds":
                 view[key] = self.get_bounds(value)
@@ -668,7 +668,7 @@ class UitestDumper(Dumper):
                 view["resource_id"] = value
                 continue
             view[key] = value
-        
+
         if view["class"] in {"RichEditor", "TextInput", "TextArea"}:
             view["editable"] = True
 
@@ -842,7 +842,7 @@ class HmDriverDumper(Dumper):
                 view[key] = True if value in ["True", "true"] else False
                 continue
             if key == "longClickable":
-                view["long_clickable"] = bool(value)
+                view["long_clickable"] = bool(value.lower()=="true")
                 continue
             if key == "bounds":
                 view[key] = self.get_bounds(value)
@@ -861,6 +861,9 @@ class HmDriverDumper(Dumper):
                 view["resource_id"] = value
                 continue
             view[key] = value
+
+        if view["class"] in {"RichEditor", "TextInput", "TextArea"}:
+            view["editable"] = True
 
         return view
 

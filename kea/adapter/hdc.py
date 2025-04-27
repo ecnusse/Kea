@@ -263,6 +263,8 @@ class HDC(Adapter):
         """
         Press a key
         """
+        key_code = "Back" if key_code.lower() == "back" else key_code
+        key_code = "Home" if key_code.lower() == "home" else key_code
         self.shell("uitest uiInput keyEvent %s" % key_code)
 
     def touch(self, x, y, orientation=-1, event_type=DOWN_AND_UP):

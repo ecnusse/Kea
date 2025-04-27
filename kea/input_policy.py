@@ -287,8 +287,7 @@ class KeaInputPolicy(InputPolicy):
         # ! TODO - xixian - should we emphasize the following data structure is a dict?
         rules_ready_to_be_checked = (
             self.kea.get_rules_whose_preconditions_are_satisfied()
-        )
-        self.logger.info(f"{len(rules_ready_to_be_checked)} preconditions satisfied.")
+        )  
         rules_ready_to_be_checked.update(self.kea.get_rules_without_preconditions())
         if len(rules_ready_to_be_checked) == 0:
             self.logger.debug("No rules match the precondition")
@@ -414,20 +413,23 @@ class RandomPolicy(KeaInputPolicy):
             )
             return KillAndRestartAppEvent(app=self.app)
 
-        rules_to_check = self.kea.get_rules_whose_preconditions_are_satisfied()
+        rules_to_check = self.kea.get_rules_whose_preconditions_are_satisfied() 
         for rule_to_check in rules_to_check:
             self.statistics_of_rules[str(rule_to_check.function.__name__)][
                 RULE_STATE.PRECONDITION_SATISFIED
             ] += 1
 
         if len(rules_to_check) > 0:
+            self.logger.info(
+                f"{len(rules_to_check)} preconditions satisfied."
+            )
             t = self.time_recoder.get_time_duration()
             self.time_needed_to_satisfy_precondition.append(t)
             self.logger.debug(
                 "has rule that matches the precondition and the time duration is "
                 + t
             )
-            if random.random() < 0.5:
+            if random.random() < 0.6:
                 self.logger.info("Check property")
                 self.check_rule_whose_precondition_are_satisfied()
                 if self.restart_app_after_check_property:

@@ -430,7 +430,10 @@ class DeviceHM(Device):
 
     def pull_file(self, remote_file, local_file):
         r = self.hdc.run_cmd(["file", "recv", remote_file, local_file])
-        assert not r.startswith("[Fail]"), "Error with receiving file"
+        if r.startswith("[Fail]"):
+            raise RuntimeError(
+                f"Error when receiving file:\n{r}"
+            )
 
     def take_screenshot(self):
         
@@ -438,7 +441,10 @@ class DeviceHM(Device):
             return None
 
         r = self.hdc.shell("snapshot_display")
-        assert "success" in r, "Error when taking screenshot"
+        if not "success" in r:
+            raise RuntimeError(
+                f"Error when taking screenshot:\n{r}" 
+            )
 
         remote_path = r.splitlines()[0].split()[-1]
         file_name = os.path.basename(remote_path)
@@ -460,7 +466,7 @@ class DeviceHM(Device):
         else:
             self.current_state = current_state
         self.save_to_all_states_dir(self.screenshot_path, event_name=event_name, event=event)
-    
+
     def draw_event(self, event, event_name, screenshot_path):
         import cv2
         image = cv2.imread(screenshot_path)
@@ -490,7 +496,7 @@ class DeviceHM(Device):
                 elif event_name == "set_text":
                     cv2.rectangle(image, (int(event.bounds.left), int(event.bounds.top)), (int(event.bounds.right), int(event.bounds.bottom)), (255, 0, 0), 5)
                 elif event_name == "press":
-                    cv2.putText(image,event, (100,300), cv2.FONT_HERSHEY_SIMPLEX, 5,(0, 255, 0), 3, cv2.LINE_AA)
+                    cv2.putText(image, event, (100, 300), cv2.FONT_HERSHEY_SIMPLEX, 5,(0, 255, 0), 3, cv2.LINE_AA)
                 else:
                     return
             try:

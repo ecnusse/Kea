@@ -39,7 +39,7 @@ class HarmonyOS_PDL_Driver(Driver):
         time.sleep(1)
 
     def press_key(self, key: Union[int, KeyCode]):
-        self.droidbot.device.save_screenshot_for_report(event_name="press", event=key)
+        self.droidbot.device.save_screenshot_for_report(event_name="press", event = str(key))
         super().press_key(key)
 
     @cached_property

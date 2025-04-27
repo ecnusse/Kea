@@ -592,7 +592,10 @@ class DeviceHM(Device):
         Long touches at (x, y)
         @param duration: duration in ms
         """
-        self.hdc.long_touch(x, y, duration)
+        if duration > 1000:
+            self.hdc.long_touch(x, y)
+        else:
+            self.hdc.touch(x, y)
 
     def view_drag(self, start_xy, end_xy, duration):
         """

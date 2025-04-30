@@ -48,6 +48,12 @@ class HarmonyOS_PDL_Driver(Driver):
         from hmdriver2._xpath import _XPath
         return _XPath(self)
 
+    @cached_property
+    def swipe_ext(self):
+        from hmdriver2._swipe import SwipeExt
+        self.droidbot.device.save_screenshot_for_report(event_name="swipe")
+        return SwipeExt(self)
+
 
 class Ui(UiObject):
     def __init__(self, session:"HarmonyOS_PDL_Driver", **kwargs) -> None:

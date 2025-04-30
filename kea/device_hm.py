@@ -497,6 +497,8 @@ class DeviceHM(Device):
                     cv2.rectangle(image, (int(event.bounds.left), int(event.bounds.top)), (int(event.bounds.right), int(event.bounds.bottom)), (255, 0, 0), 5)
                 elif event_name == "press":
                     cv2.putText(image, event, (100, 300), cv2.FONT_HERSHEY_SIMPLEX, 5,(0, 255, 0), 3, cv2.LINE_AA)
+                elif event_name == "swipe":
+                    cv2.putText(image, event_name, (100, 300), cv2.FONT_HERSHEY_SIMPLEX, 5,(0, 255, 0), 3, cv2.LINE_AA)
                 else:
                     return
             try:

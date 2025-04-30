@@ -339,7 +339,12 @@ class Kea:
 
         # 2025/02/15 Support static precondition checker in Android system.
         # return self.single_thread_precondition_checker()
-         
+        
+        # HarmonyOS only support single_thread checker
+        if self.is_harmonyos:
+            return self.single_thread_precondition_checker()
+        
+        # Android support multithread checker
         if len(self.all_rules_DB) < 5:
             return self.single_thread_precondition_checker()
         else:
@@ -396,6 +401,10 @@ class Kea:
                 if len(target_rule.preconditions) == 0:
                     rules_without_precondition[target_rule] = keaTest
         return rules_without_precondition
+    
+    @property
+    def is_harmonyos(self):
+        return self._pdl_driver.droidbot.device.is_harmonyos
 
     def teardown(self):
         """Called after a run has finished executing to clean up any necessary

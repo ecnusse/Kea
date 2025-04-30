@@ -1,24 +1,19 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2024, ECNU-SE-lab
-# This file is distributed under the same license as the Kea package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Kea 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-31 16:33+0800\n"
+"POT-Creation-Date: 2025-04-30 03:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:4
-msgid "使用安卓模拟器配置安卓环境"
-msgstr "Configuring Android Environment Using Android Emulator"
+msgid "使用 Android Studio 配置安卓环境"
+msgstr "Configuring the Android Environment Using Android Studio"
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:8
 msgid "**前提条件：** 在你的电脑上安装 Android Studio。"
@@ -29,8 +24,15 @@ msgid "你可以在 https://developer.android.com/studio 下载 Android Studio�
 msgstr "You can download Android Studio at https://developer.android.com/studio."
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:13
-msgid "Kea 依赖 ``adb`` 命令与 Android 设备进行交互。关键是要确保 ADB（Android 调试桥）命令可用。 以下教程将帮助你设置整个 Android SDK 工具套件。但请记住，将 ``adb`` 命令添加到路径中就足够了。"
-msgstr "Kea relies on the ``adb`` command to interact with Android devices. It is crucial to ensure that the ADB (Android Debug Bridge) command is available. The following tutorial will help you set up the entire Android SDK toolkit. However, simply adding the ``adb`` command to the PATH is sufficient."
+msgid ""
+"Kea 依赖 ``adb`` 命令与 Android 设备进行交互。关键是要确保 ADB（Android 调试桥）命令可用。 "
+"以下教程将帮助你设置整个 Android SDK 工具套件。但请记住，将 ``adb`` 命令添加到路径中就足够了。"
+msgstr ""
+"Kea relies on the ``adb`` command to interact with Android devices. It is "
+"important to ensure that the ADB (Android Debug Bridge) command is "
+"available. The following tutorial will help you set up the entire Android "
+"SDK toolkit. But remember, just adding the ``adb`` command to your PATH "
+"is enough."
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:19
 msgid "1. 设置命令行工具（adb）"
@@ -41,32 +43,47 @@ msgid "MacOS 和 Linux"
 msgstr "MacOS and Linux"
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:24
+#: ../../source/part-keaUserManuel/Android_Studio.rst:56
 msgid "在你的电脑上安装了 Android Studio。你需要做的是将 Android sdk 其添加至 PATH 环境变量，让其在终端中生效。"
-msgstr "After installing Android Studio on your computer, you need to add the Android sdk to the PATH environment variable so that it is effective in the terminal."
+msgstr "After installing Android Studio on your computer, you need to add the Android SDK to your PATH environment variable so that it takes effect in the terminal."
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:26
-msgid "有关详细信息，请参见 `Android Studio 文档：环境变量 <https://developer.android.com/tools/variables>`_。"
-msgstr "For detailed information, see `Android Studio Documentation: Environment Variables <https://developer.android.com/tools/variables>`_."
+msgid ""
+"有关详细信息，请参见 `Android Studio 文档：环境变量 "
+"<https://developer.android.com/tools/variables>`_。"
+msgstr "For more details, see `Android Studio Documentation: Environment Variables <https://developer.android.com/tools/variables>`_."
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:28
-msgid "如果你使用的是 zsh 或 bash，请使用 ``EXPORT`` 命令设置 ``ANDROID_HOME`` 环境变量。``ANDROID_HOME`` 环境变量应指向你的 SDK 安装路径。默认路径是 ``/usr/Library/Android/sdk/``。你可以通过 :guilabel:`Android Studio` -> :guilabel:`设置` -> :guilabel:`语言与框架` -> :guilabel:`Android SDK` 查看你的安装路径。"
-msgstr "If you are using zsh or bash, use the ``EXPORT`` command to set the ``ANDROID_HOME`` environment variable. The ``ANDROID_HOME`` environment variable should point to your SDK installation path. The default path is ``/usr/Library/Android/sdk/``. You can check your installation path through :guilabel:`Android Studio` -> :guilabel:`Settings` -> :guilabel:`Languages & Frameworks` -> :guilabel:`Android SDK`."
+msgid ""
+"如果你使用的是 zsh 或 bash，请使用 ``EXPORT`` 命令设置 ``ANDROID_HOME`` "
+"环境变量。``ANDROID_HOME`` 环境变量应指向你的 SDK 安装路径。默认路径是 "
+"``/usr/Library/Android/sdk/``。你可以通过 :guilabel:`Android Studio` -> "
+":guilabel:`设置` -> :guilabel:`语言与框架` -> :guilabel:`Android SDK` 查看你的安装路径。"
+msgstr ""
+"If you are using zsh or bash, use the ``EXPORT`` command to set the "
+"``ANDROID_HOME`` environment variable. The ``ANDROID_HOME`` environment "
+"variable should point to your SDK installation path. The default path is "
+"``/usr/Library/Android/sdk/``. You can check your installation path "
+"via :guilabel:`Android Studio` -> :guilabel:`Settings` -> "
+":guilabel:`Languages & Frameworks` -> :guilabel:`Android SDK`."
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:31
+#: ../../source/part-keaUserManuel/Android_Studio.rst:61
 msgid "在此窗口中，查看 :guilabel:`SDK 工具`，安装 **Android SDK 平台工具**。"
-msgstr "In this window, check :guilabel:`SDK Tools`, and install **Android SDK Platform Tools**."
+msgstr "In this window, check :guilabel:`SDK Tools` and install **Android SDK Platform Tools**."
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:36
+#: ../../source/part-keaUserManuel/Android_Studio.rst:66
 msgid "Android Studio 中 Android SDK 路径的示例"
 msgstr "Example of Android SDK Path in Android Studio"
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:38
 msgid "然后，将路径添加到 .bashrc 或 .zshrc 文件中。"
-msgstr "Then, add the path to the .bashrc or .zshrc file."
+msgstr "Then, add the path to your .bashrc or .zshrc file."
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:47
 msgid "``source`` shell的配置文件以激活修改。"
-msgstr "Run ``source`` on the shell's configuration file to activate the changes."
+msgstr "Run ``source`` on the shell configuration file to activate the changes."
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:49
 msgid "text"
@@ -74,16 +91,33 @@ msgstr "text"
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:51
 msgid "在终端中输入 ``adb`` 检查设置是否成功。"
-msgstr "Type ``adb`` in the terminal to check if the setup is successful."
+msgstr "Type ``adb`` in the terminal to check if the setup was successful."
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:54
 msgid "Windows"
 msgstr "Windows"
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:58
-msgid "如果你使用的是 zsh 或 bash，请使用 ``EXPORT`` 命令设置 ``ANDROID_HOME`` 环境变量。``ANDROID_HOME`` 环境变量应指向你的 SDK 安装路径。默认路径是 ``C:\\Users\\usr_name\\AppData\\Local\\Android\\Sdk``。你可以通过 :guilabel:`文件` -> :guilabel:`设置` -> :guilabel:`语言与框架` -> :guilabel:`Android SDK` 查看你的安装路径。"
-msgstr "If you are using zsh or bash, use the ``EXPORT`` command to set the ``ANDROID_HOME`` environment variable. The ``ANDROID_HOME`` environment variable should point to your SDK installation path. The default path is ``C:\\Users\\usr_name\\AppData\\Local\\Android\\Sdk``. You can check your installation path through :guilabel:`File` -> :guilabel:`Settings` -> :guilabel:`Languages & Frameworks` -> :guilabel:`Android SDK`."
+msgid ""
+"如果你使用的是 zsh 或 bash，请使用 ``EXPORT`` 命令设置 ``ANDROID_HOME`` "
+"环境变量。``ANDROID_HOME`` 环境变量应指向你的 SDK 安装路径。默认路径是 "
+"``C:\\Users\\usr_name\\AppData\\Local\\Android\\Sdk``。你可以通过 "
+":guilabel:`文件` -> :guilabel:`设置` -> :guilabel:`语言与框架` -> "
+":guilabel:`Android SDK` 查看你的安装路径。"
+msgstr ""
+"If you are using zsh or bash, use the ``EXPORT`` command to set the "
+"``ANDROID_HOME`` environment variable. The ``ANDROID_HOME`` environment "
+"variable should point to your SDK installation path. The default path is "
+"``C:\\Users\\usr_name\\AppData\\Local\\Android\\Sdk``. You can check your "
+"installation path via :guilabel:`File` -> :guilabel:`Settings` -> "
+":guilabel:`Languages & Frameworks` -> :guilabel:`Android SDK`."
 
 #: ../../source/part-keaUserManuel/Android_Studio.rst:68
-msgid "然后，将以下路径添加到 PATH 变量中。请参见 `Windows系统中如何添加 PATH 环境变量 <https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/>`_。"
-msgstr "Then, add the following path to the PATH variable. See `How to Add PATH Environment Variable in Windows <https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/>` _."
+msgid ""
+"然后，将以下路径添加到 PATH 变量中。请参见 `Windows系统中如何添加 PATH 环境变量 "
+"<https://helpdeskgeek.com/windows-10/add-windows-path-environment-"
+"variable/>`_。"
+msgstr ""
+"Then, add the following path to the PATH variable. See `How to Add PATH "
+"Environment Variable in Windows <https://helpdeskgeek.com/windows-10/add-"
+"windows-path-environment-variable/>`_."

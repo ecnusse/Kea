@@ -40,7 +40,7 @@ Kea currently supports Android and HarmonyOS.
 
 ### More Info
 
-> Find more about our work on testing/analyzing mobile apps: [ECNU-SSE-Lab - Mobile App Analysis](https://mobile-app-analysis.github.io).
+> Find more about our work on testing/analyzing mobile apps: [ECNU-SSE-Lab - Mobile App Analysis](https://tingsu.github.io/files/mobile-app-analysis.html).
 
 > A list of literature on mobile app testing and analysis: [Mobile App Analysis and Testing Literature](https://github.com/XYIheng/MobileAppTesting).
 
